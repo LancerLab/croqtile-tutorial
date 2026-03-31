@@ -3016,7 +3016,7 @@
 </ul>
 <h3 id="host-device-and-tileflow">Host, Device and Tileflow<a class="headerlink" href="#host-device-and-tileflow" title="Permanent link">&para;</a></h3>
 <p>The code below showcases a <em>Choreo-C++</em> program targeting <em>CUDA/Cute</em>:</p>
-<div class="highlight"><pre><span></span><code>// Device program: typically runs on GPU/NPU
+<pre class="highlight"><code class="language-choreo">// Device program: typically runs on GPU/NPU
 __device__ void device_function(...) {
   // High-performance device kernel implementation
 }
@@ -3033,8 +3033,7 @@ void main() {
   // ... prepare data ...
   choreo_function(...);
   // ...
-}
-</code></pre></div>
+}</code></pre>
 <p>Let's briefly review each part:</p>
 <p><strong>Host Program</strong></p>
 <p>The <em>Host Program</em> serves as the entry point of the <em>Choreo-C++</em> module/program and is the caller of the <em>Tileflow</em> Program (Choreo Functions). Written in standard C++, it runs on the CPU and manages the overall workflow of the heterogeneous application.</p>
@@ -3054,18 +3053,17 @@ void main() {
 <li><strong>Separate Source Compilation Model</strong>: Similar to <em>OpenCL</em>, where host and device code must be compiled separately.</li>
 </ul>
 <p>The code shown above naturally supports the <em>Single Source Compilation Model</em>. However, to support the <em>Separate Source Compilation Model</em>, Choreo requires wrapping the Device Program with the <code>__cok__</code> block, as shown below:</p>
-<div class="highlight"><pre><span></span><code>__cok__ {
+<pre class="highlight"><code class="language-choreo">__cok__ {
   void device_function(...) { ... }
 } // end of __cok__
 
 __co__ void choreo_function(...) { ... }
 
-void foo() { ... }
-</code></pre></div>
+void foo() { ... }</code></pre>
 <p>This is the code structure for a <em>Choreo-OpenCL C++</em> program. The OpenCL compiler requires the device program (<code>device_function</code> in the code) to be stored in a separate file from the host program. The <code>__cok__ {}</code> wrapper enables the Choreo compiler to handle user-provided device code properly. It helps Choreo separate device and host code from a single Choreo source file for different compilation processes. Therefore, do not be surprised if you encounter <code>__cok__</code> in certain Choreo code; it is necessary for integrating support for the <em>Separate Source Compilation Model</em>.</p>
 <h2 id="a-full-choreo-cute-c-code-example">A Full Choreo-Cute C++ Code Example<a class="headerlink" href="#a-full-choreo-cute-c-code-example" title="Permanent link">&para;</a></h2>
 <p>Below is a complete <em>Choreo-Cute C++</em> code example that performs element-wise addition on two arrays of the same size and element type:</p>
-<div class="highlight"><pre><span></span><code>// Device Program
+<pre class="highlight"><code class="language-choreo">// Device Program
 __device__ void kernel(int * a, int * b, int * c, int n) {
   for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
 }
@@ -3113,17 +3111,16 @@ int main() {
     for (size_t j = 0; j &lt; res.shape()[1]; ++j)
       for (size_t k = 0; k &lt; res.shape()[2]; ++k)
         if (a[i][j][k] + b[i][j][k] != res[i][j][k]) {
-          std::cerr &lt;&lt; &quot;result does not match.\n&quot;;
+          std::cerr &lt;&lt; "result does not match.\n";
           abort();
         }
 
-  std::cout &lt;&lt; &quot;Test Passed\n&quot; &lt;&lt; std::endl;
-}
-</code></pre></div>
+  std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
+}</code></pre>
 <p>The subsequent sections will explain the different parts of the code.</p>
 <h3 id="host-program-the-control-center">Host Program - the Control Center<a class="headerlink" href="#host-program-the-control-center" title="Permanent link">&para;</a></h3>
 <p>As introduced, the <strong>host program</strong> serves as the entry point of the <em>Choreo-C++</em> program and acts as the control center. For convenience, here is the code again:</p>
-<div class="highlight"><pre><span></span><code>int main() {
+<pre class="highlight"><code class="language-choreo">int main() {
   // Define data arrays
   choreo::s32 a[6][17][128] = {0};
   choreo::s32 b[6][17][128] = {0};
@@ -3141,21 +3138,18 @@ int main() {
     for (size_t j = 0; j &lt; res.shape()[1]; ++j)
       for (size_t k = 0; k &lt; res.shape()[2]; ++k)
         if (a[i][j][k] + b[i][j][k] != res[i][j][k]) {
-          std::cerr &lt;&lt; &quot;result does not match.\n&quot;;
+          std::cerr &lt;&lt; "result does not match.\n";
           abort();
         }
 
-  std::cout &lt;&lt; &quot;Test Passed\n&quot; &lt;&lt; std::endl;
-}
-</code></pre></div>
+  std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
+}</code></pre>
 <p>The <code>main</code> function is written with standard C++, except for the use of Choreo APIs. In this program, we first define two arrays, <code>a</code> and <code>b</code>, and fill them with different values. The API <code>choreo::make_spanview</code> is then used to attach shape information to the data.</p>
 <p>The <code>choreo::make_spanview</code> is declared as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">size_t</span><span class="w"> </span><span class="n">Rank</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-<span class="n">spanned_view</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Rank</span><span class="o">&gt;</span><span class="w"> </span><span class="n">make_spanview</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">init</span><span class="p">);</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">template &lt;size_t Rank, typename T&gt;
+spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_t&gt; init);</code></pre>
 <p>Here is the usage for reference:
-<div class="highlight"><pre><span></span><code><span class="n">choreo</span><span class="o">::</span><span class="n">make_spanview</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">});</span>
-</code></pre></div></p>
+<pre class="highlight"><code class="language-cpp">choreo::make_spanview&lt;3&gt;(&amp;a[0][0][0], {6, 17, 128});</code></pre></p>
 <p>This API is essential for connecting <em>host code</em> to the <em>choreo functions</em>. Essentially, any input buffer (named the <code>spanned</code> data) of choreo function is always associated with its shape. It enables Choreo to guarantee shape safety at compile and runtime.</p>
 <p><strong>Note:</strong> The most significant dimension value comes first in the <code>initializer_list</code> shape. Thus, a shape of <code>{6, 17, 128}</code> corresponds to a C multi-dimensional array like <code>a[6][17][128]</code>.</p>
 <p>In the example code, choreo function <code>ele_add</code> is called to calculate the element-wise sum in parallel. Afterward, the host code verifies the result buffer <code>res</code>.</p>
@@ -3164,24 +3158,22 @@ int main() {
 <h3 id="device-program-parallel-computation">Device Program: Parallel Computation<a class="headerlink" href="#device-program-parallel-computation" title="Permanent link">&para;</a></h3>
 <p>The <strong>device program</strong> defines the computational kernel that will be executed on the target device such as a GPU. The kernel is designed to operate on input data, process it in parallel, and generate the output.</p>
 <p>We repeat the code as below:</p>
-<div class="highlight"><pre><span></span><code>__device__ void kernel(int * a, int * b, int * c, int n) {
+<pre class="highlight"><code class="language-choreo">__device__ void kernel(int * a, int * b, int * c, int n) {
   for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
-}
-</code></pre></div>
+}</code></pre>
 <p>For targets that only support the <em>Separated Source Programming Model</em>, the code may need to be wrapped within a <code>__cok__ {}</code> block. The equivalent <em>Choreo-OpenCL C++</em> code is shown below:</p>
-<div class="highlight"><pre><span></span><code>__cok__ {
-  extern &quot;C&quot; void kernel(int * a, int * b, int * c, int n) {
+<pre class="highlight"><code class="language-choreo">__cok__ {
+  extern "C" void kernel(int * a, int * b, int * c, int n) {
     for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
   }
-} // end of __cok__
-</code></pre></div>
+} // end of __cok__</code></pre>
 <p>Here, the <code>extern "C"</code> annotation replaces the <code>__device__</code> keyword used in <em>CUDA/Cute</em> target, as <em>OpenCL</em> requires C-linkage for the device functions.</p>
 <p>Choreo's device programming model varies depending on the target hardware and its supported features. For example, some private targets allows the use of vectorizing programming interfaces, or <em>intrinsic function</em> to fully leverage the computational power of the parallel target hardware.</p>
 <p>Programmers must be aware that the device program follows the <em>Single-Program-Multiple-Data (SPMD)</em> paradigm. In this paradigm, multiple instances of the same device program are executed in parallel, making it highly efficient for exploiting data-level parallelism on target hardware. However, unlike traditional <em>CUDA/Cute</em> programs, the device program does not manage data movement —whether between the host and device or across multiple storage levels within the device. Instead, the <em>tileflow program</em> orchestrates these tasks in a much simpler and safer manner.</p>
 <h3 id="tileflow-program-orchestrating-the-data-movement">Tileflow Program: Orchestrating the Data Movement<a class="headerlink" href="#tileflow-program-orchestrating-the-data-movement" title="Permanent link">&para;</a></h3>
 <p>The <em>Tileflow Program</em> consists of <em>Choreo functions</em>. As described earlier, it manages the movement of data between the host and the target device, ensuring that data is copied correctly across different storage locations.</p>
 <p>For convenience, let’s revisit the code:</p>
-<div class="highlight"><pre><span></span><code>__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
+<pre class="highlight"><code class="language-choreo">__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
   s32 [lhs.span] output; // Use same shape as lhs
 
   // first `parallel` indicates the kernel launch
@@ -3202,15 +3194,13 @@ int main() {
     }
   }
   return output;
-}
-</code></pre></div>
+}</code></pre>
 <p>In this code, the <code>__co__</code>-prefixed choreo function accepts two inputs <code>lhs</code> and <code>rhs</code>, both with the shape <code>[6, 17, 128]</code> and the element type of <code>s32</code> (signed 32-bit integer). And the output is defined to have the same shape and type as the inputs.</p>
 <p>The <code>parallel p by 6 {...}</code> block indicates that the enclosed code runs in parallel. Specifically, six instances of the code are executed concurrently. This implies a transition in the execution environment from the host to the device. For those familiar with <em>CUDA</em>, this concept is analogous to a kernel launch, where multiple threads or processes are initiated to perform computations simultaneously on the device.</p>
 <p>Inside the <code>parallel-by</code> block, a <code>with-in</code> block binds the symbol <code>index</code> to two values, <code>17</code> and <code>4</code>. In Choreo, <code>index</code> is referred to as a <code>bounded-ituple</code> with two <code>bounded</code> values, which can be used in <code>foreach</code> statements. (We will explain <code>bounded</code> types in later chapters.)</p>
 <p>The <code>foreach index {...}</code> statement is equivalent to the following C code:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">17</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span><span class="w">  </span><span class="c1">// assume &#39;x&#39; represents the 1st element of &#39;index&#39;</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// and &#39;y&#39; represents the 2nd element of &#39;index&#39;</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">for (int x = 0; x &lt; 17; x++)  // assume 'x' represents the 1st element of 'index'
+  for (int y = 0; y &lt; 4; y++) { ... }  // and 'y' represents the 2nd element of 'index'</code></pre>
 <p>Within the <code>foreach</code> block, the <code>dma.copy</code> statement describes how data movement occurs. For example, consider the statement <code>lhs_load = dma.copy lhs.chunkat(p, index) =&gt; local;</code>:</p>
 <ul>
 <li>The symbol <code>lhs_load</code> is called <strong>future</strong> of the DMA operation, which contains information about the DMA destination.</li>

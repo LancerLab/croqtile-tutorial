@@ -2819,10 +2819,9 @@
 <li><a href="pattern-optimizations/">Optimization patterns</a> — TMA overlap, N256 tiles, L2 promotion, scale prefetch, and how sources under <code>benchmark/performance/blockscale_gemm/</code> and <code>blockscale_gemm_v2/</code> explore scale <strong>DMA to shared memory</strong> and layout variants.</li>
 </ol>
 <p><strong>Compile and run (Cute backend example)</strong></p>
-<div class="highlight"><pre><span></span><code>./choreo<span class="w"> </span>-gs<span class="w"> </span>-t<span class="w"> </span>cute<span class="w"> </span>-arch<span class="o">=</span>sm_90a<span class="w"> </span>--use-warpspec<span class="w"> </span>--stmatrix<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span>/tmp/bs.cute.result<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bash<span class="w"> </span>/tmp/bs.cute.result<span class="w"> </span>--execute
-</code></pre></div>
+<pre class="highlight"><code class="language-bash">./choreo -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+  benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co \
+  -o /tmp/bs.cute.result &amp;&amp; bash /tmp/bs.cute.result --execute</code></pre>
 <p>Shipped winner harnesses with <code>run.sh</code> live under <code>choreo/benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_aitune_2026-03-22_iter{049,051,053,066}/</code>. Summary tables and iteration notes: <code>choreo/benchmark/performance/blockscale_gemm_v2/README_blockscale_gemm_e4m3_aitune_2026-03-22.md</code>.</p>
 
 

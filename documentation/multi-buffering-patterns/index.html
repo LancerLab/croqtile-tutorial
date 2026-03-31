@@ -2745,7 +2745,7 @@
 <h1 id="multi-buffering-optimization-with-choreo">Multi-Buffering Optimization with Choreo<a class="headerlink" href="#multi-buffering-optimization-with-choreo" title="Permanent link">&para;</a></h1>
 <p>To aggressively optimize the high-performance computation kernels, one effective method is to overlap computation with DMA (Direct Memory Access) data movement. This approach, known as <strong>multi-buffering optimization</strong>, typically requires programmers to manage multiple buffers.</p>
 <p>In Choreo, this method requires two key programming primitives: the 'dummy' future <strong>dma.any</strong>, and the <strong>swap/rotate</strong> function. Let's illustrate by an example:</p>
-<div class="highlight"><pre><span></span><code>__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs,
+<pre class="highlight"><code class="language-choreo">__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs,
                                 s32 [6, 17, 128] rhs) {
   s32[lhs.span] output;
   parallel p by 6 {
@@ -2774,8 +2774,7 @@
     }
   }
   return output;
-}
-</code></pre></div>
+}</code></pre>
 <p>In choreo function <code>ele_add</code>, there are two input parameters: 'lhs' and 'rhs', both double-buffered in local storage. We refer to these buffers as 'A' and 'B'. While buffer A is used for computation, buffer B is filled with data via a DMA operation. Once the kernel function completes computation on buffer A, the roles of A and B are swapped: A becomes the buffer for loading the next data chunk, and B becomes the buffer for computation. This process iterates until all data chunks are consumed.</p>
 <p>The implementation divides data movements and computations into three stages, including:</p>
 <ul>

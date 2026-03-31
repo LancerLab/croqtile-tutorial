@@ -2919,7 +2919,7 @@
 <p>Macros have long been a fundamental feature in C/C++ programming. To enable seamless manipulation of both C++ and <em>tileflow</em> programs, macro expansion is essential. This section demonstrates Choreo's macro processing capabilities.</p>
 <h2 id="object-like-macros">Object-Like Macros<a class="headerlink" href="#object-like-macros" title="Permanent link">&para;</a></h2>
 <p>Choreo preprocessor supports C/C++ <strong>object-like macros</strong> to connect both host code and tileflow code. The <em>object-like macro</em> performs pure text replacement and accepts no parameters. The below code gives an example:</p>
-<p><div class="highlight"><pre><span></span><code>#define M 256
+<p><pre class="highlight"><code class="language-choreo">#define M 256
 #define N 32
 #define K 64
 
@@ -2932,17 +2932,16 @@ void foo() {
   auto res = matmul(choreo::make_spanview&lt;2&gt;(a, {M, K}),
                     choreo::make_spanview&lt;2&gt;(b, {N, K}));
 }
-</code></pre></div>
+</code></pre>
 In the code snippet, the inputs of choreo function <code>matmul</code> are not dynamically shaped. Instead, Choreo pre-processor substitutes <code>M</code>, <code>N</code>, <code>K</code> with values <code>256</code>, <code>32</code>, <code>64</code> ahead of Choreo compilation, which produces tileflow function with statically shaped inputs. In this way, programmers makes different code consistent and easy to manipulate.</p>
 <p>Note that, till now Choreo does only support macros with parameters. It means code like:
-<div class="highlight"><pre><span></span><code><span class="cp">#define MAX(a, b) (((a) &gt; (b)) ? (a) : (b))</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">#define MAX(a, b) (((a) &gt; (b)) ? (a) : (b))</code></pre>
 would not work.</p>
 <h2 id="comments">Comments<a class="headerlink" href="#comments" title="Permanent link">&para;</a></h2>
 <p>Choreo support C-style comments, either <code>/*...*/</code> or <code>//...</code>, leveraging the capability choreo preprocessor has provided.</p>
 <h2 id="conditional-compilation">Conditional Compilation<a class="headerlink" href="#conditional-compilation" title="Permanent link">&para;</a></h2>
 <p>Choreo also support conditional compilation which C/C++ programs used a lot. This includes <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code>/<code>#else</code>/<code>#endif</code>. The below code snippet showcases the usage:</p>
-<p><div class="highlight"><pre><span></span><code>#define PATH0
+<p><pre class="highlight"><code class="language-choreo">#define PATH0
 // some host code
 __co__ foo() {
 #ifdef PATH0
@@ -2957,14 +2956,12 @@ __co__ foo() {
 // ...
 #else
 // ...
-#endif
-</code></pre></div>
+#endif</code></pre>
 In this way, it also make host and choreo code be controlled within the same preprocess method.</p>
 <p>Note that, the capability of choreo preprocessor is still enhancing. But it is likely that we would not implement full C preprocessing support. Choreo would not pick up existing C features unless people find it is necessary.</p>
 <h2 id="difference-with-c-pre-processing">Difference with C++ pre-processing<a class="headerlink" href="#difference-with-c-pre-processing" title="Permanent link">&para;</a></h2>
 <p>One important notices about choreo preprocessing is that it is triggered much earlier than c++ preprocessing. The workflow of choreo compilation is as shown below:</p>
-<div class="highlight"><pre><span></span><code>chore-preprocessing -&gt; choreo compilation -&gt; c/c++ preprocessing -&gt; c/c++ compilation
-</code></pre></div>
+<pre class="highlight"><code>chore-preprocessing -&gt; choreo compilation -&gt; c/c++ preprocessing -&gt; c/c++ compilation</code></pre>
 <p>The primary target of choreo preprocessing is to make host/device macros work as a whole, but such a workflow makes it possible sometimes different. From an implementation perspective, Choreo pre-processor only substitute/conditionally-compile code inside the tileflow function, while leaving other pre-processing to the C++ preprocessor. That could restrict Choreo pre-processing in a limited scope.</p>
 <h2 id="pre-defined-macros">Pre-defined Macros<a class="headerlink" href="#pre-defined-macros" title="Permanent link">&para;</a></h2>
 <p>To mimic a target native compilation, choreo preprocess also takes the builtin macros from the target. For example, <code>__CUDA__</code> is globally defined to generate CUDA/Cute code, while <code>__CUDA_ARCH__</code> is only set for CUDA/Cute device code compilation.

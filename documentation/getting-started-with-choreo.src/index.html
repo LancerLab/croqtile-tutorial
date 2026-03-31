@@ -2737,26 +2737,20 @@
 </ul>
 <h3 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">&para;</a></h3>
 <p>To streamline the configuration of the Choreo build environment, developers can currently utilize the following command:
-<div class="highlight"><pre><span></span><code>make setup
-</code></pre></div>
+<pre class="highlight"><code>make setup</code></pre>
 This command retrieves the essential software prerequisites, such as the flex executable, bison executable (version 3.8 or higher), FileCheck utility, and gtest source code, among others. This process enables the building and testing of Choreo.</p>
 <p>Once the environment configuration is complete, Choreo can be built using the command:
-<div class="highlight"><pre><span></span><code>make
-</code></pre></div>
+<pre class="highlight"><code>make</code></pre>
 Given that Choreo is still in development, running unit tests is crucial to prevent using corrupted version:
-<div class="highlight"><pre><span></span><code>make test
-</code></pre></div>
+<pre class="highlight"><code>make test</code></pre>
 In the event of any issues, the test should halt and report errors.</p>
 <p>!INCLUDE_IF_EXISTS "target/env_setting_up.md"</p>
 <p>For development and testing purposes, the Makefile provides additional utilities:
-<div class="highlight"><pre><span></span><code>make help
-</code></pre></div>
+<pre class="highlight"><code>make help</code></pre>
 displays available build and test targets. To test elementwise operators in the samples:
-<div class="highlight"><pre><span></span><code>make sample-test
-</code></pre></div>
+<pre class="highlight"><code>make sample-test</code></pre>
 runs all elementwise operator tests, while:
-<div class="highlight"><pre><span></span><code>make sample-test-operator OPERATOR=add
-</code></pre></div>
+<pre class="highlight"><code>make sample-test-operator OPERATOR=add</code></pre>
 tests a specific operator (e.g., add, mul, relu, sigmoid, softmax, tanh).</p>
 <h2 id="compile-choreo-c-program">Compile Choreo-C++ Program<a class="headerlink" href="#compile-choreo-c-program" title="Permanent link">&para;</a></h2>
 <p>In the current implementation, Choreo performs <strong>source-to-source translation</strong> (or <strong>transpilation</strong>) to convert <em>Choreo-C++</em> programs into vendor-supported C++ language code and APIs (such as CUDA/Cute, and more).</p>
@@ -2771,36 +2765,33 @@ tests a specific operator (e.g., add, mul, relu, sigmoid, softmax, tanh).</p>
 </ul>
 <p>Species except for <em>target source code</em> and <em>work-script</em> (introduced later) are similar to those of <code>gcc</code> and <code>clang</code>. However, the availability of these output forms depends on the target platform's support and limitations.</p>
 <p>The usage of the Choreo-C++ compiler is similar to that of <code>gcc</code> or <code>clang</code>. For example:
-<div class="highlight"><pre><span></span><code>choreo your_program.co
-</code></pre></div>
+<pre class="highlight"><code>choreo your_program.co</code></pre>
 This command generates an <code>a.out</code> executable file. The <code>-o &lt;filename&gt;</code> option can be used to specify the output filename when needed. Compiler options like <code>-c</code> and <code>-S</code> work similarly to those in C++ compilers, provided they are supported by the target platform.</p>
 <p>The <code>-t &lt;platform&gt;</code> option allows you to specify the target platform for the compilation. Additionally, the <code>-es</code> option generates <em>target source code</em> without performing the "target compilation*. For instance:
-<div class="highlight"><pre><span></span><code>choreo<span class="w"> </span>-t<span class="w"> </span>cuda<span class="w"> </span>your_program.co<span class="w"> </span>-es<span class="w"> </span>-o<span class="w"> </span>cuda_source.co
-</code></pre></div>
+<pre class="highlight"><code class="language-bash">choreo -t cuda your_program.co -es -o cuda_source.co</code></pre>
 This command produces CUDA C++ source code, which can be useful for specific development tasks.</p>
 <p>Notably, Choreo allows the <code>-E</code> option to support Choreo-only preprocessing. The Choreo preprocessor handles simple macros and preprocessor directives such as <code>#if</code>, <code>#ifdef</code>, <code>#ifndef</code>, <code>#else</code>, and <code>#endif</code>, enabling Choreo functions to be integrated with other C++ code. The <code>-E</code> option outputs the preprocessed code, for example, removing code within <code>#if 0</code> and <code>#endif</code> directives inside Choreo functions.</p>
 <p>Furthermore, in development scenarios, Choreo can generate <em>work-script</em> (using the <code>-gs</code> option) to drive further low-level compilation and execution. This facilitates the development process, as many scripts are integrated for easy debugging.</p>
 <p>Lastly, options <code>--help</code> and <code>--help-hidden</code> are available for listing the full option set. Programmers and users can check the list to find their appropriate usage.</p>
 <p>Here is a example output of <code>--help</code>:</p>
-<div class="highlight"><pre><span></span><code>//<span class="w"> </span>--help
-Usage:<span class="w"> </span>choreo<span class="w"> </span><span class="o">[</span>options<span class="o">]</span><span class="w"> </span>file...
+<pre class="highlight"><code class="language-bash">// --help
+Usage: choreo [options] file...
 Options:
-<span class="w">  </span>--help<span class="w">                    </span>Display<span class="w"> </span>this<span class="w"> </span>information.
-<span class="w">  </span>--help-hidden<span class="w">             </span>Display<span class="w"> </span>hidden<span class="w"> </span>options.
-<span class="w">  </span>-e,<span class="w"> </span>--dump-ast<span class="w">            </span>Dump<span class="w"> </span>the<span class="w"> </span>Abstract<span class="w"> </span>Syntax<span class="w"> </span>Tree<span class="w"> </span><span class="o">(</span>AST<span class="o">)</span><span class="w"> </span>after<span class="w"> </span>parsing.
-<span class="w">  </span>-i,<span class="w"> </span>--infer-types<span class="w">         </span>Show<span class="w"> </span>the<span class="w"> </span>result<span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span>inference.
-<span class="w">  </span>-bf16n,<span class="w"> </span>--native-bf16<span class="w">     </span>Utilize<span class="w"> </span>native<span class="w"> </span>bf16<span class="w"> </span><span class="nb">type</span><span class="w"> </span>when<span class="w"> </span>target<span class="w"> </span>platform<span class="w"> </span>support.
-<span class="w">  </span>-f16n,<span class="w"> </span>--native-f16<span class="w">       </span>Utilize<span class="w"> </span>native<span class="w"> </span>f16<span class="w"> </span><span class="nb">type</span><span class="w"> </span>when<span class="w"> </span>target<span class="w"> </span>platform<span class="w"> </span>support.
-<span class="w">  </span>-n,<span class="w"> </span>--remove-comments<span class="w">     </span>Remove<span class="w"> </span>all<span class="w"> </span>comments<span class="w"> </span><span class="k">in</span><span class="w"> </span>non-choreo<span class="w"> </span>code.<span class="w"> </span><span class="o">(</span>Useful<span class="w"> </span><span class="k">for</span><span class="w"> </span>FileCheck<span class="o">)</span>
-<span class="w">  </span>-t,<span class="w"> </span>--target<span class="w"> </span>&lt;platform&gt;<span class="w">   </span>Set<span class="w"> </span>the<span class="w"> </span>compilation<span class="w"> </span>target.<span class="w"> </span>Use<span class="w"> </span><span class="s1">&#39;--help-target&#39;</span><span class="w"> </span>to<span class="w"> </span>show<span class="w"> </span>current<span class="w"> </span>supported<span class="w"> </span>targets.
-<span class="w">  </span>-v,<span class="w"> </span>--verbose<span class="w">             </span>Display<span class="w"> </span>the<span class="w"> </span>programs<span class="w"> </span>invoked<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>compiler.
-<span class="w">  </span>-E<span class="w">                        </span>Preprocess<span class="w"> </span>only<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>not<span class="w"> </span>compile.
-<span class="w">  </span>-arch<span class="o">=</span>&lt;processor&gt;<span class="w">         </span>Set<span class="w"> </span>the<span class="w"> </span>architecture<span class="w"> </span>to<span class="w"> </span>execute<span class="w"> </span>the<span class="w"> </span>binary<span class="w"> </span>code.
-<span class="w">  </span>-c<span class="w">                        </span>Compile<span class="w"> </span>choreo<span class="w"> </span>code<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>generated<span class="w"> </span>target<span class="w"> </span>code<span class="p">;</span><span class="w"> </span>Without<span class="w"> </span>linking.
-<span class="w">  </span>-es<span class="w">                       </span>Emit<span class="w"> </span>target<span class="w"> </span><span class="nb">source</span><span class="w"> </span>file<span class="w"> </span>without<span class="w"> </span>target<span class="w"> </span><span class="nb">source</span><span class="w"> </span>compilation.
-<span class="w">  </span>-gs<span class="w">                       </span>Generate<span class="w"> </span>target<span class="w"> </span>script.
-<span class="w">  </span>-o<span class="w"> </span>&lt;file&gt;<span class="w">                 </span>Place<span class="w"> </span>the<span class="w"> </span>output<span class="w"> </span>into<span class="w"> </span>&lt;file&gt;.
-</code></pre></div>
+  --help                    Display this information.
+  --help-hidden             Display hidden options.
+  -e, --dump-ast            Dump the Abstract Syntax Tree (AST) after parsing.
+  -i, --infer-types         Show the result of type inference.
+  -bf16n, --native-bf16     Utilize native bf16 type when target platform support.
+  -f16n, --native-f16       Utilize native f16 type when target platform support.
+  -n, --remove-comments     Remove all comments in non-choreo code. (Useful for FileCheck)
+  -t, --target &lt;platform&gt;   Set the compilation target. Use '--help-target' to show current supported targets.
+  -v, --verbose             Display the programs invoked by the compiler.
+  -E                        Preprocess only; do not compile.
+  -arch=&lt;processor&gt;         Set the architecture to execute the binary code.
+  -c                        Compile choreo code and the generated target code; Without linking.
+  -es                       Emit target source file without target source compilation.
+  -gs                       Generate target script.
+  -o &lt;file&gt;                 Place the output into &lt;file&gt;.</code></pre>
 
 
 

@@ -3033,10 +3033,9 @@
 <p>In Choreo, the code run in parallel are placed into the <em>parallel execution block</em>, which showcasing there are multiple instances of the same code that are executed simultaneously.</p>
 <h3 id="basic-syntax-parallel-by">Basic Syntax: <code>parallel-by</code><a class="headerlink" href="#basic-syntax-parallel-by" title="Permanent link">&para;</a></h3>
 <p>The basic syntax for a <code>parallel-by</code> block is as follows:</p>
-<p><div class="highlight"><pre><span></span><code>parallel p by 6 {
+<p><pre class="highlight"><code class="language-choreo">parallel p by 6 {
   // SPMD (Single Program, Multiple Data) code
-}
-</code></pre></div>
+}</code></pre>
 We name the code inside <code>{}</code> as the SPMD-style <strong>parallel execution block</strong>, and the instances of the code as the <strong>parallel thread</strong>.
 In this example:</p>
 <ul>
@@ -3045,27 +3044,24 @@ In this example:</p>
 <li><strong><code>by 6</code></strong>: It indicates that there are totally 6 <em>parallel thread</em>s. Thus, the <em>parallel variable</em> <code>p</code> ranges from <code>0</code> to <code>5</code> across different threads.</li>
 </ul>
 <p>In some scenarios, programers may not require an explicit <em>parallel variable</em> for a simple parallel construct. It is possible to omit it:</p>
-<div class="highlight"><pre><span></span><code>parallel by 2 { ... }
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">parallel by 2 { ... }</code></pre>
 <p>This invokes two parallel threads to execute. However, it is not possible for the two threads to work on different data, which is normally required by SPMD programs for a data-parallel processing purpose.</p>
 <h3 id="multiple-level-parallelism">Multiple-Level Parallelism<a class="headerlink" href="#multiple-level-parallelism" title="Permanent link">&para;</a></h3>
 <p>In Choreo, you can define multiple levels of parallelism. Here's an example:</p>
-<div class="highlight"><pre><span></span><code>parallel p by 2 {
+<pre class="highlight"><code class="language-choreo">parallel p by 2 {
   // parallel-level-0
   parallel q by 12 {
     // parallel-level-1
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>This code defines two levels of parallelism with values <code>2</code> and <code>12</code>, respectively. This means a total of <code>2 x 12 = 24</code> parallel threads are invoked for the task. Each thread is identified by a unique combination of <code>p</code> and <code>q</code>. In Choreo, we refer to the level of <code>p</code> as <em>parallel-level-0</em> and the level of <code>q</code> as <em>parallel-level-1</em>. For those familiar with CUDA, <em>parallel-level-0</em> corresponds to the CUDA <strong>grid</strong> level, and <em>parallel-level-1</em> corresponds to the CUDA <strong>block</strong> level.</p>
 <p>The concept of multiple-level parallelism originates from hardware architecture with hierarchical memory. One key difference observable by programmers is the <strong>synchronization cost</strong>. For instance, in CUDA, threads within a <strong>block</strong> have a much lower synchronization cost compared to those across different <strong>grids</strong>. This hierarchical design encourages programmers to place the most divergent code (that requires synchronization) within the <strong>block</strong> level to enhance overall performance.</p>
 <p>In Choreo syntax, you can define multiple-level parallelism in a single line:</p>
-<div class="highlight"><pre><span></span><code>parallel p by 2, q by 12 { ... }
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">parallel p by 2, q by 12 { ... }</code></pre>
 <p>This achieves the same parallelization as the previous example. It uses the <strong>comma-separated</strong> <em>parallel-by</em> expression, assuming there is no code in the between two parallel levels.</p>
 <h3 id="sub-level-parallelism">Sub-Level Parallelism<a class="headerlink" href="#sub-level-parallelism" title="Permanent link">&para;</a></h3>
 <p>Targets like <em>CUDA</em> allow a single parallelism level to be divided into up to three sub-levels. In Choreo, <code>ituple</code> and <code>mdspan</code> are used for this syntax:</p>
-<div class="highlight"><pre><span></span><code>parallel {px, py, pz} by [1, 1, 2] {
+<pre class="highlight"><code class="language-choreo">parallel {px, py, pz} by [1, 1, 2] {
   // higher synchronization cost
   // ...
   parallel t_index = {qx, qy} by [3, 4] {
@@ -3073,8 +3069,7 @@ In this example:</p>
     // ...
   }
   // ...
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, two levels of parallelism are defined. The first level (<em>level-0</em>) is subdivided into three sub-levels, annotated by the <code>{px, py, pz}</code> <code>ituple</code>. The second level (<em>level-1</em>) is subdivided into two sub-levels, annotated by the <code>{qx, qy}</code> <code>ituple</code>, or <code>t_index</code> as a whole. For each sub-level, the parallelization count corresponds to the respective value inside the <code>mdspan</code>.</p>
 <p>The concept of sub-levels originates from <em>CUDA</em>'s GPU workload management, which often involves data with 2D or 3D elements. Note that the first element inside the <code>ituple</code> represents the <strong>least significant parallel variable</strong>. Choreo adopts this ordering to align with <em>CUDA</em> developers' conventions, rather than for internal consistency.</p>
 <h3 id="bounded-variable">Bounded Variable<a class="headerlink" href="#bounded-variable" title="Permanent link">&para;</a></h3>
@@ -3092,7 +3087,7 @@ In this example:</p>
 <li>Code <strong>outside</strong> the <code>parallel-by</code> block is transpiled into <strong>host code</strong>.</li>
 <li>Code <strong>inside</strong> the block is transpiled into <strong>device code</strong>, as illustrated below:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>__co__ void foo(...) {
+<pre class="highlight"><code class="language-choreo">__co__ void foo(...) {
   // Generate host code
   // ...
   parallel p by 6 { // Kernel launch
@@ -3101,8 +3096,7 @@ In this example:</p>
   }
   // Generate host code
   // ...
-}
-</code></pre></div>
+}</code></pre>
 <p>For those familiar with <em>CUDA</em>, this is analogous to a <strong>Kernel Launch</strong> occurring at the <code>parallel-by</code> statement. However, Choreo abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.</p>
 <h3 id="restrictions-on-storage-specifiers">Restrictions on Storage Specifiers<a class="headerlink" href="#restrictions-on-storage-specifiers" title="Permanent link">&para;</a></h3>
 <p>Since the <code>parallel-by</code> construct in Choreo is related to hardware, including heterogeneity and memory hierarchy, it is subject to the constraints of the target platform.</p>

@@ -442,10 +442,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-three-parts-of-a-choreo-program" class="md-nav__link">
+  <a href="#the-two-parts-of-a-choreo-program" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Three Parts of a Choreo Program
+        The Two Parts of a Choreo Program
       
     </span>
   </a>
@@ -475,21 +475,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-device-program-just-a-kernel" class="md-nav__link">
+  <a href="#the-choreo-function-line-by-line" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Device Program: Just a Kernel
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-tileflow-program-line-by-line" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Tileflow Program: Line by Line
+        The Choreo Function: Line by Line
       
     </span>
   </a>
@@ -2801,10 +2790,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-three-parts-of-a-choreo-program" class="md-nav__link">
+  <a href="#the-two-parts-of-a-choreo-program" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Three Parts of a Choreo Program
+        The Two Parts of a Choreo Program
       
     </span>
   </a>
@@ -2834,21 +2823,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-device-program-just-a-kernel" class="md-nav__link">
+  <a href="#the-choreo-function-line-by-line" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Device Program: Just a Kernel
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-tileflow-program-line-by-line" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Tileflow Program: Line by Line
+        The Choreo Function: Line by Line
       
     </span>
   </a>
@@ -2948,23 +2926,17 @@
 <h1 id="hello-choreo-from-zero-to-running-kernel">Hello Choreo: From Zero to Running Kernel<a class="headerlink" href="#hello-choreo-from-zero-to-running-kernel" title="Permanent link">&para;</a></h1>
 <p>In this chapter, you will write and run your very first Choreo program — a parallel element-wise addition of two 3D arrays. Along the way, you will learn how a Choreo program is structured and meet the core concepts you will build on throughout this tutorial.</p>
 <h2 id="what-choreo-does-in-one-sentence">What Choreo Does, in One Sentence<a class="headerlink" href="#what-choreo-does-in-one-sentence" title="Permanent link">&para;</a></h2>
-<p>Choreo is a C++ embedded DSL that lets you describe <em>how data moves</em> between memory levels on heterogeneous hardware (think: host RAM, GPU shared memory, local registers), while keeping your actual compute logic in plain C++ or CUDA. The Choreo compiler takes your description and transpiles it into efficient, target-specific code — so you focus on <em>what</em> to move and <em>where</em>, not on the low-level plumbing.</p>
-<h2 id="the-three-parts-of-a-choreo-program">The Three Parts of a Choreo Program<a class="headerlink" href="#the-three-parts-of-a-choreo-program" title="Permanent link">&para;</a></h2>
-<p>Every Choreo program has three parts. If you have written CUDA before, two of them will look familiar:</p>
+<p>Choreo is a C++ embedded DSL that lets you describe <em>how data moves</em> between memory levels on heterogeneous hardware (think: host RAM, GPU shared memory, local registers), while keeping your compute logic in the same language. The Choreo compiler takes your description and transpiles it into efficient, target-specific code — so you focus on <em>what</em> to move and <em>where</em>, not on the low-level plumbing. For a detailed treatment of every construct and its design rationale, see the <a href="../../documentation/">Coding Reference</a>.</p>
+<h2 id="the-two-parts-of-a-choreo-program">The Two Parts of a Choreo Program<a class="headerlink" href="#the-two-parts-of-a-choreo-program" title="Permanent link">&para;</a></h2>
+<p>Every Choreo program has two parts:</p>
 <ol>
 <li><strong>Host Program</strong> — standard C++ running on the CPU. It prepares data, calls the Choreo function, and checks results.</li>
-<li><strong>Device Program</strong> — the compute kernel running on the GPU (or other accelerator). This is where the actual arithmetic happens.</li>
-<li><strong>Tileflow Program</strong> — the Choreo-specific part, marked with <code>__co__</code>. This is the <em>orchestrator</em>: it describes how data tiles are carved from inputs, moved to the device, handed to the compute kernel, and moved back.</li>
+<li><strong>Choreo Function</strong> (<code>__co__</code>) — the Choreo-specific part, marked with the <code>__co__</code> prefix. It describes how data tiles are carved from inputs, moved between memory levels, computed on, and written back. Both data orchestration and arithmetic live inside this function.</li>
 </ol>
-<p>The key insight is that in traditional CUDA, you write one monolithic kernel that handles both data movement and computation. In Choreo, these concerns are separated. The tileflow program handles data movement; the device program handles computation. This separation makes the data orchestration explicit, composable, and much easier to optimize.</p>
+<p>In traditional CUDA, you write one monolithic kernel that handles both data movement and computation. In Choreo, the <code>__co__</code> function makes the data orchestration explicit, composable, and much easier to optimize. Compute happens inline — with <code>foreach</code> and <code>.at()</code> — right alongside the DMA operations that stage the data. You <em>can</em> also call external device functions with <code>call</code> when you want to reuse existing CUDA kernels, but that is an optional extension, not a required part.</p>
 <h2 id="a-complete-example-element-wise-addition">A Complete Example: Element-Wise Addition<a class="headerlink" href="#a-complete-example-element-wise-addition" title="Permanent link">&para;</a></h2>
 <p>Look at the full program. It adds two <code>[6, 17, 128]</code> arrays of 32-bit integers element by element:</p>
-<div class="highlight"><pre><span></span><code>// Device Program
-__device__ void kernel(int * a, int * b, int * c, int n) {
-  for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
-}
-
-// Tileflow Program
+<pre class="highlight"><code class="language-choreo">// Choreo Function
 __co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
   s32 [lhs.span] output;
 
@@ -2976,7 +2948,8 @@ __co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
 
         local s32 [lhs_load.span] l1_out;
 
-        call kernel(lhs_load.data, rhs_load.data, l1_out, |lhs_load.span|);
+        foreach i in [l1_out.span]
+          l1_out.at(i) = lhs_load.data.at(i) + rhs_load.data.at(i);
 
         dma.copy l1_out =&gt; output.chunkat(p, index);
       }
@@ -3000,70 +2973,54 @@ int main() {
     for (size_t j = 0; j &lt; res.shape()[1]; ++j)
       for (size_t k = 0; k &lt; res.shape()[2]; ++k)
         if (a[i][j][k] + b[i][j][k] != res[i][j][k]) {
-          std::cerr &lt;&lt; &quot;result does not match.\n&quot;;
+          std::cerr &lt;&lt; "result does not match.\n";
           abort();
         }
 
-  std::cout &lt;&lt; &quot;Test Passed\n&quot; &lt;&lt; std::endl;
-}
-</code></pre></div>
+  std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
+}</code></pre>
 <p>Save this as <code>ele_add.co</code> and compile it:</p>
-<div class="highlight"><pre><span></span><code>choreo<span class="w"> </span>ele_add.co<span class="w"> </span>-o<span class="w"> </span>ele_add
-./ele_add
-</code></pre></div>
+<pre class="highlight"><code class="language-bash">choreo ele_add.co -o ele_add
+./ele_add</code></pre>
 <p>You should see <code>Test Passed</code>. Now walk through each part.</p>
 <h2 id="the-host-program-preparing-and-verifying-data">The Host Program: Preparing and Verifying Data<a class="headerlink" href="#the-host-program-preparing-and-verifying-data" title="Permanent link">&para;</a></h2>
 <p>The <code>main</code> function is plain C++ — nothing Choreo-specific except two API calls:</p>
-<div class="highlight"><pre><span></span><code>choreo::s32 a[6][17][128] = {0};
+<pre class="highlight"><code class="language-choreo">choreo::s32 a[6][17][128] = {0};
 choreo::s32 b[6][17][128] = {0};
 
 std::fill_n(&amp;a[0][0][0], sizeof(a) / sizeof(a[0][0][0]), 1);
 std::fill_n(&amp;b[0][0][0], sizeof(b) / sizeof(b[0][0][0]), 2);
 
 auto res = ele_add(choreo::make_spanview&lt;3&gt;(&amp;a[0][0][0], {6, 17, 128}),
-                   choreo::make_spanview&lt;3&gt;(&amp;b[0][0][0], {6, 17, 128}));
-</code></pre></div>
+                   choreo::make_spanview&lt;3&gt;(&amp;b[0][0][0], {6, 17, 128}));</code></pre>
 <p><code>choreo::make_spanview&lt;3&gt;</code> wraps a raw pointer with shape information, producing a <code>spanned_view</code> — Choreo's way of saying "here is a pointer to data, and it has this multi-dimensional shape." The template parameter <code>3</code> is the number of dimensions (rank). The shape <code>{6, 17, 128}</code> means 6 slices of 17 rows of 128 elements, with the most-significant dimension first (row-major order, like C arrays).</p>
 <p>The return value <code>res</code> is a <code>choreo::spanned_data</code>, which <em>owns</em> its buffer (unlike <code>spanned_view</code>, which just points at existing memory). You can index into it with <code>res[i][j][k]</code> and query its shape with <code>res.shape()</code>.</p>
-<h2 id="the-device-program-just-a-kernel">The Device Program: Just a Kernel<a class="headerlink" href="#the-device-program-just-a-kernel" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>__device__ void kernel(int * a, int * b, int * c, int n) {
-  for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
-}
-</code></pre></div>
-<p>This is a standard CUDA device function. It takes three pointers and a length, and adds the first two arrays into the third. Nothing about data movement — the tileflow program handles that.</p>
-<p>In Choreo programs, the device function operates on whatever data chunk the tileflow program has placed into local memory. It does not need to know the global shape, the tiling strategy, or the memory level it is reading from. This is the core of Choreo's separation of concerns.</p>
-<h2 id="the-tileflow-program-line-by-line">The Tileflow Program: Line by Line<a class="headerlink" href="#the-tileflow-program-line-by-line" title="Permanent link">&para;</a></h2>
+<h2 id="the-choreo-function-line-by-line">The Choreo Function: Line by Line<a class="headerlink" href="#the-choreo-function-line-by-line" title="Permanent link">&para;</a></h2>
 <p>This is the heart of the program. Here is a step-by-step walkthrough.</p>
 <p><strong>Function signature.</strong></p>
-<div class="highlight"><pre><span></span><code>__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {</code></pre>
 <p>The <code>__co__</code> prefix marks this as a Choreo function. Unlike regular C++ functions, Choreo functions carry shape information in their signature: both inputs and the return value have the shape <code>[6, 17, 128]</code> with element type <code>s32</code> (signed 32-bit integer).</p>
 <p><strong>Output buffer.</strong></p>
-<div class="highlight"><pre><span></span><code>s32 [lhs.span] output;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">s32 [lhs.span] output;</code></pre>
 <p>This declares the output buffer. The expression <code>lhs.span</code> copies the shape from <code>lhs</code>, so <code>output</code> automatically has shape <code>[6, 17, 128]</code>. This is a convenient pattern — if the input shape changes, the output follows.</p>
 <p><strong>Parallel execution.</strong></p>
-<div class="highlight"><pre><span></span><code>parallel p by 6 {
+<pre class="highlight"><code class="language-choreo">parallel p by 6 {
   ...
-}
-</code></pre></div>
+}</code></pre>
 <p><code>parallel p by 6</code> launches 6 parallel threads of execution. The variable <code>p</code> ranges from 0 to 5 and identifies each thread. If you are coming from CUDA, think of <code>p</code> as a block index — the code inside runs concurrently across 6 instances.</p>
 <p><strong>Tiling with <code>with</code> and <code>foreach</code>.</strong></p>
-<div class="highlight"><pre><span></span><code>with index in [17, 4] {
+<pre class="highlight"><code class="language-choreo">with index in [17, 4] {
   foreach index {
     ...
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>The <code>with ... in</code> block binds the symbol <code>index</code> to two <em>tiling factors</em>: 17 and 4. Then <code>foreach index</code> iterates over all combinations — conceptually equivalent to:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">17</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">for (int x = 0; x &lt; 17; x++)
+  for (int y = 0; y &lt; 4; y++) { ... }</code></pre>
 <p>So each parallel thread runs 17 × 4 = 68 iterations.</p>
-<p><strong>DMA: Moving Data.</strong></p>
-<div class="highlight"><pre><span></span><code>lhs_load = dma.copy lhs.chunkat(p, index) =&gt; local;
-</code></pre></div>
-<p>This is the DMA statement — the operation that actually moves data. Let's unpack it:</p>
+<p><strong>DMA: moving data to local memory.</strong></p>
+<pre class="highlight"><code class="language-choreo">lhs_load = dma.copy lhs.chunkat(p, index) =&gt; local;</code></pre>
+<p>This is the DMA statement — the operation that actually moves data:</p>
 <ul>
 <li><code>dma.copy</code> initiates a direct data transfer.</li>
 <li><code>lhs.chunkat(p, index)</code> is the <em>source</em>. The <code>chunkat</code> expression tiles <code>lhs</code> according to the parallel index <code>p</code> and loop index <code>index</code>. Since <code>lhs</code> has shape <code>[6, 17, 128]</code> and the tiling factors are <code>6</code>, <code>17</code>, and <code>4</code>, each chunk has size <code>1 × 1 × 32</code> (that is, <code>6/6</code>, <code>17/17</code>, <code>128/4</code>).</li>
@@ -3071,27 +3028,23 @@ auto res = ele_add(choreo::make_spanview&lt;3&gt;(&amp;a[0][0][0], {6, 17, 128})
 <li><code>lhs_load</code> is the <em>future</em> of this DMA operation. It carries information about where the data landed, and you use it to access the data afterward.</li>
 </ul>
 <p>The same pattern is used for <code>rhs</code>. After both DMA copies complete, the data chunk is available in local memory.</p>
-<p><strong>Calling the device kernel.</strong></p>
-<div class="highlight"><pre><span></span><code>local s32 [lhs_load.span] l1_out;
-call kernel(lhs_load.data, rhs_load.data, l1_out, |lhs_load.span|);
-</code></pre></div>
-<p><code>local s32 [lhs_load.span] l1_out</code> allocates a local buffer for the output, with the same shape as the loaded chunk.</p>
-<p>The <code>call</code> statement invokes the device function <code>kernel</code>. Notice the accessors:
-- <code>lhs_load.data</code> extracts the raw pointer from the DMA future.
-- <code>|lhs_load.span|</code> computes the total number of elements in the chunk (the "span volume").</p>
+<p><strong>Computing inline with <code>foreach</code> and <code>.at()</code>.</strong></p>
+<pre class="highlight"><code class="language-choreo">local s32 [lhs_load.span] l1_out;
+
+foreach i in [l1_out.span]
+  l1_out.at(i) = lhs_load.data.at(i) + rhs_load.data.at(i);</code></pre>
+<p><code>local s32 [lhs_load.span] l1_out</code> allocates a local buffer for the output, with the same shape as the loaded chunk. The <code>foreach i in [l1_out.span]</code> loop iterates over every element in that chunk, and <code>.at(i)</code> indexes into each position. The addition happens element by element — <code>lhs_load.data</code> and <code>rhs_load.data</code> extract the local spanned buffers from the DMA futures so you can read the staged data directly.</p>
 <p><strong>Storing results back.</strong></p>
-<div class="highlight"><pre><span></span><code>dma.copy l1_out =&gt; output.chunkat(p, index);
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">dma.copy l1_out =&gt; output.chunkat(p, index);</code></pre>
 <p>This reverses the direction: the result in local memory is copied back into the corresponding chunk of <code>output</code>.</p>
 <h2 id="build-and-compile">Build and Compile<a class="headerlink" href="#build-and-compile" title="Permanent link">&para;</a></h2>
 <p>Choreo files use the <code>.co</code> extension. The compiler works like <code>gcc</code> or <code>clang</code>:</p>
-<div class="highlight"><pre><span></span><code>choreo<span class="w"> </span>ele_add.co<span class="w">                          </span><span class="c1"># produces a.out</span>
-choreo<span class="w"> </span>ele_add.co<span class="w"> </span>-o<span class="w"> </span>ele_add<span class="w">               </span><span class="c1"># specify output name</span>
-choreo<span class="w"> </span>-es<span class="w"> </span>-t<span class="w"> </span>cuda<span class="w"> </span>ele_add.co<span class="w"> </span>-o<span class="w"> </span>out.cu<span class="w">    </span><span class="c1"># emit CUDA source only</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-bash">choreo ele_add.co                          # produces a.out
+choreo ele_add.co -o ele_add               # specify output name
+choreo -es -t cuda ele_add.co -o out.cu    # emit CUDA source only</code></pre>
 <p>The <code>-es</code> flag stops after transpilation, letting you inspect the generated CUDA code. The <code>-t</code> flag selects the target platform.</p>
 <h2 id="what-you-have-learned">What You Have Learned<a class="headerlink" href="#what-you-have-learned" title="Permanent link">&para;</a></h2>
-<p>In this chapter, you have seen the three-part structure of a Choreo program (host, device, and tileflow); the <code>__co__</code> prefix for Choreo functions, with typed, shaped inputs and outputs; <code>parallel ... by</code> for launching parallel execution; and <code>with ... in</code> and <code>foreach</code> for tiling loops. You have also seen how <code>dma.copy ... =&gt; ...</code> moves data between memory levels, how <code>chunkat</code> carves data into tiles based on parallel and loop indices, how <code>call</code> invokes device functions on local data, and how <code>make_spanview</code> connects host arrays to Choreo's type system.</p>
+<p>In this chapter, you have seen the two-part structure of a Choreo program (host and Choreo function); the <code>__co__</code> prefix for Choreo functions, with typed, shaped inputs and outputs; <code>parallel ... by</code> for launching parallel execution; and <code>with ... in</code> and <code>foreach</code> for tiling loops. You have also seen how <code>dma.copy ... =&gt; ...</code> moves data between memory levels, how <code>chunkat</code> carves data into tiles based on parallel and loop indices, how inline <code>foreach</code> and <code>.at()</code> compute on staged data, and how <code>make_spanview</code> connects host arrays to Choreo's type system.</p>
 <p>In the <a href="../ch02-data-movement/">next chapter</a>, we move from element-wise operations to matrix multiplication, and see how these same concepts apply to a more realistic kernel.</p>
 
 

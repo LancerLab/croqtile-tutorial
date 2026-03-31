@@ -2891,7 +2891,7 @@
 <p>You rarely see output contention in a single profiler counter. The heuristic that correlated in this study: TFLOPS rose when moving from 1p1c to 1p2c at larger WN, but <strong>only</strong> with split-output enabled — implying the consumer side was serialized on <code>output_s</code> traffic.</p>
 <p>Reference kernels: <code>matmul_f16_dyn_sm90_warpspec_1p2c.co</code> and the shipped <code>*_iter050_*</code> / <code>*_iter057_*</code> variants.</p>
 <h2 id="compiler-flags-and-instruction-level-overlap">Compiler flags and instruction-level overlap<a class="headerlink" href="#compiler-flags-and-instruction-level-overlap" title="Permanent link">&para;</a></h2>
-<p>With tileflow structure settled, the last layer is how the compiler lowers it. The shipped builds share a common flag bundle:</p>
+<p>With Choreo function structure settled, the last layer is how the compiler lowers it. The shipped builds share a common flag bundle:</p>
 <ul>
 <li><strong><code>--use-warpspec</code></strong> — warp-specialized codegen for the producer/consumer split.</li>
 <li><strong><code>--stmatrix</code></strong> — STSM-style shared-memory matrix setup where legal.</li>
@@ -2910,7 +2910,7 @@
 <li><strong>Phase 2</strong> — jointly tune WN and STAGES, then move to 1p2c split-output → large jumps (354.1 at 2048³, ~375 at 4096³, 382.5 at 8192³).</li>
 <li><strong>Phase 3</strong> — WN sweep at 8192³ with K-unroll and <code>wgmma-wait-depth</code> → 380.6 (iter061) and discovery of the WN=168 occupancy cliff.</li>
 </ol>
-<p>The study stayed inside dense FP16 GEMM with TMA-staged operands and WGMMA accumulation — no mixed precision, no split-K across CTAs, no CUDA Graph capture. The +83% came entirely from tileflow geometry, output staging, and compiler flags.</p>
+<p>The study stayed inside dense FP16 GEMM with TMA-staged operands and WGMMA accumulation — no mixed precision, no split-K across CTAs, no CUDA Graph capture. The +83% came entirely from Choreo function geometry, output staging, and compiler flags.</p>
 <p>The largest single structural win was not a flag — it was <strong>1p2c split-output</strong> moving TFLOPS into the 370–382 band. Flags like <code>--stmatrix</code> matter, but they cannot recover serialization on <code>output_s</code> if two consumers share one accumulator tile. When you face a similar ceiling in your own kernel, check whether the output path is the bottleneck before reaching for instruction-level levers.</p>
 <p>Next: <a href="../aitune-last-mile/">AI-tune last mile</a> for repro commands and shipped kernel details.</p>
 

@@ -2901,38 +2901,32 @@
 <h2 id="defining-shapes-with-mdspan">Defining Shapes with <code>mdspan</code><a class="headerlink" href="#defining-shapes-with-mdspan" title="Permanent link">&para;</a></h2>
 <p>In Choreo, shapes can be defined with the <code>mdspan</code> keyword, which stands for <strong>Multi-Dimensional Span</strong>. This keyword represents multi-dimensional data for computations.</p>
 <p>You can explicitly define <code>mdspan</code> variables as follows:</p>
-<div class="highlight"><pre><span></span><code>mdspan s0 : [7, 8]; // Defines a 2D shape with dimensions [7, 8]
-mdspan&lt;1&gt; s1 : [3]; // Defines a 1D shape with dimensions [3]
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">mdspan s0 : [7, 8]; // Defines a 2D shape with dimensions [7, 8]
+mdspan&lt;1&gt; s1 : [3]; // Defines a 1D shape with dimensions [3]</code></pre>
 <p>In this example, the leading keyword <code>mdspan</code> indicates the declaration of a <em>mdspan</em> variable, followed by the user-provided variable name. Each <em>mdspan</em> variable is initialized with an <strong>initialization expression</strong>, which consists of comma-separated integer values enclosed by <code>[]</code>. The symbol <code>:</code>, which immediately follows the variable name, introduces the <em>initialization expression</em>.
 Therefore, <code>s0</code> is defined as a 2D shape with <code>7</code> rows and <code>8</code> columns, while <code>s1</code> is a 1D shape with a dimension of <code>3</code>.</p>
 <p>It is possible to optionally specify the <strong>rank</strong> of an <em>mdspan</em> variable by placing <code>&lt;&gt;</code> after the <code>mdspan</code> keyword. If the rank is explicitly specified, it informs the Choreo compiler to check for rank consistency. If the rank value differs from the corresponding <em>initialization expression</em>, it triggers a failure at compilation. Here is an example:</p>
-<div class="highlight"><pre><span></span><code>mdspan&lt;3&gt; s2 : [64, 32]; // error: the rank of mdspan is inconsistent
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">mdspan&lt;3&gt; s2 : [64, 32]; // error: the rank of mdspan is inconsistent</code></pre>
 <p>In addition to explicit mdspan declarations, the Choreo compiler can infer the type of <code>mdspan</code> variable from its <em>initialization expression</em>, eliminating the need for the explicit <code>mdspan</code> keyword:</p>
-<div class="highlight"><pre><span></span><code>s3 : [7, 8, 9]
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">s3 : [7, 8, 9]</code></pre>
 <p>In this code, <code>s3</code> is an <code>mdspan</code> of rank <code>3</code> with dimensions <code>7, 8, 9</code>. Since Choreo <strong>requires mdspan to always be initialized within declarations</strong>, the type inference version is preferred in programming practice.</p>
 <h2 id="deriving-mdspans">Deriving <em>mdspan</em>s<a class="headerlink" href="#deriving-mdspans" title="Permanent link">&para;</a></h2>
 <p>In practical coding, it is common to derive a new shape from an existing one. For example, you might want to perform data <strong>tiling</strong> or <strong>blocking</strong>, which requires dividing the dimensions of a shape. Alternatively, you might want to <strong>pad</strong> specific dimensions, which involves adding delta to the shape dimensions.</p>
 <p>In Choreo, such shape derivations can be easily accomplished using arithmetic operations on <em>mdspan</em>. The following code showcases an example:</p>
-<div class="highlight"><pre><span></span><code>shape : [128, 64]; // initial shape 
+<pre class="highlight"><code class="language-choreo">shape : [128, 64]; // initial shape 
 new-shape0 : shape [(0) / 2, (1) / 4, 1];  // tile and reshape: [1, 64, 16]
-new-shape1 : shape [(1) + 2, (0) / 16];    // pad and reshape: [66, 8]
-</code></pre></div>
+new-shape1 : shape [(1) + 2, (0) / 16];    // pad and reshape: [66, 8]</code></pre>
 <p>In this example, the <code>new-shape0</code> is derived from <code>shape</code>, with dimension 0 divided by <code>2</code>, dimension 1 divided by <code>4</code>. This corresponds to <em>tiling</em> operation in high-level semantics. Additionally, the code adds a new dimension to <code>new-shape</code>. In high-level semantics, this operation is often referred to as <em>reshaping</em>.</p>
 <p>In Choreo, the definition of <code>new-shape0</code> is equivalent to:</p>
-<div class="highlight"><pre><span></span><code>new-shape0: [shape(0) / 2, shape(1) / 4, 1];
-</code></pre></div>
+<pre class="highlight"><code>new-shape0: [shape(0) / 2, shape(1) / 4, 1];</code></pre>
 <p>Here, the initial <code>shape</code> is explicitly listed element-wise rather than specified outside <code>[]</code>. But similar to the prior version, The <strong>element-of</strong> operation, which is annotated as <code>()</code>, is used on top of existing shape to retrieve dimension values. Obviously, this approach requires more code but yields the same result. Thus, the prior version can be considered <em>syntactic sugar</em> for the complete <em>initialization expression</em> of the new shape.</p>
 <p>In the code example, <code>new-shape1</code> is also derived from <code>shape</code>, it pads dimension 1 by <code>2</code> and swaps the dimensions in the derived shape.</p>
 <p>Furthermore, you may use the <code>mdspan</code> as a whole for derivations:</p>
-<div class="highlight"><pre><span></span><code>shape : [32, 72]
+<pre class="highlight"><code class="language-choreo">shape : [32, 72]
 new-shape0 : shape;  // [32, 72]
 new-shape1 : shape + 1;  // [33, 73]
 new-shape2 : shape / 4;  // [8, 18]
-new-shape3 : [shape, 6]; // [32, 72, 6]
-</code></pre></div>
+new-shape3 : [shape, 6]; // [32, 72, 6]</code></pre>
 <p>Note that arithmetic operations on an <em>mdspan</em> variable are applied dimensionally. Thus, the statement</p>
 <p><code>new-shape1 : shape + 1;</code></p>
 <p>is equivalent to</p>

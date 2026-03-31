@@ -3046,7 +3046,7 @@
 <h3 id="parallel-perspective-of-tileflow-programs">Parallel Perspective of Tileflow Programs<a class="headerlink" href="#parallel-perspective-of-tileflow-programs" title="Permanent link">&para;</a></h3>
 <p>In Choreo, a <em>divergent</em> code region is generated with the keyword <code>inthreads</code>, where a compare expression followed.</p>
 <p>Let us have a look at the following example:</p>
-<div class="highlight"><pre><span></span><code>__co__  void foo() {
+<pre class="highlight"><code class="language-choreo">__co__  void foo() {
   // sequential code
 
   // start of the SPMD code region
@@ -3063,8 +3063,7 @@
   // end of the SPMD code region
 
   // sequential code
-}
-</code></pre></div>
+}</code></pre>
 <p>You may now re-examine Choreo tileflow programs from the perspective of parallelism. It consists of</p>
 <ul>
 <li><em>Sequential Code</em></li>
@@ -3083,7 +3082,7 @@
 <p>Choreo compiler has the checks for both the comparison expression and <code>inthreads</code>-block placement.</p>
 <h3 id="make-it-asynchronous">Make it Asynchronous<a class="headerlink" href="#make-it-asynchronous" title="Permanent link">&para;</a></h3>
 <p>Similar to the <code>parallel-by</code> statements, it is possible to make the threads with/without executing the divergent code be asynchronous. The following code showcases a example that conduct MPMD execution in the SPMD code:</p>
-<p><div class="highlight"><pre><span></span><code>__co__  void foo() {
+<p><pre class="highlight"><code class="language-choreo">__co__  void foo() {
   parallel p by 6 {
     inthreads.async (p &lt;= 2) {
       // divergent code for thread 0, 1, 2 (thread-mask: 000111)
@@ -3092,15 +3091,14 @@
       // divergent code for thread 3, 4, 5 (thread-mask: 111000)
     }
     sync.shared; // sync point
-                 // all &#39;inthreads&#39; paths must get executed
+                 // all 'inthreads' paths must get executed
   }
-}
-</code></pre></div>
+}</code></pre>
 In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each <code>inthreads</code> block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the <code>sync.shared</code> statement established a <strong>synchronization point</strong> for all threads. That makes sure code for both paths get executed after this <em>synchronization point</em>.</p>
 <p>Note that, only the outer <code>inthreads</code> can be declared as asynchronous. Programmers will get an compile-time error when using <code>inthreads.async</code> for any inner <code>inthreads</code> block.</p>
 <h2 id="masking-for-multi-levels">Masking for Multi-Levels<a class="headerlink" href="#masking-for-multi-levels" title="Permanent link">&para;</a></h2>
 <p>Thread masking can be applied at different parallel levels. The following example demonstrates this:</p>
-<p><div class="highlight"><pre><span></span><code>__co__  void foo() {
+<p><pre class="highlight"><code class="language-choreo">__co__  void foo() {
   parallel p by 3, q by 4 {
     inthreads (p &lt; 2 &amp;&amp; q == 0) {
       // divergent code for thread (0, 0), (1, 0)
@@ -3111,8 +3109,7 @@ In this example, it divides the parallel threads evenly into two sub-groups, wit
       // thread-mask: 111-0010
     }
   }
-}
-</code></pre></div>
+}</code></pre>
 This code uses two levels of parallelization:</p>
 <ul>
 <li>Outer level (<code>p</code>): Parallel count of 3</li>
@@ -3127,16 +3124,15 @@ This code uses two levels of parallelization:</p>
 <p>The second predicate (<code>q == 1</code>) imposes no restriction on the outer level (<code>p</code>), allowing all outer IDs (<code>0, 1, 2</code>) while restricting the inner level to <code>q == 1</code>.</p>
 <h2 id="implicit-masking">Implicit Masking<a class="headerlink" href="#implicit-masking" title="Permanent link">&para;</a></h2>
 <p>In Choreo, code between multiple <code>parallel-by</code> levels can be considered as a type of implicit masking. The below code showcases an example:</p>
-<div class="highlight"><pre><span></span><code>__co__  void foo() {
+<pre class="highlight"><code>__co__  void foo() {
   parallel p by 6 {
-    // implicit masking: &#39;inthreads (q == 0) { ... } &#39;
+    // implicit masking: 'inthreads (q == 0) { ... } '
     parallel q by 2 {
       // code here is for all threads
     }
-    // implicit masking: &#39;inthreads (q == 0) { ... } &#39;
+    // implicit masking: 'inthreads (q == 0) { ... } '
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, there exists two levels of parallelization. The code inside <code>parallel p by 6</code> block but outside <code>parallel q by 2</code> blocks is conceptually for the outer parallelization only. This means, only one thread from the sub-level parallelization execute the code, which is equivalent to <code>inthreads (q == 0) { ... }</code>. Programmers must be aware there is only single thread instance to execute the code part. Only the code inside the inner <code>parallel-by</code> is executed by all threads.</p>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>
 <p>In this section, we examined the motivation for thread masking, which enables divergent code execution for MPMD-style programming within Choreo's SPMD paradigm. Developers can use either explicit thread masking via <code>inthreads</code> blocks or implicit control through <code>parallel-by</code> constructs to restrict execution to specific threads.</p>

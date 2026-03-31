@@ -2691,16 +2691,15 @@
 
 <h3 id="factor-target-specific-details"><em>Factor</em> Target Specific Details<a class="headerlink" href="#factor-target-specific-details" title="Permanent link">&para;</a></h3>
 <p>In some target like <em>factor</em>, it requires the device function to follow C-linkage, where the device functions must be prefixed with <code>extern "C"</code>. Since template functions can not be applies to functions with C-linkage, Choreo has some wrapper tricks to enable it. For example:</p>
-<div class="highlight"><pre><span></span><code>__cok__ {
-extern &quot;C&quot; void bar(int v) {};  // v is a compile-time constant
+<pre class="highlight"><code class="language-choreo">__cok__ {
+extern "C" void bar(int v) {};  // v is a compile-time constant
 }
 
 __co__ void foo() {
   parallel p by 1 { call bar(3); }
-}
-</code></pre></div>
+}</code></pre>
 <p>Programmers can turn <code>bar</code> into a function template, like following:</p>
-<div class="highlight"><pre><span></span><code>__cok__ {
+<pre class="highlight"><code class="language-choreo">__cok__ {
 template &lt;int v&gt; void bar() {};
 
 // compiler generate a explicit function template specialization:
@@ -2709,8 +2708,7 @@ template &lt;int v&gt; void bar() {};
 
 __co__ void foo() {
   parallel p by 1 { call bar&lt;3&gt;(); }
-}
-</code></pre></div>
+}</code></pre>
 <p>As the comment depicts, Choreo compiler may generate a specialization version of function template <code>bar&lt;3&gt;</code>, which enables the function template as well. But note that, the function template no longer requires <code>extern "C" decoration</code> as those for normal <em>factor</em> device functions.</p>
 <p>As the implementation is different with other targets, you may utilize <code>-kt</code> to enable such functionality for <em>choreo-factor</em> compilation.</p>
 

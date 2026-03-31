@@ -2998,26 +2998,21 @@
 <h2 id="integers-for-program-control">Integers for Program Control<a class="headerlink" href="#integers-for-program-control" title="Permanent link">&para;</a></h2>
 <p>In high-performance computation kernels, integers are typically used for program control rather than computation. In Choreo <em>tileflow programs</em>, integers are used exclusively for loop control and array indexing.  Given the limited value ranges in these scenarios, Choreo has provided a single integer type -- the <em>32-bit signed integer</em> -- to simplify the design for this domain-specific use.</p>
 <p>In Choreo, an <strong>integer</strong>-typed variable is defined similar to C/C++:</p>
-<div class="highlight"><pre><span></span><code>int a = 1;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">int a = 1;</code></pre>
 <p>However, since Choreo can infer the type from the <em>initialization expression</em>, you can also define an integer variable in another style:</p>
-<div class="highlight"><pre><span></span><code>a = 1;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">a = 1;</code></pre>
 <p>Similar to C/C++, you can define multiple integers in a single line:</p>
-<div class="highlight"><pre><span></span><code>int a = 1, b = 2, c = 3;
-d = 4, e = 5;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">int a = 1, b = 2, c = 3;
+d = 4, e = 5;</code></pre>
 <p>In Choreo, the <em>mdspan</em>-typed shape can not be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo(int a) {
+<pre class="highlight"><code class="language-choreo">__co__ void foo(int a) {
   // ...
   call kernel(a, 3);
-}
-</code></pre></div>
+}</code></pre>
 <p>Unlike C/C++, Choreo does not allow the declaration of integers without initialization or the reassignment of an integer. For example:</p>
-<div class="highlight"><pre><span></span><code>int a;  // error: declaration without initialization
+<pre class="highlight"><code class="language-choreo">int a;  // error: declaration without initialization
 int b = 1;
-b = 3;  // error: re-assignment
-</code></pre></div>
+b = 3;  // error: re-assignment</code></pre>
 <p>This enforces that <strong>integers must be initialized at declaration and cannot be reassigned</strong>. In some contexts, these integers are referred to as "<strong>immutable</strong>" or "<strong>constant</strong>".</p>
 <h2 id="group-of-ranges-and-group-of-integers">Group of Ranges and Group of Integers<a class="headerlink" href="#group-of-ranges-and-group-of-integers" title="Permanent link">&para;</a></h2>
 <p>In Choreo, <em>mdspan</em> can be used to represent dimensional shapes. However, as introduced, <em>mdspan</em> stands for <strong>Multi-Dimensional Span</strong>. The elements inside are <em>Dimensional Spans</em>, which imply ranges of values.</p>
@@ -3030,35 +3025,30 @@ b = 3;  // error: re-assignment
 <h2 id="group-integers-as-integer-tuple-i-tuple">Group Integers as Integer-Tuple (I-Tuple)<a class="headerlink" href="#group-integers-as-integer-tuple-i-tuple" title="Permanent link">&para;</a></h2>
 <h3 id="defining-i-tuples">Defining I-Tuples<a class="headerlink" href="#defining-i-tuples" title="Permanent link">&para;</a></h3>
 <p>In Choreo, multiple integers can be grouped into an <strong>integer-tuple</strong>, or <strong>i-tuple</strong> (or <strong>ituple</strong>). The keyword <code>ituple</code> can be used to define an <em>i-tuple</em>. The below code showcases the usage:</p>
-<div class="highlight"><pre><span></span><code>ituple a = {1, 2, 3};
-b = {4, 5, 6};  // utilize the type inference
-</code></pre></div>
+<pre class="highlight"><code>ituple a = {1, 2, 3};
+b = {4, 5, 6};  // utilize the type inference</code></pre>
 <p>Since Choreo can infer types from the <em>initialization expression</em>, programmers can often omit the <code>ituple</code> keyword. However, without explicit type annotation, an <em>ituple</em> variable definition might look similar to an <em>mdspan</em> definition if you are not yet familiar with Choreo. To distinguish them:</p>
 <ul>
 <li>The <em>initialization expression</em> of an <em>ituple</em> follows an assignment operation <code>=</code> (like integers), whereas an <em>mdspan</em> is initialized after <code>:</code>;</li>
 <li>The <em>initialization expression</em> of an <em>ituple</em> is enclosed by <code>{}</code>, not <code>[]</code> as for <em>mdspan</em>.</li>
 </ul>
 <p>Similar to <code>mdspan</code>, you may enforce rank check for <em>ituple</em>s at compile time:</p>
-<div class="highlight"><pre><span></span><code>ituple&lt;3&gt; a = {1, 2};  // error: inconsistent rank
-</code></pre></div>
+<pre class="highlight"><code>ituple&lt;3&gt; a = {1, 2};  // error: inconsistent rank</code></pre>
 <h3 id="operations-on-i-tuples">Operations on I-Tuples<a class="headerlink" href="#operations-on-i-tuples" title="Permanent link">&para;</a></h3>
 <p>Operations on <em>i-tuple</em>s are similar to those on <em>mdspan</em>. You can either use the <em>element-of</em> operation <code>()</code> to retrieve the element values or use <em>ituple</em> as a whole:</p>
-<div class="highlight"><pre><span></span><code>a = {3, 4};
-b = {a(0), 1, a(1)};  // &#39;()&#39; to retrieve the element value
+<pre class="highlight"><code class="language-choreo">a = {3, 4};
+b = {a(0), 1, a(1)};  // '()' to retrieve the element value
 c = a {(0), (1), 2};  // syntax sugar
 d = {a, 5, 6};        // concatenate
-e = a + 1;            // addition is applied elementwise
-</code></pre></div>
+e = a + 1;            // addition is applied elementwise</code></pre>
 <p>Note that, similar to <em>integer</em> and <em>mdspan</em>, <strong>an <em>ituple</em> variable must be initialized and cannot be reassigned</strong>.</p>
 <p>In practice, <em>ituple</em>s are often used with <em>mdspan</em>s. For example:</p>
-<div class="highlight"><pre><span></span><code>shape : [7, 18, 28];
+<pre class="highlight"><code class="language-choreo">shape : [7, 18, 28];
 tiling_factors = {1, 2, 4};
 tiled_shape : shape / tiling_factors;
-padded_shape : shape + {2, 0, 2};
-</code></pre></div>
+padded_shape : shape + {2, 0, 2};</code></pre>
 <p>In this code, a mdspan-typed shape is divided by an ituple-typed tiling factor to derive a <code>tiled_shape</code>. Additionally, a <code>padded_shape</code> is derived from the addition of the initial <code>shape</code> and an anonymous <em>ituple</em>. Note that when a <em>mdspan</em> is added by an <em>ituple</em>, their rank must be consistent. Or else, an error will occur.</p>
-<div class="highlight"><pre><span></span><code>shape : [7, 8, 9] + {1, 2}; // error: inconsistent rank
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">shape : [7, 8, 9] + {1, 2}; // error: inconsistent rank</code></pre>
 <h3 id="evaluation-of-integers-and-i-tuples">Evaluation of Integers and I-Tuples<a class="headerlink" href="#evaluation-of-integers-and-i-tuples" title="Permanent link">&para;</a></h3>
 <p>Similar to mdspan, both <em>integer</em>s and <em>i-tuple</em>s incur minimal runtime cost. Their values are evaluated at compile time whenever possible, so programmers can generally ignore their cost.</p>
 <h3 id="look-ahead-bounded-i-tuples">Look-Ahead: Bounded I-Tuples<a class="headerlink" href="#look-ahead-bounded-i-tuples" title="Permanent link">&para;</a></h3>

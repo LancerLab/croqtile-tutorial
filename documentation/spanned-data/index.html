@@ -2966,15 +2966,13 @@
 <em>mdspan</em>-represented shape. And in the following context, we call it <em>spanned data</em>, or simply <em>spanned</em>.</p>
 <h2 id="defining-a-spanned-data">Defining a <em>Spanned Data</em><a class="headerlink" href="#defining-a-spanned-data" title="Permanent link">&para;</a></h2>
 <p>Defining a <em>spanned data</em> requires both the element type and its shape. For example,</p>
-<div class="highlight"><pre><span></span><code>f32 [32, 16] data;
-</code></pre></div>
+<pre class="highlight"><code>f32 [32, 16] data;</code></pre>
 <p>This defines a buffer with a shape of <code>[32, 16]</code>, where the element type is <code>f32</code>, which is the <em>IEEE-754</em> single-precision float. It is also possible to use a named <code>mdspan</code> to define the buffer:</p>
-<div class="highlight"><pre><span></span><code>shape : [72, 14];
+<pre class="highlight"><code>shape : [72, 14];
 s32 [shape] data0;              // using the named mdspan `shape`
 u32 [shape(0), shape(1)] data1; // same shape as the above
 u16 [shape + 6] data2;          // shaped as [78, 20]
-s16 [shape, 8] data3;           // shaped as [72, 14, 8]
-</code></pre></div>
+s16 [shape, 8] data3;           // shaped as [72, 14, 8]</code></pre>
 <p>Here we used the named <em>mdspan</em> <code>shape</code> to define a 2D buffer named <code>data0</code>, where the elements are 32-bit integers. Note that the named <em>mdspan</em> <code>shape</code> is placed inside <code>[]</code>. Additionally, it is allowed to use <em>element-of</em>, arithmetics, or concatenation on <em>mdspan</em>s to specify the buffer's shape.</p>
 <p>In Choreo terminology, the element type is referred to as the <strong>fundamental type</strong>. Choreo supports multiple fundamental types, including:</p>
 <ul>
@@ -2984,15 +2982,13 @@ s16 [shape, 8] data3;           // shaped as [72, 14, 8]
 </ul>
 <p>The prefixes <code>u</code> and <code>s</code> stand for "unsigned" and "signed", respectively, while the number suffix indicates the bit width of the type. <code>f16</code> refers to the <em>IEEE-754</em> standard <em>half-float</em>, and <code>bf16</code> refers to the 16-bit <em>binary float</em>, commonly used in machine learning scenario.</p>
 <p>Note <code>s32</code> is different from <code>int</code>. Although they occupy the same amount of storage, in Choreo, <code>s32</code> can not be used alone to define programming entities. For example:</p>
-<p><div class="highlight"><pre><span></span><code>s32 a;  // error: the fundamental type can not be used for variable definition alone
-</code></pre></div>
+<p><pre class="highlight"><code class="language-choreo">s32 a;  // error: the fundamental type can not be used for variable definition alone</code></pre>
 This results in a compile-time failure. Consequently, <code>s32</code> cannot be used for program control like <code>int</code>, and type conversion between them is not possible.</p>
 <h2 id="storage-specifier">Storage Specifier<a class="headerlink" href="#storage-specifier" title="Permanent link">&para;</a></h2>
 <p>In practical code, some buffer declarations must specify a <strong>storage specifier</strong>, like so:</p>
-<div class="highlight"><pre><span></span><code>global f32 [32, 7, 2] a;
+<pre class="highlight"><code class="language-choreo">global f32 [32, 7, 2] a;
 shared u8 [512, 144] b;
-local u8 [72, 1024] c;
-</code></pre></div>
+local u8 [72, 1024] c;</code></pre>
 <p>Since Choreo handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target. For example, <em>Cuda/Cute</em> (for GPU hardware) supports:</p>
 <ul>
 <li><em>global</em>: Refers to the device's global storage.</li>
@@ -3002,21 +2998,18 @@ local u8 [72, 1024] c;
 <p>Other targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. We will explore this in later chapters.</p>
 <h2 id="initialization">Initialization<a class="headerlink" href="#initialization" title="Permanent link">&para;</a></h2>
 <p>It is possible to initialize a buffer at the declaration site. For example:</p>
-<div class="highlight"><pre><span></span><code>local s32 [17, 6] b1 {0};       // elements are initialized to 0
-shared f32 [128, 16] b2 {3.14f}; // elements are initialized to 3.14f
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">local s32 [17, 6] b1 {0};       // elements are initialized to 0
+shared f32 [128, 16] b2 {3.14f}; // elements are initialized to 3.14f</code></pre>
 <p>The syntax for the <em>initialization expression</em> of a <em>spanned data</em> is straightforward: it encloses an initial value inside brackets following the variable name. However, its functionality is limited - it always set all elements to a fixed value.</p>
 <h2 id="declaring-the-parameters-and-return-values">Declaring the Parameters and Return Values<a class="headerlink" href="#declaring-the-parameters-and-return-values" title="Permanent link">&para;</a></h2>
 <p>A <em>spanned data</em> is passed between host and tileflow programs. Therefore, a choreo function can have <em>spanned data</em>s as its parameters. The following code showcases an example:</p>
-<div class="highlight"><pre><span></span><code>__co__ f16 [7, 8] foo(f32 [16, 17, 5] input) {...}
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">__co__ f16 [7, 8] foo(f32 [16, 17, 5] input) {...}</code></pre>
 <p>The syntax is similar to variable definitions, except that operations on an existing <em>mdspan</em> is not possible. Additionally, no storage specifier is allowed or initialization is allowed.</p>
 <p>One useful built-in member function for the <em>spanned</em> parameters is <code>.span</code>, which provides the associated <em>mdspan</em> of the <em>spanned data</em>. The following code demonstrates how to use it for a buffer declaration:</p>
-<div class="highlight"><pre><span></span><code>__co__ auto foo(f32 [16, 17, 5] input) {
+<pre class="highlight"><code class="language-choreo">__co__ auto foo(f32 [16, 17, 5] input) {
   f32 [input.span / {4, 1, 5} ] buffer;  // declare a buffer with tiled shape
   // ...
-}
-</code></pre></div>
+}</code></pre>
 <h2 id="buffer-lifetime-management">Buffer Lifetime Management<a class="headerlink" href="#buffer-lifetime-management" title="Permanent link">&para;</a></h2>
 <p>The lifetime of storage allocated inside a <em>choreo function</em> is managed by the Choreo compiler for efficient use. The compiler attempts to reuse buffers as much as possible if their lifetimes do not overlap. Therefore users of Choreo are not necessary to do buffer management.</p>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>

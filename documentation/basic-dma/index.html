@@ -2978,18 +2978,16 @@
 <h3 id="basic-syntax">Basic Syntax<a class="headerlink" href="#basic-syntax" title="Permanent link">&para;</a></h3>
 <p>A DMA statement in Choreo can be an asynchronous entity, meaning that the code following an <strong>asynchronous DMA</strong> executes in parallel with the DMA statement. For a <em>asynchronous DMA</em>, explicit synchronization is required before using the DMA result.</p>
 <p>To support these features, the syntax is organized as follows:</p>
-<div class="highlight"><pre><span></span><code>future = dma-op src-expr =&gt; dst-expr;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">future = dma-op src-expr =&gt; dst-expr;</code></pre>
 <p>The statement defines a <strong>future</strong>-typed variable, which appears on the left side of the operator <code>=</code>. In Choreo, <strong>a <em>future</em> represents both the handle of the asynchronous execution instance and the DMA result</strong>. Therefore, the definition of <em>future</em> can be ignored for <em>synchronized DMA</em> statements.</p>
 <p>The right-hand side of the <strong>DMA operation</strong> includes the <strong>operation type</strong> (<code>dma-op</code>), the <strong>data expression</strong> for the operation source (<code>src-expr</code>), and the <em>data expression</em> for the destination (<code>dst-expr</code>). The source and destination are separated by the symbol <code>=&gt;</code>, which indicates the direction of data flow.</p>
 <h3 id="synchronous-and-asynchronous">Synchronous and Asynchronous<a class="headerlink" href="#synchronous-and-asynchronous" title="Permanent link">&para;</a></h3>
 <p><strong>Asynchronous DMA</strong>, or <strong>Async-DMA</strong>, is also known as <strong>Non-Blocking DMA</strong> because it does not block the execution of subsequent code. Conversely, <strong>Synchronous DMA</strong>, or <strong>Sync-DMA</strong>, is referred to as <strong>Blocking DMA</strong> because the code does not proceed until the DMA operation is complete. These terms will be used interchangeably in the following text.</p>
 <p>In Choreo, the <code>.async</code> suffix in a <strong>DMA operation</strong> indicates that the operation is asynchronous. The following code provides an example:</p>
-<div class="highlight"><pre><span></span><code>f0 = dma.copy.async data0 =&gt; shared; // non-blocking
+<pre class="highlight"><code class="language-choreo">f0 = dma.copy.async data0 =&gt; shared; // non-blocking
 f1 = dma.copy data1 =&gt; shared;       // blocking
 ...
-wait f0;                             // synchronization
-</code></pre></div>
+wait f0;                             // synchronization</code></pre>
 <p>In this example, the DMA operation that produces the future <code>f0</code> is asynchronous, allowing the program to continue executing while the data transfer occurs in the background. The DMA operation that produces <code>f1</code> is synchronous, meaning the program will pause until the data is fully transferred from <code>data1</code> to <code>shared</code> memory. Meanwhile, the data copy of <code>data0</code> might still be in progress.</p>
 <p>Executing the statement <code>wait f0;</code> causes the program to check if <code>data0</code> has been fully transferred to <code>shared</code> memory. This synchronizes the main execution flow with the asynchronous DMA of <code>f0</code>. Note, if the <em>Async-DMA</em> is not waited, it typically results in unexpected hardware issues. Therefore programmers must make sure there is no "dangling future* left in your code.</p>
 <h3 id="operation-type">Operation Type<a class="headerlink" href="#operation-type" title="Permanent link">&para;</a></h3>
@@ -3000,43 +2998,39 @@ wait f0;                             // synchronization
 <li><code>dma.transp</code>: Transposes shaped data while transferring the data.</li>
 </ul>
 <p>The configurations, such as padding and transposing details, are programmed as parameters of the DMA operation. For example:</p>
-<div class="highlight"><pre><span></span><code>global f32 [32, 16, 9] input;
+<pre class="highlight"><code class="language-choreo">global f32 [32, 16, 9] input;
 dma.transp&lt;0, 2, 1&gt; input =&gt; shared;  // Result shape [32, 9, 16]
-dma.pad&lt;{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f&gt; input =&gt; shared; // Result shape [33, 17, 14]
-</code></pre></div>
+dma.pad&lt;{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f&gt; input =&gt; shared; // Result shape [33, 17, 14]</code></pre>
 <p>Here, the <strong>DMA configuration</strong>s are enclosed by <code>&lt;&gt;</code>. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as <em>CUDA/Cute</em>, are listed below as an example:</p>
 <p>Programmers should note that support for DMA types other than <code>dma.copy</code> varies by platform. For instance, on the <em>CUDA/Cute</em> platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads. It is also possible to implement advanced DMA operations using software-only methods or software-hardware cooperation, though these are not yet supported.</p>
 <h3 id="data-expression">Data Expression<a class="headerlink" href="#data-expression" title="Permanent link">&para;</a></h3>
 <p>So far, we have only used simple data expressions, either a defined <strong>spanned data</strong> or a <strong>storage location</strong>. The <strong>storage location</strong> is used solely for the <strong>destination buffer</strong> declaration, as it requires the Choreo compiler to allocate memory for it. The following code provides an example:</p>
-<div class="highlight"><pre><span></span><code>global f32 [32, 16] input;
+<pre class="highlight"><code class="language-choreo">global f32 [32, 16] input;
 shared f32 [32, 16] output;
 dma.copy input =&gt; output;  // Copy to a user-declared buffer
-dma.copy input =&gt; shared;  // Same, but to a compiler-allocated buffer
-</code></pre></div>
+dma.copy input =&gt; shared;  // Same, but to a compiler-allocated buffer</code></pre>
 <p>In this example, the destination of the second DMA operation is specified as the storage location <code>shared</code>. This requires the compiler to allocate storage accordingly, making it equivalent to the first DMA operation. In practice, we recommend programmers use storage locations as destinations, as Choreo can deduce the destination shape from the <strong>DMA statement</strong>.</p>
 <p>However, the use of simple <strong>data expressions</strong> is rare in practice. In the next section, we will introduce the <strong>ChunkAt</strong> expression to demonstrate how to implement tiling in data expressions.</p>
 <h3 id="future-and-wait">Future and Wait<a class="headerlink" href="#future-and-wait" title="Permanent link">&para;</a></h3>
 <p>Both <em>Sync-DMA</em> and <em>Async-DMA</em> operations can be used to define a <em>future</em>. As seen in earlier examples, a <em>future</em> acts as a handle for asynchronous operations and is typically used as a parameter of the <code>wait</code> statement to synchronize an <em>Async-DMA</em>.</p>
 <p>Choreo allows the <code>wait</code> statement to take multiple <em>future</em>s. However, using a <em>future</em> from a <strong>Sync-DMA</strong> in a <code>wait</code> statement will result in an error. The following code provides an example:</p>
-<div class="highlight"><pre><span></span><code>f0 = dma.copy.async input0 =&gt; shared;
+<pre class="highlight"><code class="language-choreo">f0 = dma.copy.async input0 =&gt; shared;
 f1 = dma.copy.async input1 =&gt; shared;
 f2 = dma.copy input2 =&gt; shared;
 ...
 wait f0, f1;  // Multiple wait
-wait f2;      // Error: cannot wait on a sync-dma
-</code></pre></div>
+wait f2;      // Error: cannot wait on a sync-dma</code></pre>
 <p>In Choreo, another use of a <em>future</em> is to retrieve the destination buffer of the associated DMA statement. This is also the reason why <strong>Sync-DMA</strong> is allowed to define a future. Choreo provides two built-in member functions for <em>future</em> variables:</p>
 <ul>
 <li><code>.span</code> to retrieve the <strong>mdspan</strong> of the DMA destination buffer.</li>
 <li><code>.data</code> to retrieve the reference of the DMA destination buffer (spanned data).</li>
 </ul>
 <p>For example:</p>
-<div class="highlight"><pre><span></span><code>f0 = dma.copy.async input0 =&gt; shared;
+<pre class="highlight"><code class="language-choreo">f0 = dma.copy.async input0 =&gt; shared;
 f1 = dma.copy input2 =&gt; shared;
 ...
 local f32 [f0.span] buffer;
-call device_kernel(f1.data, |f1.span|);
-</code></pre></div>
+call device_kernel(f1.data, |f1.span|);</code></pre>
 <p>In this example, we use <code>.span</code> built-in member function to retrieve the shape of <code>f0</code>'s destination buffer, and <code>.data</code> to retrieve the <em>spanned</em> data of <code>f1</code>'s destination. In addition, the <strong>ElementCount</strong> operation on the <em>mdspan</em> of the destination buffer of <code>f1</code>. The <strong>ElementCount</strong> operation returns the number of elements in an <strong>mdspan</strong>, which is useful in many scenarios.</p>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>
 <p>In this section, we learned how Choreo simplifies data movement using <em>DMA statements</em>, making it easier to work with modern hardware. We explored both synchronous and asynchronous operations, and saw how Choreo supports advanced data handling with various <em>DMA Operation Types</em>. Finally, we discovered how futures help manage async operations and retrieve buffers, ensuring smooth data flow and synchronization.</p>

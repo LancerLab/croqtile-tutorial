@@ -2773,20 +2773,18 @@
 <p>To call a device function in the Choreo function, it requires the call statement explicitly led by <code>call</code>.</p>
 <h3 id="basic-syntax-of-call-statements">Basic Syntax of Call Statements<a class="headerlink" href="#basic-syntax-of-call-statements" title="Permanent link">&para;</a></h3>
 <p>The general syntax for a <code>call</code> statement in Choreo is:</p>
-<p><div class="highlight"><pre><span></span><code>call func-name &lt;optional-template-args&gt; (arguments);
-</code></pre></div>
+<p><pre class="highlight"><code class="language-choreo">call func-name &lt;optional-template-args&gt; (arguments);</code></pre>
 Here, the keyword <code>call</code> is followed by a function name <code>func-name</code>, an optional <code>&lt;&gt;</code> enclosed template arguments, which are comma-separated. The <code>arguments</code> are also comma-separated and listed inside <code>()</code> like normal C/C++ functions.</p>
 <p>Note that <strong>Choreo transpilation process would not apply any check between the callers and the callees</strong>, including the function existence, function signature consistency, and parameter consistency. It delegates such duties to the target compilation process. Programmers must be careful about the conventions between Choreo function and device function consequently.</p>
 <p>Beside that, in all the currently supported platform, such calls must be made inside <code>parallel-by</code>, since it calls device function which only runs on heterogeneous hardware. Therefore, in the following example, <code>call bar();</code> in <code>mou</code> is illegal code since it tries to call device function in a code location which is assumed to be host code area.</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo() {
+<pre class="highlight"><code class="language-choreo">__co__ void foo() {
   parallel p by 1 {
     call bar();  // ok
   }
 }
 __co__ void mou() {
   call bar();  // error: not able to call device function from host
-}
-</code></pre></div>
+}</code></pre>
 <h3 id="the-convention-allowed-argument-types">The Convention: Allowed Argument Types<a class="headerlink" href="#the-convention-allowed-argument-types" title="Permanent link">&para;</a></h3>
 <p>In current implementation, the argument must be either:</p>
 <ul>
@@ -2797,7 +2795,7 @@ __co__ void mou() {
 <p>Here, the scalar <em>integer</em> type only includes <code>int</code>, whereas the scalar <em>floating-point type</em> includes <code>float</code>, <code>double</code>, <code>half</code>, <code>bfp16</code>, and <code>half8</code>. However, since the target-platform differs in floating-point support, the <em>floating-point type</em> parameter also varies for different target platforms.</p>
 <p>In addition, <strong>operations on floating-point are not supported</strong> by Choreo till now, considering the floating is not useful for tileflow programs. Instead, they are typically values for device computation, which the <em>tileflow program</em>s pass such values directly to device kernels.</p>
 <p>The below code showcases an example:</p>
-<div class="highlight"><pre><span></span><code>__device__ void bar(float *p, int m, int n) {}
+<pre class="highlight"><code class="language-choreo">__device__ void bar(float *p, int m, int n) {}
 __device__ void foo(float *, int, unsigned, double, float) {}
 
 __co__ void foobar(f32 [M, 24] input, int N, float padding) {
@@ -2806,14 +2804,13 @@ __co__ void foobar(f32 [M, 24] input, int N, float padding) {
     call bar(input.data, M, buffer.span(0));
     call foo(buffer.data, N, 3, 3.14, padding);
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, it passes different data types as arguments from Choreo function to the device functions, which matches the device parameters exactly. Note that in the device function, the <strong>corresponding parameter type of the <em>spanned data</em> argument is simply the pointer of its <em>element type</em></strong>, where the shape information is dropped. For example, the <code>foo</code>'s argument <code>p</code> is <code>float*</code>, which corresponds the <em>spanned data</em> argument <code>input.data</code>. In Choreo, we names the parameter as a <strong>decayed</strong> pointer of the <em>spanned data</em>. If using other form like <code>float p[]</code>, it will trigger failure in target compilation stage.</p>
 <p>For some types like <code>f16</code>, and <code>bf16</code>, there may not be native target support of such types, it is possible to utilize <code>choreo::f16</code> and <code>choreo::bf16</code> to handle such types.</p>
 <h2 id="instantiate-the-function-template-for-call">Instantiate the Function Template for Call<a class="headerlink" href="#instantiate-the-function-template-for-call" title="Permanent link">&para;</a></h2>
 <h3 id="trigger-c-template-instantiation">Trigger C++ Template Instantiation<a class="headerlink" href="#trigger-c-template-instantiation" title="Permanent link">&para;</a></h3>
 <p>It is possible for Choreo code to make function call to a template function. For example:</p>
-<p><div class="highlight"><pre><span></span><code>template&lt;int M, int N, int K&gt;
+<p><pre class="highlight"><code class="language-choreo">template&lt;int M, int N, int K&gt;
 __device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
 
 __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
@@ -2825,16 +2822,14 @@ __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
     call matmul_kernel&lt;buffer.span(0), buffer.span(1), 72&gt;(lhs_load.data, rhs_load.data, buffer);
   }
   return output;
-}
-</code></pre></div>
+}</code></pre>
 In this case, it defines device function template named <code>matmul_kernel</code>, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function <code>matmul&lt;16, 4, 72&gt;</code> for the call.</p>
 <p>So in Choreo, calling a template function is similar to those in C++. However, <strong>the template argument passed must be able to be inferred as compile time constant value</strong> by Choreo compiler. Therefore, any runtime values can result in error.</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo(int M) {
+<pre class="highlight"><code class="language-choreo">__co__ void foo(int M) {
   parallel p by 1 {
-    call bar&lt;M&gt;();  // error: &#39;M&#39; is a runtime value
+    call bar&lt;M&gt;();  // error: 'M' is a runtime value
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>Choreo compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.</p>
 <p>!INCLUDE_IF_EXISTS "target/calls.md"</p>
 <h3 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h3>

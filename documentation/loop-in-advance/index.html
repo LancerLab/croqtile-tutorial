@@ -2912,7 +2912,7 @@
 <h3 id="explicit-maskingcondition">Explicit Masking/Condition<a class="headerlink" href="#explicit-maskingcondition" title="Permanent link">&para;</a></h3>
 <p>Thread masking is a concept when programs have a full view of all instances of SPMD code. However, from the SPMD coding practise, which program is limited in single thread view, the thread masking appears as a boolean expression which typically is a comparison result related to thread identifiers.</p>
 <p>For now, Choreo experimentally supports explicit masking of the <code>foreach</code> block, which mask off loop code as a whole. For example:</p>
-<div class="highlight"><pre><span></span><code>__co__  void foo() {
+<pre class="highlight"><code class="language-choreo">__co__  void foo() {
   parallel p by 6 {
     with q in [2] {
       foreach q if (p == 0) {
@@ -2920,34 +2920,31 @@
       }
     }
   }
-}
-</code></pre></div>
+}</code></pre>
 <h3 id="implicit-masking">Implicit Masking<a class="headerlink" href="#implicit-masking" title="Permanent link">&para;</a></h3>
 <p>There are some code structures in Choreo that implies implicit masking. One typical situation is the multi-level <code>parallel-by</code> block. The below code showcases an example:</p>
-<div class="highlight"><pre><span></span><code>__co__  void foo() {
+<pre class="highlight"><code>__co__  void foo() {
   parallel p by 6 {
     // parallel-level-0:
-    //   code here is as if implicitly masked &#39;if (q == 0)&#39;
+    //   code here is as if implicitly masked 'if (q == 0)'
     parallel q by 2 {
       // parallel-level-1:
-      //   code here is for all &#39;q&#39; threads
+      //   code here is for all 'q' threads
     }
     // parallel-level-0:
-    //   code here is as if implicitly masked &#39;if (q == 0)&#39;
+    //   code here is as if implicitly masked 'if (q == 0)'
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, there exists two-level of parallelization. The code inside <code>parallel p by 6</code> block but outside <code>parallel q by 2</code> blocks is only for <em>parallel-level-0</em>. However, for target like <em>CUDA/Cute</em>, it could invoke 2 parallel threads in practise to execute either code inside <em>parallel-level-0</em> or <em>parallel-level-1</em>. Therefore, the <em>parallel-level-0</em>-only part is as if guarded with a C++ block <code>if (q == 0)</code>.</p>
 <p>Conditional <code>foreach</code> Block
 Since
 It is possible to guard the <code>foreach</code> loop with conditions. One direct</p>
 <h2 id="experimental-optional-where-binding-for-within">Experimental: Optional <em>Where-Binding</em> for <code>within</code><a class="headerlink" href="#experimental-optional-where-binding-for-within" title="Permanent link">&para;</a></h2>
 <p>You can append a <em>where-clause</em> to impose <strong>Where-Binding</strong> constraints among different bounded variables defined in a <code>with-in</code> statement. This allows different bounded variables to be treated as aliases for each other. Below is an example:</p>
-<div class="highlight"><pre><span></span><code>with {m, n} in [M, N], {n_p, k} in [N_P, K]
+<pre class="highlight"><code class="language-choreo">with {m, n} in [M, N], {n_p, k} in [N_P, K]
 where n_p &lt;-&gt; n {
-  // matmul implements with m, n, K. &#39;n_p&#39; always refers to the same value as &#39;n&#39;.
-}
-</code></pre></div>
+  // matmul implements with m, n, K. 'n_p' always refers to the same value as 'n'.
+}</code></pre>
 <p>Syntactically, the <code>&lt;-&gt;</code> operation establishes the <em>where-binding</em> between two bounded variables. Within the <code>with-in</code> block, any reference to <code>n_p</code> refers to <code>n</code>, and vice versa.</p>
 
 

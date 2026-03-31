@@ -2920,20 +2920,18 @@
 <h2 id="ubound-operation"><em>Ubound</em> Operation<a class="headerlink" href="#ubound-operation" title="Permanent link">&para;</a></h2>
 <p>In the previous chapter, we learned that a <em>bounded variable</em> defined by a <code>parallel-by</code> or <code>with-in</code> statement is either an <em>integer</em> or an <em>ituple</em> with one or more bounds. We also learned how to use the <em>current value</em> and <em>upper-bound value</em> of the <em>bounded variable</em> to construct loops in <code>foreach</code> blocks, where the <em>upper-bound</em> is implicitly used.</p>
 <p>However, in Choreo, you can use the <strong>ubound operation</strong> to explicitly retrieve the upper bound of a bounded variable. <em>Ubound</em> is a unary operation that uses the prefix symbol <code>#</code> before a bounded variable. For example:</p>
-<div class="highlight"><pre><span></span><code>with size in [32] {
+<pre class="highlight"><code class="language-choreo">with size in [32] {
   local u8 [#size, 16] a; // buffer shape: [32, 16]
   local u8 [size, 16] b; // error in shape: [0, 16]
-}
-</code></pre></div>
+}</code></pre>
 <p>In this code, the local buffer <code>a</code> is shaped as <code>[32, 16]</code>, since <code>#size</code> evaluates to the upper-bound of <code>size</code>. However, the declaration of <code>b</code> uses the <em>current value</em> of <code>size</code>, resulting in an incorrect shape definition.</p>
 <h2 id="use-chunkat-expression-to-tile-data">Use <code>chunkat</code> Expression to Tile Data<a class="headerlink" href="#use-chunkat-expression-to-tile-data" title="Permanent link">&para;</a></h2>
 <p>In all the examples from the previous section, the <em>data expressions</em> of the <em>DMA statement</em> directly utilized the <em>spanned</em> data or <em>storage</em> annotation. However, programmers can use the <strong>chunkat</strong> expression to enable tiling behavior in practice. For example:</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo(f32 [36] input) {
+<pre class="highlight"><code class="language-choreo">__co__ void foo(f32 [36] input) {
   parallel p by 6 {
     dma.copy input.chunkat(p) =&gt; shared;
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, the built-in member function <code>.chunkat</code> is used to create a tile or block for the source expression of the DMA statement. Each tiled block is called a <strong>chunk</strong> in Choreo. The <code>.chunkat(...)</code> data expression can be considered a simpler form of <code>.chunk(...).at(...)</code>, where the semantics of each part are illustrated in the figure below:</p>
 <p><img alt="Choreo-Structure-Chunkat" src="../assets/figures/chunkat.png" /></p>
 <p>Considering the expression <code>input.chunkat(p)</code>, which is equivalent to <code>input.chunk(#p).at(p)</code>:</p>
@@ -2946,7 +2944,7 @@
 <p>In many scenarios, it is unnecessary to use separate <code>.chunk</code> and <code>.at</code> expressions, as <code>.chunkat</code> takes bounded variables as parameters. The upper-bounds of these variables act as the <em>tiling factors</em>, and their current values act as the <em>chunk index</em>.</p>
 <h2 id="use-multiple-bounded-variables">Use Multiple Bounded Variables<a class="headerlink" href="#use-multiple-bounded-variables" title="Permanent link">&para;</a></h2>
 <p>The following code showcases an example that utilizes multiple bounded variables:</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo(f32 [36, 14, 8] input) {
+<pre class="highlight"><code class="language-choreo">__co__ void foo(f32 [36, 14, 8] input) {
   parallel p by 6 {
     with index in [7, 4] {
       foreach index {
@@ -2954,22 +2952,20 @@
       }
     }
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, there are two bounded variables: <code>p</code> is the <em>bounded integer</em> defined by the <code>parallel-by</code> statement, while <code>index</code> is the <em>bounded ituple</em> with two integers. The <code>chunkat</code> expression concatenates them to form a <em>bounded ituple</em> with upper-bounds <code>{#p, #index}</code> and current values <code>{p, index}</code>. Thus, the shape of each chunk is calculated as <code>[36, 14, 8] / {#p, #index} = [36, 14, 8] / {6, 7, 4} = [6, 2, 2]</code>.</p>
 <p>In addition, since <code>p</code> is the bounded variable for parallelization, there are <code>6</code> threads working in parallel, each handling a large chunk of <code>[6, 14, 8]</code>. Within a single parallel thread, it iterates <code>7x4</code> times, each time moving a <code>[6, 2, 2]</code> small chunk to a compiler-allocated <code>shared</code> memory.</p>
 <p>With this approach, we can apply tiling to data movement, where each iteration in each parallel thread selects only a part of the data/buffer for transfer. The Choreo compiler uses information about the <em>spanned</em> data and the <em>bounded variables</em> to transpile the DMA statement into C++ subscripting, DMA configurations, etc., simplifying the trivial and error-prone work that C++ programmers typically face. This makes learning the Choreo syntax worthwhile.</p>
 <h2 id="tile-and-flow">Tile and Flow<a class="headerlink" href="#tile-and-flow" title="Permanent link">&para;</a></h2>
 <p>It is possible to use the <code>chunkat</code> expression for either the source or the destination of a <em>DMA statement</em>. When <code>chunkat</code> is used only for the source, it typically divides the input or buffer into smaller chunks to move it to storage closer to the processor. In contrast, when <code>chunkat</code> is used only for the destination, it typically moves the buffer to compose part of the output. The following code showcases an example:</p>
-<div class="highlight"><pre><span></span><code>__co__ auto foo(f32 [36] input) {
+<pre class="highlight"><code class="language-choreo">__co__ auto foo(f32 [36] input) {
   f32 [36] output;
   parallel p by 6 {
     f0 = dma.copy input.chunkat(p) =&gt; shared;  // tile the source
     dma.copy f0.data =&gt; output.chunkat(p);     // un-tile the destination
   }
   return output;
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, the statement applies <code>chunkat</code> to the destination, moving the data block in <code>shared</code> and "un-tiling" each block to the output. Note that the Choreo compiler <strong>requires the source data and destination data to have the same shape and element type</strong> if not using <em>storage</em> as the destination <em>data expression</em>.</p>
 <p>However, using the <code>chunkat</code> expression for both the source and destination is rarely supported by any target platform at this time.</p>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>

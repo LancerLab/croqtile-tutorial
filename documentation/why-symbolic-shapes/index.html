@@ -2909,32 +2909,29 @@
 <h3 id="a-improved-readability-and-clarity"><strong>a. Improved Readability and Clarity</strong><a class="headerlink" href="#a-improved-readability-and-clarity" title="Permanent link">&para;</a></h3>
 <p>Using symbolic dimensions like <code>M</code> and <code>N</code> explicitly in the shape definition makes the program <strong>easier to read</strong> and understand. Instead of seeing a <code>?</code> or <code>-1</code> and wondering what the dimension is supposed to represent, the reader can immediately grasp that <code>M</code> and <code>N</code> are variables that depend on runtime values. This improves <strong>maintainability</strong> and reduces the cognitive load for developers who are reading and modifying the code.</p>
 <p>For example, if a program uses <code>?</code> for dynamic dimensions, it's unclear whether it represents an uninitialized value, a wildcard dimension, or something else. This can lead to confusion when trying to reason about the program. In contrast, symbolic dimensions are explicit and show exactly how the shape is determined:</p>
-<div class="highlight"><pre><span></span><code>// Using symbolic dimensions 
+<pre class="highlight"><code class="language-choreo">// Using symbolic dimensions 
 mdspan sp : [M, N]; 
 mdspan spn : sp [1, M / 2, N / 4]; 
 // Clear how the new shape is derived 
 
 // Using `?` or `-1` 
-mdspan sp : [? , ?];
-</code></pre></div>
+mdspan sp : [? , ?];</code></pre>
 <p>The latter version is ambiguous and lacks the clarity that symbolic dimensions provide.</p>
 <h3 id="b-type-safety-and-compile-time-checking"><strong>b. Type Safety and Compile-Time Checking</strong><a class="headerlink" href="#b-type-safety-and-compile-time-checking" title="Permanent link">&para;</a></h3>
 <p>One of the major benefits of symbolic dimensions in Choreo is that they are <strong>type-safe</strong> and <strong>checked at compile-time</strong>. Choreo allows you to declare symbolic dimensions and even manipulate them algebraically (e.g., <code>M / 2</code>, <code>N / 4</code>), ensuring that they adhere to the expected types and constraints. This eliminates the need for runtime checks, which can often lead to errors or performance penalties.</p>
 <p>For example, using <code>?</code> or <code>-1</code> as dynamic dimensions in other systems often leads to runtime checks for consistency, such as verifying that the dimensions are properly initialized before use. These checks can introduce overhead and make the program harder to optimize. In contrast, symbolic dimensions allow Choreo to <strong>check constraints at compile-time</strong>, ensuring that shape expressions are valid before execution:</p>
-<div class="highlight"><pre><span></span><code>mdspan sp : [M, N]; 
+<pre class="highlight"><code class="language-choreo">mdspan sp : [M, N]; 
 // M and N are symbolic dimensions 
 
 mdspan spn : sp [1, M / 2, N / 4]; 
-// Compiler ensures validity of shape expressions`
-</code></pre></div>
+// Compiler ensures validity of shape expressions`</code></pre>
 <p>This ensures type consistency and reduces the potential for errors during runtime.</p>
 <h3 id="c-expressiveness-and-flexibility"><strong>c. Expressiveness and Flexibility</strong><a class="headerlink" href="#c-expressiveness-and-flexibility" title="Permanent link">&para;</a></h3>
 <p>Symbolic dimensions enable a <strong>richer</strong> set of expressions for describing data shapes. Instead of using arbitrary placeholders like <code>?</code> or <code>-1</code>, which are limited to basic dimensionality, symbolic dimensions can be <strong>constrained</strong> using complex arithmetic and relationships. For example, you can directly express how one dimension depends on another, or how it is scaled or tiled, in a much more natural way.</p>
 <p>In contrast, using <code>?</code> or <code>-1</code> often leads to brittle code, where developers need to manually calculate or infer the actual size at runtime, introducing potential errors and making the code harder to reason about.</p>
 <p>For example, you can easily express relationships between dimensions using symbolic variables:</p>
-<div class="highlight"><pre><span></span><code>mdspan sp : [M, N]; // Symbolic dimensions 
-mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expressions
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">mdspan sp : [M, N]; // Symbolic dimensions 
+mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expressions</code></pre>
 <p>If you were using <code>?</code> or <code>-1</code>, expressing the same relationships would require convoluted workarounds or additional runtime logic.</p>
 <h3 id="d-compile-time-optimization"><strong>d. Compile-Time Optimization</strong><a class="headerlink" href="#d-compile-time-optimization" title="Permanent link">&para;</a></h3>
 <p>One of the significant benefits of symbolic dimensions is that they can help with <strong>compile-time optimizations</strong>. Since Choreo allows symbolic dimensions to be evaluated at compile time, it can potentially optimize memory layouts and kernel execution plans based on these dimensions. This can result in more efficient code generation and better performance compared to using <code>?</code> or <code>-1</code>, which may require runtime evaluation and dynamic memory allocation, hindering optimization opportunities.</p>

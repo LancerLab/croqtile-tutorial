@@ -526,10 +526,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reference-kernel-fp16-matmul-tileflow-sm90" class="md-nav__link">
+  <a href="#reference-kernel-fp16-matmul-choreo-function-sm90" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reference kernel: FP16 matmul tileflow (SM90)
+        Reference kernel: FP16 matmul Choreo function (SM90)
       
     </span>
   </a>
@@ -2768,10 +2768,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reference-kernel-fp16-matmul-tileflow-sm90" class="md-nav__link">
+  <a href="#reference-kernel-fp16-matmul-choreo-function-sm90" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reference kernel: FP16 matmul tileflow (SM90)
+        Reference kernel: FP16 matmul Choreo function (SM90)
       
     </span>
   </a>
@@ -2881,7 +2881,7 @@
 
 <h1 id="high-performance-data-movement-tma-and-swizzle">High-Performance Data Movement: TMA and Swizzle<a class="headerlink" href="#high-performance-data-movement-tma-and-swizzle" title="Permanent link">&para;</a></h1>
 <p>In Chapters 2 and 3, you moved data with <strong>DMA</strong> — explicit copies that software orchestrates tile by tile. That model is clear and portable, but on modern NVIDIA GPUs it leaves performance on the table. Starting with the <strong>Hopper</strong> architecture (compute capability 9.0, or <strong>SM90</strong>), NVIDIA added a dedicated hardware path for bulk, multi-dimensional loads and stores: the <strong>Tensor Memory Accelerator</strong>, or <strong>TMA</strong>.</p>
-<p>This chapter introduces TMA in Choreo, together with <strong>swizzle</strong> — a layout trick that keeps shared-memory accesses free of <strong>bank conflicts</strong> when tensor cores and wide loads expect a particular byte pattern. The running example is a real <strong>FP16 matrix multiply</strong> tileflow from the Choreo benchmark suite. MMA operations (<code>mma.load</code>, <code>mma.row.row</code>, and friends) appear here because they sit in the same loop as TMA; Chapter 5 unpacks tensor-core programming in depth.</p>
+<p>This chapter introduces TMA in Choreo, together with <strong>swizzle</strong> — a layout trick that keeps shared-memory accesses free of <strong>bank conflicts</strong> when tensor cores and wide loads expect a particular byte pattern. The running example is a real <strong>FP16 matrix multiply</strong> Choreo function from the benchmark suite. MMA operations (<code>mma.load</code>, <code>mma.row.row</code>, and friends) appear here because they sit in the same loop as TMA; Chapter 5 unpacks tensor-core programming in depth.</p>
 <h2 id="from-software-copies-to-hardware-tensor-movement">From software copies to hardware tensor movement<a class="headerlink" href="#from-software-copies-to-hardware-tensor-movement" title="Permanent link">&para;</a></h2>
 <p>On pre-Hopper GPUs, getting a tile from global memory into shared memory usually meant many threads each loading a few elements, or a vectorized loop you wrote yourself. The program pays for every instruction that participates in that copy.</p>
 <p><strong>TMA</strong> moves that work into a <strong>hardware unit</strong>. You give it a description of a multi-dimensional tensor in memory (a <em>tensor map</em> or descriptor), and it issues the right sequence of memory transactions to copy a <strong>rectangular tile</strong> in one logical operation. Warps can keep doing math — or wait on a lightweight barrier — while TMA works. That is the performance story: <strong>fewer instructions spent on movement</strong>, better overlap, and a path that lines up with what tensor memory and WGMMA expect on Hopper.</p>
@@ -2889,14 +2889,14 @@
 <p>Shared memory is split into <strong>32 banks</strong>. Successive 4-byte words map to successive banks. If a warp reads a row and every lane reads a consecutive element, you get a nice spread across banks. If a warp reads a <strong>column</strong> of a row-major <code>f16</code> matrix, many lanes land on the same bank — <strong>bank conflicts</strong> that serialize accesses. <strong>Swizzling</strong> applies a fixed permutation of how addresses map to banks (often described in bytes: 32, 64, or <strong>128</strong>), so that the access pattern your MMA or TMA consumer uses sees fewer conflicts. For FP16 kernels, a common choice is <strong><code>swiz&lt;128&gt;</code></strong> when the tile width in K matches the recipe (in the benchmark, <code>MATMUL_TILE_K</code> is 64 elements of <code>f16</code> → 128 bytes per row fragment, and the build asserts <code>MATMUL_SWIZ == 2 * MATMUL_TILE_K</code>).</p>
 <p>The important idea: <strong><code>tma.copy.swiz&lt;N&gt;</code></strong> is not just a copy; it is <strong>copy + agreed-upon SMEM layout</strong> so that <strong><code>mma.load.swiz&lt;N&gt;</code></strong> on the same buffer sees a consistent byte pattern.</p>
 <p>In Chapters 2 and 3, <strong><code>dma.copy</code></strong> expressed the same intent — move a tile between memory kinds — but the generated path was software-driven (threads participating in the copy, possibly pipelined with <code>inthreads</code> and events). <strong><code>tma.copy</code></strong> is the Hopper-shaped spelling: the Choreo compiler maps it to TMA descriptors and instructions for SM90-family targets. You still think in terms of source fragment and destination buffer, but the mechanism is different. When a kernel uses <strong><code>mma.load.swiz</code></strong> and WGMMA-style <strong><code>parallel ... : group-4</code></strong>, pairing TMA loads with those intrinsics is the expected layout; swapping in generic DMA for the same SMEM buffers would break the assumptions the MMA side makes about byte-level placement. <strong>DMA</strong> teaches tiling and orchestration; <strong>TMA</strong> is the next gear when you commit to Hopper tensor pipelines.</p>
-<h2 id="reference-kernel-fp16-matmul-tileflow-sm90">Reference kernel: FP16 matmul tileflow (SM90)<a class="headerlink" href="#reference-kernel-fp16-matmul-tileflow-sm90" title="Permanent link">&para;</a></h2>
-<p>The following is the tileflow core of the dynamic FP16 matrix multiply from the Choreo Hopper benchmark (<code>matmul_f16_dyn_sm90.co</code>). Compile-time constants:</p>
+<h2 id="reference-kernel-fp16-matmul-choreo-function-sm90">Reference kernel: FP16 matmul Choreo function (SM90)<a class="headerlink" href="#reference-kernel-fp16-matmul-choreo-function-sm90" title="Permanent link">&para;</a></h2>
+<p>The following is the <code>__co__</code> core of the dynamic FP16 matrix multiply from the Choreo Hopper benchmark (<code>matmul_f16_dyn_sm90.co</code>). Compile-time constants:</p>
 <ul>
 <li><code>MATMUL_WARP_M = 64</code>, <code>MATMUL_WARP_N = 128</code>, <code>MATMUL_TILE_K = 64</code>, <code>MATMUL_WARP_K = 16</code></li>
 <li><code>MATMUL_SWIZ = 128</code></li>
 <li><code>M</code>, <code>N</code>, and <code>K</code> are <strong>symbolic</strong> — actual sizes come from the host at runtime.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+<pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
     shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
     shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
@@ -2916,22 +2916,19 @@
     mma.store mc, output_s;
     tma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>A smaller, test-oriented version lives in <code>choreo/tests/gpu/end2end/matmul_f16_dynamic.co</code> with simpler numbers (<code>WARP_M = 64</code>, <code>WARP_N = 64</code>, <code>TILE_K = 64</code>, <code>WARP_K = 16</code>, literal <code>128</code> for swizzle) and is easier to grep and run under the test harness. The ideas are identical; the benchmark widens the N tile to 128 for throughput.</p>
 <h2 id="what-one-thread-block-does">What one thread block does<a class="headerlink" href="#what-one-thread-block-does" title="Permanent link">&para;</a></h2>
 <p>It helps to narrate a single output tile before worrying about the whole grid.</p>
 <p><strong>Grid and dynamic shapes.</strong> Pick indices <strong><code>block_m</code></strong> and <strong><code>block_n</code></strong>. This CUDA block owns the <strong><code>MATMUL_WARP_M × MATMUL_WARP_N</code></strong> region of <strong><code>output</code></strong> at logical position <code>(block_m, block_n)</code> in the block grid — rows roughly <code>block_m * MATMUL_WARP_M</code> through <code>(block_m + 1) * MATMUL_WARP_M - 1</code>, columns analogously. The function signature says <strong><code>global f16 [M, K] lhs</code></strong>: <strong><code>f16</code></strong> is half precision, <strong><code>M</code></strong> and <strong><code>K</code></strong> are <strong>symbolic dimensions</strong> whose concrete values come from the host, and <strong><code>global</code></strong> marks device global memory. Using symbolic sizes means one Choreo function handles any problem shape without recompilation. The return type <strong><code>void</code></strong> means results are written <strong>in place</strong> through the <strong><code>output</code></strong> parameter, matching how many GPU kernels accept destination pointers explicitly.</p>
 <p><strong>Ceiling division.</strong> <strong><code>cdiv(K, MATMUL_TILE_K)</code></strong> is (\lceil K / \text{TILE_K} \rceil) — one more tile when K is not a multiple of the tile size. The grid uses <code>cdiv(M, MATMUL_WARP_M)</code> and <code>cdiv(N, MATMUL_WARP_N)</code> for the same reason. When the last tile is partial, real kernels pair <code>cdiv</code> grid sizing with predicate masks, zero-padding, or epilogue cleanup so out-of-bounds threads do not read or write garbage.</p>
 <p><strong>Shared buffers.</strong> Inside <code>parallel … : block</code>, two SMEM allocations stage operand tiles:</p>
-<div class="highlight"><pre><span></span><code>shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
+shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;</code></pre>
 <p>These are explicit shared-memory arenas with fixed compile-time extents. TMA writes into them (<code>=&gt; lhs_load_s</code>), and later <strong><code>mma.load.swiz</code></strong> reads the same SMEM with the same swizzle tag so the layout contract holds. The accumulator path uses a separate SMEM tile for the result before copying to global:</p>
-<div class="highlight"><pre><span></span><code>shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+<pre class="highlight"><code class="language-choreo">shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
 mma.store mc, output_s;
-tma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
-</code></pre></div>
+tma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);</code></pre>
 <p>The end-to-end flow: <strong>TMA in → tensor cores accumulate → <code>mma.store</code> to SMEM → TMA out to global.</strong></p>
 <p><strong>The accumulator.</strong> <strong><code>mc = mma.fill.f16 0.0f</code></strong> creates an MMA accumulator state in register-resident tiles, zeroed for FP16 accumulation. <strong><code>mc</code></strong> is not ordinary SMEM; it persists across the K loop and represents the block's running output tile. Chapter 5 says more about its scope and type.</p>
 <p><strong>The K loop.</strong> <strong><code>foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)]</code></strong> iterates over K-tiles from global memory. For each <code>iv_k</code>, two <strong><code>tma.copy.swiz&lt;MATMUL_SWIZ&gt;</code></strong> lines pull operand slabs from global into SMEM. The LHS load uses <strong><code>lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k)</code></strong> — a view with explicit tile extents, then tile selection by block index and K index. The RHS load uses <strong><code>rhs.chunkat(block_n, iv_k)</code></strong> — regular tiling along block and K indices. Both are views over the same underlying <code>global</code> data; they differ in how explicitly you state the tile shape (more on this choice in the next section).</p>
@@ -2944,13 +2941,11 @@ tma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m,
 <h2 id="choosing-between-subspan-and-chunkat">Choosing between subspan and chunkat<a class="headerlink" href="#choosing-between-subspan-and-chunkat" title="Permanent link">&para;</a></h2>
 <p>Both carve global tensors into tiles, but they emphasize different things.</p>
 <p><strong><code>subspan(M, K).at(i, j)</code></strong> creates a <strong>view</strong> with explicit tile extents, then selects which tile. Use it when you want to spell out the logical tile size — especially when matching a fixed MMA or TMA recipe:</p>
-<div class="highlight"><pre><span></span><code>lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k)
-output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n)
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k)
+output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n)</code></pre>
 <p>Read it as: "take a <code>MATMUL_WARP_M × MATMUL_TILE_K</code> windowing pattern on <code>lhs</code>, then pick the window at <code>(block_m, iv_k)</code>."</p>
 <p><strong><code>chunkat(i, j)</code></strong> assumes a regular decomposition: divide each dimension into equal chunks according to the tile shape implied by the surrounding type and indexing. Use it when the default even tiling is obvious:</p>
-<div class="highlight"><pre><span></span><code>rhs.chunkat(block_n, iv_k)
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">rhs.chunkat(block_n, iv_k)</code></pre>
 <p>Prefer <strong><code>subspan().at()</code></strong> when you are matching hardware recipes from a spreadsheet or an existing CUTLASS/CUTE kernel — the view extents are literal in your source, easy to cross-check against <code>shared</code> sizes. Prefer <strong><code>chunkat</code></strong> when the decomposition is uniform and already clear from context. Both are views over the same data; the compiler still proves access coherence for the target.</p>
 <h2 id="constraints-pitfalls-and-whats-next">Constraints, pitfalls, and what's next<a class="headerlink" href="#constraints-pitfalls-and-whats-next" title="Permanent link">&para;</a></h2>
 <p>The <code>// REQUIRES: TARGET-SM_90</code> line on the test file is a hint: TMA + WGMMA + <code>group-4</code> needs a <strong>Hopper-class</strong> target (typically <code>sm_90a</code> in your Choreo invocation). The benchmark source statically asserts relationships between constants — for example that <code>MATMUL_SWIZ</code> equals <code>2 * MATMUL_TILE_K</code> for this FP16 recipe, and that <code>MATMUL_SWIZ</code> is one of 32, 64, or 128. Those checks mirror hardware constraints: swizzle mode, element size, and tile width must agree or the descriptor setup is invalid. If you change <code>TILE_K</code> without changing <code>swiz</code>, expect either a compile-time error or a runtime failure depending on how far the bad combination gets.</p>

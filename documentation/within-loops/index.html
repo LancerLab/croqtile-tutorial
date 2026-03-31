@@ -3032,79 +3032,68 @@
 <h2 id="loops-in-choreo">Loops in Choreo<a class="headerlink" href="#loops-in-choreo" title="Permanent link">&para;</a></h2>
 <p>In C++, loops are typically constructed using <code>for</code>, <code>while</code>, and <code>do-while</code> blocks. These loops include conditions for termination and usually involve variable manipulations related to loop control. Programmers have the freedom to define exit conditions, loop stepping, and other aspects, allowing for flexible loop structures.</p>
 <p>In contrast, Choreo, being a domain-specific language for data movement, supports a more constrained loop structure. The current loop construction in Choreo is as follows:</p>
-<div class="highlight"><pre><span></span><code>foreach index {
+<pre class="highlight"><code class="language-choreo">foreach index {
   // loop body
-}
-</code></pre></div>
+}</code></pre>
 <p>Here, <code>index</code> is a <em>bounded variable</em> (introduced in the previous section). If <code>index</code> has an upper bound of <code>6</code>, the above code is equivalent to:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">index</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="c1">// loop body</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">for (int index = 0; index &lt; 6; ++index) {
+  // loop body
+}</code></pre>
 <p>While <em>bounded variables</em> may seem restrictive, they are sufficient for data movement tasks, as you typically won't move data with a negative or out-of-bound index.</p>
 <p>In Choreo, <em>bounded variables</em> defined within a <code>parallel-by</code> statement are immutable and cannot be used in <code>foreach</code> statements. Instead, programmers should use the <code>with-in</code> statement to define the <em>bounded variables</em> suitable for loops.</p>
 <h2 id="the-with-in-block">The <strong>With-In</strong> Block<a class="headerlink" href="#the-with-in-block" title="Permanent link">&para;</a></h2>
 <h3 id="defining-bounded-variables">Defining <em>Bounded Variable</em>s:<a class="headerlink" href="#defining-bounded-variables" title="Permanent link">&para;</a></h3>
 <p>A <code>with-in</code> statement allows you to define either a <em>bounded integer</em> or a <em>bounded ituple</em>. Syntactically, it resembles the <code>parallel-by</code> statement but only defines <em>bounded variable</em>s without invoking multiple instances for execution. Below are examples:</p>
-<div class="highlight"><pre><span></span><code>with x in 128 {
-  // &#39;x&#39; is a bounded integer
+<pre class="highlight"><code class="language-choreo">with x in 128 {
+  // 'x' is a bounded integer
 }
 with y in [512] {
-  // &#39;y&#39; is a bounded ituple
+  // 'y' is a bounded ituple
 }
 with index in [10, 10] {
-  // &#39;index&#39; is a bounded ituple
-}
-</code></pre></div>
+  // 'index' is a bounded ituple
+}</code></pre>
 <p>Here, <code>x</code> represents a bounded integer with an upper bound of <code>128</code>. Both <code>y</code> and <code>index</code> represent bounded ituples whose upper bounds are <code>512</code> and <code>10, 10</code> respectively. Similar to the <code>parallel-by</code> statement, you can name the elements of the ituple for clarity or declare both the bounded ituple and the associated bounded integers, as shown below:</p>
-<div class="highlight"><pre><span></span><code>with {x, y} in [10, 10] {
+<pre class="highlight"><code class="language-choreo">with {x, y} in [10, 10] {
   // x and y are explicitly named elements of the ituple
 }
 with index = {x, y} in [10, 10] {
-  // &#39;x&#39;, &#39;y&#39;, and &#39;index&#39; can be used within the block
-}
-</code></pre></div>
+  // 'x', 'y', and 'index' can be used within the block
+}</code></pre>
 <p>Like the <code>parallel-by</code> statement, multiple <code>with-in</code> declarations can be combined using a comma-separated syntax, as demonstrated below:</p>
-<div class="highlight"><pre><span></span><code>with index = {x, y} in [10, 10], idx in [100, 10] { }
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">with index = {x, y} in [10, 10], idx in [100, 10] { }</code></pre>
 <p>In this way, two bounded ituples are defined. Note that either <code>index</code> or <code>idx</code> can only be referenced within the following <code>with-in</code> block.</p>
 <h2 id="the-foreach-block">The <code>foreach</code> Block<a class="headerlink" href="#the-foreach-block" title="Permanent link">&para;</a></h2>
 <h3 id="basic-syntax">Basic Syntax<a class="headerlink" href="#basic-syntax" title="Permanent link">&para;</a></h3>
 <p>The <code>with-in</code> statement defines <em>bounded variable</em>s, which can then be iterated over using the <code>foreach</code> statement. The basic syntax is as follows:</p>
-<div class="highlight"><pre><span></span><code>with index in [6] {
+<pre class="highlight"><code class="language-choreo">with index in [6] {
   foreach index {
     // Perform operations with each index
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, the <code>foreach</code> block iterates 6 times, with the value of the <strong>iteration variable</strong> <code>index</code> ranging from <code>0</code> to <code>5</code> incrementally.</p>
 <p>It is also possible to iterate over <em>bounded ituple</em>s. For example:</p>
-<div class="highlight"><pre><span></span><code>with index = {x, y} in [6, 17] {
+<pre class="highlight"><code class="language-choreo">with index = {x, y} in [6, 17] {
   foreach index { }
-}
-</code></pre></div>
+}</code></pre>
 <p>This code defines a <em>bounded ituple</em> <code>index</code>. Iterating over <code>index</code> is equivalent to a nested loop structure:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">x</span><span class="p">)</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">17</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">for (int x = 0; x &lt; 6; ++x)
+  for (int y = 0; y &lt; 17; ++y) { }</code></pre>
 <p>Notice the ordering of the loop nesting: the <strong>left-to-right</strong> order of the <em>bounded variable</em>s within a <em>bounded ituple</em> corresponds to the <strong>outer-to-inner</strong> nesting of the loops. This ordering is essential for correct code behavior constructing sometimes.</p>
 <p>Furthermore, This rule also applies to the <em>comma-separated bounded variable list</em> that follows the <code>foreach</code> statement:</p>
-<p><div class="highlight"><pre><span></span><code>with index = {x, y} in [6, 17], iv in [128] {
+<p><pre class="highlight"><code class="language-choreo">with index = {x, y} in [6, 17], iv in [128] {
   foreach iv, index { }
-}
-</code></pre></div>
+}</code></pre>
 In this code, two bounded variables are defined. The following <code>foreach</code> block is equivalent to a multi-level nested loop:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iv</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iv</span><span class="p">)</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">x</span><span class="p">)</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">17</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">for (int iv = 0; iv &lt; 128; ++iv)
+  for (int x = 0; x &lt; 6; ++x)
+    for (int y = 0; y &lt; 17; ++y) { }</code></pre>
 <h3 id="syntactic-sugar">Syntactic Sugar<a class="headerlink" href="#syntactic-sugar" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>foreach x in 128 { }
+<pre class="highlight"><code class="language-choreo">foreach x in 128 { }
 foreach idx in [10, 20] { }
-foreach {y, z} in [8, 16] { }
-</code></pre></div>
+foreach {y, z} in [8, 16] { }</code></pre>
 <p>The code above is equivalent to the following code:</p>
-<div class="highlight"><pre><span></span><code>with x in 128 {
+<pre class="highlight"><code class="language-choreo">with x in 128 {
   foreach x { }
 }
 
@@ -3114,21 +3103,17 @@ with idx in [10, 20] {
 
 with {y, z} in [8, 16] {
   foreach y, z { }
-}
-</code></pre></div>
+}</code></pre>
 <h3 id="deriving-the-loop-from-a-bounded-integer">Deriving the Loop From a Bounded Integer<a class="headerlink" href="#deriving-the-loop-from-a-bounded-integer" title="Permanent link">&para;</a></h3>
 <p>In certain scenarios, such as pipelining data movement, it may be necessary to modify loop iterations. In Choreo, this can be achieved by deriving a loop from a <em>bounded integer</em> within the <code>foreach</code> statement. For example:</p>
-<div class="highlight"><pre><span></span><code>with {x, y} in [6, 17] {
+<pre class="highlight"><code class="language-choreo">with {x, y} in [6, 17] {
   foreach x, y(1::) { }
-}
-</code></pre></div>
+}</code></pre>
 <p>In this case, the <strong>Range Expression</strong> <code>y(1::)</code> is used to derive the loop. This results in equivalent C/C++ code:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">x</span><span class="p">)</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">17</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">for (int x = 0; x &lt; 6; ++x)
+  for (int y = 1; y &lt; 17; ++y) { }</code></pre>
 <p>As seen in the code, the <code>y</code>-loop starts at <code>1</code>. The <em>range expression</em> consists of a <em>bounded variable</em>, followed by braced enclosing three colon-separated integer values, like the below form:</p>
-<div class="highlight"><pre><span></span><code>  bounded-variable(lower-offset:upper-offset:stride)
-</code></pre></div>
+<pre class="highlight"><code>  bounded-variable(lower-offset:upper-offset:stride)</code></pre>
 <p>This derives a loop from the <code>bounded-variable</code>, where the <code>bounded-variable</code> serves as the <em>iteration variable</em> of the loop. Specifically:</p>
 <ul>
 <li>The initial value of the <em>iteration variable</em> is the <code>lower-offset</code> plus the lower bound of the <code>bounded-variable</code>. Since all bounded integers have a lower bound of <code>0</code> in Choreo, the <code>lower-offset</code> sets the initial value of the loop.</li>
@@ -3152,14 +3137,13 @@ with {y, z} in [8, 16] {
 </li>
 </ul>
 <p>Programmers may encounter issues when using the current value of a bounded variable outside of a <code>foreach</code> statement, particularly after the loop has completed. By definition, the current value of a bounded variable is immutable except within a <code>foreach</code> loop. The following code illustrates this:</p>
-<div class="highlight"><pre><span></span><code>with x in 6 {
-  // x&#39;s current value is 0
+<pre class="highlight"><code class="language-choreo">with x in 6 {
+  // x's current value is 0
   foreach x {
-    // x&#39;s current value is either 0, 1, 2, ..., 5
+    // x's current value is either 0, 1, 2, ..., 5
   }
-  // x&#39;s current value is 0, NOT 6
-}
-</code></pre></div>
+  // x's current value is 0, NOT 6
+}</code></pre>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>
 <p>In this section, we explain the use of <code>with-in</code> and <code>foreach</code> statements in Choreo to define and iterate over <em>bounded variable</em>s, which are essential for data movement tasks. We introduced the syntax and behavior of these constructs, including how to apply range operations to modify loop iterations and the importance of understanding the current and upper-bound values of bounded variables.</p>
 <p>The loop deriving part is important for implementing multi-buffering data movement, which is essential for building high-performance kernels and will be introduced in optimization chapters later.</p>

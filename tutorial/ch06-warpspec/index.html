@@ -593,10 +593,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#full-tileflow-1p1c-matmul" class="md-nav__link">
+  <a href="#full-choreo-function-1p1c-matmul" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full tileflow: 1P1C matmul
+        Full Choreo function: 1P1C matmul
       
     </span>
   </a>
@@ -2834,10 +2834,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#full-tileflow-1p1c-matmul" class="md-nav__link">
+  <a href="#full-choreo-function-1p1c-matmul" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full tileflow: 1P1C matmul
+        Full Choreo function: 1P1C matmul
       
     </span>
   </a>
@@ -2991,7 +2991,7 @@
 
 <h1 id="async-pipelining-inthreads-events-and-warp-roles">Async Pipelining: inthreads, Events, and Warp Roles<a class="headerlink" href="#async-pipelining-inthreads-events-and-warp-roles" title="Permanent link">&para;</a></h1>
 <p>Chapter 3’s double buffering interleaves producer and consumer work on the <strong>same threads</strong>: two named slots, a prologue, a steady-state loop with <strong><code>swap</code></strong>, and an epilogue. Warp specialization assigns those roles to <strong>different warpgroups</strong> so loads and math <strong>truly overlap in time</strong>, coordinated by <strong>shared events</strong> instead of swapping buffer aliases. The <strong>1 producer + 1 consumer (1P1C)</strong> kernel in <strong><code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code></strong> is the canonical example.</p>
-<p>You still need <strong>TMA</strong> and <strong>swizzle</strong> from Chapter 4 and <strong>WGMMA</strong> with <strong><code>: group-4</code></strong> from Chapter 5. This chapter connects them with <strong>shared events</strong>, <strong><code>inthreads.async</code></strong>, <strong>async TMA completion</strong> wired to events, and <strong><code>mma.commit</code></strong>. The tileflow below matches the benchmark header:</p>
+<p>You still need <strong>TMA</strong> and <strong>swizzle</strong> from Chapter 4 and <strong>WGMMA</strong> with <strong><code>: group-4</code></strong> from Chapter 5. This chapter connects them with <strong>shared events</strong>, <strong><code>inthreads.async</code></strong>, <strong>async TMA completion</strong> wired to events, and <strong><code>mma.commit</code></strong>. The Choreo function below matches the benchmark header:</p>
 <ul>
 <li><strong><code>MATMUL_WARP_M = 64</code></strong>, <strong><code>MATMUL_WARP_N = 128</code></strong> — warpgroup output tile (WGMMA footprint along M and N).</li>
 <li><strong><code>MATMUL_TILE_K = 64</code></strong> — K depth of each staged slab in shared memory per pipeline stage.</li>
@@ -3007,18 +3007,17 @@
 <p>On <strong>NVIDIA Hopper</strong>, a block can host <strong>multiple warpgroups</strong>; <strong>WGMMA</strong> already used <strong>four warps</strong> (<strong><code>: group-4</code></strong>) in Chapter 5. The 1P1C kernel launches <strong>two</strong> such groups (<strong><code>parallel p1 by 2 : group-4</code></strong>) and uses <strong><code>p1</code></strong> as a role index. Choreo expresses that with <strong><code>inthreads.async (condition)</code></strong>: only the warpgroup for which <strong><code>condition</code></strong> holds runs the block — here <strong><code>p1 == 0</code></strong> or <strong><code>p1 == 1</code></strong>. That is <strong>role specialization</strong> in the parallel structure, not a scattered runtime <strong><code>if</code></strong> around unrelated code. A plain <strong><code>if (p1 == 0)</code></strong> inside one body could diverge every instruction; <strong><code>inthreads.async (…)</code></strong> keeps <strong>two straight-line loop nests</strong>, one per role, which is the idiomatic spell when you read <strong><code>inthreads.async</code></strong> in repository <strong><code>.co</code></strong> files.</p>
 <h2 id="shared-memory-and-the-event-arrays">Shared memory and the event arrays<a class="headerlink" href="#shared-memory-and-the-event-arrays" title="Permanent link">&para;</a></h2>
 <p>Before roles split, the block declares staging for <strong>all</strong> pipeline slots:</p>
-<div class="highlight"><pre><span></span><code>shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
+<pre class="highlight"><code class="language-choreo">shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
 shared f16 [MATMUL_STAGES * MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
 shared f16 [MATMUL_STAGES * MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
-</code></pre></div>
+shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;</code></pre>
 <p><strong><code>shared event</code></strong> declares <strong>named synchronization events</strong> in shared scope. <strong><code>wait event_name</code></strong> blocks until another participant has <strong>signaled</strong> that event; <strong><code>trigger event_name</code></strong> wakes waiters. <strong><code>full[s]</code></strong> means stage <strong><code>s</code></strong> has been filled by TMA and is ready for WGMMA. <strong><code>empty[s]</code></strong> means the consumer has finished with stage <strong><code>s</code></strong> and the producer may overwrite it. The <strong>full/empty</strong> naming is conventional and matches many CPU producer–consumer queues.</p>
 <p><strong><code>lhs_load_s</code></strong> and <strong><code>rhs_load_s</code></strong> are <strong><code>MATMUL_STAGES</code></strong> copies of the same logical shape — a <strong>ring</strong> of <strong>A</strong> and <strong>B</strong> slabs. Physically, <strong><code>lhs_load_s</code></strong> uses leading dimension <strong><code>MATMUL_STAGES * MATMUL_WARP_M</code></strong> and <strong><code>rhs_load_s</code></strong> uses <strong><code>MATMUL_STAGES * MATMUL_WARP_N</code></strong>, so each <strong><code>stage</code></strong> owns a contiguous <strong><code>MATMUL_WARP_M × MATMUL_TILE_K</code></strong> or <strong><code>MATMUL_WARP_N × MATMUL_TILE_K</code></strong> slab. Index <strong><code>stage</code></strong>, from <strong><code>iv_k % MATMUL_STAGES</code></strong>, picks which slab row you address with <strong><code>.at(stage, 0)</code></strong>.</p>
 <p>In the <strong><code>swap(lf0, lf1)</code></strong> world, two names alias two buffers and you exchange them each iteration; here <strong>names stay fixed</strong> and you <strong>cycle <code>stage</code></strong>, while <strong><code>full</code> / <code>empty</code></strong> carry the “which side is current” handshake. The structural difference from Chapter 3 is <strong>concurrency</strong>: swap pipelining <strong>interleaves</strong> on one thread set; 1P1C <strong>overlaps</strong> TMA and WGMMA <strong>across warpgroups</strong> — your profiler can show both busy in the same block.</p>
 <p><strong><code>output_s</code></strong> is a single warpgroup-sized tile: the consumer accumulates the full K sweep into <strong><code>mc</code></strong>, <strong><code>mma.store</code></strong> once, then <strong><code>tma.copy</code></strong> to global. Only operand staging is multi-buffered.</p>
-<h2 id="full-tileflow-1p1c-matmul">Full tileflow: 1P1C matmul<a class="headerlink" href="#full-tileflow-1p1c-matmul" title="Permanent link">&para;</a></h2>
-<p>Below is the <strong><code>__co__ void matmul</code></strong> body from <strong><code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code></strong>, trimmed to tileflow (no host harness).</p>
-<div class="highlight"><pre><span></span><code>__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+<h2 id="full-choreo-function-1p1c-matmul">Full Choreo function: 1P1C matmul<a class="headerlink" href="#full-choreo-function-1p1c-matmul" title="Permanent link">&para;</a></h2>
+<p>Below is the <strong><code>__co__ void matmul</code></strong> body from <strong><code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code></strong>, trimmed to the <code>__co__</code> body (no host harness).</p>
+<pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
     shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
     shared f16 [MATMUL_STAGES * MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
@@ -3058,13 +3057,12 @@ shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
       }
     }
   }
-}
-</code></pre></div>
+}</code></pre>
 <p>The outer <strong><code>parallel {block_m, block_n} … : block</code></strong> is unchanged: one CUDA block per <strong><code>MATMUL_WARP_M × MATMUL_WARP_N</code></strong> tile. <strong><code>parallel p1 by 2 : group-4</code></strong> creates two warpgroups with <strong><code>p1 ∈ {0, 1}</code></strong>; each <strong><code>inthreads.async</code></strong> body is a <strong>different program</strong> for a different warpgroup.</p>
 <p>In the repo file, the comment block above <strong><code>matmul</code></strong> labels producer versus consumer. Trace one <strong><code>iv_k</code></strong> through both bodies (<strong><code>stage</code></strong>, <strong><code>wait</code></strong>, <strong><code>tma.copy.async</code></strong>, <strong><code>wait full</code></strong>, inner <strong><code>mma</code></strong>, <strong><code>mma.commit</code></strong>, <strong><code>trigger empty</code></strong>). Once one lap is clear, picture <strong><code>iv_k+1</code></strong> issuing on the producer while the consumer is still in the WGMMA sequence for an older <strong><code>stage</code></strong>: that overlap is the pipeline you built.</p>
 <h2 id="producer-warpgroup">Producer warpgroup<a class="headerlink" href="#producer-warpgroup" title="Permanent link">&para;</a></h2>
 <p>The <strong><code>p1 == 0</code></strong> region is the <strong>producer</strong>:</p>
-<div class="highlight"><pre><span></span><code>inthreads.async (p1 == 0) {
+<pre class="highlight"><code class="language-choreo">inthreads.async (p1 == 0) {
   foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
     stage = iv_k % MATMUL_STAGES;
     wait empty[stage];
@@ -3072,15 +3070,14 @@ shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
     tma.copy.async&lt;full[stage]&gt;.swiz&lt;MATMUL_SWIZ&gt; rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(stage, 0);
     trigger full[stage];
   }
-}
-</code></pre></div>
+}</code></pre>
 <p><strong><code>stage = iv_k % MATMUL_STAGES</code></strong> is <strong>ring indexing</strong>: after <strong><code>MATMUL_STAGES</code></strong> steps along <strong><code>iv_k</code></strong>, you reuse the same shared slice, like double buffering generalized to N slots. <strong><code>wait empty[stage]</code></strong> means the consumer has released that slot; without it, TMA could overwrite data the consumer still reads.</p>
 <p>The two <strong><code>tma.copy.async&lt;full[stage]&gt;.swiz&lt;…&gt;</code></strong> lines start <strong>asynchronous TMA</strong> from global into the <strong><code>stage</code></strong> slice. The <strong><code>&lt;full[stage]&gt;</code></strong> annotation ties transfer <strong>completion</strong> to the <strong><code>full[stage]</code></strong> event: Choreo’s contract is that hardware completion of this async transfer participates in signaling <strong><code>full</code></strong> (exact micro-model is target-specific).</p>
 <p><strong><code>trigger full[stage]</code></strong> appears <strong>after</strong> both copies are <strong>issued</strong>. Together with the <strong><code>&lt;full[stage]&gt;</code></strong> completion semantics, that yields a clear story for the consumer: <strong><code>wait full[stage]</code></strong> means the <strong>A/B</strong> slab at <strong><code>stage</code></strong> is consistent for this <strong><code>iv_k</code></strong>.</p>
 <p>The producer never touches <strong><code>mc</code></strong>, <strong><code>mma.load</code></strong>, or <strong><code>mma.row.row</code></strong>; it keeps the ring filled ahead of the consumer, modulo <strong><code>MATMUL_STAGES</code></strong>.</p>
 <h2 id="consumer-warpgroup">Consumer warpgroup<a class="headerlink" href="#consumer-warpgroup" title="Permanent link">&para;</a></h2>
 <p>The <strong><code>p1 == 1</code></strong> region is the <strong>consumer</strong>:</p>
-<div class="highlight"><pre><span></span><code>inthreads.async (p1 == 1) {
+<pre class="highlight"><code class="language-choreo">inthreads.async (p1 == 1) {
   mc = mma.fill.f16 0.0f;
   foreach {s} in [MATMUL_STAGES] {
     trigger empty[s];
@@ -3098,8 +3095,7 @@ shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
   }
   mma.store mc, output_s;
   tma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
-}
-</code></pre></div>
+}</code></pre>
 <p>Before the main K loop, <strong><code>foreach {s} in [MATMUL_STAGES] { trigger empty[s]; }</code></strong> <strong>bootstraps</strong> credits: every slot starts logically empty, but the producer blocks on <strong><code>wait empty[stage]</code></strong> until those events exist. Pre-triggering all <strong><code>empty[s]</code></strong> avoids deadlock on the first TMA wave — like initializing per-slot credits.</p>
 <p>In the steady state, <strong><code>wait full[stage]</code></strong> waits until TMA and signaling mean <strong><code>stage</code></strong> holds a consistent <strong>A/B</strong> slab for this <strong><code>iv_k</code></strong>. The inner <strong><code>foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)]</code></strong> runs <strong><code>MATMUL_TILE_K / MATMUL_WARP_K</code></strong> WGMMA steps (here <strong>64/16 = 4</strong>): each pass uses <strong><code>chunkat(_, iv_warp)</code></strong> on both staged tensors, <strong><code>mma.load.swiz&lt;MATMUL_SWIZ&gt;</code></strong>, then <strong><code>mma.row.row mc, ma, mb</code></strong>, same Chapter 5 pattern but reading <strong><code>at(stage, 0)</code></strong>. All passes accumulate into the same <strong><code>mc</code></strong> for this <strong><code>iv_k</code></strong> before <strong><code>mma.commit</code></strong>.</p>
 <p><strong><code>mma.commit</code></strong> ends the <strong>pipeline stage</strong> from the accumulator’s perspective. WGMMA overlaps operand movement and math deeply; without this boundary, you risk <strong>semantic overlap</strong> between micro-operations the hardware still treats as in flight for the prior stage and the next round of <strong><code>wait full</code></strong> / <strong><code>mma.load</code></strong> assumptions about <strong>shared</strong> contents.</p>
@@ -3180,7 +3176,7 @@ shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
 <p>You have walked the <strong>1P1C</strong> pattern end to end: one warpgroup keeps <strong>TMA</strong> in flight while another <strong>consumes</strong> with <strong>WGMMA</strong>, coordinated by <strong><code>full</code> / <code>empty</code></strong> instead of Chapter 3’s <strong><code>swap</code></strong>. On the producer, the steady rhythm is <strong><code>wait empty</code> → async TMA → <code>trigger full</code></strong>; on the consumer, <strong><code>wait full</code> → inner WGMMA → <code>mma.commit</code> → <code>trigger empty</code></strong>. <strong><code>iv_k % MATMUL_STAGES</code></strong> maps a long K sweep onto a small shared ring without changing the math — only <strong>who</strong> runs <strong>when</strong>.</p>
 <p>Relative to Chapters 3–5, the new vocabulary is <strong><code>inthreads.async (condition)</code></strong> for <strong>warpgroup roles</strong>, <strong><code>shared event</code></strong> arrays, <strong><code>wait</code> / <code>trigger</code></strong>, <strong><code>tma.copy.async&lt;event&gt;.swiz&lt;N&gt;</code></strong> (completion tied to <strong><code>event</code></strong>), and <strong><code>mma.commit</code></strong> as the fence between WGMMA pipeline stages. <strong><code>grep</code></strong> <strong><code>inthreads.async</code></strong> in the benchmark tree when you want more working examples of the same idea.</p>
 <p>For source and harness, open <strong><code>choreo/benchmark/performance/matmul/matmul_f16_dyn_sm90_warpspec_1p1c.co</code></strong>. The swap baseline lives in <strong><code>croktile-tutorial/tutorial/ch03-pipeline.md</code></strong>. For event semantics beyond this matmul, see <strong><code>croktile-tutorial/documentation/events.md</code></strong>.</p>
-<p>Chapter 7 (persistent kernels) and Chapter 8 (multi-warpgroup scaling) build on the same tileflow: you already know how to <strong>fill</strong>, <strong>compute</strong>, and <strong>store</strong>; warp specialization adds <strong>which warpgroup</strong> owns each phase and how credits move around the ring.</p>
+<p>Chapter 7 (persistent kernels) and Chapter 8 (multi-warpgroup scaling) build on the same Choreo function: you already know how to <strong>fill</strong>, <strong>compute</strong>, and <strong>store</strong>; warp specialization adds <strong>which warpgroup</strong> owns each phase and how credits move around the ring.</p>
 <p>If you want hands-on checks, compare wall-clock and TFLOPS against <strong><code>matmul_f16_dyn_sm90.co</code></strong> on the same <strong>M, N, K</strong> after you align timing flags — gains track problem size, memory bandwidth, and stage count, not a universal speedup.</p>
 <p>In a scratch copy of the warpspec file, try <strong><code>MATMUL_STAGES = 2</code></strong> and watch occupancy and stalls in your tooling. In a disposable branch, delete the <strong><code>trigger empty</code></strong> prologue once to see the deadlock, then restore it.</p>
 <p>You may enable <strong><code>CHOREO_SKIP_VERIFY</code></strong> for faster iteration while editing, but run a full host check on <strong>C</strong> before you trust TFLOPS — a green verify is your first signal that <strong><code>full</code> / <code>empty</code></strong> ordering still matches the ring index math.</p>

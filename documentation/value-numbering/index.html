@@ -2815,16 +2815,14 @@
 <p>In terms of the implementation method, Choreo utilizes a simple <strong>scope-based</strong> value numbering approach, an extension of the local value numbering method, complemented by a lexical-scoped value number table[1]. Unlike other value numbering methods, Choreo does not necessitate the construction of basic blocks, pruned-SSA, or a compiler backend, as it applies value numbering directly onto the Abstract Syntax Tree (AST). However, to facilitate this approach, certain restrictions must be imposed on Choreo's syntax rules, particularly to prevent value mutation.</p>
 <h2 id="quick-example">Quick Example<a class="headerlink" href="#quick-example" title="Permanent link">&para;</a></h2>
 <p>The value numbering process assigns a value number to all entities containing a list of values, including for mdspan and ituple. For example,
-<div class="highlight"><pre><span></span><code>mdspan a : {1, b, c + 3}
-</code></pre></div>
+<pre class="highlight"><code>mdspan a : {1, b, c + 3}</code></pre>
 The value numbering process would produce values including:
-<div class="highlight"><pre><span></span><code>   VN #0:  const_1
+<pre class="highlight"><code>   VN #0:  const_1
    VN #1:  b
    VN #2:  c
    VN #3:  const_3
    VN #4:  +:#2:#3
-   VN #5:  #0,#1,#4
-</code></pre></div>
+   VN #5:  #0,#1,#4</code></pre>
 In this illustration, the number after "VN #" is the value number of an expression. I either represents a constant integer value (known at compile time), a symbolic value (like variable 'a', 'b'), or composition of other value numbers.
 Here, value number #0 and #3 represents a reference to constant value, where #1, and #2 represents reference to the integer-typed variable "b" and "c". #4 represents the value of an addition expression, which gives the sum of #2 and #3. That is the expression of 'c + 3' when dereferencing all the value numbers. And lastly, value number #5 represents the list of values defined by mdspan 'a' symbolically.
 With such a definition, we may translate the indexing operations, e.g. "a(0)", results in value number #0 and thus a constant of 1.</p>
@@ -2845,20 +2843,17 @@ With such a definition, we may translate the indexing operations, e.g. "a(0)", r
 <p>Note the symbol must use its <em>scoped name</em> for signature generation, since identical names are allowed to be defined in different scope.</p>
 <h2 id="simplifications">Simplifications<a class="headerlink" href="#simplifications" title="Permanent link">&para;</a></h2>
 <p>Every time the value numbering process generates a signature, it tries to simplify the expression. For example,</p>
-<p><div class="highlight"><pre><span></span><code>   int a = 0 + 1;
-</code></pre></div>
+<p><pre class="highlight"><code>   int a = 0 + 1;</code></pre>
 Given the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:</p>
-<p><div class="highlight"><pre><span></span><code>   VN #0:  const_3
+<p><pre class="highlight"><code>   VN #0:  const_3
    VN #1:  const_8
    VN #2:  +:#0:#1
-   Alias a -&gt; #2
-</code></pre></div>
+   Alias a -&gt; #2</code></pre>
 Here, without optimizations, two constant values #0 and #1, and a new value number #2, which is an addition of #0 and #1 are generated. #2 has the signature of "+:#0:#1". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The below output showcases the optimized value numbering process:</p>
-<p><div class="highlight"><pre><span></span><code>   VN #0:  const_3
+<p><pre class="highlight"><code>   VN #0:  const_3
    VN #1:  const_8
    VN #2:  const_11
-   Alias a -&gt; #2
-</code></pre></div>
+   Alias a -&gt; #2</code></pre>
 The signature of #2 now represents a constant, which implies the algebraic simplification is applied successfully.</p>
 <h2 id="from-value-numbers-to-expression">From Value Numbers to Expression<a class="headerlink" href="#from-value-numbers-to-expression" title="Permanent link">&para;</a></h2>
 <p>After value numbering and simplification, each expression is associated with its simplified value number. In Choreo, this is important step for the shape inference process of the mdspan type.</p>

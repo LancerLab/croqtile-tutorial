@@ -2781,42 +2781,36 @@
 <li>Global memory is suitable for storing large datasets that need to be shared across multiple processing units or components, such as matrices in deep learning applications or large scientific datasets.</li>
 </ul>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>global f32 [100, 200] matrix;
-</code></pre></div></p>
+<pre class="highlight"><code class="language-choreo">global f32 [100, 200] matrix;</code></pre></p>
 <h3 id="2-shared">2. <code>shared</code><a class="headerlink" href="#2-shared" title="Permanent link">&para;</a></h3>
 <p>The shared memory space is typically used for fast, high-throughput access by processing units within a single compute node (e.g., threads in a GPU block or a CPU core).
 Data stored in shared memory is generally smaller in size than global memory but offers much faster access times. It's ideal for storing intermediate data, which needs to be accessed frequently during computation, but is not shared across different compute units.
 Shared memory allows for efficient data transfer within compute units and can be crucial for optimizing algorithms like matrix multiplication, where intermediate results are reused multiple times.
 Example:
-<div class="highlight"><pre><span></span><code>shared f32 [10, 10] tile_data;
-</code></pre></div></p>
+<pre class="highlight"><code class="language-choreo">shared f32 [10, 10] tile_data;</code></pre></p>
 <h3 id="3-local">3. <code>local</code><a class="headerlink" href="#3-local" title="Permanent link">&para;</a></h3>
 <p>Local memory is the smallest and fastest memory space, typically used for storing very small data that only needs to be accessed by a specific thread or computation unit.
 It is particularly useful when each thread requires a small amount of data, such as scalar values or small arrays that do not need to be shared with other threads.
 Local memory is often used in parallel computing scenarios where data needs to be private to each thread and accessed very quickly, but it is not meant for large datasets.
 Example:
-<div class="highlight"><pre><span></span><code>local f16 [5] thread_local_data;
-</code></pre></div></p>
+<pre class="highlight"><code class="language-choreo">local f16 [5] thread_local_data;</code></pre></p>
 <h2 id="default-behavior-and-usage">Default Behavior and Usage<a class="headerlink" href="#default-behavior-and-usage" title="Permanent link">&para;</a></h2>
 <p>By default, when a storage qualifier is not specified, the data is considered to be in global memory. This default behavior simplifies memory management for users who do not need to explicitly define where their data should be stored, but it also means that accessing such data could incur higher latency, especially when working with large arrays or parallel processing units.</p>
 <p>For example, the following code defines an array d0 without any storage qualifier, implying it resides in global memory:
-<div class="highlight"><pre><span></span><code>f32 [100, 100] d0;
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">f32 [100, 100] d0;</code></pre>
 If you want to place data in a different memory space (shared or local), you need to specify the appropriate storage qualifier. For example, the following code places the matrix d0 in local memory, and the matrix d1 in shared memory:
-<div class="highlight"><pre><span></span><code>local f32 [10, 10] d0;     // Small data, local to the thread
-shared f16 [ndims] d1;     // Intermediate data, shared between threads in a block
-</code></pre></div></p>
+<pre class="highlight"><code class="language-choreo">local f32 [10, 10] d0;     // Small data, local to the thread
+shared f16 [ndims] d1;     // Intermediate data, shared between threads in a block</code></pre></p>
 <h3 id="example-code-using-storage-qualifiers">Example Code: Using Storage Qualifiers<a class="headerlink" href="#example-code-using-storage-qualifiers" title="Permanent link">&para;</a></h3>
 <p>To better understand how storage qualifiers work, consider the following code example:
-<div class="highlight"><pre><span></span><code>ndims : [20, 15];
+<pre class="highlight"><code class="language-choreo">ndims : [20, 15];
 local f32 [10, 10] d0;        // Local memory for thread-specific data
 shared f16 [ndims] d1;        // Shared memory for intermediate data across threads
 global f32 [100, 200] matrix; // Global memory for large dataset
 
 // Perform computations on these arrays, utilizing the appropriate storage space
 dma.copy d0 =&gt; d1;            // Copy from local to shared memory
-dma.copy d1 =&gt; matrix;        // Copy from shared to global memory
-</code></pre></div>
+dma.copy d1 =&gt; matrix;        // Copy from shared to global memory</code></pre>
 In this code:</p>
 <p>d0 is a small, thread-specific data array placed in local memory.
 d1 is an intermediate array placed in shared memory to be used by multiple threads within a block.

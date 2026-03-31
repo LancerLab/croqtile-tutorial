@@ -2988,68 +2988,61 @@
 <h3 id="input-parameters">Input Parameters<a class="headerlink" href="#input-parameters" title="Permanent link">&para;</a></h3>
 <p>For a Choreo function, it only accepts two types of input parameters: the <em>spanned data</em>, and the <em>integer</em>.</p>
 <p>Similar to any C++ program, the parameter may either be named or unnamed:</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo(f32 [7] a, int) {...}
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">__co__ void foo(f32 [7] a, int) {...}</code></pre>
 <p>In this example, the second parameter is unnamed, which makes it unable to be reference in the Choreo function. However, this is still the valid code.</p>
 <h3 id="c-host-data-argument-with-shape">C++ Host: Data Argument with Shape<a class="headerlink" href="#c-host-data-argument-with-shape" title="Permanent link">&para;</a></h3>
 <p>One obvious gap between C/C++ pointers/arrays and Choreo <em>spanned data</em> is that <em>spanned data</em> is shaped. Therefore, to call a Choreo function, it is necessary to convert pointers or arrays.</p>
 <p>One direct method is to use the Choreo API provided in <code>choreo.h</code>. Though programs does not necessary to explicitly include <code>choreo.h</code> in Choreo compilation environment, it is included for every Choreo-C++ programs. </p>
-<div class="highlight"><pre><span></span><code>__co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
+<pre class="highlight"><code class="language-choreo">__co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
 
 void entry(float * input, float* output) {
   // foo(input, output); &lt;-- result in error since missing shape
 
   foo(choreo::make_spanned&lt;2&gt;(input, {7, 16}),
       choreo::make_spanned&lt;2&gt;(output, {7, 16}));
-}
-</code></pre></div>
+}</code></pre>
 <p>In the above example, we make use of <code>choreo::make_spanned</code> function template, providing the rank as template parameter, and typed pointer together with shape list as the function parameters. In this way, a shape is attached with the pointer, which makes a valid Choreo function parameter. As you may figure out from <code>choreo.h</code>, it results in <code>choreo::spanned_view</code> object, which simply wraps the C/C++ pointer/array and the array-based list. To make it easy to understand, we list simplified definition is like:</p>
-<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">Rank</span><span class="o">&gt;</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">spanned_view</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">;</span><span class="w">                 </span><span class="c1">// typed pointer to the data</span>
-<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dims</span><span class="p">[</span><span class="n">Rank</span><span class="p">];</span><span class="w">      </span><span class="c1">// ranked dimensions</span>
-<span class="p">};</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">template &lt;typename T, size_t Rank&gt;
+class spanned_view {
+  T* ptr;                 // typed pointer to the data
+  size_t dims[Rank];      // ranked dimensions
+};</code></pre>
 <p>It is also possible to have variable as dimensions to construct the shaped data, like following:</p>
-<p><div class="highlight"><pre><span></span><code>__co__ void foo(f32 [7, 16] input) {...}
+<p><pre class="highlight"><code class="language-choreo">__co__ void foo(f32 [7, 16] input) {...}
 
 void entry(float * input, float* output, int M, int N) {
   foo(choreo::make_spanned&lt;2&gt;(input, {M, N})),
-}
-</code></pre></div>
+}</code></pre>
 In this example, the <code>input</code> shape is runtime variable. But do not worry if wrong parameter is provided. Choreo will check if <code>M == 7</code> and <code>N == 16</code> when entering into the tileflow program. <strong>If not, the program will terminate immediately</strong> since all the assumptions about shapes in the Choreo function does not hold.</p>
 <p>One important notice for the <em>spanned data</em> inputs is that they are <strong>references to the input data/buffers</strong>. That implies no data copy happens at invoking Choreo function, though somebody may think from the language perspective it look like copy-semantics.</p>
 <h2 id="choreo-function-output">Choreo Function Output<a class="headerlink" href="#choreo-function-output" title="Permanent link">&para;</a></h2>
 <h3 id="return-type-and-type-deduction">Return Type and Type Deduction<a class="headerlink" href="#return-type-and-type-deduction" title="Permanent link">&para;</a></h3>
 <p>Similar to the input, <em>spanned data</em> and <em>integer</em> are valid output types. The <em>void</em> type is also allowed if nothing is returned.</p>
 <p>In addition to the explicit return type annotation, Choreo support type inference on returns. For example:</p>
-<p><div class="highlight"><pre><span></span><code>__co__ auto foo() {
+<p><pre class="highlight"><code class="language-choreo">__co__ auto foo() {
   f32 [7, 16] result;
   // ...
   return result;
-}
-</code></pre></div>
+}</code></pre>
 In this code, the return type is annotated as <code>auto</code>, which is the same keyword as C++. Choreo is capable of inferring return type as <code>f32 [7, 16]</code>. Therefore, it is recommended to use <code>auto</code> whenever possible.</p>
 <h3 id="c-host-shape-return">C++ Host: Shape Return<a class="headerlink" href="#c-host-shape-return" title="Permanent link">&para;</a></h3>
 <p>The C++ host code that receives the output of Choreo function actually receives a buffer. Semantics, the return must be copied than reference, or else it returns a reference to an object allocated in the called function. For example:</p>
-<div class="highlight"><pre><span></span><code>__co__ auto foo() {
+<pre class="highlight"><code class="language-choreo">__co__ auto foo() {
   f32 [7, 16] output;
   // ...
   return output;  // semantically copy
 }
 
 void entry() {
-  auto result = foo(); // move the &#39;spanned_data&#39; to caller
+  auto result = foo(); // move the 'spanned_data' to caller
   // ...
-}
-</code></pre></div>
+}</code></pre>
 <p>In this example, the <code>output</code> is semantically copied to the caller. However, in Choreo's implementation, no copy happens. The returned type is <code>choreo::spanned_data</code>, where its simplified definition is as following:</p>
-<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">Rank</span><span class="o">&gt;</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">spanned_data</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ptr</span><span class="p">;</span><span class="w"> </span><span class="c1">// move only pointers</span>
-<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dims</span><span class="p">[</span><span class="n">Rank</span><span class="p">];</span><span class="w">        </span><span class="c1">// ranked dimensions</span>
-<span class="p">};</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">template &lt;typename T, size_t Rank&gt;
+class spanned_data {
+  std::unique_ptr&lt;T[]&gt; ptr; // move only pointers
+  size_t dims[Rank];        // ranked dimensions
+};</code></pre>
 <p>In contrary to <code>choreo::spanned_view</code>, <code>choreo::spanned_data</code> owns the buffer it points to. Thus there is <strong>no copy actually happen when returning from a Choreo function</strong>. In compiler's term, this is called the <em>Return Value Optimization</em>.</p>
 <p>You may use member function like <code>.rank()</code>, <code>.shape()</code> to query shape related information of Choreo return. This allows you able to work without knowing the too much detail about Choreo function.</p>
 <h2 id="more-questions">More Questions<a class="headerlink" href="#more-questions" title="Permanent link">&para;</a></h2>

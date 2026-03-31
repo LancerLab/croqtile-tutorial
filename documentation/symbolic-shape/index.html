@@ -2943,72 +2943,65 @@
 <p>Data with fixed shapes is commonly used in high-performance computing kernels, allowing for aggressive optimization with known dimensions. However, certain scenarios require handling shapes with runtime dimensions, known as dynamic shapes. This necessitates kernel generality to manage inputs of varying shapes, a feature highlighted by many machine learning frameworks.</p>
 <h2 id="mdspan-with-anonymous-dimension"><em>mdspan</em> with <strong>Anonymous Dimension</strong><a class="headerlink" href="#mdspan-with-anonymous-dimension" title="Permanent link">&para;</a></h2>
 <p>Choreo supports shape dimensions with unknown values, similar to many high-level machine learning languages. The simplest method is to use <strong>Anonymous Dimension</strong> in <code>mdspan</code>:</p>
-<div class="highlight"><pre><span></span><code>__co__ auto foo(s32 [?, 1, 2] input) { ... }
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">__co__ auto foo(s32 [?, 1, 2] input) { ... }</code></pre>
 <p>Here, the question mark <code>?</code> represents a compile-time unknown value. Any positive integer could be assumed here. However, the value must be provided at runtime, as the following example shows:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">dim0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">foo</span><span class="p">(</span><span class="n">choreo</span><span class="o">::</span><span class="n">make_spanview</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">dim0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">}));</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">void bar(int * data, int dim0) {
+  foo(choreo::make_spanview&lt;3&gt;(data, {dim0, 1, 2}));
+}</code></pre>
 <p>In this example, the first dimension of <code>input</code> is provided by <code>foo</code>'s <em>spanned</em> input, where the value is retrieved from <code>bar</code>'s caller at execution. You may assume the value be determined by reading a configuration file, through shape derivation in a machine learning framework, or etc..</p>
 <p>The <em>anonymous dimension</em> can work properly for this case. However, in certain scenarios, it is not sufficient.</p>
 <h2 id="step-further-symbolic-dimension">Step Further: <strong>Symbolic Dimension</strong><a class="headerlink" href="#step-further-symbolic-dimension" title="Permanent link">&para;</a></h2>
 <p>Another approach in Choreo to support dynamic shape is to use <strong>Symbolic Dimension</strong>. <em>Symbolic dimension</em>s are named but as well unknown at compile-time. Here's an example:</p>
-<p><div class="highlight"><pre><span></span><code>__co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
+<p><pre class="highlight"><code class="language-choreo">__co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
   int tile_m = 32, tile_m = 8, tile_k = 16;
 
   s32 [M / tile_m, K / tile_k] tiled_lhs;
   s32 [K / tile_k, N / tile_n] tiled_rhs;
 
   // ...
-}
-</code></pre></div>
+}</code></pre>
 In the code, each dimension is given a symbolic name (<code>M, K, N</code> in this case) for the <em>spanned</em> inputs. Compared to <em>anonymous dimension</em>, <em>symbolic dimension</em> approach clearly describes the relationship between shapes. The code looks intuitive and is easy to maintain. Furthermore, it is possible to improve the code safety with the additional information provided. Let us dive deeper for this.</p>
 <h2 id="improved-code-safety">Improved Code Safety<a class="headerlink" href="#improved-code-safety" title="Permanent link">&para;</a></h2>
 <p>The reason for improved code safety of using <em>symbolic dimension</em> is that more comprehensive code checks can be applied by Choreo compiler. For example, consider an <em>anonymous dimension</em> version of the <code>Matmul</code> function:</p>
-<div class="highlight"><pre><span></span><code>__co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
+<pre class="highlight"><code class="language-choreo">__co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
   int tile_m = 32, tile_m = 8, tile_k = 16;
 
-  s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // &#39;mdspan&#39; and &#39;ituple&#39;: rank must be same
-  s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // &#39;tiled_rhs&#39; can not have a zero dimension
+  s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // 'mdspan' and 'ituple': rank must be same
+  s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // 'tiled_rhs' can not have a zero dimension
 
   // ...
-}
-</code></pre></div>
+}</code></pre>
 <p>Choreo performs both compile-time and runtime checks to ensure safety:</p>
 <ul>
 <li><strong>Compile-time Checks</strong>: Choreo verifies rank consistency. In this example, <code>lhs.span</code> has a ranked of <code>2</code>, matching the rank of <code>{tile_m, tile_k}</code>, so there are no issues.</li>
 <li><strong>Runtime Checks</strong>: Choreo generates code to validate dimensions at runtime. For instance, in the declaration of <code>tiled_lhs</code>, its shape must not have a dimension of <code>0</code>, which would result in an invalid zero-sized buffer. Choreo's <em>transpilation</em> process generates the following <em>target host code</em>:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">__choreo_transpiled_Matmul</span><span class="p">(</span><span class="n">choreo</span><span class="o">::</span><span class="n">span_view</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">choreo</span><span class="o">::</span><span class="n">s32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span>
-<span class="w">                                </span><span class="n">choreo</span><span class="o">::</span><span class="n">span_view</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">choreo</span><span class="o">::</span><span class="n">s32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">choreo_assert</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">shape</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">                </span><span class="s">&quot;the 0 dimension of &#39;lhs&#39; may result in spanned data &quot;</span>
-<span class="w">                </span><span class="s">&quot;with a dimension value of 0.&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="c1">// ...</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="highlight"><code class="language-cpp">void __choreo_transpiled_Matmul(choreo::span_view&lt;2, choreo::s32&gt; lhs,
+                                choreo::span_view&lt;2, choreo::s32&gt; rhs) {
+  choreo_assert(lhs.shape()[0] / 32 &gt; 0,
+                "the 0 dimension of 'lhs' may result in spanned data "
+                "with a dimension value of 0.");
+  // ...
+}</code></pre>
 <p>Here, the <code>choreo_abort</code> function aborts program execution if the condition is not met. This early check helps Choreo detect issues promptly.</p>
 <p>For the <em>symbolic dimension</em> version, Choreo compiler generates additional checks in the <em>target host code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">__choreo_transpiled_Matmul</span><span class="p">(</span><span class="n">choreo</span><span class="o">::</span><span class="n">span_view</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">choreo</span><span class="o">::</span><span class="n">s32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span>
-<span class="w">                                </span><span class="n">choreo</span><span class="o">::</span><span class="n">span_view</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">choreo</span><span class="o">::</span><span class="n">s32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="c1">// additional check happens only when using symbolic dimensions</span>
-<span class="w">  </span><span class="n">choreo_assert</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">shape</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">shape</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
-<span class="w">                </span><span class="s">&quot;dimension &#39;K&#39; is not consistent.&quot;</span><span class="p">);</span>
+<pre class="highlight"><code class="language-cpp">void __choreo_transpiled_Matmul(choreo::span_view&lt;2, choreo::s32&gt; lhs,
+                                choreo::span_view&lt;2, choreo::s32&gt; rhs) {
+  // additional check happens only when using symbolic dimensions
+  choreo_assert(lhs.shape()[1] == rhs.shape()[0],
+                "dimension 'K' is not consistent.");
 
-<span class="w">  </span><span class="n">choreo_assert</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">shape</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">                </span><span class="s">&quot;the 0 dimension of &#39;lhs&#39; may result in spanned data &quot;</span>
-<span class="w">                </span><span class="s">&quot;with a dimension value of 0.&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="c1">// ...</span>
-<span class="p">}</span>
-</code></pre></div>
+  choreo_assert(lhs.shape()[0] / 32 &gt; 0,
+                "the 0 dimension of 'lhs' may result in spanned data "
+                "with a dimension value of 0.");
+  // ...
+}</code></pre>
 <p>In addition to the checks performed in the <em>anonymous dimension</em> version, the <em>symbolic dimension</em> version verifies the consistency of dimensions between <code>lhs</code> and <code>rhs</code>, resulting in safer code.</p>
 <p>Therefore, it is recommended that programmers use symbolic dimensions not only for ease of use but also to enhance code safety.</p>
 <h2 id="cost-and-limitations">Cost and Limitations<a class="headerlink" href="#cost-and-limitations" title="Permanent link">&para;</a></h2>
 <p>To support dynamic shapes, Choreo compile has to be conservative at compile time. This limitation restricts certain compile-time checks and necessitates some checks to be performed at runtime instead. Although the implementation aims to minimize overhead by placing these checks in the host code, they <strong>remain more conservative compared to code with fixed-sized shapes</strong>. Programmers should be mindful of this situation and may need to add user-level assertions to enhance code safety when necessary.</p>
 <p>A significant limitation of both <em>anonymous dimension</em> and <em>symbolic dimension</em> is that they can <strong>only be applied to the <em>spanned data</em> in parameter lists</strong>. Dimensions of buffers declared within Choreo functions cannot be made dynamic. For example, the following code will result in a compile-time error:</p>
-<div class="highlight"><pre><span></span><code>__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer
-</code></pre></div>
+<pre class="highlight"><code class="language-choreo">__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer</code></pre>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>
 <p>In this section, we discussed <em>anonymous dimension</em> and <em>symbolic dimension</em> in Choreo, which support dynamic shapes required in certain scenarios. Compared to <em>anonymous dimension</em>, using <em>symbolic dimension</em> enhance code safety through additional compile-time checks, making them the recommended choice for ease of use and improved safety.</p>
 
