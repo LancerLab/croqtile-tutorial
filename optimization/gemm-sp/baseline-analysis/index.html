@@ -1,0 +1,3623 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/optimization/gemm-sp/baseline-analysis/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../pattern-optimizations/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Baseline Analysis - Croktile</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    
+      <link rel="stylesheet" href="../../../assets/css/custom.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#baseline-analysis-structured-24-sparse-gemm" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Croktile" class="md-header__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Croktile
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Baseline Analysis
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Croktile" class="md-nav__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    Croktile
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 1: Hello Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch02-data-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 2: Data Movement Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch03-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 3: Pipeline Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 4: TMA and Swizzle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch05-mma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 5: MMA Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch06-warpspec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 6: Warp Specialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch07-persistent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Persistent Matmul
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: Multi-Warpgroup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch09-view-from/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 9: view/from
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 10: C++ Inline & Macros
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Tuning Demos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Performance Tuning Demos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup-profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense GEMM FP16
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dense GEMM FP16
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../matmul-f16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../matmul-f16/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../matmul-f16/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../matmul-f16/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-24-means-in-this-benchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What “2:4” means in this benchmark
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operand-roles-and-dtypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operand roles and dtypes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fp16-baseline-368-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FP16 baseline: 368 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e4m3-baseline-671-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4M3 baseline: 671 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profiling-lens-where-time-goes-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profiling lens: where time goes first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baseline comparison table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaway-for-the-next-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Takeaway for the next sections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effective-work-and-flop-accounting-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Effective work and FLOP accounting (2:4)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-path-why-it-shows-up-in-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata path: why it shows up in profiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-table-fp16-selected-iterations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone table: FP16 (selected iterations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-table-e4m3-selected-iterations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone table: E4M3 (selected iterations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-bottleneck-themes-cross-dtype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared bottleneck themes (cross-dtype)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-deepen-the-pipeline-vs-widen-tiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to deepen the pipeline vs widen tiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instrumentation-reminders-hopper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instrumentation reminders (Hopper)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape-specific-notes-4096-8192-8192" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shape-specific notes (4096 × 8192 × 8192)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationship-to-dense-gemm-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to dense GEMM case study
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glossary-quick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glossary (quick)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-to-diff-when-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files to diff when learning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noise-and-repeat-counts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Noise and repeat counts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#correctness-beyond-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correctness beyond TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block-Scaled GEMM FP8
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockscale-gemm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockscale-gemm/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockscale-gemm/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/what-is-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Program Structure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Program Structure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/choreo-program-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choreo-C++ Program Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaped Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shaped Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/shape-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shape and MDSpan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/integer-ituple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integers and I-Tuples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/spanned-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanned Data and Buffers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/symbolic-shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Shape and Symbolic Dimension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop and Parallelism
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Loop and Parallelism
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/intro-loop-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Parallelism and Iterations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/parallel-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPMD Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/within-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/basic-dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The DMA Statement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/tiling-chunkat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tile Data with ChunkAt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/dma-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ Embeddings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    C++ Embeddings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/input-output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs and Output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/macro-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro and Preprocessing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPMD Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MPMD Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/thread-masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thread Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events for Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/general-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    More on Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/loop-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimental Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimisation Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimisation Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/tileflow-opt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tileflow Optimisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/async-dma-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async DMA Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/multi-buffering-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-buffering Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/operator-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference Palette
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_12" id="__nav_4_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Rationales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syntax Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/why-symbolic-shapes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Symbolic Shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/value-numbering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symbolic Evaluation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../documentation/dynamic-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamism Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-24-means-in-this-benchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What “2:4” means in this benchmark
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operand-roles-and-dtypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operand roles and dtypes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fp16-baseline-368-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FP16 baseline: 368 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e4m3-baseline-671-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4M3 baseline: 671 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profiling-lens-where-time-goes-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profiling lens: where time goes first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baseline comparison table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaway-for-the-next-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Takeaway for the next sections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effective-work-and-flop-accounting-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Effective work and FLOP accounting (2:4)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-path-why-it-shows-up-in-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata path: why it shows up in profiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-table-fp16-selected-iterations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone table: FP16 (selected iterations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-table-e4m3-selected-iterations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone table: E4M3 (selected iterations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-bottleneck-themes-cross-dtype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared bottleneck themes (cross-dtype)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-deepen-the-pipeline-vs-widen-tiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to deepen the pipeline vs widen tiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instrumentation-reminders-hopper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instrumentation reminders (Hopper)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape-specific-notes-4096-8192-8192" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shape-specific notes (4096 × 8192 × 8192)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationship-to-dense-gemm-case-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to dense GEMM case study
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glossary-quick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glossary (quick)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-to-diff-when-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files to diff when learning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noise-and-repeat-counts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Noise and repeat counts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#correctness-beyond-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correctness beyond TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Performance Tuning Demos
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Sparse GEMM (FP16 + E4M3)
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="baseline-analysis-structured-24-sparse-gemm">Baseline Analysis: Structured 2:4 Sparse GEMM<a class="headerlink" href="#baseline-analysis-structured-24-sparse-gemm" title="Permanent link">&para;</a></h1>
+<h2 id="what-24-means-in-this-benchmark">What “2:4” means in this benchmark<a class="headerlink" href="#what-24-means-in-this-benchmark" title="Permanent link">&para;</a></h2>
+<p><strong>Structured 2:4 sparsity</strong> is a fixed pattern: for every group of four values along the <strong>sparse dimension</strong> (here, along K in the weight-like operand), exactly two are retained and two are zero. The hardware encodes which two via <strong>metadata</strong> so the MMA path can fetch <strong>packed</strong> nonzeros without treating the matrix as dense.</p>
+<p>Compared to unstructured sparsity, 2:4 is <strong>predictable</strong>: tile sizes, swizzle modes, and TMA transfers can be scheduled knowing the compression ratio is <strong>2×</strong> along K for the sparse side. The cost is <strong>metadata traffic</strong> and <strong>instruction overhead</strong>: every MMA slice must be paired with the right metadata words, and those loads can become a first-class bottleneck once the math path is well fed.</p>
+<h2 id="operand-roles-and-dtypes">Operand roles and dtypes<a class="headerlink" href="#operand-roles-and-dtypes" title="Permanent link">&para;</a></h2>
+<p>For the benchmarks summarized here:</p>
+<ul>
+<li><strong>FP16 sparse GEMM</strong>: operands and accumulation stay in <strong>FP16</strong>; the story is classic Hopper <strong>WGMMA</strong> throughput versus memory and metadata.</li>
+<li><strong>E4M3 sparse GEMM</strong>: <strong>FP8 E4M3</strong> inputs with <strong>FP16</strong> accumulation—higher nominal tensor throughput (peak <strong>3026 TFLOPS</strong> FP8 on H800 PCIe) but the same 2:4 layout and metadata semantics.</li>
+</ul>
+<p>In both cases, profiling should separate <strong>(a)</strong> tensor math utilization, <strong>(b)</strong> TMA / shared staging, <strong>(c)</strong> metadata path (latency, bank conflicts, cache behavior), and <strong>(d)</strong> synchronization between producer and consumer warpgroups.</p>
+<h2 id="fp16-baseline-368-tflops">FP16 baseline: 368 TFLOPS<a class="headerlink" href="#fp16-baseline-368-tflops" title="Permanent link">&para;</a></h2>
+<p>The FP16 baseline is intentionally conservative but already uses important Hopper ingredients:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Baseline choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warp specialization</td>
+<td><strong>1 producer / 1 consumer</strong> (1p1c)</td>
+</tr>
+<tr>
+<td>Swizzle</td>
+<td><strong>64</strong> (lhs packing / shared layout)</td>
+</tr>
+<tr>
+<td>Tile K (TK)</td>
+<td><strong>64</strong></td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td><strong>2-stage</strong></td>
+</tr>
+</tbody>
+</table>
+<p>At <strong>368 TFLOPS</strong> on <strong>4096 × 8192 × 8192</strong>, the kernel is not “wrong”—it is <strong>under-pipelined</strong> and <strong>metadata-conservative</strong> relative to what the SM can sustain when stages, warp mix, and vectorized metadata loads align.</p>
+<p><strong>How to read the number:</strong> compare against dense FP16 peak (<strong>1513 TFLOPS</strong>) only as order-of-magnitude context; sparse kernels are not expected to hit dense peak because effective FLOPs per stored element differ and metadata is extra work. The actionable question is whether time goes to <strong>MMA</strong>, <strong>TMA</strong>, or <strong>metadata + barriers</strong>.</p>
+<h2 id="e4m3-baseline-671-tflops">E4M3 baseline: 671 TFLOPS<a class="headerlink" href="#e4m3-baseline-671-tflops" title="Permanent link">&para;</a></h2>
+<p>The E4M3 baseline is already much closer to hardware spirit:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Baseline choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warp specialization</td>
+<td><strong>1p1c</strong></td>
+</tr>
+<tr>
+<td>Swizzle</td>
+<td><strong>128 / 128</strong> (lhs and rhs TMA swizzle)</td>
+</tr>
+<tr>
+<td>Layout</td>
+<td><strong>Prepacked</strong> sparse operand</td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td><strong>2-stage</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>671 TFLOPS</strong> reflects a kernel that has absorbed lessons from dense FP8 work: good swizzle pairing, serious TMA setup, and a metadata path that is not yet fully software-pipelined or warp-mixed for hide latency.</p>
+<p>Efficiency vs <strong>3026 TFLOPS</strong> FP8 peak is roughly <strong>22%</strong> at baseline—reasonable for a first structured-sparse implementation before <strong>deep staging</strong> and <strong>producer–consumer overlap</strong> are pushed.</p>
+<h2 id="profiling-lens-where-time-goes-first">Profiling lens: where time goes first<a class="headerlink" href="#profiling-lens-where-time-goes-first" title="Permanent link">&para;</a></h2>
+<p>Across both dtypes, early profiles tend to show one or more of:</p>
+<ol>
+<li><strong>Consumer-bound WGMMA</strong> with <strong>idle cycles waiting on data or metadata</strong> — often fixed by <strong>more stages</strong>, <strong>better prefetch</strong>, or <strong>splitting producer work</strong> (1p2c).</li>
+<li><strong>Metadata loads not hiding under TMA</strong> — shows up as front-end or memory latency on small, scattered accesses; mitigations include <strong>vectorized loads (<code>uint2</code>)</strong>, <strong><code>__ldg</code></strong>, <strong>hoisting</strong>, and <strong>TMA-side metadata staging</strong>.</li>
+<li><strong>Barrier / empty-full latency</strong> — producer signals and consumer waits can dominate when the pipeline is short; <strong>early empty</strong>, <strong>merged barriers</strong>, and <strong><code>warpgroup_wait&lt;1&gt;</code></strong>-style fine-grained sync reduce bubble time.</li>
+</ol>
+<p>The FP16 baseline sits lower partly because <strong>TK64</strong> and <strong>2-stage</strong> depth leave less slack to hide metadata; the E4M3 baseline already exploits <strong>wider swizzle</strong> and <strong>prepack</strong>, so the next wins come from <strong>micro-architectural overlap</strong> rather than “turn on TMA.”</p>
+<h2 id="baseline-comparison-table">Baseline comparison table<a class="headerlink" href="#baseline-comparison-table" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>FP16 baseline</th>
+<th>E4M3 baseline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TFLOPS</td>
+<td>368</td>
+<td>671</td>
+</tr>
+<tr>
+<td>1p1c</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Stages</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Notable layout</td>
+<td>swizzle <strong>64</strong>, TK <strong>64</strong></td>
+<td>swizzle <strong>128/128</strong>, prepack</td>
+</tr>
+</tbody>
+</table>
+<h2 id="takeaway-for-the-next-sections">Takeaway for the next sections<a class="headerlink" href="#takeaway-for-the-next-sections" title="Permanent link">&para;</a></h2>
+<p>Sparse GEMM optimization is not a single knob—it is <strong>simultaneous</strong> scheduling of <strong>packed values</strong>, <strong>metadata</strong>, and <strong>accumulator lifetimes</strong>. The following document walks patterns in the order they tended to appear in measured iterations: tighten <strong>warpgroup timing</strong>, improve <strong>metadata delivery</strong>, then <strong>scale pipeline depth</strong> and <strong>warp specialization</strong> until returns diminish or you hit the <strong><code>.co</code> compiler ceiling</strong> and need <strong>hand-authored <code>.cu</code></strong> for the last jumps (covered in <a href="../aitune-last-mile/">AI-tune last mile</a>).</p>
+<h2 id="effective-work-and-flop-accounting-24">Effective work and FLOP accounting (2:4)<a class="headerlink" href="#effective-work-and-flop-accounting-24" title="Permanent link">&para;</a></h2>
+<p>For a dense GEMM of size (M \times N \times K), textbooks use (2MNK) multiply-adds. With <strong>2:4</strong> along the sparse axis, each logical K step touches <strong>half</strong> as many stored nonzero weights in that operand, but the hardware still performs <strong>dense-rate MMA</strong> on <strong>packed</strong> fragments—the metadata selects active lanes. Benchmarks in this tree report <strong>TFLOPS</strong> consistent with the harness definition in <a href="../../setup-profiling/">setup-profiling</a>: use the same formula the benchmark prints so <strong>before/after</strong> iterations stay comparable.</p>
+<p>When you see <strong>655 TFLOPS</strong> (FP16) vs <strong>1127 TFLOPS</strong> (E4M3), part of the gap is <strong>wider tensor throughput</strong> for FP8, and part is <strong>kernel schedule</strong>: the E4M3 line reached <strong>aggressive 3-stage</strong> and <strong>refined barriers</strong> earlier in the measured sweep.</p>
+<h2 id="metadata-path-why-it-shows-up-in-profiles">Metadata path: why it shows up in profiles<a class="headerlink" href="#metadata-path-why-it-shows-up-in-profiles" title="Permanent link">&para;</a></h2>
+<p>Metadata is not “free sideband data.” It is on the <strong>critical path</strong> from global memory (or a staging buffer) to the sparse MMA interface. Symptoms of a hot metadata path include:</p>
+<ul>
+<li><strong>Low IPC</strong> on consumer warps despite high <code>wgmma</code> issue rate—consumers stall between fragments.</li>
+<li><strong>Extra L1/L2 traffic</strong> from scalar or poorly coalesced loads relative to operand TMA.</li>
+<li><strong>Serial dependence</strong> where metadata is read <strong>inside</strong> the K loop without prefetch into registers or shared.</li>
+</ul>
+<p>The FP16 AI-tune chain explicitly attacks this: <code>__ldg</code>, <strong><code>uint2</code> vectorization</strong>, <strong>hoisted loads</strong>, <strong>L2-promoted</strong> patterns, and <strong>TMA metadata</strong> staging. The E4M3 chain does the same at higher baseline TFLOPS, with <strong>TMA metadata staging</strong> appearing as early as <strong>iter001 (759 TFLOPS)</strong>.</p>
+<h2 id="milestone-table-fp16-selected-iterations">Milestone table: FP16 (selected iterations)<a class="headerlink" href="#milestone-table-fp16-selected-iterations" title="Permanent link">&para;</a></h2>
+<p>These anchor points come from <code>README_gemm_sp_f16_aitune_2026-03-25.md</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Label</th>
+<th>TFLOPS</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Start</td>
+<td>Baseline</td>
+<td><strong>368</strong></td>
+<td>1p1c, swizzle64, TK64, 2-stage</td>
+</tr>
+<tr>
+<td><code>.co</code> high point</td>
+<td>iter120</td>
+<td><strong>434</strong></td>
+<td>1p2c + 3-stage</td>
+</tr>
+<tr>
+<td><code>.cu</code> (organic)</td>
+<td>iter137</td>
+<td><strong>543</strong></td>
+<td>unroll 24 + FTZ</td>
+</tr>
+<tr>
+<td>Best</td>
+<td>iter143</td>
+<td><strong>655</strong></td>
+<td>TK128, TMA metadata, split RHS TMA</td>
+</tr>
+</tbody>
+</table>
+<p>The jump from <strong>434</strong> to <strong>655</strong> is the <strong><code>.co</code> vs <code>.cu</code> story</strong> in miniature: compiler-generated schedules plateau; hand scheduling exposes more ILP and finer TMA/MMA overlap (detailed in <a href="../aitune-last-mile/">aitune-last-mile</a>).</p>
+<h2 id="milestone-table-e4m3-selected-iterations">Milestone table: E4M3 (selected iterations)<a class="headerlink" href="#milestone-table-e4m3-selected-iterations" title="Permanent link">&para;</a></h2>
+<p>From <code>README_e4m3_aitune_2026-03-21.md</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Iteration</th>
+<th>TFLOPS</th>
+<th>Change theme</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td><strong>671</strong></td>
+<td>1p1c, swizzle 128/128, prepack, 2-stage</td>
+</tr>
+<tr>
+<td>iter001</td>
+<td><strong>759</strong></td>
+<td>TMA metadata staging</td>
+</tr>
+<tr>
+<td>iter016</td>
+<td><strong>772</strong></td>
+<td>early empty + merged barrier</td>
+</tr>
+<tr>
+<td>iter023</td>
+<td><strong>811</strong></td>
+<td>software pipeline + <code>warpgroup_wait&lt;1&gt;</code></td>
+</tr>
+<tr>
+<td>iter036</td>
+<td><strong>897</strong></td>
+<td>1p2c warp specialization</td>
+</tr>
+<tr>
+<td>iter040</td>
+<td><strong>1090</strong></td>
+<td><strong>3-stage pipeline</strong> (large step; ~+62% vs baseline in headline docs)</td>
+</tr>
+<tr>
+<td>iter068</td>
+<td><strong>1127</strong></td>
+<td>early empty <strong>arrive</strong> (best; ~+68% vs baseline)</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>iter040</strong> discontinuity is worth emphasizing in profiles: before it, improvements are incremental tens of TFLOPS; after <strong>3-stage</strong> lands correctly, the kernel crosses into <strong>&gt;1000 TFLOPS</strong> territory—classic <strong>pipeline-depth</strong> leverage once operands <strong>and</strong> metadata prefetch far enough ahead.</p>
+<h2 id="shared-bottleneck-themes-cross-dtype">Shared bottleneck themes (cross-dtype)<a class="headerlink" href="#shared-bottleneck-themes-cross-dtype" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Theme</th>
+<th>FP16 evidence</th>
+<th>E4M3 evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fine-grained warpgroup sync</td>
+<td><code>warpgroup_wait&lt;1&gt;</code> early in F16 chain (+4% class)</td>
+<td>iter023 at <strong>811</strong> combines SW pipe + <code>warpgroup_wait&lt;1&gt;</code></td>
+</tr>
+<tr>
+<td>Metadata delivery</td>
+<td><code>__ldg</code>, <code>uint2</code>, hoisting, TMA meta</td>
+<td>iter001 <strong>TMA metadata staging</strong></td>
+</tr>
+<tr>
+<td>Producer/consumer mix</td>
+<td>1p2c + 3-stage (iter120, iter143 path)</td>
+<td>iter036 <strong>897</strong> for 1p2c; iter040 for 3-stage</td>
+</tr>
+<tr>
+<td>Barrier / empty-full</td>
+<td>(implicit in later F16 stages)</td>
+<td>iter016, iter068 <strong>early empty</strong> / <strong>arrive</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-to-deepen-the-pipeline-vs-widen-tiles">When to deepen the pipeline vs widen tiles<a class="headerlink" href="#when-to-deepen-the-pipeline-vs-widen-tiles" title="Permanent link">&para;</a></h2>
+<p><strong>More stages</strong> hide <strong>TMA latency</strong> and <strong>metadata latency</strong> but increase <strong>shared memory</strong> and <strong>register pressure</strong>. If occupancy collapses, extra stages can <strong>hurt</strong>. The measured <strong>E4M3</strong> result that <strong>3-stage</strong> (iter040) bought <strong>~+62%</strong> says that, for this shape, the SM had enough <strong>air cover</strong> to absorb another stage—likely because <strong>metadata staging</strong> and <strong>warp spec</strong> had already reduced bubble time.</p>
+<p><strong>Wider TK</strong> (e.g. FP16 <strong>TK128</strong> in iter143) increases <strong>per-iteration</strong> work and can amortize <strong>launch and epilogue</strong> overhead, but requires <strong>consistent swizzle/TMA</strong> and sometimes <strong>split RHS TMA</strong> to keep bandwidth balanced.</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>Baselines are <strong>not naive kernels</strong>—they already use Hopper features—but they leave <strong>latency holes</strong> on the metadata and synchronization path. FP16 at <strong>368 TFLOPS</strong> and E4M3 at <strong>671 TFLOPS</strong> are the <strong>before</strong> pictures; the <strong>after</strong> pictures (<strong>655</strong> and <strong>1127</strong>) come from applying the same <strong>catalog</strong> of patterns with different <strong>order</strong> and <strong>ceiling</strong>. The next chapter is that catalog, tied to measured deltas.</p>
+<h2 id="instrumentation-reminders-hopper">Instrumentation reminders (Hopper)<a class="headerlink" href="#instrumentation-reminders-hopper" title="Permanent link">&para;</a></h2>
+<p>When you replicate this analysis locally, pair <strong>TFLOPS</strong> with at least one <strong>counter-backed</strong> view:</p>
+<ul>
+<li><strong>Warp issue stall reasons</strong> — barrier and <strong>not enough eligible warps</strong> often track <strong>pipeline bubbles</strong>.</li>
+<li><strong>Tensor Core activity</strong> vs <strong>DRAM throughput</strong> — if TC is high but TFLOPS is low, suspect <strong>short K</strong> or <strong>metadata</strong> overhead distorting useful work per cycle.</li>
+<li><strong>L2 hit rate</strong> on <strong>metadata buffers</strong> — improvements from <strong><code>uint2</code></strong>, <strong>128B</strong> alignment, and <strong>hoisting</strong> should <strong>raise</strong> hits or <strong>lower</strong> transactions per tile.</li>
+</ul>
+<p>Nsight Compute section names vary by version; the <strong>interpretation</strong> above stays stable.</p>
+<h2 id="shape-specific-notes-4096-8192-8192">Shape-specific notes (4096 × 8192 × 8192)<a class="headerlink" href="#shape-specific-notes-4096-8192-8192" title="Permanent link">&para;</a></h2>
+<p>This <strong>M × N × K</strong> is <strong>wide</strong> along <strong>N</strong> and <strong>K</strong> with <strong>moderate</strong> M. Wave quantization on <strong>114 SMs</strong> can make <strong>grid</strong> launch efficiency <strong>sensitive</strong> to <strong>tile M/N</strong> choices. When comparing iterations, ensure <strong>block tiling</strong> did not change <strong>CTA count</strong> in ways that <strong>fake</strong> a TFLOPS win (fewer blocks can <strong>inflate</strong> per-SM work while <strong>hurting</strong> tail waves).</p>
+<p>If an iteration changes <strong>only</strong> inner-loop sync, <strong>grid</strong> should be unchanged—those are the <strong>cleanest</strong> A/B tests.</p>
+<h2 id="relationship-to-dense-gemm-case-study">Relationship to dense GEMM case study<a class="headerlink" href="#relationship-to-dense-gemm-case-study" title="Permanent link">&para;</a></h2>
+<p>The <a href="../../matmul-f16/">dense FP16 matmul</a> case tops out near <strong>cuBLAS-class ~380 TFLOPS</strong> at <strong>8192³</strong>. Sparse FP16 here reaches <strong>655 TFLOPS</strong> at <strong>4096×8192×8192</strong>—<strong>not</strong> directly comparable problem sizes or FLOP definitions, but the <strong>same engineering habits</strong> apply: <strong>stage depth</strong>, <strong>1p2c</strong>, <strong>swizzle</strong>, and <strong>TMA</strong> first; <strong>micro</strong> last.</p>
+<h2 id="glossary-quick">Glossary (quick)<a class="headerlink" href="#glossary-quick" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1p1c / 1p2c</strong></td>
+<td>One TMA producer warpgroup; one vs two consumer warpgroups (warp specialization).</td>
+</tr>
+<tr>
+<td><strong>TK</strong></td>
+<td>Tile size along <strong>K</strong> for the inner steady-state loop.</td>
+</tr>
+<tr>
+<td><strong>2-stage / 3-stage</strong></td>
+<td>Number of <strong>buffered</strong> operand slots in the async pipeline.</td>
+</tr>
+<tr>
+<td><strong>Prepack</strong></td>
+<td>Sparse operand already in <strong>hardware-packed</strong> layout for 2:4.</td>
+</tr>
+<tr>
+<td><strong>TMA metadata</strong></td>
+<td>Using <strong>TMA</strong> (or TMA-like paths) to <strong>fetch</strong> metadata, not only scalars.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="files-to-diff-when-learning">Files to diff when learning<a class="headerlink" href="#files-to-diff-when-learning" title="Permanent link">&para;</a></h2>
+<p>Under <code>benchmark/performance/gemm_sp/</code> (Choreo tree), diff <strong>baseline</strong> <code>.co</code> against <strong>iter120-class</strong> <code>.co</code> to see <strong>compiler-level</strong> 1p2c+stage changes; diff <strong>iter120</strong> against <strong>iter143 <code>.cu</code></strong> to see <strong>manual</strong> TMA/metadata/TK moves. For E4M3, trace <strong>iter036 → iter040 → iter068</strong> for <strong>sync</strong> and <strong>depth</strong> evolution.</p>
+<h2 id="noise-and-repeat-counts">Noise and repeat counts<a class="headerlink" href="#noise-and-repeat-counts" title="Permanent link">&para;</a></h2>
+<p>Sparse GEMM timings can show <strong>variance</strong> when <strong>L2</strong> state or <strong>GPU boost</strong> drifts. Prefer <strong>median</strong> of many repeats and, when possible, <strong>lock</strong> clocks for <strong>comparative</strong> runs. A <strong>±5 TFLOPS</strong> swing at <strong>1100+ TFLOPS</strong> is <strong>~0.5%</strong>—smaller than <strong>iter068</strong>’s polish over <strong>iter040</strong>, so <strong>tight</strong> methodology matters for <strong>last-mile</strong> claims.</p>
+<h2 id="correctness-beyond-tflops">Correctness beyond TFLOPS<a class="headerlink" href="#correctness-beyond-tflops" title="Permanent link">&para;</a></h2>
+<p>Throughput is meaningless if <strong>metadata</strong> and <strong>packed</strong> indices disagree. The benchmarks include <strong>host-side</strong> checks; when you fork kernels, keep those checks <strong>enabled</strong> until <strong>iter143-class</strong> changes stabilize. <strong>TK</strong> and <strong>unroll</strong> are the highest-risk edits for <strong>silent</strong> misalignment.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "navigation.path", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+      
+        <script src="../../../assets/js/hljs-choreo.js"></script>
+      
+        <script src="../../../assets/js/hljs-init.js"></script>
+      
+    
+  </body>
+</html>

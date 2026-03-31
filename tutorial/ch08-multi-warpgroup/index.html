@@ -1,0 +1,3533 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch08-multi-warpgroup/">
+      
+      
+        <link rel="prev" href="../ch07-persistent/">
+      
+      
+        <link rel="next" href="../ch09-view-from/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Ch 8: Multi-Warpgroup - Croktile</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    
+      <link rel="stylesheet" href="../../assets/css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#multi-warpgroup-matmul-scaling-with-multiple-accumulators" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Croktile" class="md-header__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Croktile
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ch 8: Multi-Warpgroup
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Croktile" class="md-nav__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    Croktile
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch01-hello-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 1: Hello Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch02-data-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 2: Data Movement Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch03-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 3: Pipeline Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch04-tma-swizzle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 4: TMA and Swizzle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch05-mma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 5: MMA Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch06-warpspec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 6: Warp Specialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch07-persistent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Persistent Matmul
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: Multi-Warpgroup
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: Multi-Warpgroup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#one-warpgroup-vs-two-the-m-axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One warpgroup vs. two: the M axis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-p1-by-2-group-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        parallel p1 by 2 : group-4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-kernel-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full kernel walkthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Full kernel walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grid-one-block-per-12864-output-tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grid: one block per 128×64 output tile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shared-buffers-sized-for-the-block-tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared buffers sized for the block tile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k-loop-tma-in-then-both-warpgroups-accumulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        K loop: TMA in, then both warpgroups accumulate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#store-partition-output_s-like-lhs_load_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Store: partition output_s like lhs_load_s
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epilog-one-tma-for-the-whole-tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Epilog: one TMA for the whole tile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swizzle-and-matmul_swiz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Swizzle and MATMUL_SWIZ
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental model checklist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mental model checklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-get-wrong-first-so-you-can-fix-it-faster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to get wrong first (so you can fix it faster)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-to-three-or-more-warpgroups-along-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending to three or more warpgroups along M
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extending to three or more warpgroups along M">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sketch-three-warpgroups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sketch: three warpgroups
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relation-to-chapter-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relation to Chapter 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subspan-and-atp1-0-in-plain-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        subspan and .at(p1, 0) in plain language
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-warpgroup-vs-this-kernel-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single warpgroup vs. this kernel (at a glance)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-your-understanding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check your understanding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-the-benchmark-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading the benchmark file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch09-view-from/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 9: view/from
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch10-cpp-inline-macros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 10: C++ Inline & Macros
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Tuning Demos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Performance Tuning Demos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/setup-profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense GEMM FP16
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dense GEMM FP16
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block-Scaled GEMM FP8
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/what-is-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Program Structure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Program Structure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/choreo-program-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choreo-C++ Program Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaped Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shaped Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/shape-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shape and MDSpan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/integer-ituple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integers and I-Tuples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/spanned-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanned Data and Buffers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/symbolic-shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Shape and Symbolic Dimension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop and Parallelism
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Loop and Parallelism
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/intro-loop-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Parallelism and Iterations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/parallel-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPMD Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/within-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/basic-dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The DMA Statement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tiling-chunkat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tile Data with ChunkAt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dma-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ Embeddings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    C++ Embeddings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/input-output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs and Output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/macro-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro and Preprocessing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPMD Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MPMD Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/thread-masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thread Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events for Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/general-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    More on Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/loop-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimental Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimisation Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimisation Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tileflow-opt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tileflow Optimisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/async-dma-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async DMA Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/multi-buffering-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-buffering Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/operator-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference Palette
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_12" id="__nav_4_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Rationales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syntax Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/why-symbolic-shapes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Symbolic Shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/value-numbering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symbolic Evaluation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dynamic-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamism Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#one-warpgroup-vs-two-the-m-axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One warpgroup vs. two: the M axis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-p1-by-2-group-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        parallel p1 by 2 : group-4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-kernel-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full kernel walkthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Full kernel walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grid-one-block-per-12864-output-tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grid: one block per 128×64 output tile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shared-buffers-sized-for-the-block-tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared buffers sized for the block tile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k-loop-tma-in-then-both-warpgroups-accumulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        K loop: TMA in, then both warpgroups accumulate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#store-partition-output_s-like-lhs_load_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Store: partition output_s like lhs_load_s
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epilog-one-tma-for-the-whole-tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Epilog: one TMA for the whole tile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swizzle-and-matmul_swiz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Swizzle and MATMUL_SWIZ
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental model checklist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mental model checklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-get-wrong-first-so-you-can-fix-it-faster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to get wrong first (so you can fix it faster)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-to-three-or-more-warpgroups-along-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending to three or more warpgroups along M
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extending to three or more warpgroups along M">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sketch-three-warpgroups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sketch: three warpgroups
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relation-to-chapter-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relation to Chapter 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subspan-and-atp1-0-in-plain-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        subspan and .at(p1, 0) in plain language
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-warpgroup-vs-this-kernel-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single warpgroup vs. this kernel (at a glance)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-your-understanding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check your understanding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-the-benchmark-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading the benchmark file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="multi-warpgroup-matmul-scaling-with-multiple-accumulators">Multi-Warpgroup Matmul: Scaling with Multiple Accumulators<a class="headerlink" href="#multi-warpgroup-matmul-scaling-with-multiple-accumulators" title="Permanent link">&para;</a></h1>
+<p>Chapter 7 introduced <strong>persistent</strong> matmul kernels: one CTA can sweep many output tiles with <code>step</code> and guards, amortizing launch overhead and improving occupancy on large problems. This chapter stays inside a <strong>single</strong> CTA but asks a different scaling question: <strong>how do you make one block responsible for a wider slice of M than a single warpgroup can natively cover?</strong></p>
+<p>On Hopper-class hardware, <strong>WGMMA</strong> (warp-group matrix multiply-accumulate) typically cooperates across <strong>four warps</strong> — 128 threads — per <strong>warpgroup</strong>. One such group naturally “owns” a <strong>64×64</strong> FP16 result tile in the configuration we use here (<code>MATMUL_WARP_M = 64</code>, <code>MATMUL_WARP_N = 64</code>). That is a comfortable, hardware-aligned unit. If you stop there, each CUDA block’s footprint along M is also 64 rows unless you add more warpgroups.</p>
+<p><strong>Multi-warpgroup</strong> kernels raise the <strong>block tile height</strong> along M — for example to <strong>128</strong> rows — by running <strong>two</strong> warpgroups in parallel inside the same block. Each warpgroup keeps its <strong>own</strong> FP32 accumulator <code>mc</code>, loads <strong>different</strong> rows of the left-hand matrix <strong>A</strong> from shared memory, but reuses the <strong>same</strong> <strong>B</strong> tile already sitting in shared. After the K loop, each group stores <strong>its</strong> 64×64 piece of the result into a shared staging buffer; one TMA (or wide copy) then writes the full <strong>128×64</strong> tile to global memory.</p>
+<p>The payoff is familiar from tiling theory: <strong>larger per-block tiles</strong> mean <strong>fewer blocks</strong> for the same matrix dimensions, which reduces <strong>grid launch overhead</strong>, improves <strong>data reuse</strong> of <strong>B</strong> within the block, and often helps <strong>SM utilization</strong> — provided the larger shared-memory and register footprint still fits your target.</p>
+<p>You might ask: <strong>why not</strong> keep <strong>one</strong> warpgroup per block and simply use <strong>more</strong> blocks along M? That design is valid and often easier to reason about. Multi-warpgroup layouts earn their keep when <strong>B</strong> reuse across the <strong>M</strong> split is strong: <strong>one</strong> TMA brings <strong>B</strong> into shared, and <strong>two</strong> groups multiply <strong>different</strong> row bundles of <strong>A</strong> against <strong>that same</strong> <strong>B</strong> without a second global read of <strong>B</strong> for the second <strong>M</strong> stripe. You still pay for <strong>A</strong> at the <strong>full</strong> <strong>128×K</strong> footprint per <strong>K</strong> step, but you <strong>halve</strong> the <strong>B</strong> traffic <strong>per result row bundle</strong> in the sense that two <strong>64×64</strong> result patches share one <strong>B</strong> slab. Whether that wins over a simpler kernel is <strong>empirical</strong>; the Choreo pattern exists so you can express the layout cleanly and let the compiler target WGMMA.</p>
+<h2 id="one-warpgroup-vs-two-the-m-axis">One warpgroup vs. two: the M axis<a class="headerlink" href="#one-warpgroup-vs-two-the-m-axis" title="Permanent link">&para;</a></h2>
+<p>Fix these sizes in your head (they match <code>matmul_f16_dynamic_mwg_impl_1.co</code> in the Choreo benchmarks):</p>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Value</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MATMUL_WARP_M</code></td>
+<td>64</td>
+<td>Rows of C one warpgroup contributes</td>
+</tr>
+<tr>
+<td><code>MATMUL_WARP_N</code></td>
+<td>64</td>
+<td>Columns of C one warpgroup contributes</td>
+</tr>
+<tr>
+<td><code>MATMUL_TILE_M</code></td>
+<td>128</td>
+<td><strong>Block</strong> tile height along M (two warpgroups)</td>
+</tr>
+<tr>
+<td><code>MATMUL_TILE_N</code></td>
+<td>64</td>
+<td>Matches <code>WARP_N</code>; block width along N</td>
+</tr>
+<tr>
+<td><code>MATMUL_TILE_K</code></td>
+<td>64</td>
+<td>K chunk per TMA slice into shared</td>
+</tr>
+<tr>
+<td><code>MATMUL_WARP_K</code></td>
+<td>16</td>
+<td>K step per inner <code>mma.load</code> / <code>mma.row.row</code></td>
+</tr>
+<tr>
+<td><code>MATMUL_SWIZ</code></td>
+<td>128</td>
+<td>Swizzle parameter for TMA + MMA (here <code>2 * TILE_K</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>So <strong><code>TILE_M = 2 × WARP_M</code></strong>: the <strong>block</strong> owns a <strong>128×64</strong> output rectangle, and <strong>two</strong> warpgroups split it <strong>along M</strong> into two <strong>64×64</strong> panes. Along <strong>N</strong>, there is no split at the warpgroup level in this kernel — both groups work on the same <strong>N</strong> span, which is exactly <strong><code>WARP_N</code></strong>.</p>
+<p>The <strong>key insight</strong> for reading the code: <strong>the right-hand tile in shared memory is shared</strong>. <code>rhs_load_s</code> has shape <strong><code>[MATMUL_WARP_N, MATMUL_TILE_K]</code></strong> — enough for <strong>one</strong> <strong>B</strong> slab for this block’s column stripe. <strong>Both</strong> warpgroups read that same buffer (via <code>rhs_load_s.chunkat(_, iv_warp)</code>), while <strong>left-hand</strong> data is <strong>partitioned</strong> by warpgroup index <strong><code>p1</code></strong>.</p>
+<h2 id="parallel-p1-by-2-group-4"><code>parallel p1 by 2 : group-4</code><a class="headerlink" href="#parallel-p1-by-2-group-4" title="Permanent link">&para;</a></h2>
+<p>Choreo expresses multiple warpgroups with a <strong>parallel</strong> over a small index, here <strong><code>p1</code></strong>, with a <strong>group</strong> annotation that says how many warps cooperate per group:</p>
+<div class="highlight"><pre><span></span><code>parallel p1 by 2 : group-4 {
+  // body: two iterations (p1 = 0 and 1), each a warpgroup of 4 warps
+}
+</code></pre></div>
+<p>Read <strong><code>by 2</code></strong> as “<strong>two</strong> warpgroup instances in this block.” Read <strong><code>: group-4</code></strong> as “<strong>each</strong> instance is a <strong>warp group</strong> of <strong>four</strong> warps” (128 threads), which is the usual WGMMA thread team on Hopper.</p>
+<p>Outside this region, the block still has a single <strong>K</strong> loop and shared buffers. Inside, <strong><code>p1</code></strong> selects <strong>which</strong> of the two groups is executing — and that index drives <strong>which slice of <code>lhs_load_s</code></strong> and <strong>which slice of <code>output_s</code></strong> this group uses.</p>
+<p>The <strong>128 threads</strong> per warpgroup matter for how the hardware executes <strong><code>mma.row.row</code></strong>: WGMMA is a <strong>collective</strong> on a <strong>warp group</strong>, not a single warp. Choreo’s <strong><code>: group-4</code></strong> states that requirement in the tileflow so the lowering path can target the right instruction shape. When you read vendor documentation that says <strong>“four warps cooperate”</strong>, map that directly to <strong><code>group-4</code></strong> here.</p>
+<h2 id="full-kernel-walkthrough">Full kernel walkthrough<a class="headerlink" href="#full-kernel-walkthrough" title="Permanent link">&para;</a></h2>
+<p>Below is the <strong>tileflow</strong> core of the benchmark kernel (eliding C++ harness). Compare it mentally to a single-warpgroup Hopper matmul: the <strong>TMA loads</strong> and <strong>output tile</strong> are sized for <strong><code>TILE_M</code></strong>, while <strong>compute</strong> is duplicated in shape but <strong>split</strong> across <strong><code>p1</code></strong>.</p>
+<div class="highlight"><pre><span></span><code>__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_WARP_N)] : block {
+    shared f16 [MATMUL_TILE_M, MATMUL_TILE_K] lhs_load_s;
+    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+    shared f16 [MATMUL_TILE_M, MATMUL_WARP_N] output_s;
+
+    mc = mma.fill.f32 0.0f;
+    foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+      tma.copy.swiz&lt;MATMUL_SWIZ&gt; lhs.subspan(MATMUL_TILE_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+      tma.copy.swiz&lt;MATMUL_SWIZ&gt; rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
+      parallel p1 by 2 : group-4 {
+        foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+          ma = mma.load.swiz&lt;MATMUL_SWIZ&gt; lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(p1, 0).chunkat(_, iv_warp);
+          mb = mma.load.swiz&lt;MATMUL_SWIZ&gt; rhs_load_s.chunkat(_, iv_warp);
+          mma.row.row mc, ma, mb;
+        }
+      }
+    }
+    parallel p1 by 2 : group-4 {
+      mma.store mc, output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0);
+    }
+    tma.copy output_s =&gt; output.subspan(MATMUL_TILE_M, MATMUL_WARP_N).at(block_m, block_n);
+  }
+}
+</code></pre></div>
+<h3 id="grid-one-block-per-12864-output-tile">Grid: one block per 128×64 output tile<a class="headerlink" href="#grid-one-block-per-12864-output-tile" title="Permanent link">&para;</a></h3>
+<p>The outer <code>parallel {block_m, block_n}</code> uses <strong><code>cdiv(M, MATMUL_TILE_M)</code></strong> along M — each block covers <strong>128</strong> rows — and <strong><code>cdiv(N, MATMUL_WARP_N)</code></strong> along N. Note the <strong>asymmetry</strong>: <strong>N</strong> is stepped in units of <strong><code>WARP_N</code> (64)</strong>, not <strong><code>TILE_N</code></strong>, because the inner compute is already sized to <strong>64</strong> columns per group and this kernel does not stack multiple groups along N.</p>
+<p>Name the <strong>output</strong> tile this block owns <strong><code>C[block_m, block_n]</code></strong> in logical coordinates: a <strong>128×64</strong> submatrix of the full <strong><code>output</code></strong>. Index <strong><code>block_m</code></strong> advances in steps of <strong>128</strong> along <strong>M</strong>; <strong><code>block_n</code></strong> advances in steps of <strong>64</strong> along <strong>N</strong>. That matches how <strong><code>lhs.subspan(MATMUL_TILE_M, …).at(block_m, …)</code></strong> strides down <strong>M</strong> and how <strong><code>rhs.chunkat(block_n, …)</code></strong> selects the <strong>N</strong> stripe of <strong>B</strong> (stored as <strong><code>[N, K]</code></strong> in this kernel) that multiplies into those <strong>128</strong> rows of <strong>A</strong>.</p>
+<h3 id="shared-buffers-sized-for-the-block-tile">Shared buffers sized for the <strong>block</strong> tile<a class="headerlink" href="#shared-buffers-sized-for-the-block-tile" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>lhs_load_s</code></strong>: <strong><code>[128, 64]</code></strong> — the full <strong>A</strong> tile for this block and current <strong>K</strong> chunk.</li>
+<li><strong><code>rhs_load_s</code></strong>: <strong><code>[64, 64]</code></strong> — one <strong>B</strong> tile; <strong>both</strong> warpgroups consume it.</li>
+<li><strong><code>output_s</code></strong>: <strong><code>[128, 64]</code></strong> — staging for the <strong>entire</strong> block result before the final TMA to global.</li>
+</ul>
+<p>In <strong>bytes</strong>, the dominant pieces scale with <strong><code>TILE_M</code></strong>: <strong><code>lhs_load_s</code></strong> and <strong><code>output_s</code></strong> are <strong>FP16</strong>, so each is <strong><code>128 × 64 × 2</code></strong> bytes per <strong>K</strong> slab for <strong>A</strong> (one slab resident at a time in this simple version) plus the <strong>staged C</strong> tile. <strong><code>rhs_load_s</code></strong> stays <strong><code>64 × 64 × 2</code></strong>. When you add warpgroups along <strong>M</strong>, <strong>A</strong> and <strong>C</strong> staging grow <strong>linearly</strong> with <strong><code>TILE_M</code></strong>; <strong>B</strong> staging does <strong>not</strong>, which is exactly the <strong>reuse</strong> story.</p>
+<h3 id="k-loop-tma-in-then-both-warpgroups-accumulate">K loop: TMA in, then both warpgroups accumulate<a class="headerlink" href="#k-loop-tma-in-then-both-warpgroups-accumulate" title="Permanent link">&para;</a></h3>
+<p>For each <strong><code>iv_k</code></strong>:</p>
+<ol>
+<li><strong>Load A</strong> — TMA fills <strong><code>lhs_load_s</code></strong> with the <strong><code>MATMUL_TILE_M × MATMUL_TILE_K</code></strong> slab from global <strong><code>lhs</code></strong> at <strong><code>(block_m, iv_k)</code></strong>.</li>
+<li><strong>Load B</strong> — TMA fills <strong><code>rhs_load_s</code></strong> from <strong><code>rhs</code></strong> at this block’s column <strong><code>block_n</code></strong> and the same <strong>K</strong> slice.</li>
+</ol>
+<p>Then <strong><code>parallel p1 by 2 : group-4</code></strong> runs the <strong>math</strong>:</p>
+<ul>
+<li><strong><code>ma</code></strong> — <code>lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(p1, 0)</code> takes a <strong><code>64 × 64</code></strong> view of <strong><code>lhs_load_s</code></strong>: row offset <strong><code>p1 * 64</code></strong>, column offset <strong>0</strong>. So <strong><code>p1 = 0</code></strong> gets the <strong>top</strong> half of the <strong>A</strong> tile, <strong><code>p1 = 1</code></strong> the <strong>bottom</strong> half.</li>
+<li><strong><code>mb</code></strong> — <code>rhs_load_s.chunkat(_, iv_warp)</code> does <strong>not</strong> depend on <strong><code>p1</code></strong>: every warpgroup loads the <strong>same</strong> <strong>B</strong> stripes as <strong><code>iv_warp</code></strong> advances along <strong>K</strong>.</li>
+<li><strong><code>mma.row.row mc, ma, mb</code></strong> — each group has <strong>its own</strong> <strong><code>mc</code></strong> (conceptually per-group accumulator), accumulating the product of <strong>its</strong> <strong>A</strong> rows with the <strong>shared</strong> <strong>B</strong> data.</li>
+</ul>
+<p>The inner <strong><code>foreach {iv_warp}</code></strong> walks <strong><code>TILE_K / WARP_K = 4</code></strong> steps along the <strong>K</strong> dimension inside shared memory, matching the usual blocked MMA pattern.</p>
+<p><strong>Concrete walk-through for one <code>iv_k</code>.</strong> Suppose <strong><code>block_m</code></strong>, <strong><code>block_n</code></strong>, and <strong><code>iv_k</code></strong> are fixed. TMA lands a <strong>128×64</strong> <strong>A</strong> panel and a <strong>64×64</strong> <strong>B</strong> panel in shared. For <strong><code>p1 = 0</code></strong>, <strong><code>ma</code></strong> sees rows <strong>0…63</strong> of <strong><code>lhs_load_s</code></strong>; for <strong><code>p1 = 1</code></strong>, rows <strong>64…127</strong>. For <strong>both</strong>, <strong><code>mb</code></strong> cycles through <strong>four</strong> <strong>K</strong>-shards of <strong><code>rhs_load_s</code></strong> as <strong><code>iv_warp</code></strong> runs <strong>0…3</strong>. After this <strong><code>iv_k</code></strong>, <strong><code>mc</code></strong> in each group holds the <strong>partial</strong> sum for <strong>its</strong> <strong>64×64</strong> <strong>C</strong> patch for <strong>all</strong> <strong>K</strong> processed <strong>so far</strong>. The outer <strong><code>foreach {iv_k}</code></strong> repeats that story until <strong>K</strong> is exhausted, so <strong><code>mc</code></strong> is the <strong>full</strong> dot-product along <strong>K</strong> for each patch.</p>
+<p><strong>Producer–consumer ordering.</strong> The text lists <strong>TMA</strong> copies before the <strong><code>parallel p1 by 2</code></strong> MMA nest. That is the <strong>logical</strong> order: <strong>shared</strong> must hold the new <strong>A</strong> and <strong>B</strong> slabs before <strong><code>mma.load</code></strong>. The implementation may use <strong>asynchronous</strong> TMA with explicit <strong>barriers</strong>; the tileflow you read in the benchmark still expresses <strong>dependences</strong> in the same way as a synchronous kernel — <strong>consumers</strong> start only after <strong>producers</strong> finish for that <strong>K</strong> iteration. If you later <strong>pipeline</strong> two <strong>K</strong> buffers in shared, the <strong>multi-warpgroup</strong> split is unchanged: each <strong>phase</strong> still ends with <strong>both</strong> groups having seen <strong>consistent</strong> <strong><code>lhs_load_s</code></strong> and <strong><code>rhs_load_s</code></strong> for the slice they multiply.</p>
+<h3 id="store-partition-output_s-like-lhs_load_s">Store: partition <strong><code>output_s</code></strong> like <strong><code>lhs_load_s</code></strong><a class="headerlink" href="#store-partition-output_s-like-lhs_load_s" title="Permanent link">&para;</a></h3>
+<p>After all <strong>K</strong> iterations, a second <strong><code>parallel p1 by 2 : group-4</code></strong> stores each group’s <strong><code>mc</code></strong> into <strong>its</strong> subrectangle of <strong><code>output_s</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>mma.store mc, output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0);
+</code></pre></div>
+<p>This mirrors the <strong>load</strong> geometry: <strong><code>subspan(64, 64).at(p1, 0)</code></strong> addresses a <strong>64×64</strong> window inside the <strong>128×64</strong> <strong><code>output_s</code></strong>, so the two groups <strong>do not stomp</strong> each other’s outputs.</p>
+<h3 id="epilog-one-tma-for-the-whole-tile">Epilog: one TMA for the whole tile<a class="headerlink" href="#epilog-one-tma-for-the-whole-tile" title="Permanent link">&para;</a></h3>
+<p>Finally,</p>
+<div class="highlight"><pre><span></span><code>tma.copy output_s =&gt; output.subspan(MATMUL_TILE_M, MATMUL_WARP_N).at(block_m, block_n);
+</code></pre></div>
+<p>writes the <strong>complete</strong> <strong>128×64</strong> staged tile to global <strong><code>output</code></strong>. From the host’s perspective, this block has computed the same result as a hypothetical kernel with <strong>smaller</strong> <strong>M</strong> tiles and <strong>more</strong> blocks — but with <strong>half</strong> as many blocks along <strong>M</strong> for this configuration.</p>
+<h3 id="swizzle-and-matmul_swiz">Swizzle and <strong><code>MATMUL_SWIZ</code></strong><a class="headerlink" href="#swizzle-and-matmul_swiz" title="Permanent link">&para;</a></h3>
+<p>Chapter 4 tied <strong>TMA swizzle</strong> to <strong>shared-memory</strong> behavior and <strong>MMA</strong> operand layout. Here <strong><code>MATMUL_SWIZ = 128</code></strong> matches <strong><code>2 * MATMUL_TILE_K</code></strong>, enforced by <strong><code>#if</code></strong> checks in the benchmark source. <strong>Swizzle</strong> applies <strong>uniformly</strong> to <strong><code>lhs_load_s</code></strong> and <strong><code>rhs_load_s</code></strong>: <strong><code>p1</code></strong> only shifts the <strong>origin</strong> of <strong><code>ma</code></strong> inside <strong><code>lhs_load_s</code></strong> via <strong><code>.at(p1, 0)</code></strong>; it does <strong>not</strong> imply a different swizzle mode per group. If you change <strong><code>TILE_K</code></strong>, update <strong>swizzle</strong> and re-validate <strong>TMA</strong> and <strong><code>mma.load</code></strong> together — the <strong>multi-warpgroup</strong> pattern does not relax those constraints.</p>
+<h2 id="mental-model-checklist">Mental model checklist<a class="headerlink" href="#mental-model-checklist" title="Permanent link">&para;</a></h2>
+<p>When you see <strong><code>TILE_M</code></strong> and <strong><code>WARP_M</code></strong> in the same kernel:</p>
+<ul>
+<li><strong><code>TILE_*</code></strong> — <strong>shared memory and TMA</strong> are usually sized for what <strong>the whole block</strong> owns in one shot.</li>
+<li><strong><code>WARP_*</code></strong> (or <strong><code>group-4</code></strong> MMA geometry) — <strong>each warpgroup’s</strong> compute and accumulator are sized for <strong>one</strong> Tensor Core “team” worth of output rows/columns.</li>
+<li><strong>Replication</strong> — <strong>B</strong> is <strong>replicated in use</strong> (one copy in shared, many readers), not <strong>replicated in storage</strong>; <strong>A</strong> is <strong>split</strong> so each group only <strong>loads</strong> the rows it <strong>owns</strong>.</li>
+</ul>
+<h3 id="what-to-get-wrong-first-so-you-can-fix-it-faster">What to get wrong first (so you can fix it faster)<a class="headerlink" href="#what-to-get-wrong-first-so-you-can-fix-it-faster" title="Permanent link">&para;</a></h3>
+<p>Two bugs show up often when people <strong>first</strong> sketch multi-warpgroup matmuls by analogy with <strong>multi-warp</strong> Ampere kernels:</p>
+<ol>
+<li>
+<p><strong>Indexing <code>rhs</code> with <code>p1</code>.</strong> If <strong><code>mb</code></strong> accidentally depended on <strong><code>p1</code></strong>, you would be telling a story where <strong>different</strong> groups need <strong>different</strong> <strong>B</strong> tiles — at that point you usually want <strong>different</strong> <strong><code>block_n</code></strong> or an <strong>N-side</strong> split, not a second <strong>M</strong> group reading the same <strong><code>rhs_load_s</code></strong>.</p>
+</li>
+<li>
+<p><strong>Forgetting to partition <code>output_s</code>.</strong> If both groups <strong><code>mma.store</code></strong> to <strong><code>output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(0, 0)</code></strong>, the <strong>second</strong> group <strong>overwrites</strong> the <strong>first</strong>. The <strong><code>.at(p1, 0)</code></strong> on <strong>store</strong> is not decorative; it is the <strong>same</strong> <strong>M-axis</strong> addressing as on <strong><code>ma</code></strong>.</p>
+</li>
+</ol>
+<p>Also watch <strong>occupancy</strong>: <strong>doubling</strong> <strong><code>TILE_M</code></strong> grows <strong><code>lhs_load_s</code></strong> and <strong><code>output_s</code></strong> roughly <strong>linearly</strong> in that dimension. <strong>Shared</strong> limits can <strong>push</strong> you to <strong>fewer</strong> resident blocks per SM even as <strong>arithmetic intensity</strong> improves. Profile <strong>both</strong> <strong>throughput</strong> and <strong>occupancy</strong> when you change <strong><code>TILE_M</code></strong> or the <strong>number</strong> of groups.</p>
+<h2 id="extending-to-three-or-more-warpgroups-along-m">Extending to three or more warpgroups along M<a class="headerlink" href="#extending-to-three-or-more-warpgroups-along-m" title="Permanent link">&para;</a></h2>
+<p>Nothing in the pattern is special to <strong>two</strong>. If hardware resources allow, you can set <strong><code>MATMUL_TILE_M = 192</code></strong> with <strong><code>MATMUL_WARP_M = 64</code></strong>, use <strong><code>parallel p1 by 3 : group-4</code></strong>, and keep the same <strong>shared</strong> <strong><code>rhs_load_s</code></strong> while <strong><code>lhs_load_s</code></strong> and <strong><code>output_s</code></strong> grow to <strong>192×64</strong>. Each <strong><code>p1</code></strong> would select <strong><code>subspan(64, …).at(p1, 0)</code></strong> with <strong><code>p1 ∈ {0,1,2}</code></strong>. The same story applies for larger <strong>multiples</strong> as long as <strong><code>TILE_M</code></strong> remains divisible by <strong><code>WARP_M</code></strong> and you respect target-specific limits on warpgroups per block, shared memory, and registers.</p>
+<p><strong>N-side</strong> scaling is a <strong>different</strong> design fork. This chapter’s kernel keeps <strong><code>parallel p1</code></strong> strictly on the <strong>M</strong> split. If you also want <strong>two</strong> <strong>64×64</strong> patches <strong>along N</strong>, you typically introduce <strong>another</strong> parallel axis (or <strong>another</strong> <strong>block</strong> dimension) and <strong>either</strong> <strong>replicate</strong> or <strong>partition</strong> <strong>B</strong> accordingly — you <strong>cannot</strong> blindly keep a <strong>single</strong> <strong><code>rhs_load_s</code></strong> sized <strong><code>[64,64]</code></strong> if <strong>each</strong> group needs <strong>disjoint</strong> <strong>N</strong> data. The <strong>M-only</strong> split is the <strong>sweet spot</strong> for <strong>one B tile</strong> serving <strong>many A row bundles</strong>.</p>
+<h3 id="sketch-three-warpgroups">Sketch: three warpgroups<a class="headerlink" href="#sketch-three-warpgroups" title="Permanent link">&para;</a></h3>
+<p>If you generalize to <strong><code>MATMUL_TILE_M = 192</code></strong>, the tileflow changes only where <strong>counts</strong> and <strong>buffer sizes</strong> appear — the <strong>pattern</strong> is unchanged:</p>
+<div class="highlight"><pre><span></span><code>shared f16 [192, MATMUL_TILE_K] lhs_load_s;
+shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+shared f16 [192, MATMUL_WARP_N] output_s;
+// ...
+parallel p1 by 3 : group-4 {
+  foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+    ma = mma.load.swiz&lt;MATMUL_SWIZ&gt;
+      lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(p1, 0).chunkat(_, iv_warp);
+    mb = mma.load.swiz&lt;MATMUL_SWIZ&gt; rhs_load_s.chunkat(_, iv_warp);
+    mma.row.row mc, ma, mb;
+  }
+}
+parallel p1 by 3 : group-4 {
+  mma.store mc, output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0);
+}
+</code></pre></div>
+<p>The <strong><code>rhs_load_s</code></strong> declaration is <strong>identical</strong> to the two-group case: still <strong><code>[64, 64]</code></strong> in <strong>K</strong> for this <strong>N</strong> stripe. Only <strong><code>lhs_load_s</code></strong>, <strong><code>output_s</code></strong>, and <strong><code>by 3</code></strong> track the taller <strong>M</strong> tile. Your <strong>grid</strong> along <strong>M</strong> becomes <strong><code>cdiv(M, 192)</code></strong> instead of <strong><code>cdiv(M, 128)</code></strong>.</p>
+<h2 id="relation-to-chapter-7">Relation to Chapter 7<a class="headerlink" href="#relation-to-chapter-7" title="Permanent link">&para;</a></h2>
+<p>Chapter 7’s <strong>persistent</strong> kernels reuse <strong>one</strong> CTA across <strong>many</strong> tiles by <strong>iterating</strong> <strong><code>block_m</code> / <code>block_n</code></strong> in software. This chapter’s <strong>multi-warpgroup</strong> layout reuses <strong>B</strong> across <strong>two</strong> accumulators <strong>within</strong> one tile iteration. In a full production stack you might <strong>combine</strong> both: persistent scheduling <strong>and</strong> multiple warpgroups per tile, trading <strong>even more</strong> launch and DRAM traffic overhead for <strong>higher</strong> per-SM work — always subject to occupancy and memory capacity.</p>
+<p>If you are reading the chapters in order: Chapter 5 set up <strong>MMA</strong> lifecycle and <strong>warp</strong> vs <strong>block</strong> tiles; Chapter 4’s <strong>TMA + swizzle</strong> is exactly what feeds <strong><code>lhs_load_s</code></strong> and <strong><code>rhs_load_s</code></strong> here; Chapter 7’s <strong>persistence</strong> is about <strong>how many tiles</strong> a CTA visits, not <strong>how wide</strong> each tile is along <strong>M</strong>. This chapter sits at the intersection — <strong>wider tiles</strong> without <strong>wider</strong> <strong>B</strong> storage.</p>
+<h2 id="subspan-and-atp1-0-in-plain-language"><code>subspan</code> and <code>.at(p1, 0)</code> in plain language<a class="headerlink" href="#subspan-and-atp1-0-in-plain-language" title="Permanent link">&para;</a></h2>
+<p>Choreo’s <strong>view</strong> operations compose the same way whether you have one warpgroup or four. <strong><code>subspan(MATMUL_WARP_M, MATMUL_TILE_K)</code></strong> declares a <strong>window</strong> whose <strong>height</strong> is <strong>64</strong> rows and <strong>width</strong> is the full <strong>K</strong> chunk (<strong>64</strong>) sitting in <strong><code>lhs_load_s</code></strong>. That window is <strong>logically</strong> a <strong>64×64</strong> matrix for each <strong><code>iv_warp</code></strong> step after <strong><code>chunkat(_, iv_warp)</code></strong> narrows along <strong>K</strong>.</p>
+<p><strong><code>.at(p1, 0)</code></strong> then <strong>slides</strong> that window <strong>down</strong> the <strong>M</strong> axis: <strong><code>p1 = 0</code></strong> anchors at row <strong>0</strong> of <strong><code>lhs_load_s</code></strong>, <strong><code>p1 = 1</code></strong> at row <strong>64</strong>. The second index <strong>0</strong> is the column anchor inside the <strong>subspan</strong> — here the <strong>left</strong> edge of the <strong>K</strong> chunk, because the <strong>entire</strong> <strong>TILE_K</strong> width is already addressed by <strong><code>subspan(..., MATMUL_TILE_K)</code></strong> and the <strong><code>chunkat</code></strong> picks <strong>which 16-column stripe</strong> (for <strong><code>WARP_K = 16</code></strong>) participates in this <strong><code>mma.row.row</code></strong>.</p>
+<p>The <strong>store</strong> line repeats the <strong>same</strong> <strong>subspan</strong> shape and <strong>same</strong> <strong><code>.at(p1, 0)</code></strong>, but the buffer is <strong><code>output_s</code></strong> instead of <strong><code>lhs_load_s</code></strong>. That <strong>symmetry</strong> is deliberate: whatever <strong>rows</strong> of <strong>A</strong> a group used to <strong>form</strong> its <strong><code>mc</code></strong>, it writes <strong><code>mc</code></strong> back to the <strong>matching</strong> <strong>rows</strong> of the <strong>staged</strong> <strong>C</strong> tile. If <strong>load</strong> and <strong>store</strong> ever disagree on <strong><code>p1</code></strong>, you have a <strong>silent</strong> correctness bug — the kind <strong>unit tests</strong> catch quickly if <strong>M</strong> and <strong>N</strong> are small enough to <strong>eyeball</strong> a full matrix.</p>
+<h2 id="single-warpgroup-vs-this-kernel-at-a-glance">Single warpgroup vs. this kernel (at a glance)<a class="headerlink" href="#single-warpgroup-vs-this-kernel-at-a-glance" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>One <strong><code>group-4</code></strong> warpgroup per block</th>
+<th>Two warpgroups (<strong>this chapter</strong>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Output tile per block</strong></td>
+<td><strong>64×64</strong> (with these <strong><code>WARP_*</code></strong>)</td>
+<td><strong>128×64</strong></td>
+</tr>
+<tr>
+<td><strong><code>lhs_load_s</code> height</strong></td>
+<td><strong>64</strong></td>
+<td><strong>128</strong></td>
+</tr>
+<tr>
+<td><strong><code>rhs_load_s</code> shape</strong></td>
+<td><strong>64×64</strong></td>
+<td><strong>unchanged</strong> — still <strong>one</strong> <strong>B</strong> tile</td>
+</tr>
+<tr>
+<td><strong>Blocks along M</strong> (fixed <strong>M</strong>)</td>
+<td><strong><code>cdiv(M, 64)</code></strong></td>
+<td><strong><code>cdiv(M, 128)</code></strong></td>
+</tr>
+<tr>
+<td><strong>Accumulators</strong></td>
+<td>one <strong><code>mc</code></strong> per group</td>
+<td><strong>two</strong> <strong><code>mc</code></strong> instances (<strong>one</strong> per <strong><code>p1</code></strong>)</td>
+</tr>
+<tr>
+<td><strong>Parallel pattern</strong></td>
+<td><strong><code>parallel p1 by 1 : group-4</code></strong> (or implicit single group)</td>
+<td><strong><code>parallel p1 by 2 : group-4</code></strong></td>
+</tr>
+</tbody>
+</table>
+<p>The table is <strong>schematic</strong>: real single-warpgroup kernels might still use <strong><code>TILE_M = 128</code></strong> with <strong>more</strong> warps doing <strong>non-MMA</strong> work, or different <strong>N</strong> tiling. The point is to separate <strong>“how tall is shared </strong>A<strong>?”</strong> from <strong>“how many WGMMA teams share one </strong>B<strong>?”</strong> — this chapter’s answer is <strong>128</strong> and <strong>two</strong>.</p>
+<h2 id="check-your-understanding">Check your understanding<a class="headerlink" href="#check-your-understanding" title="Permanent link">&para;</a></h2>
+<p><strong>Why is <code>rhs_load_s</code> not shaped <code>[MATMUL_TILE_M, MATMUL_TILE_K]</code>?</strong> Matrix <strong>B</strong> in the multiply only needs <strong>as many N rows as the block’s N tile</strong> and <strong>as many K columns as the current slab</strong>. Here the <strong>N</strong> tile width is <strong>64</strong>, matching <strong><code>WARP_N</code></strong>. Doubling <strong><code>TILE_M</code></strong> does not double the <strong>N</strong> dimension of <strong>B</strong> for this block — both <strong>64×64</strong> result patches sit in the <strong>same</strong> <strong>N</strong> column range. Hence <strong>one</strong> <strong><code>rhs_load_s</code></strong> suffices.</p>
+<p><strong>Could both groups use the same <code>ma</code> slices?</strong> No — that would compute the <strong>same</strong> <strong>64×64</strong> output twice instead of <strong>two</strong> <strong>different</strong> row bundles of <strong>C</strong>. The <strong>hardware</strong> wants <strong>two</strong> <strong>independent</strong> accumulators because <strong>two</strong> <strong>different</strong> slices of <strong>A</strong> participate.</p>
+<p><strong>Does <code>p1</code> ever appear in the global TMA source coordinates?</strong> Not in this kernel. <strong>Global</strong> <strong>A</strong> is loaded <strong>once</strong> per <strong>K</strong> iteration as a <strong>128×64</strong> tile into <strong><code>lhs_load_s</code></strong>. <strong>Partitioning</strong> happens <strong>after</strong> the data is <strong>in shared</strong>, via <strong><code>subspan</code> / <code>.at</code></strong>. That keeps <strong>TMA</strong> descriptors <strong>simple</strong> and avoids issuing <strong>two</strong> <strong>A</strong> loads that overlap in memory.</p>
+<h2 id="reading-the-benchmark-file">Reading the benchmark file<a class="headerlink" href="#reading-the-benchmark-file" title="Permanent link">&para;</a></h2>
+<p>The repository path <strong><code>choreo/benchmark/performance/matmul/matmul_f16_dynamic_mwg_impl_1.co</code></strong> contains the full <strong>C++</strong> harness (timing, verification, CLI flags) around the <strong><code>__co__ void matmul</code></strong> you saw above. The <strong>preprocessor</strong> block at the top is worth skimming even if you never change the constants: it encodes <strong>WGMMA</strong> shape rules (<strong><code>WARP_M</code></strong>, <strong><code>WARP_K</code></strong>), <strong>swizzle</strong> legality, and <strong><code>TILE_M % WARP_M</code></strong>. Treat those <strong><code>#error</code></strong> lines as <strong>documentation</strong> that happens to be executable — when a future you bumps <strong><code>TILE_K</code></strong>, the compiler will refuse combinations that break <strong>FP16</strong> Hopper assumptions instead of failing mysteriously at runtime.</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>A <strong>single</strong> warpgroup on this path naturally covers <strong>64×64</strong> of the result; <strong>two</strong> groups inside one block cover <strong>128×64</strong> by <strong>splitting A and C along M</strong> and <strong>sharing B</strong>.</li>
+<li><strong><code>parallel p1 by 2 : group-4</code></strong> launches <strong>two</strong> <strong>128-thread</strong> warpgroups; <strong><code>p1</code></strong> indexes which <strong>M</strong> slice each group owns in <strong><code>lhs_load_s</code></strong> and <strong><code>output_s</code></strong>.</li>
+<li><strong><code>rhs_load_s</code></strong> is <strong>one</strong> tile per <strong>K</strong> step; both groups read it, which is the <strong>main reuse win</strong> versus launching separate blocks for each <strong>64-row</strong> strip.</li>
+<li><strong><code>mma.store</code></strong> uses the <strong>same</strong> <strong><code>subspan(…).at(p1, 0)</code></strong> idiom as <strong><code>mma.load</code></strong> so each accumulator lands in the correct <strong>half</strong> of <strong><code>output_s</code></strong>.</li>
+</ul>
+<p>The benchmark source <strong><code>matmul_f16_dynamic_mwg_impl_1.co</code></strong> is a concrete reference implementation with preprocessor checks (for example <strong><code>TILE_M</code> divisible by <code>WARP_M</code></strong>, <strong><code>SWIZ</code> tied to <code>TILE_K</code></strong>) that guard the assumptions this chapter relied on. When you tune tile sizes, start from those constraints and measure — <strong>larger blocks</strong> are not automatically faster, but <strong>multi-warpgroup</strong> layout is the standard way to grow <strong>M</strong> without giving up <strong>WGMMA</strong>’s native <strong>64-row</strong> chunks.</p>
+<hr />
+<p><strong>Next:</strong> <a href="../ch09-view-from/">Chapter 9 — Beyond <code>chunkat</code>: <code>view</code> and <code>from</code> for irregular access</a> continues the tutorial with more flexible indexing when rigid <strong><code>subspan</code></strong> / <strong><code>chunkat</code></strong> tiles are not enough.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "navigation.path", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+      
+        <script src="../../assets/js/hljs-choreo.js"></script>
+      
+        <script src="../../assets/js/hljs-init.js"></script>
+      
+    
+  </body>
+</html>

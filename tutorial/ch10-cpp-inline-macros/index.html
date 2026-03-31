@@ -1,0 +1,3489 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch10-cpp-inline-macros/">
+      
+      
+        <link rel="prev" href="../ch09-view-from/">
+      
+      
+        <link rel="next" href="../../optimization/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Ch 10: C++ Inline & Macros - Croktile</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    
+      <link rel="stylesheet" href="../../assets/css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#c-inline-and-macros-interfacing-with-low-level-control" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Croktile" class="md-header__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Croktile
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ch 10: C++ Inline & Macros
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Croktile" class="md-nav__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    Croktile
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch01-hello-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 1: Hello Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch02-data-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 2: Data Movement Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch03-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 3: Pipeline Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch04-tma-swizzle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 4: TMA and Swizzle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch05-mma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 5: MMA Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch06-warpspec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 6: Warp Specialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch07-persistent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Persistent Matmul
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch08-multi-warpgroup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: Multi-Warpgroup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch09-view-from/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 9: view/from
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 10: C++ Inline & Macros
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 10: C++ Inline & Macros
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-this-sits-in-the-tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where this sits in the tutorial
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#__cpp__-verbatim-c-in-generated-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __cpp__: Verbatim C++ in Generated Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__cpp__: Verbatim C++ in Generated Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-verbatim-means-at-compile-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What “verbatim” means at compile time
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-setmaxnreg-in-warp-specialized-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: setmaxnreg in warp-specialized kernels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-r-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why R"(…)" matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-uses-early-returns-and-guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other uses: early returns and guards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-cautions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical cautions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-choreo-preprocessor-macros-and-conditionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Choreo Preprocessor: Macros and Conditionals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Choreo Preprocessor: Macros and Conditionals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-prefer-macros-vs-other-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to prefer macros vs other constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-like-define-no-function-like-macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Object-like #define (no function-like macros)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compile-time-assertions-with-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile-time assertions with #error
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-compilation-of-tileflow-and-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional compilation of tileflow and C++
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-optimization-chapters-lv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to optimization chapters (Lv1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-macros-with-__cpp__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining macros with __cpp__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checklist-before-you-rely-on-__cpp__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist before you rely on __cpp__
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-two-mechanisms-fit-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the Two Mechanisms Fit Together
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How the Two Mechanisms Fit Together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-read-a-production-co-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to read a production .co file
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Tuning Demos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Performance Tuning Demos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/setup-profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense GEMM FP16
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dense GEMM FP16
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block-Scaled GEMM FP8
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/what-is-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Program Structure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Program Structure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/choreo-program-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choreo-C++ Program Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaped Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shaped Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/shape-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shape and MDSpan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/integer-ituple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integers and I-Tuples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/spanned-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanned Data and Buffers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/symbolic-shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Shape and Symbolic Dimension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop and Parallelism
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Loop and Parallelism
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/intro-loop-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Parallelism and Iterations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/parallel-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPMD Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/within-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/basic-dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The DMA Statement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tiling-chunkat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tile Data with ChunkAt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dma-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ Embeddings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    C++ Embeddings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/input-output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs and Output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/macro-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro and Preprocessing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPMD Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MPMD Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/thread-masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thread Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events for Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/general-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    More on Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/loop-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimental Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimisation Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimisation Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tileflow-opt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tileflow Optimisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/async-dma-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async DMA Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/multi-buffering-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-buffering Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/operator-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference Palette
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_12" id="__nav_4_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Rationales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syntax Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/why-symbolic-shapes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Symbolic Shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/value-numbering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symbolic Evaluation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dynamic-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamism Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-this-sits-in-the-tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where this sits in the tutorial
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#__cpp__-verbatim-c-in-generated-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __cpp__: Verbatim C++ in Generated Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__cpp__: Verbatim C++ in Generated Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-verbatim-means-at-compile-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What “verbatim” means at compile time
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-setmaxnreg-in-warp-specialized-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: setmaxnreg in warp-specialized kernels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-r-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why R"(…)" matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-uses-early-returns-and-guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other uses: early returns and guards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-cautions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical cautions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-choreo-preprocessor-macros-and-conditionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Choreo Preprocessor: Macros and Conditionals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Choreo Preprocessor: Macros and Conditionals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-prefer-macros-vs-other-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to prefer macros vs other constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-like-define-no-function-like-macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Object-like #define (no function-like macros)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compile-time-assertions-with-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile-time assertions with #error
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-compilation-of-tileflow-and-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional compilation of tileflow and C++
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-optimization-chapters-lv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to optimization chapters (Lv1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-macros-with-__cpp__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining macros with __cpp__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checklist-before-you-rely-on-__cpp__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist before you rely on __cpp__
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-two-mechanisms-fit-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the Two Mechanisms Fit Together
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How the Two Mechanisms Fit Together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-read-a-production-co-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to read a production .co file
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="c-inline-and-macros-interfacing-with-low-level-control">C++ Inline and Macros: Interfacing with Low-Level Control<a class="headerlink" href="#c-inline-and-macros-interfacing-with-low-level-control" title="Permanent link">&para;</a></h1>
+<p>Choreo is a high-level DSL: you describe tiles, pipelines, and memory levels, and the compiler generates the tedious parts of CUDA-style kernels. Most of the time that is exactly what you want. Sometimes, though, you need to reach <em>below</em> the abstraction — to issue a specific PTX instruction, to insert a guard the tileflow layer does not express cleanly, or to parameterize a family of kernels with compile-time constants and static checks.</p>
+<p>This final chapter covers the two main escape hatches:</p>
+<ol>
+<li><strong><code>__cpp__</code></strong> — inject raw C++ (including inline assembly and PTX) verbatim into generated code.</li>
+<li><strong>The Choreo preprocessor</strong> — <code>#define</code>, <code>#if</code> / <code>#ifdef</code> / <code>#else</code> / <code>#endif</code>, and <code>#error</code> for macros and conditional compilation.</li>
+</ol>
+<p>Neither mechanism replaces good tileflow design; they complement it when the hardware or the build system demands something the DSL does not spell out directly.</p>
+<h3 id="where-this-sits-in-the-tutorial">Where this sits in the tutorial<a class="headerlink" href="#where-this-sits-in-the-tutorial" title="Permanent link">&para;</a></h3>
+<p>If you read <a href="../ch06-warpspec/">Async Pipelining: inthreads, Events, and Warp Roles</a>, you already saw how <strong>different warps</strong> can own <strong>different stages</strong> of a pipeline. This chapter is the footnote engineers reach for when that pattern must also respect <strong>register-file limits</strong> and <strong>ISA-level</strong> tuning: <code>setmaxnreg</code> does not appear as a first-class Choreo keyword, but it <em>does</em> appear in shipping SM90 GEMMs via <code>__cpp__</code>. Likewise, the matmul snippets in <a href="../ch05-mma/">Enable Tensor Cores in One Primitive: the <code>mma</code> Operations</a> used names like <code>MATMUL_TILE_K</code> for a reason — those names are almost always <strong><code>#define</code>d</strong> once at the top of real kernels so every slice of the program agrees on geometry.</p>
+<h2 id="__cpp__-verbatim-c-in-generated-code"><code>__cpp__</code>: Verbatim C++ in Generated Code<a class="headerlink" href="#__cpp__-verbatim-c-in-generated-code" title="Permanent link">&para;</a></h2>
+<p><code>__cpp__</code> takes a <strong>string literal</strong> containing C++ source. The compiler splices that string into the generated output <strong>as written</strong> — no rewriting, no Choreo semantics on the inside. Whatever you put there must be valid in the surrounding C++ context (scopes, types, semicolons) and legal for your target (CUDA device code, host code, etc.).</p>
+<h3 id="basic-forms">Basic forms<a class="headerlink" href="#basic-forms" title="Permanent link">&para;</a></h3>
+<p>The usual spellings are:</p>
+<ul>
+<li><strong><code>__cpp__("…")</code></strong> — ordinary string; good for one or a few lines, as long as escaping quotes and newlines is tolerable.</li>
+<li><strong><code>__cpp__(R"(…)")</code></strong> — a C++ <strong>raw string literal</strong>: everything between <code>R"(</code> and <code>)"</code> is copied literally, including double quotes and newlines, without backslash escapes.</li>
+</ul>
+<p>For PTX wrapped in <code>asm volatile("…")</code>, the inner assembly string contains <strong>double quotes</strong>. A raw string avoids the pain of <code>\"</code> on every line.</p>
+<p>Multi-line injections work the same way: either embed <code>\n</code> in a normal string (as in the MoE-style guard below) or use a raw string that spans multiple lines inside <code>R"( … )"</code>. The compiler does not re-indent or reformat the string; whitespace inside the literal is preserved.</p>
+<h3 id="what-verbatim-means-at-compile-time">What “verbatim” means at compile time<a class="headerlink" href="#what-verbatim-means-at-compile-time" title="Permanent link">&para;</a></h3>
+<p>It helps to have a concrete mental model. Choreo parses tileflow around your <code>__cpp__</code> call sites, emits C++ (or CUDA) that implements that tileflow, and <strong>splices</strong> each <code>__cpp__</code> argument into the generated text <strong>exactly</strong> as if you had typed it yourself in the output file. There is no automatic bridge from Choreo symbols to C++ names unless the code generator already created those names and your string spells them correctly.</p>
+<p>That is why the early-return example names <code>seg_end</code> and <code>seg_start</code> explicitly: those identifiers must match the generated declarations in that function. If you rename something in tileflow and the generator changes its output, a stale <code>__cpp__</code> string can become a <strong>hard compile error</strong> in generated code — which is still preferable to silently wrong machine code, but it means <code>__cpp__</code> fragments deserve the same review attention as hand-written CUDA.</p>
+<h3 id="example-setmaxnreg-in-warp-specialized-kernels">Example: <code>setmaxnreg</code> in warp-specialized kernels<a class="headerlink" href="#example-setmaxnreg-in-warp-specialized-kernels" title="Permanent link">&para;</a></h3>
+<p>On recent NVIDIA architectures, <strong>warp-specialized</strong> pipelines split work across warps or warpgroups: one side <strong>produces</strong> data (TMA loads, pointers, counters) and another <strong>consumes</strong> it (WGMMA, large register-resident accumulators). The producer needs <strong>few</strong> registers; the consumer needs <strong>many</strong>. The hardware exposes <strong>dynamic register budget</strong> hints via PTX such as <code>setmaxnreg.dec</code> and <code>setmaxnreg.inc</code>, which redistribute how many registers each warp is allowed to use at a given program point.</p>
+<p>In Choreo tileflow, you typically place these hints at the start of an <code>inthreads.async</code> branch that corresponds to producer vs consumer. The following pattern is adapted from high-performance GEMM kernels in the Choreo benchmark tree (for example block-scale GEMM on SM90):</p>
+<div class="highlight"><pre><span></span><code>parallel p1 by 2 : group-4 {
+  inthreads.async (p1 == 0) {
+    __cpp__(R&quot;(asm volatile(&quot;setmaxnreg.dec.sync.aligned.u32 104;&quot;);)&quot;);
+    foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+      // ... producer TMA loads ...
+    }
+  }
+
+  inthreads.async (p1 == 1) {
+    __cpp__(R&quot;(asm volatile(&quot;setmaxnreg.dec.sync.aligned.u32 120;&quot;);)&quot;);
+    mc = mma.fill.f16 0.0f;
+    // ... consumer WGMMA compute ...
+  }
+}
+</code></pre></div>
+<p>Here each branch picks a <strong>different</strong> nominal register count (<code>104</code> vs <code>120</code>) so the compiler and hardware can schedule register pressure differently for the producer and consumer roles. The exact numbers are tuned per kernel, tile shape, and instruction mix — the tutorial point is <strong>where</strong> the hook lives: inside the async thread specialization, before the heavy loop body.</p>
+<p>Another kernel variant (<code>gemm_sp</code> style) pushes the asymmetry further: aggressively <strong>decrease</strong> the producer budget and <strong>increase</strong> the consumer budget so the MMA side keeps more accumulators live:</p>
+<div class="highlight"><pre><span></span><code>inthreads.async (p1 == 0) {
+  __cpp__(R&quot;(asm volatile(&quot;setmaxnreg.dec.sync.aligned.u32 40;&quot;);)&quot;);
+  // producer: needs few registers, so decrease to 40
+}
+
+inthreads.async (p1 == 1) {
+  __cpp__(R&quot;(asm volatile(&quot;setmaxnreg.inc.sync.aligned.u32 216;&quot;);)&quot;);
+  // consumer: needs many registers for accumulators, so increase to 216
+}
+</code></pre></div>
+<p>Read these snippets as <strong>documentation of intent</strong>: the producer thread role is register-light; the consumer is register-heavy. The <code>.dec</code> / <code>.inc</code> forms cooperate with the GPU’s register allocator so both sides can coexist without spilling the wrong side first.</p>
+<h3 id="why-r-matters">Why <code>R"(…)"</code> matters<a class="headerlink" href="#why-r-matters" title="Permanent link">&para;</a></h3>
+<p>If you tried to write the same thing with an ordinary string, every embedded <code>"</code> inside the <code>asm</code> operand would need escaping, and multi-line assembly quickly becomes unreadable. Raw string literals are the standard C++ idiom for injecting <strong>quote-heavy</strong> or <strong>multi-line</strong> fragments; <code>__cpp__</code> simply forwards that string to the generated file.</p>
+<h3 id="other-uses-early-returns-and-guards">Other uses: early returns and guards<a class="headerlink" href="#other-uses-early-returns-and-guards" title="Permanent link">&para;</a></h3>
+<p><code>__cpp__</code> is not limited to inline assembly. Any C++ statement or snippet that makes sense at the splice point is fair game. For example, MoE-style GEMM code paths sometimes inject a <strong>host-visible or device-visible early return</strong> when a segment is empty, roughly along the lines of:</p>
+<div class="highlight"><pre><span></span><code>__cpp__(&quot;if (seg_end - seg_start &lt;= 0) return;\n\n&quot;);
+</code></pre></div>
+<p>That is plain C++ control flow dropped into the generated function: if your indices say there is nothing to do, skip the rest. The exact variable names and types must match what the surrounding generated code actually declares — <code>__cpp__</code> does not magically know your tileflow symbols; it only pastes text.</p>
+<p>In <strong>MoE GEMM</strong>-style kernels, experts are processed in <strong>segments</strong>; some launches may have <strong>zero width</strong> for a given segment after routing. An early return avoids touching uninitialized ranges or issuing empty loops. The guard is trivial C++, but expressing “return from this generated function now” might not map cleanly to a single tileflow statement in every codegen path — hence a one-line <code>__cpp__</code> injection.</p>
+<h3 id="practical-cautions">Practical cautions<a class="headerlink" href="#practical-cautions" title="Permanent link">&para;</a></h3>
+<p>Treat <code>__cpp__</code> as <strong>sharp</strong>:</p>
+<ul>
+<li>You bypass Choreo’s usual checks on whatever is inside the string.</li>
+<li>You are responsible for <strong>correctness</strong> on the target SM, <strong>synchronization</strong> with async pipelines, and <strong>ABI</strong> compatibility with neighboring generated code.</li>
+<li>Prefer keeping injected fragments <strong>small</strong> and <strong>localized</strong> — one asm blob, one guard, one pragma — and let tileflow own structure and data movement.</li>
+</ul>
+<p>When a single PTX hint or guard unlocks measurable performance (as with <code>setmaxnreg</code> in warp-specialized GEMM), <code>__cpp__</code> is the supported way to carry that detail into an otherwise declarative kernel.</p>
+<h2 id="the-choreo-preprocessor-macros-and-conditionals">The Choreo Preprocessor: Macros and Conditionals<a class="headerlink" href="#the-choreo-preprocessor-macros-and-conditionals" title="Permanent link">&para;</a></h2>
+<p>Choreo ships a <strong>preprocessor</strong> that runs over your source before the main compiler pass. It understands a familiar subset of C-style directives:</p>
+<table>
+<thead>
+<tr>
+<th>Directive</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#define NAME value</code></td>
+<td>Object-like macro: textual replacement</td>
+</tr>
+<tr>
+<td><code>#if</code> / <code>#elif</code> / <code>#else</code> / <code>#endif</code></td>
+<td>Conditional inclusion</td>
+</tr>
+<tr>
+<td><code>#ifdef</code> / <code>#ifndef</code></td>
+<td>Shorthand for “macro defined or not”</td>
+</tr>
+<tr>
+<td><code>#error message</code></td>
+<td>Force a compile-time error with a message</td>
+</tr>
+</tbody>
+</table>
+<p>Macros expand in <strong>both</strong> tileflow (<code>__co__</code>) regions and ordinary host or device C++ in the same file, so you can share numeric constants and feature flags across the whole program.</p>
+<p>The preprocessor evaluates <strong>integer constant expressions</strong> in <code>#if</code> conditions using the same names you <code>#define</code>. For nested configuration (architecture × precision × feature flags), chain <code>#elif</code> branches the way you would in C++; only the winning branch is visible to the Choreo parser afterward.</p>
+<h3 id="when-to-prefer-macros-vs-other-constants">When to prefer macros vs other constants<a class="headerlink" href="#when-to-prefer-macros-vs-other-constants" title="Permanent link">&para;</a></h3>
+<p>Object-like macros excel when:</p>
+<ul>
+<li>The same numeric literal must appear in <strong>dozens</strong> of places (tile extents, <code>cdiv</code> bounds, shared memory sizing).</li>
+<li>You want <strong><code>#error</code></strong> to enforce relationships between those literals (swizzle vs tile K, warp M vs WGMMA hardware expectations).</li>
+<li>You generate <strong>many kernel variants</strong> from one source file by varying defines on the <strong>compiler command line</strong> (<code>-DMATMUL_TILE_K=128</code>) without editing the body.</li>
+</ul>
+<p>When a value is truly local to one C++ function and never crosses into tileflow, ordinary <code>constexpr</code> variables or templates in host/device C++ are often clearer. The tutorial’s matmul files skew toward macros because <strong>tileflow and C++ share</strong> those numbers; a single <code>#define</code> avoids drift between the two worlds.</p>
+<h3 id="object-like-define-no-function-like-macros">Object-like <code>#define</code> (no function-like macros)<a class="headerlink" href="#object-like-define-no-function-like-macros" title="Permanent link">&para;</a></h3>
+<p>Typical matmul and GEMM sources centralize tile geometry in macros:</p>
+<div class="highlight"><pre><span></span><code>#define MATMUL_WARP_M 64
+#define MATMUL_WARP_N 128
+#define MATMUL_TILE_K 64
+</code></pre></div>
+<p>Those names then appear in array extents, <code>parallel … by […]</code> bounds, and shared-memory declarations. One change to the macro updates every use site.</p>
+<p><strong>Important limitation:</strong> Choreo’s preprocessor does <strong>not</strong> support <strong>function-like</strong> macros. You cannot write <code>#define MAX(a, b) …</code> and expect it to expand with arguments. Stick to <strong>object-like</strong> <code>#define NAME replacement</code> or use constexpr / inline functions in plain C++ where you need functions.</p>
+<h3 id="compile-time-assertions-with-error">Compile-time assertions with <code>#error</code><a class="headerlink" href="#compile-time-assertions-with-error" title="Permanent link">&para;</a></h3>
+<p>Libraries use <code>#if</code> together with <code>#error</code> to <strong>assert configuration constraints</strong> at compile time. If someone changes a swizzle width or warp tile incompatibly, the build fails immediately with a clear message instead of producing a wrong or illegal kernel:</p>
+<div class="highlight"><pre><span></span><code>#if MATMUL_SWIZ != (2 * MATMUL_TILE_K)
+#error &quot;MATMUL_SWIZ must equal 2 * MATMUL_TILE_K for f16 kernel&quot;
+#endif
+
+#if MATMUL_WARP_M != 64
+#error &quot;MATMUL_WARP_M must be 64 for f16 WGMMA constraints&quot;
+#endif
+</code></pre></div>
+<p>This pattern documents <strong>why</strong> those equalities must hold (layout assumptions, ISA constraints) and enforces them in CI.</p>
+<h3 id="conditional-compilation-of-tileflow-and-c">Conditional compilation of tileflow and C++<a class="headerlink" href="#conditional-compilation-of-tileflow-and-c" title="Permanent link">&para;</a></h3>
+<p>You can select whole regions of code based on a defined macro — useful for experimental paths, architecture branches, or debug instrumentation:</p>
+<div class="highlight"><pre><span></span><code>#define PATH0
+
+__co__ foo() {
+  // ...
+  #ifdef PATH0
+    // path 0 code
+  #else
+    // path 1 code
+  #endif
+}
+</code></pre></div>
+<p>The preprocessor keeps <strong>one</strong> branch and discards the other before Choreo parses the tileflow. That is different from a runtime <code>if</code>: no dead branch remains in the generated program for the disabled path.</p>
+<h3 id="connection-to-optimization-chapters-lv1">Connection to optimization chapters (Lv1)<a class="headerlink" href="#connection-to-optimization-chapters-lv1" title="Permanent link">&para;</a></h3>
+<p>Earlier tutorial tracks (for example <strong>Lv1</strong> optimization material) lean heavily on macros to <strong>parameterize</strong> kernels: tile sizes, unroll factors, and feature toggles become compile-time constants so you can sweep a search space or generate variants without duplicating entire files. The same <code>#define</code> / <code>#if</code> machinery you saw in matmul benchmarks is the glue for those experiments.</p>
+<h3 id="combining-macros-with-__cpp__">Combining macros with <code>__cpp__</code><a class="headerlink" href="#combining-macros-with-__cpp__" title="Permanent link">&para;</a></h3>
+<p>You might hope to write a register count once as a macro and reuse it inside <code>__cpp__</code>:</p>
+<div class="highlight"><pre><span></span><code>#define PRODUCER_MAXNREG 40
+
+inthreads.async (p1 == 0) {
+  __cpp__(R&quot;(asm volatile(&quot;setmaxnreg.dec.sync.aligned.u32 PRODUCER_MAXNREG;&quot;);)&quot;);
+}
+</code></pre></div>
+<p>That snippet is <strong>not</strong> what you want: inside a string literal (including a raw string), the C-style preprocessor does <strong>not</strong> replace <code>PRODUCER_MAXNREG</code> with <code>40</code>. The generated asm would contain the <strong>identifier</strong> <code>PRODUCER_MAXNREG</code>, which is not a valid immediate for PTX.</p>
+<p>In shipping kernels, immediates inside <code>R"(asm …)"</code> are almost always <strong>numeric literals</strong> typed out (<code>40</code>, <code>216</code>, <code>104</code>, …). To keep them consistent with macro-defined tile geometry, teams typically document the relationship in comments, use <strong><code>#if</code> / <code>#error</code></strong> so illegal combinations fail at compile time, or generate the <code>.co</code> from a template or script when a single source of truth is mandatory across many asm sites.</p>
+<p>Use <strong><code>#define</code> freely for tileflow geometry</strong> (sizes that appear <strong>outside</strong> string literals). Treat <strong><code>__cpp__</code> strings</strong> as opaque text the preprocessor will not reach into.</p>
+<h3 id="checklist-before-you-rely-on-__cpp__">Checklist before you rely on <code>__cpp__</code><a class="headerlink" href="#checklist-before-you-rely-on-__cpp__" title="Permanent link">&para;</a></h3>
+<p>When reviewing or writing an injection, ask:</p>
+<ol>
+<li><strong>Scope</strong> — Is this string valid C++ at the exact insertion point (inside the generated function, correct braces, trailing semicolons where required)?</li>
+<li><strong>Identifiers</strong> — Do all names in the string match what codegen actually emits for this kernel version?</li>
+<li><strong>SM target</strong> — Is the instruction or intrinsic legal on the architecture you compile for? Would a fallback path need <code>#if</code> at the Choreo level?</li>
+<li><strong>Synchronization</strong> — For async pipelines (Chapter 6), does this asm interact safely with producer/consumer ordering and barriers?</li>
+<li><strong>Minimal surface</strong> — Can you express most of the logic in tileflow and reserve <code>__cpp__</code> for the one line the DSL does not cover?</li>
+</ol>
+<p>If any answer is uncertain, prototype in a small CUDA file first, then port the proven fragment into <code>__cpp__</code>.</p>
+<h2 id="how-the-two-mechanisms-fit-together">How the Two Mechanisms Fit Together<a class="headerlink" href="#how-the-two-mechanisms-fit-together" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <strong><code>__cpp__</code></strong> when you need <strong>exact</strong> control over a line of C++, inline assembly, or PTX in the <strong>generated</strong> output — register hints, targeted guards, intrinsics the DSL does not wrap.</li>
+<li>Use <strong><code>#define</code> and conditionals</strong> when you want <strong>compile-time</strong> parameterization and <strong>validation</strong> shared across tileflow and C++ — tile dimensions, algorithm variants, and static <code>#error</code> checks.</li>
+</ul>
+<p>Together they close the loop: Choreo keeps everyday kernels readable and structured, while <code>__cpp__</code> and the preprocessor let expert paths stay <strong>honest</strong> (asserted constraints) and <strong>complete</strong> (hardware-specific details where they matter).</p>
+<h3 id="how-to-read-a-production-co-file">How to read a production <code>.co</code> file<a class="headerlink" href="#how-to-read-a-production-co-file" title="Permanent link">&para;</a></h3>
+<p>When you open something like <code>blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c_m2048_n2048_k2048.co</code> or another entry in the Choreo benchmark tree, read <strong>top down</strong>:</p>
+<ol>
+<li><strong>Macros and <code>#error</code> guards</strong> — These encode the contract: allowed tile sizes, swizzle rules, and architecture flags. If you change a define, the next <code>#if</code> might stop the build; treat that as documentation, not annoyance.</li>
+<li><strong>Host setup</strong> — Buffers, launch configuration, timing; often ordinary C++.</li>
+<li><strong><code>__co__</code> tileflow</strong> — The orchestration story: <code>parallel</code>, <code>foreach</code>, TMA/MMA, <code>inthreads.async</code>, events. Map each region back to the chapters in this tutorial.</li>
+<li><strong><code>__cpp__</code> islands</strong> — Usually a handful of lines. Pause on each one and ask what the hardware gets that tileflow does not spell out (register hints, returns, intrinsics).</li>
+</ol>
+<p>That order prevents getting lost in the middle of a warp-specialized loop before you know which <code>MATMUL_*</code> constants you are allowed to change.</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>This chapter introduced the two low-level interfaces that sit alongside declarative tileflow:</p>
+<ul>
+<li><strong><code>__cpp__("…")</code> / <code>__cpp__(R"(…)")</code></strong> splices string contents verbatim into generated code; raw strings are ideal for <code>asm volatile("…")</code> and other quote-heavy snippets.</li>
+<li><strong>Warp-specialized GEMM</strong> examples use <strong><code>setmaxnreg.dec</code> / <code>setmaxnreg.inc</code></strong> in producer vs consumer <code>inthreads.async</code> branches to tune register pressure for TMA-heavy vs MMA-heavy roles.</li>
+<li><strong>Other <code>__cpp__</code> uses</strong> include simple C++ control flow such as early <code>return</code> when a segment range is empty (as in MoE-style GEMM sources).</li>
+<li><strong>Choreo’s preprocessor</strong> supports <strong><code>#define</code></strong>, <strong><code>#if</code> / <code>#ifdef</code> / <code>#ifndef</code> / <code>#else</code> / <code>#endif</code></strong>, and <strong><code>#error</code></strong>; macros apply to tileflow and C++ alike.</li>
+<li><strong>No function-like macros</strong> — only object-like <code>#define NAME value</code>.</li>
+<li><strong><code>#error</code> under <code>#if</code></strong> encodes compile-time requirements on configuration constants, a pattern ubiquitous in matmul benchmarks.</li>
+</ul>
+<p>That finishes the Choreo DSL tutorial track at the boundary between declarative tileflow and the low-level reality of production GPU kernels. You started from a running program (<a href="../ch01-hello-choreo/">Hello Choreo</a>), learned how data moves and pipelines overlap, saw TMA and swizzle, connected MMA and WGMMA to tile shapes, specialized warps for async roles, iterated persistent tiles, scaled across warpgroups, and shaped irregular access with <code>view</code> / <code>from</code>. This chapter is the <strong>pressure valve</strong>: when the model is right but the last percent needs a PTX hint or a static configuration guard, you now know which door to open.</p>
+<p>From here, the most productive next step is to read a full benchmark kernel end to end — <strong>macros at the top</strong>, <strong>tileflow in the middle</strong>, and the occasional <strong><code>__cpp__</code> hook</strong> where the hardware demands it — then change one constant or one guard, rebuild, and measure. Small, deliberate edits beat large rewrites; the toolchain and the <code>#error</code> lines will tell you when a configuration stops being legal long before you chase mysterious numerical wrong answers on the GPU.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "navigation.path", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+      
+        <script src="../../assets/js/hljs-choreo.js"></script>
+      
+        <script src="../../assets/js/hljs-init.js"></script>
+      
+    
+  </body>
+</html>

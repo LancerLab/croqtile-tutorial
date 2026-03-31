@@ -1,0 +1,3411 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch07-persistent/">
+      
+      
+        <link rel="prev" href="../ch06-warpspec/">
+      
+      
+        <link rel="next" href="../ch08-multi-warpgroup/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Ch 7: Persistent Matmul - Croktile</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    
+      <link rel="stylesheet" href="../../assets/css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#persistent-matmul-if-guards-step-and-tile-iteration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Croktile" class="md-header__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Croktile
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ch 7: Persistent Matmul
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Croktile" class="md-nav__button md-logo" aria-label="Croktile" data-md-component="logo">
+      
+  <img src="../../assets/images/favicon.svg" alt="logo">
+
+    </a>
+    Croktile
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/codes1gn/croktile-tutorial" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    codes1gn/croktile-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch01-hello-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 1: Hello Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch02-data-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 2: Data Movement Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch03-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 3: Pipeline Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch04-tma-swizzle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 4: TMA and Swizzle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch05-mma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 5: MMA Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch06-warpspec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 6: Warp Specialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Persistent Matmul
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Persistent Matmul
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-persistent-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why persistent kernels?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixed-launch-count-parallel-block_id-by-num_sms-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed launch count: parallel block_id by NUM_SMS : block
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linearizing-tiles-and-striping-them-across-ctas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linearizing tiles and striping them across CTAs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile_iter-block_id-and-the-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tile_iter, block_id, and the # operator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="tile_iter, block_id, and the # operator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-the-loop-bound-is-cdivtotal_tiles-num_sms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the loop bound is cdiv(total_tiles, NUM_SMS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-if-guard-out-of-range-tile_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The if guard: out-of-range tile_id
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The if guard: out-of-range tile_id">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-stays-outside-the-if" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What stays outside the if
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepmatmul_warp_m-matmul_tile_k-on-subspan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .step(MATMUL_WARP_M, MATMUL_TILE_K) on subspan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=".step(MATMUL_WARP_M, MATMUL_TILE_K) on subspan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-step-differs-from-the-subspan-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When .step differs from the subspan shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-the-inner-loop-in-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Putting the inner loop in context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting the inner loop in context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-dependent-grid-versus-persistent-launch-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data-dependent grid versus persistent launch (recap)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile-scheduling-variants-in-the-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tile scheduling variants in the repo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-num_sms-and-partial-output-tiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing NUM_SMS and partial output tiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-evolving-a-matmul-to-persistent-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist: evolving a matmul to persistent form
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch08-multi-warpgroup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: Multi-Warpgroup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch09-view-from/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 9: view/from
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch10-cpp-inline-macros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 10: C++ Inline & Macros
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Tuning Demos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Performance Tuning Demos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/setup-profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense GEMM FP16
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dense GEMM FP16
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/matmul-f16/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/gemm-sp/aitune-last-mile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI-Tune Last Mile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Block-Scaled GEMM FP8
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/baseline-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../optimization/blockscale-gemm/pattern-optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/what-is-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is Choreo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Program Structure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Program Structure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/choreo-program-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choreo-C++ Program Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaped Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shaped Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/shape-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shape and MDSpan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/integer-ituple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integers and I-Tuples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/spanned-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanned Data and Buffers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/symbolic-shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Shape and Symbolic Dimension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop and Parallelism
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Loop and Parallelism
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/intro-loop-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Parallelism and Iterations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/parallel-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPMD Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/within-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/basic-dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The DMA Statement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tiling-chunkat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tile Data with ChunkAt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dma-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ Embeddings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    C++ Embeddings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/input-output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs and Output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/macro-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro and Preprocessing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPMD Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MPMD Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/thread-masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thread Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events for Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/general-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    More on Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/loop-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimental Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimisation Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimisation Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tileflow-opt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tileflow Optimisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/async-dma-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async DMA Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/multi-buffering-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-buffering Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/operator-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference Palette
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_12" id="__nav_4_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Rationales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syntax Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/why-symbolic-shapes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Symbolic Shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/value-numbering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symbolic Evaluation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dynamic-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamism Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-persistent-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why persistent kernels?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixed-launch-count-parallel-block_id-by-num_sms-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed launch count: parallel block_id by NUM_SMS : block
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linearizing-tiles-and-striping-them-across-ctas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linearizing tiles and striping them across CTAs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile_iter-block_id-and-the-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tile_iter, block_id, and the # operator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="tile_iter, block_id, and the # operator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-the-loop-bound-is-cdivtotal_tiles-num_sms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the loop bound is cdiv(total_tiles, NUM_SMS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-if-guard-out-of-range-tile_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The if guard: out-of-range tile_id
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The if guard: out-of-range tile_id">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-stays-outside-the-if" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What stays outside the if
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepmatmul_warp_m-matmul_tile_k-on-subspan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .step(MATMUL_WARP_M, MATMUL_TILE_K) on subspan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=".step(MATMUL_WARP_M, MATMUL_TILE_K) on subspan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-step-differs-from-the-subspan-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When .step differs from the subspan shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-the-inner-loop-in-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Putting the inner loop in context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting the inner loop in context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-dependent-grid-versus-persistent-launch-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data-dependent grid versus persistent launch (recap)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile-scheduling-variants-in-the-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tile scheduling variants in the repo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-num_sms-and-partial-output-tiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing NUM_SMS and partial output tiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-evolving-a-matmul-to-persistent-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist: evolving a matmul to persistent form
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="persistent-matmul-if-guards-step-and-tile-iteration">Persistent Matmul: if-guards, step, and Tile Iteration<a class="headerlink" href="#persistent-matmul-if-guards-step-and-tile-iteration" title="Permanent link">&para;</a></h1>
+<p>In Chapter 4 you saw a Hopper-style FP16 matrix multiply whose <strong>grid</strong> was sized directly from the problem: one CUDA <strong>thread block</strong> (CTA) per output tile, via <code>parallel {block_m, block_n} by [cdiv(M, ...), cdiv(N, ...)] : block</code>. That pattern is easy to reason about: each block owns one <strong><code>MATMUL_WARP_M × MATMUL_WARP_N</code></strong> region of the output, loads K-panels with TMA, accumulates with WGMMA, and stores the result. Chapter 6 added <strong>warp specialization</strong> inside that story—different warps playing different roles in a pipelined loop.</p>
+<p>This chapter changes the <strong>launch geometry</strong>. Instead of spawning as many CTAs as there are output tiles, we launch a <strong>fixed</strong> number of blocks—here, one per streaming multiprocessor (SM)—and let each block <strong>iterate</strong> over many tiles in software. That is the <strong>persistent kernel</strong> pattern: a small, steady pool of CTAs that keeps working until the whole output is covered.</p>
+<p>By the end of this chapter, you should understand:</p>
+<ul>
+<li>Why a fixed CTA count can use hardware more efficiently when the tile grid is large</li>
+<li>How to <strong>linearize</strong> output tiles and assign them to blocks with <code>tile_iter # block_id</code></li>
+<li>Why an <strong><code>if (tile_id &lt; total_tiles)</code></strong> guard is required when <code>total_tiles</code> is not divisible by the CTA count</li>
+<li>What <strong><code>.step(M, K)</code></strong> on <strong><code>subspan</code></strong> means when stride should be spelled explicitly</li>
+<li>How <strong>integer division and remainder</strong> recover <strong><code>(block_m, block_n)</code></strong> from a linear <strong><code>tile_id</code></strong></li>
+<li>How <strong><code>NUM_SMS</code></strong> relates to the GPU you target and why <strong><code>cdiv(total_tiles, NUM_SMS)</code></strong> is the shared loop bound</li>
+</ul>
+<hr />
+<h2 id="why-persistent-kernels">Why persistent kernels?<a class="headerlink" href="#why-persistent-kernels" title="Permanent link">&para;</a></h2>
+<p>Suppose <strong><code>M</code></strong> and <strong><code>N</code></strong> are large enough that the number of output tiles <strong><code>tiles_m * tiles_n</code></strong> is <strong>much larger</strong> than the number of SMs on your GPU. With a <strong>data-dependent</strong> grid—one CTA per tile—the hardware schedules tiles in <strong>waves</strong>. After each wave finishes, a new wave starts. In the <strong>last</strong> wave, only <strong>some</strong> SMs have work; the rest sit idle. That <strong>tail</strong> underutilizes the chip.</p>
+<p>A <strong>persistent</strong> layout flips the picture: you launch <strong><code>NUM_SMS</code></strong> blocks (or another fixed count you choose), and <strong>every</strong> block stays busy across <strong>many</strong> logical tiles. Work is <strong>striped</strong> across CTAs so that block <strong><code>b</code></strong> handles tiles <strong><code>b</code>, <code>b + NUM_SMS</code>, <code>b + 2 * NUM_SMS</code>, ...</strong>. As long as there is another tile assigned to that block, it keeps going; you avoid the “almost empty final wave” problem at the <strong>grid</strong> level because you never asked for <strong><code>total_tiles</code></strong> separate CTAs in the first place.</p>
+<p>The tradeoff is <strong>software complexity</strong>: you need a loop over tile indices, a mapping from a <strong>linear</strong> tile id back to <strong><code>(block_m, block_n)</code></strong>, and a guard for <strong>padding</strong> iterations when the striping does not divide evenly. Choreo’s tileflow makes that explicit and readable.</p>
+<p>The reference for this chapter is the <strong>static persistent</strong> FP16 matmul on SM90 in Choreo’s benchmarks: <code>choreo/benchmark/performance/matmul/matmul_f16_dyn_persis_sta_sm90.co</code>. The <strong>tileflow</strong> body below matches that kernel’s structure (constants are discussed in the next section).</p>
+<div class="highlight"><pre><span></span><code>__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  int total_tiles = cdiv(M, MATMUL_WARP_M) * cdiv(N, MATMUL_WARP_N);
+
+  parallel block_id by NUM_SMS : block {
+    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
+    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+
+    foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)] {
+      tile_id = tile_iter # block_id;
+      if (tile_id &lt; total_tiles) {
+        block_m = tile_id / cdiv(N, MATMUL_WARP_N);
+        block_n = tile_id % cdiv(N, MATMUL_WARP_N);
+
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+          tma.copy.swiz&lt;MATMUL_SWIZ&gt; lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).step(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+          tma.copy.swiz&lt;MATMUL_SWIZ&gt; rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).step(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k) =&gt; rhs_load_s;
+          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+            parallel p by 1 : group-4 {
+              ma = mma.load.swiz&lt;MATMUL_SWIZ&gt; lhs_load_s.chunkat(_, iv_warp);
+              mb = mma.load.swiz&lt;MATMUL_SWIZ&gt; rhs_load_s.chunkat(_, iv_warp);
+              mma.row.row mc, ma, mb;
+            }
+          }
+        }
+        mma.store mc, output_s;
+        tma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+}
+</code></pre></div>
+<p><strong>Typical constants</strong> in that file (Hopper-class <strong>H800 PCIe</strong> in the benchmark) include:</p>
+<ul>
+<li><strong><code>NUM_SMS = 114</code></strong> — persistent launch width chosen to track SM count for that SKU</li>
+<li><strong><code>MATMUL_WARP_M = 64</code></strong>, <strong><code>MATMUL_WARP_N = 128</code></strong>, <strong><code>MATMUL_TILE_K = 64</code></strong>, <strong><code>MATMUL_WARP_K = 16</code></strong>, <strong><code>MATMUL_SWIZ = 128</code></strong></li>
+</ul>
+<p>The <strong>inner</strong> K-loop, TMA + WGMMA structure, and <strong><code>parallel ... : group-4</code></strong> warpgroup are the same ideas as Chapter 4 and Chapter 5; what is new is the <strong>outer</strong> <code>parallel block_id by NUM_SMS</code>, the <strong><code>foreach tile_iter</code></strong>, the <strong><code>#</code></strong> composition, <strong><code>if</code></strong>, <strong><code>.step</code></strong>, and the arithmetic that maps <strong><code>tile_id</code></strong> to <strong><code>block_m</code> / <code>block_n</code></strong>.</p>
+<hr />
+<h2 id="fixed-launch-count-parallel-block_id-by-num_sms-block">Fixed launch count: <code>parallel block_id by NUM_SMS : block</code><a class="headerlink" href="#fixed-launch-count-parallel-block_id-by-num_sms-block" title="Permanent link">&para;</a></h2>
+<p>Earlier matmul chapters used a <strong>two-dimensional</strong> parallel over <strong><code>block_m</code></strong> and <strong><code>block_n</code></strong>, with bounds derived from <strong><code>M</code></strong> and <strong><code>N</code></strong>. Here we use a <strong>one-dimensional</strong> parallel over <strong><code>block_id</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>parallel block_id by NUM_SMS : block {
+</code></pre></div>
+<p>This means: launch exactly <strong><code>NUM_SMS</code></strong> thread blocks. The index <strong><code>block_id</code></strong> runs from <strong><code>0</code></strong> to <strong><code>NUM_SMS - 1</code></strong>. It is <strong>not</strong> tied to a single output tile anymore; it is simply <strong>which</strong> persistent worker you are in the pool.</p>
+<p>Contrast that with:</p>
+<div class="highlight"><pre><span></span><code>parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
+</code></pre></div>
+<p>In the data-dependent version, <strong>grid size grows with problem size</strong>. In the persistent version, <strong>grid size is fixed</strong> (here, <strong><code>NUM_SMS</code></strong>), and <strong>problem size</strong> shows up in <strong><code>total_tiles</code></strong> and the <strong>inner</strong> loop count instead.</p>
+<hr />
+<h2 id="linearizing-tiles-and-striping-them-across-ctas">Linearizing tiles and striping them across CTAs<a class="headerlink" href="#linearizing-tiles-and-striping-them-across-ctas" title="Permanent link">&para;</a></h2>
+<p>We treat the <strong><code>tiles_m × tiles_n</code></strong> output grid as a single sequence of <strong><code>total_tiles</code></strong> tiles, numbered <strong><code>0 .. total_tiles - 1</code></strong> in <strong>row-major</strong> order over <strong><code>(block_m, block_n)</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>int total_tiles = cdiv(M, MATMUL_WARP_M) * cdiv(N, MATMUL_WARP_N);
+</code></pre></div>
+<p>So <strong><code>tile_id = 0</code></strong> corresponds to <strong><code>(block_m, block_n) = (0, 0)</code></strong>, then <strong><code>(0, 1)</code></strong>, …, then <strong><code>(1, 0)</code></strong>, and so on—exactly the order implied by:</p>
+<div class="highlight"><pre><span></span><code>block_m = tile_id / cdiv(N, MATMUL_WARP_N);
+block_n = tile_id % cdiv(N, MATMUL_WARP_N);
+</code></pre></div>
+<p>Here <strong><code>cdiv(N, MATMUL_WARP_N)</code></strong> is the number of tiles along <strong>N</strong>; dividing by it recovers the row index <strong><code>block_m</code></strong>, and the remainder is the column index <strong><code>block_n</code></strong>. This is ordinary integer <strong>tileflow</strong> arithmetic: it tells TMA and the output store <strong>which</strong> logical output tile this iteration is responsible for.</p>
+<p>Each persistent CTA does not own a contiguous chunk of that sequence. Instead, CTA <strong><code>b</code></strong> processes <strong><code>tile_id</code></strong> values <strong><code>b</code>, b + NUM_SMS, b + 2 * NUM_SMS, ...<code>**—a **stride-</code>NUM_SMS<code>** walk through the linearized list. That is how **</code>NUM_SMS`</strong> workers share the load evenly in the steady state.</p>
+<hr />
+<h2 id="tile_iter-block_id-and-the-operator"><code>tile_iter</code>, <code>block_id</code>, and the <code>#</code> operator<a class="headerlink" href="#tile_iter-block_id-and-the-operator" title="Permanent link">&para;</a></h2>
+<p>The loop:</p>
+<div class="highlight"><pre><span></span><code>foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)] {
+  tile_id = tile_iter # block_id;
+</code></pre></div>
+<p>does two things at once.</p>
+<p>First, <strong><code>tile_iter</code></strong> counts <strong>which pass</strong> this CTA is on: <strong><code>0</code></strong>, <strong><code>1</code></strong>, …, up to <strong><code>cdiv(total_tiles, NUM_SMS) - 1</code></strong>. The upper bound uses <strong><code>cdiv</code></strong> (ceiling division) so that if <strong><code>total_tiles</code></strong> is not a multiple of <strong><code>NUM_SMS</code></strong>, we still iterate enough times for the <strong>last</strong> few tiles to be reached by <strong>some</strong> block.</p>
+<p>Second, <strong><code>tile_id = tile_iter # block_id</code></strong> <strong>composes</strong> the pass index with the <strong>block index</strong> to form the <strong>global linear tile id</strong> for this iteration. Read <strong><code>#</code></strong> here as “combine <strong><code>tile_iter</code></strong> and <strong><code>block_id</code></strong> into the <strong><code>tile_id</code></strong> that this striping scheme assigns to this block at this step.” In other words, for block <strong><code>block_id</code></strong>, iteration <strong><code>tile_iter</code></strong> handles the tile at position <strong><code>tile_iter * NUM_SMS + block_id</code></strong> in the linear ordering—matching the stride-<strong><code>NUM_SMS</code></strong> picture above.</p>
+<p>If you are coming from CUDA C, this is the same algebra you would write by hand for persistent kernels; Choreo just makes the <strong>iteration space</strong> and <strong>composition</strong> part of the tileflow language.</p>
+<h3 id="why-the-loop-bound-is-cdivtotal_tiles-num_sms">Why the loop bound is <code>cdiv(total_tiles, NUM_SMS)</code><a class="headerlink" href="#why-the-loop-bound-is-cdivtotal_tiles-num_sms" title="Permanent link">&para;</a></h3>
+<p>You might first guess that each block should iterate <strong><code>total_tiles / NUM_SMS</code></strong> times. That only works when <strong><code>total_tiles</code></strong> divides evenly by <strong><code>NUM_SMS</code></strong>. In general, <strong>some</strong> blocks must run <strong>one more</strong> pass than others so that <strong>all</strong> tiles <strong><code>0 .. total_tiles - 1</code></strong> appear in the table exactly once.</p>
+<p>Using <strong><code>cdiv(total_tiles, NUM_SMS)</code></strong> as the <strong>shared</strong> bound is the standard fix: it is the <strong>maximum</strong>, over all blocks, of how many <strong><code>tile_iter</code></strong> steps that block needs before every valid <strong><code>tile_id</code></strong> for that block has been visited. Blocks that would otherwise “finish early” still execute the extra iterations, but those iterations hit <strong><code>tile_id &gt;= total_tiles</code></strong> and <strong>skip</strong> the <strong><code>if</code></strong> body—cheap compared to launching <strong><code>total_tiles</code></strong> separate kernels or using divergent grid sizes per block (which CUDA does not offer at launch granularity anyway).</p>
+<hr />
+<h2 id="the-if-guard-out-of-range-tile_id">The <code>if</code> guard: out-of-range <code>tile_id</code><a class="headerlink" href="#the-if-guard-out-of-range-tile_id" title="Permanent link">&para;</a></h2>
+<p>Because <strong><code>foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)]</code></strong> may run <strong>one extra</strong> iteration for some blocks when <strong><code>total_tiles</code></strong> is not divisible by <strong><code>NUM_SMS</code></strong>, some combinations <strong><code>(tile_iter, block_id)</code></strong> produce a <strong><code>tile_id</code></strong> that is <strong>past the end</strong> of the real tile list—<strong><code>tile_id &gt;= total_tiles</code></strong>.</p>
+<p>The guard:</p>
+<div class="highlight"><pre><span></span><code>if (tile_id &lt; total_tiles) {
+  ...
+}
+</code></pre></div>
+<p>skips <strong>all</strong> TMA, MMA, and store work for those <strong>padding</strong> iterations. Shared memory is still <strong>declared</strong> at block scope (outside the <code>if</code>), but only <strong>valid</strong> tiles execute the body. Without this guard, you would index <strong><code>block_m</code> / <code>block_n</code></strong> and global tensors <strong>out of range</strong> for bogus <strong><code>tile_id</code></strong> values.</p>
+<p>This is a central pattern in persistent tileflow: <strong>round up</strong> the iteration count for simplicity, then <strong>predicate</strong> the real work.</p>
+<h3 id="what-stays-outside-the-if">What stays outside the <code>if</code><a class="headerlink" href="#what-stays-outside-the-if" title="Permanent link">&para;</a></h3>
+<p>In the listing at the top of the chapter, <strong><code>shared</code></strong> buffers are declared <strong>once per CTA</strong>, <strong>outside</strong> the <strong><code>if</code></strong>. That matches how you would allocate SMEM in CUDA: <strong>one</strong> allocation per thread block, reused for <strong>every</strong> logical tile that block processes. Only the <strong>contents</strong> and the <strong>global indices</strong> change per iteration.</p>
+<p>If you later add <strong>warp-specialized</strong> producers and consumers (Chapter 6), you will still want <strong>persistent</strong> outer loops to sit <strong>outside</strong> role-specific inner regions so that <strong>all</strong> warps agree on how many <strong>tile</strong> iterations the block performs—even when only some warps participate in a given stage.</p>
+<hr />
+<h2 id="stepmatmul_warp_m-matmul_tile_k-on-subspan"><code>.step(MATMUL_WARP_M, MATMUL_TILE_K)</code> on <code>subspan</code><a class="headerlink" href="#stepmatmul_warp_m-matmul_tile_k-on-subspan" title="Permanent link">&para;</a></h2>
+<p>The TMA lines use <strong><code>subspan</code></strong> with an explicit <strong><code>.step</code></strong>:</p>
+<div class="highlight"><pre><span></span><code>lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).step(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k)
+rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).step(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k)
+</code></pre></div>
+<p>Conceptually, <strong><code>subspan</code></strong> picks a <strong>tile shape</strong> (rows × columns in the tensor’s index space), <strong><code>.at(block_m, iv_k)</code></strong> (or <strong><code>block_n</code></strong>) anchors that tile in the <strong>global</strong> matrix, and <strong><code>.step</code></strong> states the <strong>stride</strong> between successive tiles along those dimensions when the stride might differ from the <strong>visible</strong> tile size or when you want the compiler and reader to see the layout spelled out.</p>
+<p>In earlier chapters, <strong><code>subspan</code></strong> often appeared <strong>without</strong> <strong><code>.step</code></strong>, relying on the <strong>default</strong> that stride matches the tile extent. Here, <strong><code>.step(MATMUL_WARP_M, MATMUL_TILE_K)</code></strong> matches the <strong>M × K</strong> tile shape for LHS (and similarly for RHS along <strong>N × K</strong>). For this symmetric case the numeric stride equals the subspan size, but writing <strong><code>.step</code></strong> makes the <strong>intent</strong> obvious: “this is the hop between adjacent tiles in index space,” which matters when you start varying layouts or reading kernels that use non-default strides.</p>
+<p>The <strong>store</strong> path still uses <strong><code>output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n)</code></strong> without an explicit <strong><code>.step</code></strong> in the snippet—consistent with Chapter 4’s style when the default is clear.</p>
+<h3 id="when-step-differs-from-the-subspan-shape">When <code>.step</code> differs from the subspan shape<a class="headerlink" href="#when-step-differs-from-the-subspan-shape" title="Permanent link">&para;</a></h3>
+<p>The persistent matmul uses <strong>equal</strong> step and tile size along each axis, which is the common case for <strong>dense</strong> GEMM tiles that abut without gaps. Other kernels use <strong><code>.step</code></strong> to express <strong>non-contiguous</strong> tiling: for example, a subspan might cover <strong>64</strong> elements along K while the <strong>next</strong> tile in the sequence starts <strong>128</strong> elements away because of <strong>padding</strong>, <strong>interleaving</strong>, or a <strong>blocked storage</strong> format. Treat <strong><code>.step</code></strong> as part of the <strong>view</strong> you hand to TMA: it tells the copy <strong>how indices advance</strong> when you move <strong><code>iv_k</code></strong> or <strong><code>block_m</code></strong> by one in the logical loop, not only how big one tile is.</p>
+<hr />
+<h2 id="putting-the-inner-loop-in-context">Putting the inner loop in context<a class="headerlink" href="#putting-the-inner-loop-in-context" title="Permanent link">&para;</a></h2>
+<p>Inside the <strong><code>if</code></strong>, the body is intentionally familiar:</p>
+<ol>
+<li><strong><code>mma.fill.f16</code></strong> seeds the accumulator <strong><code>mc</code></strong>.</li>
+<li><strong><code>foreach iv_k</code></strong> stages <strong><code>MATMUL_TILE_K</code></strong>-wide K-panels from <strong><code>lhs</code></strong> and <strong><code>rhs</code></strong> into <strong><code>lhs_load_s</code></strong> and <strong><code>rhs_load_s</code></strong> with <strong><code>tma.copy.swiz&lt;MATMUL_SWIZ&gt;</code></strong>.</li>
+<li><strong><code>foreach iv_warp</code></strong> with <strong><code>parallel ... : group-4</code></strong> runs <strong>WGMMA</strong> (<code>mma.load.swiz</code>, <strong><code>mma.row.row</code></strong>) over <strong><code>MATMUL_WARP_K</code></strong> chunks along K.</li>
+<li><strong><code>mma.store</code></strong> then <strong><code>tma.copy</code></strong> commits <strong><code>output_s</code></strong> to <strong><code>output</code></strong> at <strong><code>(block_m, block_n)</code></strong>.</li>
+</ol>
+<p>So the <strong>only</strong> structural difference from the one-tile-per-CTA kernel is the <strong>wrapper</strong>: fixed <strong><code>parallel block_id</code></strong>, <strong><code>foreach tile_iter</code></strong>, <strong><code>tile_id = tile_iter # block_id</code></strong>, <strong><code>if (tile_id &lt; total_tiles)</code></strong>, and the <strong>linear-to-2D</strong> mapping. The <strong>tensor-core pipeline</strong> itself is unchanged.</p>
+<h3 id="data-dependent-grid-versus-persistent-launch-recap">Data-dependent grid versus persistent launch (recap)<a class="headerlink" href="#data-dependent-grid-versus-persistent-launch-recap" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>One CTA per tile (Chapter 4 style)</th>
+<th>Persistent (<code>NUM_SMS</code> CTAs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Launch count</td>
+<td><strong><code>cdiv(M, …) * cdiv(N, …)</code></strong> — grows with problem size</td>
+<td><strong>Fixed</strong> — e.g. <strong><code>NUM_SMS</code></strong></td>
+</tr>
+<tr>
+<td>Which tile a block does</td>
+<td><strong><code>(block_m, block_n)</code></strong> from the parallel indices</td>
+<td><strong><code>(block_m, block_n)</code></strong> from <strong><code>tile_id</code></strong> after striping</td>
+</tr>
+<tr>
+<td>Tail SM utilization</td>
+<td>Last grid wave may leave SMs idle</td>
+<td>CTAs keep pulling tiles until none remain</td>
+</tr>
+<tr>
+<td>Extra tileflow</td>
+<td>Minimal</td>
+<td><strong><code>total_tiles</code></strong>, <strong><code>foreach tile_iter</code></strong>, <strong><code>#</code></strong>, <strong><code>if</code></strong></td>
+</tr>
+</tbody>
+</table>
+<p>Neither style changes the <strong>correctness</strong> of the multiply; both should match a reference GEMM modulo floating-point associativity. The persistent form is an <strong>occupancy and scheduling</strong> choice, especially attractive when <strong><code>total_tiles &gt;&gt; NUM_SMS</code></strong>.</p>
+<hr />
+<h2 id="tile-scheduling-variants-in-the-repo">Tile scheduling variants in the repo<a class="headerlink" href="#tile-scheduling-variants-in-the-repo" title="Permanent link">&para;</a></h2>
+<p>The benchmark directory also ships <strong>persistent</strong> matmuls that change <strong>how</strong> linear <strong><code>tile_id</code></strong> maps to <strong><code>(block_m, block_n)</code></strong>—or equivalently, how tiles are <strong>ordered</strong> in memory and time—for example:</p>
+<ul>
+<li><strong><code>matmul_f16_dyn_persis_colmajor_sm90.co</code></strong> — column-major (or otherwise reordered) traversal</li>
+<li><strong><code>matmul_f16_dyn_persis_swizzle_sm90.co</code></strong> — <strong>swizzle</strong>-style reordering of tile ids for locality or load balance</li>
+<li><strong><code>matmul_f16_dyn_persis_hilbert_sm90.co</code></strong> — <strong>Hilbert curve</strong>–style space-filling traversal</li>
+</ul>
+<p>The <strong>launch</strong> and <strong><code>if</code>-guard</strong> ideas stay the same; what changes is the <strong>formula</strong> that turns <strong><code>tile_id</code></strong> into <strong><code>block_m</code></strong> and <strong><code>block_n</code></strong> (and sometimes the goal—e.g., spreading traffic across DRAM channels or reducing L2 thrash). When you read those files, compare their <strong><code>tile_id</code></strong> mapping to the simple row-major <strong><code>/</code></strong> and <strong><code>%</code></strong> shown here.</p>
+<p>SM86 variants of the same names (e.g. <strong><code>matmul_f16_dyn_persis_colmajor_sm86.co</code></strong>) adapt the <strong>same scheduling ideas</strong> to an earlier architecture’s tensor and copy instructions; the <strong>persistent loop skeleton</strong> is still the right mental model.</p>
+<hr />
+<h2 id="choosing-num_sms-and-partial-output-tiles">Choosing <code>NUM_SMS</code> and partial output tiles<a class="headerlink" href="#choosing-num_sms-and-partial-output-tiles" title="Permanent link">&para;</a></h2>
+<p>The benchmark pins <strong><code>NUM_SMS</code></strong> to <strong>114</strong> for <strong>H800 PCIe</strong> because that matches the <strong>SM count</strong> of the SKU under test. In your own port, you might set <strong><code>NUM_SMS</code></strong> from a <strong>runtime query</strong> (driver API) or a <strong>compile-time</strong> constant for a <strong>family</strong> of GPUs. The persistent pattern still works if you launch <strong>fewer</strong> CTAs than SMs—some SMs simply stay idle—or <strong>more</strong> CTAs than SMs (multiple blocks per SM over time), though the sweet spot is usually <strong>close to</strong> the hardware SM count so you <strong>fill</strong> the machine without inventing gratuitous oversubscription.</p>
+<p><strong><code>total_tiles</code></strong> already accounts for <strong>partial</strong> tiles at the <strong>bottom</strong> and <strong>right</strong> of the <strong><code>M × N</code></strong> output because <strong><code>cdiv(M, MATMUL_WARP_M)</code></strong> and <strong><code>cdiv(N, MATMUL_WARP_N)</code></strong> count tiles the same way the data-dependent grid did. TMA and the store still target <strong><code>MATMUL_WARP_M × MATMUL_WARP_N</code></strong> logical tiles; the <strong>global</strong> tensor shapes <strong><code>M</code></strong>, <strong><code>N</code></strong>, <strong><code>K</code></strong> remain <strong>symbolic</strong> in the tileflow, and the generated code must respect <strong>tail</strong> elements exactly as in the non-persistent kernel. The <strong>persistent</strong> layer does not change <strong>edge</strong> behavior—it only changes <strong>how many</strong> CTAs iterate <strong>which</strong> <strong><code>(block_m, block_n)</code></strong> pairs.</p>
+<hr />
+<h2 id="checklist-evolving-a-matmul-to-persistent-form">Checklist: evolving a matmul to persistent form<a class="headerlink" href="#checklist-evolving-a-matmul-to-persistent-form" title="Permanent link">&para;</a></h2>
+<p>If you already have a <strong>working</strong> tile-per-CTA Hopper matmul, you can migrate it mechanically:</p>
+<ol>
+<li><strong>Compute</strong> <strong><code>total_tiles</code></strong> from <strong><code>M</code></strong>, <strong><code>N</code></strong>, and your output tile sizes (same <strong><code>cdiv</code></strong> products you used for the grid extents).</li>
+<li><strong>Replace</strong> <strong><code>parallel {block_m, block_n} by [...]</code></strong> with <strong><code>parallel block_id by NUM_SMS</code></strong> (tune <strong><code>NUM_SMS</code></strong> to your target GPU).</li>
+<li><strong>Wrap</strong> the former body in <strong><code>foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)]</code></strong>, set <strong><code>tile_id = tile_iter # block_id</code></strong>, and add <strong><code>if (tile_id &lt; total_tiles)</code></strong>.</li>
+<li><strong>Derive</strong> <strong><code>block_m</code></strong> and <strong><code>block_n</code></strong> from <strong><code>tile_id</code></strong> with <strong><code>/</code></strong> and <strong><code>%</code></strong> (or swap in a <strong>swizzle / Hilbert</strong> mapping from the other benchmarks).</li>
+<li><strong>Keep</strong> <strong><code>shared</code></strong> declarations at <strong>block</strong> scope; <strong>reuse</strong> SMEM across tile iterations.</li>
+<li><strong>Optional:</strong> add <strong><code>.step(...)</code></strong> on <strong><code>subspan</code></strong> TMA sources if you want strides explicit or non-default.</li>
+</ol>
+<p>After that, <strong>re-run</strong> numerical verification (same as any refactor): persistent kernels are easy to get <strong>almost</strong> right and still write <strong>past the end</strong> of <strong><code>output</code></strong> if the guard or mapping is off by one.</p>
+<p>When debugging, print or log <strong><code>total_tiles</code></strong>, <strong><code>cdiv(total_tiles, NUM_SMS)</code></strong>, and—for a single block—<strong><code>block_id</code></strong> and the sequence of <strong><code>tile_id</code></strong> values across <strong><code>tile_iter</code></strong>. If any <strong><code>tile_id</code></strong> appears <strong>twice</strong> or <strong>skips</strong> a valid id, the <strong><code>#</code></strong> schedule or the loop bound is wrong; if invalid ids are <strong>not</strong> skipped by the guard, you will see <strong>memory faults</strong> or <strong>garbage</strong> in untouched regions of <strong><code>output</code></strong>.</p>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>Persistent matmul kernels launch a <strong>fixed</strong> number of CTAs—<strong><code>parallel block_id by NUM_SMS : block</code></strong>—and <strong>loop</strong> over logical output tiles. <strong><code>total_tiles</code></strong> counts <strong><code>tiles_m * tiles_n</code></strong>; each CTA advances by <strong><code>NUM_SMS</code></strong> in the linearized order via <strong><code>tile_id = tile_iter # block_id</code></strong>. <strong><code>if (tile_id &lt; total_tiles)</code></strong> drops <strong>padding</strong> iterations when <strong><code>total_tiles</code></strong> is not a multiple of <strong><code>NUM_SMS</code></strong>. <strong><code>.step(...)</code></strong> on <strong><code>subspan</code></strong> documents (and can generalize) the <strong>stride</strong> between tiles in global memory. Inside the guard, <strong>integer division and remainder</strong> recover <strong><code>block_m</code></strong> and <strong><code>block_n</code></strong>, and the <strong>TMA + WGMMA + store</strong> path matches the non-persistent Hopper matmul you already know from earlier chapters.</p>
+<p>Next, Chapter 8 widens the story to <strong>multiple warpgroups</strong> and <strong>multiple accumulators</strong> so a single output tile can engage more SM throughput at once—building on the same TMA and WGMMA core you now know how to <strong>schedule</strong> across the machine with persistent CTAs.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "navigation.path", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+      
+        <script src="../../assets/js/hljs-choreo.js"></script>
+      
+        <script src="../../assets/js/hljs-init.js"></script>
+      
+    
+  </body>
+</html>
