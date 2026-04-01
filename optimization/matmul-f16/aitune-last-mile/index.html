@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -1004,7 +974,7 @@
   <a href="#shipped-checkpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shipped checkpoints
+        Shipped Checkpoints
       
     </span>
   </a>
@@ -1015,7 +985,7 @@
   <a href="#build-and-run" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build and run
+        Build and Run
       
     </span>
   </a>
@@ -1023,10 +993,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#iter057-vs-iter061" class="md-nav__link">
+  <a href="#choosing-between-iter057-and-iter061" class="md-nav__link">
     <span class="md-ellipsis">
       
-        iter057 vs. iter061
+        Choosing Between iter057 and iter061
       
     </span>
   </a>
@@ -1034,10 +1004,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-3-wn-sweep-and-the-occupancy-cliff" class="md-nav__link">
+  <a href="#phase-3-the-wn-sweep-and-the-occupancy-cliff" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 3: WN sweep and the occupancy cliff
+        Phase 3: The WN Sweep and the Occupancy Cliff
       
     </span>
   </a>
@@ -1045,10 +1015,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reproducibility" class="md-nav__link">
+  <a href="#condensed-timeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reproducibility
+        Condensed Timeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reproducibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproducibility Notes
       
     </span>
   </a>
@@ -1059,7 +1040,7 @@
   <a href="#where-the-files-live" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Where the files live
+        Where the Files Live
       
     </span>
   </a>
@@ -2787,7 +2768,7 @@
   <a href="#shipped-checkpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shipped checkpoints
+        Shipped Checkpoints
       
     </span>
   </a>
@@ -2798,7 +2779,7 @@
   <a href="#build-and-run" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build and run
+        Build and Run
       
     </span>
   </a>
@@ -2806,10 +2787,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#iter057-vs-iter061" class="md-nav__link">
+  <a href="#choosing-between-iter057-and-iter061" class="md-nav__link">
     <span class="md-ellipsis">
       
-        iter057 vs. iter061
+        Choosing Between iter057 and iter061
       
     </span>
   </a>
@@ -2817,10 +2798,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-3-wn-sweep-and-the-occupancy-cliff" class="md-nav__link">
+  <a href="#phase-3-the-wn-sweep-and-the-occupancy-cliff" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 3: WN sweep and the occupancy cliff
+        Phase 3: The WN Sweep and the Occupancy Cliff
       
     </span>
   </a>
@@ -2828,10 +2809,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reproducibility" class="md-nav__link">
+  <a href="#condensed-timeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reproducibility
+        Condensed Timeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reproducibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproducibility Notes
       
     </span>
   </a>
@@ -2842,7 +2834,7 @@
   <a href="#where-the-files-live" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Where the files live
+        Where the Files Live
       
     </span>
   </a>
@@ -2935,38 +2927,189 @@
   
 
 
-<h1 id="ai-tune-shipped-kernels-and-reproduction">AI-tune: shipped kernels and reproduction<a class="headerlink" href="#ai-tune-shipped-kernels-and-reproduction" title="Permanent link">&para;</a></h1>
-<p>This page is about <strong>how</strong> the final numbers were produced—which <strong><code>.co</code></strong> files shipped, how to run them, and what Phase 3 learned about <strong>WN</strong> and occupancy—without replaying all 65 iterations. Branch detail: <code>origin/ai-tune/2026-03-23/matmul_f16</code>; full tables: <code>croktile/benchmark/performance/matmul/README_matmul_f16_aitune_2026-03-23.md</code>.</p>
-<p><strong>Hardware</strong> — H800 PCIe, <strong>SM90a</strong>, <strong>114</strong> SMs. Compare tuned kernels to <strong>cuBLAS</strong> (~<strong>380</strong> TFLOPS on this stack), not the <strong>~1513</strong> TFLOPS marketing peak. The README quotes <strong>iter061</strong> as <strong>80.7%</strong> of cuBLAS at <strong>8192³</strong> and <strong>100.5%</strong> at <strong>2048³</strong>—the smaller cube favors the chosen tile and stage mix, so short-cube efficiency can read above the library while <strong>8192³</strong> stays the stress case.</p>
-<h2 id="shipped-checkpoints">Shipped checkpoints<a class="headerlink" href="#shipped-checkpoints" title="Permanent link">&para;</a></h2>
-<p><strong>iter048</strong> — <strong>354.1</strong> TFLOPS at <strong>2048³</strong>; <strong>1p1c</strong>, <strong>WN=176</strong>, <strong>STAGES=3</strong>. Shows the three-stage operand ring paying off on a mid-size cube before you scale the grid.</p>
-<p><strong>iter050</strong> — <strong>~375</strong> TFLOPS at <strong>4096³</strong>; <strong>1p2c split-output</strong>, <strong>WN=128</strong>, <strong>STAGES=2</strong>. Validates split-output between <strong>2048³</strong> and the final <strong>8192³</strong> push.</p>
-<p><strong>iter057</strong> — <strong>382.5</strong> TFLOPS at <strong>8192³</strong>; <strong>1p2c split-output</strong>, <strong>WN=152</strong>, <strong>non-persistent</strong>. Best headline in the study vs. the <strong>208.7</strong> main baseline.</p>
-<p><strong>iter061</strong> — <strong>380.6</strong> TFLOPS at <strong>8192³</strong>; <strong>1p2c split-output</strong>, <strong>WN=160</strong>, <strong>K-unroll</strong> and Phase-3 wait-depth tuning. Trades <strong>1.9</strong> TFLOPS vs. iter057 for a stronger cross-size story (the <strong>100.5% / 80.7%</strong> cuBLAS pair above). Shared flag bundle; difference is <strong>WN</strong>, <strong>K-unroll</strong>, and <strong><code>wgmma-wait-depth</code></strong>.</p>
-<h2 id="build-and-run">Build and run<a class="headerlink" href="#build-and-run" title="Permanent link">&para;</a></h2>
-<p>From the Croktile repo root after <code>make build</code>, use the same <strong>croktile</strong> flags for each artifact; only the input <strong><code>.co</code></strong> changes:</p>
-<pre class="highlight"><code class="language-bash">./croktile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix --hoist-offset --hoist-scale --ptx-barrier --tma-cluster-aware \
+<h1 id="ai-tune-shipped-kernels-and-reproduction">AI-Tune: Shipped Kernels and Reproduction<a class="headerlink" href="#ai-tune-shipped-kernels-and-reproduction" title="Permanent link">&para;</a></h1>
+<p>This page covers the <strong>how</strong>: which <code>.co</code> files shipped, how to run them, and what the Phase 3 WN sweep revealed about occupancy. Branch detail: <code>origin/ai-tune/2026-03-23/matmul_f16</code>; full tables: <code>croktile/benchmark/performance/matmul/README_matmul_f16_aitune_2026-03-23.md</code>.</p>
+<p><strong>Hardware:</strong> H800 PCIe, SM90a, 114 SMs. Compare tuned kernels to cuBLAS (~380 TFLOPS), not the ~1513 TFLOPS marketing peak.</p>
+<h2 id="shipped-checkpoints">Shipped Checkpoints<a class="headerlink" href="#shipped-checkpoints" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th>TFLOPS</th>
+<th>Size</th>
+<th>Configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>iter048</strong></td>
+<td>354.1</td>
+<td>2048³</td>
+<td>1p1c, WN=176, STAGES=3</td>
+</tr>
+<tr>
+<td><strong>iter050</strong></td>
+<td>~375</td>
+<td>4096³</td>
+<td>1p2c split-output, WN=128, STAGES=2</td>
+</tr>
+<tr>
+<td><strong>iter057</strong></td>
+<td><strong>382.5</strong></td>
+<td>8192³</td>
+<td>1p2c split-output, WN=152, non-persistent</td>
+</tr>
+<tr>
+<td><strong>iter061</strong></td>
+<td>380.6</td>
+<td>8192³</td>
+<td>1p2c split-output, WN=160, K-unroll, wgmma-wait-depth</td>
+</tr>
+</tbody>
+</table>
+<p><strong>iter057</strong> is the peak headline. <strong>iter061</strong> trades 1.9 TFLOPS at 8192³ for a stronger cross-size story: 100.5% of cuBLAS at 2048³ and 80.7% at 8192³.</p>
+<h2 id="build-and-run">Build and Run<a class="headerlink" href="#build-and-run" title="Permanent link">&para;</a></h2>
+<p>From the Croktile repo root after <code>make build</code>, use the same flags for each artifact — only the input <code>.co</code> changes:</p>
+<pre class="highlight"><code class="language-bash">./croktile -gs -t cute -arch=sm_90a \
+  --use-warpspec --stmatrix --hoist-offset --hoist-scale \
+  --ptx-barrier --tma-cluster-aware \
   benchmark/performance/matmul/&lt;INPUT&gt;.co \
   -o /tmp/run.cute.result &amp;&amp; bash /tmp/run.cute.result --execute</code></pre>
-<p>Concrete inputs:</p>
+<p>Concrete <code>.co</code> filenames:</p>
+<pre class="highlight"><code># iter057 — best 8192³ TFLOPS
+matmul_f16_aitune_2026-03-23_matmul_f16_iter057_1p2c_so_wn152_nonpersis.co
+
+# iter061 — best cross-size robustness
+matmul_f16_aitune_2026-03-23_matmul_f16_iter061_1p2c_so_wn160_kunroll.co
+
+# iter050 — split-output validation at 4096³
+matmul_f16_aitune_2026-03-23_matmul_f16_iter050_1p2c_splitout.co
+
+# iter048 — 3-stage at 2048³
+matmul_f16_aitune_2026-03-23_matmul_f16_iter048_s3_wn176_best.co</code></pre>
+<p>Phase 3 added <code>--wgmma-wait-depth=N</code> where recorded — <code>N</code> couples to STAGES and WN, so reproduce with the exact command from the README unless you are sweeping <code>N</code> deliberately.</p>
+<p><strong>Harness defaults:</strong> <code>CROKTILE_TIMING_WARMUP=10</code>, <code>CROKTILE_TIMING_REPEAT=500</code>. Keep verification on for apples-to-apples TFLOPS. Set <code>CROKTILE_SKIP_VERIFY=1</code> only when you already trust correctness. If noise dominates, raise <code>CROKTILE_TIMING_REPEAT</code> before chasing shorter warmup.</p>
+<h2 id="choosing-between-iter057-and-iter061">Choosing Between iter057 and iter061<a class="headerlink" href="#choosing-between-iter057-and-iter061" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>iter057</th>
+<th>iter061</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best for</td>
+<td>Peak 8192³ headline</td>
+<td>One binary across sizes</td>
+</tr>
+<tr>
+<td>WN</td>
+<td>152</td>
+<td>160</td>
+</tr>
+<tr>
+<td>Extra</td>
+<td>non-persistent</td>
+<td>K-unroll, wgmma-wait-depth</td>
+</tr>
+<tr>
+<td>8192³</td>
+<td><strong>382.5</strong></td>
+<td>380.6</td>
+</tr>
+<tr>
+<td>2048³</td>
+<td>good</td>
+<td><strong>100.5% of cuBLAS</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Both are 1p2c split-output with the same compiler flag bundle.</p>
+<h2 id="phase-3-the-wn-sweep-and-the-occupancy-cliff">Phase 3: The WN Sweep and the Occupancy Cliff<a class="headerlink" href="#phase-3-the-wn-sweep-and-the-occupancy-cliff" title="Permanent link">&para;</a></h2>
+<p>After split-output unlocked cuBLAS-class throughput, Phase 3 asked: what is the optimal WN for 8192³? The sweep found a sharp boundary:</p>
+<table>
+<thead>
+<tr>
+<th>WN</th>
+<th>SMEM (approx)</th>
+<th>CTAs/SM</th>
+<th>TFLOPS @8192³</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>152</td>
+<td>~108 KB</td>
+<td>2</td>
+<td>382.5</td>
+</tr>
+<tr>
+<td>160</td>
+<td>~114.7 KB</td>
+<td>2</td>
+<td>380.6</td>
+</tr>
+<tr>
+<td><strong>168</strong></td>
+<td><strong>&gt; 228 KB</strong></td>
+<td><strong>1</strong></td>
+<td><strong>cliff</strong></td>
+</tr>
+</tbody>
+</table>
+<p>At WN=168, shared memory exceeded 228 KB. Residency dropped from 2 blocks to 1 block per SM. Latency hiding across CTAs disappeared, and throughput fell catastrophically — not a few percent, but a large, sharp regression.</p>
+<p>You catch this kind of threshold by precomputing bytes per block:</p>
+<pre class="highlight"><code>SMEM = STAGES × (WM × TK + WN × TK) × sizeof(fp16) + output_staging</code></pre>
+<p>and checking against the 228 KB per-SM budget. Do not guess from WN alone.</p>
+<h2 id="condensed-timeline">Condensed Timeline<a class="headerlink" href="#condensed-timeline" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Iterations</th>
+<th>Key Milestone</th>
+<th>TFLOPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1</td>
+<td>~001–038</td>
+<td>1p1c at 2048³ + SMEM/lowering tweaks</td>
+<td>214.3</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td>~043–057</td>
+<td>Split-output, multi-size validation</td>
+<td><strong>382.5</strong> @8192³</td>
+</tr>
+<tr>
+<td>Phase 3</td>
+<td>~061–065</td>
+<td>WN sweep, K-unroll, wgmma-wait-depth</td>
+<td>380.6 @8192³</td>
+</tr>
+</tbody>
+</table>
+<p>65 iterations total. Phase 1 took ~38 iterations to improve by +5%. Phase 2 took ~14 iterations to improve by +83%. Phase 3 refined the last few TFLOPS and discovered the WN=168 failure. Power laws are everywhere.</p>
+<h2 id="reproducibility-notes">Reproducibility Notes<a class="headerlink" href="#reproducibility-notes" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>iter057</strong> (best <strong>8192³</strong> TFLOPS): <code>matmul_f16_aitune_2026-03-23_matmul_f16_iter057_1p2c_so_wn152_nonpersis.co</code></li>
-<li><strong>iter061</strong>: <code>matmul_f16_aitune_2026-03-23_matmul_f16_iter061_1p2c_so_wn160_kunroll.co</code></li>
-<li><strong>iter050</strong>: <code>matmul_f16_aitune_2026-03-23_matmul_f16_iter050_1p2c_splitout.co</code></li>
-<li><strong>iter048</strong>: <code>matmul_f16_aitune_2026-03-23_matmul_f16_iter048_s3_wn176_best.co</code></li>
+<li>Build <code>./croktile</code> from the same revision as the <code>.co</code> file, or expect codegen drift.</li>
+<li>Use <code>-arch=sm_90a</code> for this GPU class.</li>
+<li>When comparing to external cuBLAS figures, note driver version, library version, and GPU clock behavior — thermal or power caps can narrow ~380 TFLOPS references slightly.</li>
 </ul>
-<p>Phase 3 added <strong><code>--wgmma-wait-depth=N</code></strong> to the README invocations where recorded; <strong><code>N</code></strong> couples to <strong>STAGES</strong> and <strong>WN</strong>—reproduce with the exact command from the README unless you are sweeping <strong><code>N</code></strong> deliberately.</p>
-<p><strong>Harness</strong> — Defaults in the log use <strong><code>CROKTILE_TIMING_WARMUP</code></strong> (10) and <strong><code>CROKTILE_TIMING_REPEAT</code></strong> (500). Keep verify on for apples-to-apples TFLOPS; set <strong><code>CROKTILE_SKIP_VERIFY=1</code></strong> only when you already trust correctness. If noise dominates, raise <strong><code>CROKTILE_TIMING_REPEAT</code></strong> before you chase shorter warmup.</p>
-<h2 id="iter057-vs-iter061">iter057 vs. iter061<a class="headerlink" href="#iter057-vs-iter061" title="Permanent link">&para;</a></h2>
-<p>Pick <strong>iter057</strong> when <strong>8192³</strong> is the only number that matters (peak headline, strong scaling). Pick <strong>iter061</strong> when one binary should behave well on both small and large cubes without retuning <strong><code>MATMUL_*</code></strong> per job. Both are <strong>1p2c split-output</strong> with the same compiler bundle.</p>
-<h2 id="phase-3-wn-sweep-and-the-occupancy-cliff">Phase 3: WN sweep and the occupancy cliff<a class="headerlink" href="#phase-3-wn-sweep-and-the-occupancy-cliff" title="Permanent link">&para;</a></h2>
-<p>After split-output unlocked cuBLAS-class throughput, Phase 3 swept <strong>WN</strong> at <strong>8192³</strong>. <strong>WN=168</strong> failed: shared memory went past <strong>228 KB</strong>, residency dropped to <strong>one block per SM</strong>, and throughput fell off a cliff—latency hiding across CTAs disappears, so the hit is large, not a few percent. <strong>iter061</strong> at <strong>WN=160</strong> sits near <strong>114.7 KB</strong> with <strong>two CTAs/SM</strong>. You catch that kind of threshold by measuring and by precomputing bytes per block, not by guessing from <strong>WN</strong> alone.</p>
-<p>Condensed timeline: Phase 1 (iterations ~001–038) — <strong>1p1c</strong> at <strong>2048³</strong>, <strong>214.3</strong> TFLOPS after SMEM and lowering tweaks. Phase 2 (~043–057) — split-output and multi-size validation, <strong>382.5</strong> at <strong>8192³</strong> (<strong>iter057</strong>). Phase 3 (~061–065) — <strong>WN</strong> sweep, <strong>380.6</strong> (<strong>iter061</strong>), <strong><code>wgmma-wait-depth</code></strong>, <strong>WN=168</strong> failure.</p>
-<h2 id="reproducibility">Reproducibility<a class="headerlink" href="#reproducibility" title="Permanent link">&para;</a></h2>
-<p>Build <strong><code>./croktile</code></strong> from the same revision as the <strong><code>.co</code></strong> file or expect codegen drift. Use <strong><code>-arch=sm_90a</code></strong> for this GPU class. When you compare to external cuBLAS figures, note driver and library version and GPU clock behavior—thermal or power caps can narrow <strong>~380</strong> TFLOPS references slightly.</p>
-<h2 id="where-the-files-live">Where the files live<a class="headerlink" href="#where-the-files-live" title="Permanent link">&para;</a></h2>
-<p>Dated filenames (<code>matmul_f16_aitune_2026-03-23_*</code>) keep artifacts stable in history. Beside them: <strong><code>matmul_f16_dyn_sm90.co</code></strong> (dynamic baseline), <strong><code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code></strong>, <strong><code>matmul_f16_dyn_sm90_warpspec_1p2c.co</code></strong>. For regressions, <strong><code>diff -u</code></strong> on <strong><code>MATMUL_*</code></strong> and <strong><code>parallel</code></strong> structure—those dominate SMEM and roles.</p>
-<p>Concepts tie back to <a href="../">index</a>, <a href="../baseline-analysis/">baseline</a>, and <a href="../pattern-optimizations/">patterns</a>. The parent <a href="../../">optimization index</a> lists this case next to sparse and block-scaled GEMMs; dense FP16 keeps the data path minimal so the schedule story stays visible.</p>
+<h2 id="where-the-files-live">Where the Files Live<a class="headerlink" href="#where-the-files-live" title="Permanent link">&para;</a></h2>
+<p>Dated filenames (<code>matmul_f16_aitune_2026-03-23_*</code>) keep artifacts stable in history. Beside them:</p>
+<ul>
+<li><code>matmul_f16_dyn_sm90.co</code> — dynamic baseline</li>
+<li><code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code> — 1p1c teaching kernel</li>
+<li><code>matmul_f16_dyn_sm90_warpspec_1p2c.co</code> — 1p2c split-output template</li>
+</ul>
+<p>For regressions, <code>diff -u</code> on <code>MATMUL_*</code> parameters and <code>parallel</code> structure — those dominate SMEM and roles.</p>
+<p>Concepts tie back to <a href="../baseline-analysis/">baseline analysis</a> and <a href="../pattern-optimizations/">optimization patterns</a>. The parent <a href="../../">optimization index</a> lists this case alongside sparse and block-scaled GEMMs.</p>
 
 
 

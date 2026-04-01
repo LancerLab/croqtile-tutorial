@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dense-gemm-fp16-optimization-case-study" class="md-skip">
+        <a href="#how-to-optimize-a-croktile-fp16-gemm-for-cublas-like-performance-a-worklog" class="md-skip">
           Skip to content
         </a>
       
@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -2664,6 +2634,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read Order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2748,18 +2759,80 @@
   
 
 
-<h1 id="dense-gemm-fp16-optimization-case-study">Dense GEMM FP16: optimization case study<a class="headerlink" href="#dense-gemm-fp16-optimization-case-study" title="Permanent link">&para;</a></h1>
-<p>You take a Hopper (SM90a) half-precision GEMM from the Croktile benchmark baseline to throughput in the same band as cuBLAS on <strong>H800 PCIe</strong> (114 SMs). The path is deliberate: measure first, infer the limiter from TFLOPS and occupancy math, then pull in tutorial ideas—<a href="../../tutorial/ch06-warpspec/">warp specialization</a>, <a href="../../tutorial/ch03-pipeline/">pipelining</a>, <a href="../../tutorial/ch07-persistent/">persistent tiling</a>—only when the numbers justify them.</p>
-<p><strong>Anchor numbers</strong> (8192³ unless noted): baseline <strong>208.7</strong> TFLOPS (1p1c, WN=128, four stages); best shipped <strong>382.5</strong> TFLOPS (1p2c split-output, WN=152, non-persistent); <strong>+83%</strong> vs. that baseline on the same problem. Marketing peak for this class is often quoted around <strong>1513</strong> TFLOPS FP16 tensor; <strong>cuBLAS</strong> on this stack sits near <strong>~380</strong> TFLOPS—that is the bar the tuned kernels aim at.</p>
-<p><strong>Read order</strong></p>
+<h1 id="how-to-optimize-a-croktile-fp16-gemm-for-cublas-like-performance-a-worklog">How to Optimize a Croktile FP16 GEMM for cuBLAS-like Performance: a Worklog<a class="headerlink" href="#how-to-optimize-a-croktile-fp16-gemm-for-cublas-like-performance-a-worklog" title="Permanent link">&para;</a></h1>
+<p>In this walkthrough, we iteratively optimize a Hopper (SM90a) half-precision GEMM written in Croktile from <strong>208 TFLOPS</strong> to <strong>382+ TFLOPS</strong> on H800 PCIe — within spitting distance of cuBLAS on the same hardware. The path is deliberate: measure first, identify the bottleneck from TFLOPS and occupancy arithmetic, then apply exactly one optimization and re-measure.</p>
+<p>Matrix multiplication on GPUs is the most important algorithm in deep learning. So how much work is it to write a performant Croktile SGEMM from a correct baseline? Here is the summary:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Kernel</th>
+<th>TFLOPS @8192³</th>
+<th>vs cuBLAS (~380)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Baseline: 1p1c, WN=128, 4-stage</td>
+<td>208.7</td>
+<td>55%</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Tile geometry: WN=176, STAGES=2</td>
+<td>242.0</td>
+<td>64%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Pipeline depth: WN=176, STAGES=3</td>
+<td>354.1</td>
+<td>93%</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Split-output 1p2c, WN=128</td>
+<td>~375.0</td>
+<td>99%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Split-output 1p2c, WN=152, non-persistent</td>
+<td><strong>382.5</strong></td>
+<td><strong>101%</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>WN=160, K-unroll, wgmma-wait-depth</td>
+<td>380.6</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>The +83% from baseline to best came entirely from Croktile function geometry, output staging, and compiler flags — no mixed precision, no split-K, no CUDA Graph capture.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>You should already be comfortable with:</p>
+<ul>
+<li><a href="../../tutorial/ch04-mma/">Chapter 4 (MMA)</a> — WGMMA and why <code>tma.copy</code> and <code>mma.load.swiz</code> agree on layout</li>
+<li><a href="../../tutorial/ch05-branch-control/">Chapter 5 (branch and control)</a> — warp specialization and persistent kernels</li>
+<li><a href="../../tutorial/ch06-synchronization/">Chapter 6 (synchronization)</a> — pipelining</li>
+<li><a href="../../tutorial/ch07-advanced-movement/">Chapter 7 (advanced movement)</a> — TMA and swizzle</li>
+</ul>
+<h2 id="read-order">Read Order<a class="headerlink" href="#read-order" title="Permanent link">&para;</a></h2>
 <ol>
-<li><a href="baseline-analysis/">Baseline and profiling</a> — where <strong>208.7</strong> comes from and why it is schedule-bound, not “missing WGMMA.”</li>
-<li><a href="pattern-optimizations/">Optimization patterns</a> — how WN, stage depth, 1p2c split-output, launch mode, and compiler flags line up with the measured jumps.</li>
-<li><a href="aitune-last-mile/">AI-tune last mile</a> — shipped checkpoints (iter048, iter050, iter057, iter061), repro commands, and the WN sweep / occupancy cliff.</li>
+<li><a href="baseline-analysis/">Baseline analysis</a> — where 208.7 TFLOPS comes from, hardware limits calculation, and why the kernel is schedule-bound</li>
+<li><a href="pattern-optimizations/">Optimization patterns</a> — each step with the code change, measurement, and explanation</li>
+<li><a href="aitune-last-mile/">AI-tune last mile</a> — shipped checkpoints, repro commands, the WN sweep, and the occupancy cliff</li>
 </ol>
-<p>Full iteration tables: <code>croktile/benchmark/performance/matmul/README_matmul_f16_aitune_2026-03-23.md</code>. Representative sources: <code>matmul_f16_dyn_sm90.co</code>, <code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code>, <code>matmul_f16_dyn_sm90_warpspec_1p2c.co</code>, and dated <code>*_iter048_*</code>, <code>*_iter050_*</code>, <code>*_iter057_*</code>, <code>*_iter061_*</code> builds.</p>
-<p><strong>Before you start</strong> — You should already be comfortable with <a href="../../tutorial/ch04-tma-swizzle/">TMA and swizzle</a> and <a href="../../tutorial/ch05-mma/">WGMMA</a>: why <strong><code>tma.copy</code></strong> and <strong><code>mma.load.swiz</code></strong> agree on layout.</p>
-<p><strong>Method</strong> — Each step: quote TFLOPS at a fixed size, name the limiter (occupancy, pipeline bubbles, output contention), change one thing, re-measure.</p>
+<h2 id="source-files">Source Files<a class="headerlink" href="#source-files" title="Permanent link">&para;</a></h2>
+<p>Full iteration tables: <code>croktile/benchmark/performance/matmul/README_matmul_f16_aitune_2026-03-23.md</code>. Representative sources:</p>
+<ul>
+<li><code>matmul_f16_dyn_sm90.co</code> — dynamic baseline</li>
+<li><code>matmul_f16_dyn_sm90_warpspec_1p1c.co</code> — 1p1c teaching kernel</li>
+<li><code>matmul_f16_dyn_sm90_warpspec_1p2c.co</code> — 1p2c split-output</li>
+<li>Dated <code>*_iter048_*</code> through <code>*_iter061_*</code> builds</li>
+</ul>
 
 
 

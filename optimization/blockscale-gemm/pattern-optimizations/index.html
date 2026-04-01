@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#optimization-patterns-block-scaled-gemm-fp8" class="md-skip">
+        <a href="#optimization-patterns-3979-621-tflops" class="md-skip">
           Skip to content
         </a>
       
@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -1291,10 +1261,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#results-ladder-20483-and-40963" class="md-nav__link">
+  <a href="#step-1-tma-overlap-after-wgmma-iter049" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Results ladder (2048³ and 4096³)
+        Step 1: TMA Overlap After WGMMA (iter049)
       
     </span>
   </a>
@@ -1302,10 +1272,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-1-tma-overlap-after-wgmma-iter049" class="md-nav__link">
+  <a href="#step-2-n256-wgmma-double-the-math-per-tile-iter051" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 1: TMA overlap after WGMMA (iter049)
+        Step 2: N256 WGMMA — Double the Math Per Tile (iter051)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: N256 WGMMA — Double the Math Per Tile (iter051)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-size-dependent-tradeoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Size-Dependent Tradeoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-l2-promotion-on-rhs-tma-iter053" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: L2 Promotion on RHS TMA (iter053)
       
     </span>
   </a>
@@ -1313,10 +1311,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-2-n256-wgmma-double-math-per-tile-iter051" class="md-nav__link">
+  <a href="#step-4-prefetch-scale_a-before-wgmma-iter066" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 2: N256 WGMMA — double math per tile (iter051)
+        Step 4: Prefetch scale_a Before WGMMA (iter066)
       
     </span>
   </a>
@@ -1324,10 +1322,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-3-l2-promotion-on-rhs-tma-iter053" class="md-nav__link">
+  <a href="#source-variants-under-blockscale_gemm_v2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 3: L2 promotion on RHS TMA (iter053)
+        Source Variants Under blockscale_gemm_v2/
       
     </span>
   </a>
@@ -1335,32 +1333,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-4-prefetch-per-row-scale_a-before-wgmma-iter066" class="md-nav__link">
+  <a href="#compile-and-run" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 4: Prefetch per-row scale_a before WGMMA (iter066)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#croktile-source-variants" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Croktile source variants
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compile-flags-cute-warp-specialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Compile flags (Cute + warp specialization)
+        Compile and Run
       
     </span>
   </a>
@@ -2806,10 +2782,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#results-ladder-20483-and-40963" class="md-nav__link">
+  <a href="#step-1-tma-overlap-after-wgmma-iter049" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Results ladder (2048³ and 4096³)
+        Step 1: TMA Overlap After WGMMA (iter049)
       
     </span>
   </a>
@@ -2817,10 +2793,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-1-tma-overlap-after-wgmma-iter049" class="md-nav__link">
+  <a href="#step-2-n256-wgmma-double-the-math-per-tile-iter051" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 1: TMA overlap after WGMMA (iter049)
+        Step 2: N256 WGMMA — Double the Math Per Tile (iter051)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: N256 WGMMA — Double the Math Per Tile (iter051)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-size-dependent-tradeoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Size-Dependent Tradeoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-l2-promotion-on-rhs-tma-iter053" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: L2 Promotion on RHS TMA (iter053)
       
     </span>
   </a>
@@ -2828,10 +2832,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-2-n256-wgmma-double-math-per-tile-iter051" class="md-nav__link">
+  <a href="#step-4-prefetch-scale_a-before-wgmma-iter066" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 2: N256 WGMMA — double math per tile (iter051)
+        Step 4: Prefetch scale_a Before WGMMA (iter066)
       
     </span>
   </a>
@@ -2839,10 +2843,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-3-l2-promotion-on-rhs-tma-iter053" class="md-nav__link">
+  <a href="#source-variants-under-blockscale_gemm_v2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 3: L2 promotion on RHS TMA (iter053)
+        Source Variants Under blockscale_gemm_v2/
       
     </span>
   </a>
@@ -2850,32 +2854,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pattern-4-prefetch-per-row-scale_a-before-wgmma-iter066" class="md-nav__link">
+  <a href="#compile-and-run" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern 4: Prefetch per-row scale_a before WGMMA (iter066)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#croktile-source-variants" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Croktile source variants
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compile-flags-cute-warp-specialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Compile flags (Cute + warp specialization)
+        Compile and Run
       
     </span>
   </a>
@@ -2979,91 +2961,148 @@
   
 
 
-<h1 id="optimization-patterns-block-scaled-gemm-fp8">Optimization Patterns: Block-Scaled GEMM FP8<a class="headerlink" href="#optimization-patterns-block-scaled-gemm-fp8" title="Permanent link">&para;</a></h1>
-<p>This page follows the patterns that moved blockscale GEMM E4M3 from the baseline (<code>blockscale_gemm_dyn_sm90.co</code>) to the best shipped kernel (<strong>iter066</strong>), using the <strong>2026-03-22</strong> AI-tune log as the source of truth. Targets are <strong>SM90a</strong>; headline peak stays <strong>3026 TFLOPS</strong> on H800 PCIe. Timing and environment knobs are documented in <a href="../../setup-profiling/">setup-profiling.md</a>.</p>
-<h2 id="results-ladder-20483-and-40963">Results ladder (2048³ and 4096³)<a class="headerlink" href="#results-ladder-20483-and-40963" title="Permanent link">&para;</a></h2>
+<h1 id="optimization-patterns-3979-621-tflops">Optimization Patterns: 397.9 → 621 TFLOPS<a class="headerlink" href="#optimization-patterns-3979-621-tflops" title="Permanent link">&para;</a></h1>
+<p>Four steps, each addressing a different bottleneck. The ladder builds on the warp-specialized 1p1c template from <a href="../baseline-analysis/">baseline analysis</a>.</p>
 <table>
 <thead>
 <tr>
-<th>Iter</th>
-<th>TFLOPS @2048³</th>
-<th>TFLOPS @4096³</th>
-<th>Δ vs baseline @4k</th>
+<th>Step</th>
+<th>Kernel</th>
+<th>TFLOPS @2k</th>
+<th>TFLOPS @4k</th>
 <th>Primary lever</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>baseline</td>
+<td>0</td>
+<td>Baseline (M64N128K32)</td>
 <td>314.2</td>
 <td>397.9</td>
 <td>—</td>
-<td>M64N128K32 reference</td>
 </tr>
 <tr>
+<td>1</td>
 <td>iter049</td>
 <td><strong>380</strong></td>
 <td>—</td>
-<td>—</td>
-<td><strong>TMA overlap</strong> with <strong>scale accumulation</strong></td>
+<td>TMA overlap</td>
 </tr>
 <tr>
+<td>2</td>
 <td>iter051</td>
 <td>372</td>
 <td>602</td>
-<td>+51%</td>
-<td><strong>N256 WGMMA</strong> (M64N256K32)</td>
+<td>N256 WGMMA</td>
 </tr>
 <tr>
+<td>3</td>
 <td>iter053</td>
 <td>—</td>
 <td>610</td>
-<td>+53%</td>
-<td><strong>N256</strong> + <strong>L2 256B promotion</strong> on <strong>RHS TMA</strong></td>
+<td>L2 256B promotion</td>
 </tr>
 <tr>
+<td>4</td>
 <td><strong>iter066</strong></td>
 <td>—</td>
 <td><strong>621</strong></td>
-<td><strong>+56%</strong></td>
-<td><strong>N256</strong> + <strong>L2</strong> + <strong>prefetch <code>scale_a</code></strong> (before WGMMA loop)</td>
+<td><strong>Prefetch scale_a</strong></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Best @2048³</strong> is <strong>iter049</strong> (<strong>+21%</strong> vs baseline). <strong>N256</strong> trades small-cube grid density for large-cube throughput, so <strong>iter051</strong> sits slightly below baseline at <strong>2048³</strong> while winning at <strong>4096³</strong>.</p>
-<p>The four sections below follow that ladder: first you fix the schedule so TMA does not wait on scale work (<strong>iter049</strong>), then you widen the math tile (<strong>iter051</strong>), then you help the RHS stick in cache (<strong>iter053</strong>), and finally you pull scale loads ahead of the hot loop (<strong>iter066</strong>). Each step assumes you are already on the warp-specialized 1p1c template described in <a href="../baseline-analysis/">baseline-analysis.md</a>.</p>
-<h2 id="pattern-1-tma-overlap-after-wgmma-iter049">Pattern 1: TMA overlap after WGMMA (iter049)<a class="headerlink" href="#pattern-1-tma-overlap-after-wgmma-iter049" title="Permanent link">&para;</a></h2>
-<p>The consumer finishes <strong>WGMMA</strong>, does <strong>scale_accumulator</strong> work, and only then drives the next <strong>K</strong>-tile TMA, so TMA sits idle across the handoff. <strong>iter049</strong> issues the <strong>next</strong> <strong>K</strong>-block’s TMA loads as soon as the WGMMA wait completes, overlapping memory latency with scale-related math that does not need the new operands yet.</p>
-<p><strong>Outcome:</strong> <strong>380 TFLOPS</strong> at <strong>2048³</strong> (<strong>+21%</strong> over <strong>314.2</strong>), still in the <strong>M64N128K32</strong> tile class.</p>
-<p>This is the same scheduling instinct as <a href="../../../tutorial/ch03-pipeline/">Chapter 3: Pipelining</a>: move independent work so the longest-latency piece (TMA) starts earlier. Blockscale adds <strong>scale_accumulator</strong> as a third phase beside load and MMA; <strong>iter049</strong> shows that phase can share the bubble with TMA.</p>
-<h2 id="pattern-2-n256-wgmma-double-math-per-tile-iter051">Pattern 2: N256 WGMMA — double math per tile (iter051)<a class="headerlink" href="#pattern-2-n256-wgmma-double-math-per-tile-iter051" title="Permanent link">&para;</a></h2>
-<p><strong>N128</strong> tiles finish <strong>K</strong>-pipeline steps quickly but launch many CTAs along <strong>N</strong>; on large <strong>N</strong>, wave quantization and per-CTA overhead hurt. <strong>iter051</strong> moves to <strong>M64N256K32</strong>—double the <strong>N</strong> extent of the WGMMA tile per CTA. The README notes about <strong>40 KB</strong> shared memory for operand staging.</p>
-<p><strong>Outcome:</strong> <strong>602 TFLOPS</strong> at <strong>4096³</strong>. <strong>2048³</strong> falls to <strong>372 TFLOPS</strong> (vs <strong>380</strong> on <strong>iter049</strong>) because fewer blocks cover <strong>N</strong>; the grid is coarser and occupancy trades differently.</p>
-<p>Wider <strong>N</strong> is the same knob as in dense FP16 tuning: more math per block, fewer blocks, heavier SMEM. For blockscale, RHS and <strong>scale_rhs</strong> footprint grows with <strong>N</strong>; you still need enough SMEM headroom if the pipeline stages TMA.</p>
-<h2 id="pattern-3-l2-promotion-on-rhs-tma-iter053">Pattern 3: L2 promotion on RHS TMA (iter053)<a class="headerlink" href="#pattern-3-l2-promotion-on-rhs-tma-iter053" title="Permanent link">&para;</a></h2>
-<p>At <strong>4096³</strong>, RHS panels are large; TMA traffic does not always stick in L2 the way you want. <strong>iter053</strong> sets <strong><code>CU_TENSOR_MAP_L2_PROMOTION_L2_256B</code></strong> on the RHS tensor map so Hopper promotes lines into L2 with a <strong>256B</strong> granularity policy.</p>
-<p><strong>Outcome:</strong> <strong>610 TFLOPS</strong> at <strong>4096³</strong> (<strong>+8</strong> over <strong>iter051</strong>).</p>
-<p>You are not changing the math; you are nudging the memory system. The hint biases the cache toward reuse of RHS data across <strong>K</strong> iterations and CTAs that share spatial locality. It pairs naturally with wider <strong>N</strong> from <strong>iter051</strong>, which increases per-CTA RHS volume and makes L2 behavior matter more.</p>
-<h2 id="pattern-4-prefetch-per-row-scale_a-before-wgmma-iter066">Pattern 4: Prefetch per-row <code>scale_a</code> before WGMMA (iter066)<a class="headerlink" href="#pattern-4-prefetch-per-row-scale_a-before-wgmma-iter066" title="Permanent link">&para;</a></h2>
-<p>Scale loads can stall the consumer if they sit inside a tight WGMMA loop with short II. <strong>iter066</strong> prefetches per-row <strong><code>scale_a</code></strong> into registers <strong>before</strong> the inner WGMMA body so load latency hides behind independent setup or prior WGMMA work.</p>
-<p><strong>Outcome:</strong> <strong>621 TFLOPS</strong> at <strong>4096³</strong>; <strong>+56.1%</strong> vs baseline <strong>397.9</strong>.</p>
-<p>By the time you reach <strong>iter066</strong>, the kernel is already doing heavy WGMMA and wide <strong>N</strong>; the remaining slack often sits in operand latency. Blockscale makes scales first-class operands—treat them like any other latency-bound input. Software prefetch, double-buffering, or DMA-to-SMEM (see the <strong>v2</strong> variants below) are all design axes when registers or scheduling bind.</p>
-<h2 id="croktile-source-variants">Croktile source variants<a class="headerlink" href="#croktile-source-variants" title="Permanent link">&para;</a></h2>
-<p>Under <strong><code>blockscale_gemm_v2/</code></strong>, additional <strong><code>.co</code></strong> files factor the scale path differently than register-immediate style in <strong><code>blockscale_gemm_dyn_sm90.co</code></strong>: <strong><code>rhs_scale_dma_smem</code></strong> and <strong><code>scale_dma_smem</code></strong> stage scales via TMA into shared memory; <strong><code>transposed_scale</code></strong> changes layout for coalescing vs index cost; <strong><code>tileN</code></strong> tiles along <strong>N</strong> explicitly in the Croktile structure. Those align with the README theme that <strong>scale DMA</strong> is an alternative when register pressure or load scheduling hurts WGMMA II.</p>
-<p>Warp-specialized entry points include <strong><code>blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co</code></strong> (1p1c template) and <strong><code>..._m2048_n2048_k2048.co</code></strong> for launch and register tuning. <strong><code>blockscale_gemm_e4m3_dyn_sm90_warpspec_persis_1p1c.co</code></strong> connects to <a href="../../../tutorial/ch07-persistent/">Chapter 7: Persistent kernels</a> for grid behavior across tiles.</p>
-<h2 id="compile-flags-cute-warp-specialization">Compile flags (Cute + warp specialization)<a class="headerlink" href="#compile-flags-cute-warp-specialization" title="Permanent link">&para;</a></h2>
+<h2 id="step-1-tma-overlap-after-wgmma-iter049">Step 1: TMA Overlap After WGMMA (iter049)<a class="headerlink" href="#step-1-tma-overlap-after-wgmma-iter049" title="Permanent link">&para;</a></h2>
+<p><strong>The problem.</strong> In the baseline, the consumer finishes WGMMA, does <code>scale_accumulator</code> work, and only then starts the next K-tile's TMA. The TMA pipeline sits idle across that handoff — scale accumulation and TMA are serialized when they could overlap.</p>
+<p><strong>The change.</strong> Issue the next K-block's TMA loads as soon as the WGMMA wait completes, so memory latency hides behind scale-related math that does not need the new operands yet.</p>
+<p>This is the same scheduling instinct as <a href="../../../tutorial/ch06-synchronization/">Chapter 6 (synchronization)</a>: move independent work so the longest-latency piece (TMA) starts earlier. Block-scaled GEMM adds <code>scale_accumulator</code> as a third phase beside load and MMA — iter049 shows that phase can share the bubble with TMA.</p>
+<p><strong>Result:</strong> <strong>380 TFLOPS</strong> at 2048³ (+21% over 314.2). Still in the M64N128K32 tile class — no structural geometry change, just better scheduling within the existing tile.</p>
+<h2 id="step-2-n256-wgmma-double-the-math-per-tile-iter051">Step 2: N256 WGMMA — Double the Math Per Tile (iter051)<a class="headerlink" href="#step-2-n256-wgmma-double-the-math-per-tile-iter051" title="Permanent link">&para;</a></h2>
+<p><strong>The problem.</strong> N128 tiles finish K-pipeline steps quickly but launch many CTAs along N. On large N, wave quantization and per-CTA overhead hurt. Each CTA does relatively little math before the grid overhead (launch, synchronization, epilogue) cuts in.</p>
+<p><strong>The change.</strong> Move to M64N256K32 — double the N extent of the WGMMA tile per CTA.</p>
+<p>Let's check the SMEM impact:</p>
+<pre class="highlight"><code>Operand staging (N256):
+  LHS: WM × TK × sizeof(e4m3) = 64 × 128 × 1B = 8 KB
+  RHS: WN × TK × sizeof(e4m3) = 256 × 128 × 1B = 32 KB
+  Total ≈ 40 KB per stage</code></pre>
+<p>At ~40 KB, this is workable on Hopper but reduces headroom for extra pipeline stages.</p>
+<p><strong>Result:</strong> <strong>602 TFLOPS</strong> at 4096³ (+51% over baseline). But 2048³ drops to <strong>372 TFLOPS</strong> (vs 380 on iter049) — fewer blocks cover N, the grid is coarser, and occupancy trades differently at the smaller size.</p>
+<p>This is the same WN tradeoff as in the dense FP16 case: more math per block, fewer blocks, heavier SMEM. For block-scaled GEMM, RHS and <code>scale_rhs</code> footprint grows with N — you need enough SMEM headroom if the pipeline stages TMA.</p>
+<h3 id="the-size-dependent-tradeoff">The Size-Dependent Tradeoff<a class="headerlink" href="#the-size-dependent-tradeoff" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>iter049 (N128)</th>
+<th>iter051 (N256)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2048³</td>
+<td><strong>380</strong></td>
+<td>372</td>
+</tr>
+<tr>
+<td>4096³</td>
+<td>—</td>
+<td><strong>602</strong></td>
+</tr>
+</tbody>
+</table>
+<p>N256 trades small-cube grid density for large-cube throughput. If your workload is always 2048³, iter049 wins. For 4096³ and above, N256 is the clear choice.</p>
+<h2 id="step-3-l2-promotion-on-rhs-tma-iter053">Step 3: L2 Promotion on RHS TMA (iter053)<a class="headerlink" href="#step-3-l2-promotion-on-rhs-tma-iter053" title="Permanent link">&para;</a></h2>
+<p><strong>The problem.</strong> At 4096³, RHS panels are large. TMA traffic does not always stick in L2 the way you want — lines get evicted before they can be reused across K iterations or neighboring CTAs.</p>
+<p><strong>The change.</strong> Set <code>CU_TENSOR_MAP_L2_PROMOTION_L2_256B</code> on the RHS tensor map. This Hopper cache hint promotes lines into L2 with a 256B granularity policy.</p>
+<p><strong>Result:</strong> <strong>610 TFLOPS</strong> at 4096³ (+8 TFLOPS over iter051, +53% over baseline).</p>
+<p>You are not changing the math — you are nudging the memory system. The hint biases the cache toward reuse of RHS data across K iterations and CTAs that share spatial locality. It pairs naturally with N256, which increased per-CTA RHS volume and made L2 behavior matter more.</p>
+<p>This is a percentage-point gain on an already strong kernel. But it is also nearly free: one flag on the TMA descriptor, zero change to the compute path. When you have already tuned tile geometry and scheduling, cache hints are the next lever.</p>
+<h2 id="step-4-prefetch-scale_a-before-wgmma-iter066">Step 4: Prefetch <code>scale_a</code> Before WGMMA (iter066)<a class="headerlink" href="#step-4-prefetch-scale_a-before-wgmma-iter066" title="Permanent link">&para;</a></h2>
+<p><strong>The problem.</strong> Scale loads inside a tight WGMMA loop with short issue interval can stall the consumer. The per-row <code>scale_a</code> loads are latency-bound — they compete with WGMMA for issue slots and cannot overlap with anything if they sit in the critical path.</p>
+<p><strong>The change.</strong> Prefetch per-row <code>scale_a</code> into registers <strong>before</strong> the inner WGMMA body, so load latency hides behind independent setup or prior WGMMA work.</p>
+<p><strong>Result:</strong> <strong>621 TFLOPS</strong> at 4096³ — <strong>+56%</strong> vs the 397.9 baseline.</p>
+<p>By this point, the kernel is already doing heavy WGMMA and wide N. The remaining slack sits in operand latency. Block-scaled GEMM makes scales first-class operands — treat them like any other latency-bound input. Software prefetch, double-buffering, or DMA-to-SMEM (see the <code>v2</code> variants in <a href="../baseline-analysis/">baseline analysis</a>) are all design axes when registers or scheduling bind.</p>
+<h2 id="source-variants-under-blockscale_gemm_v2">Source Variants Under <code>blockscale_gemm_v2/</code><a class="headerlink" href="#source-variants-under-blockscale_gemm_v2" title="Permanent link">&para;</a></h2>
+<p>The <code>v2</code> folder explores alternative scale movement strategies:</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rhs_scale_dma_smem</code> / <code>scale_dma_smem</code></td>
+<td>Stage scales via TMA into shared memory</td>
+</tr>
+<tr>
+<td><code>transposed_scale</code></td>
+<td>Change scale layout for coalescing vs index cost</td>
+</tr>
+<tr>
+<td><code>tileN</code></td>
+<td>Tile along N explicitly in Croktile structure</td>
+</tr>
+<tr>
+<td><code>..._warpspec_persis_1p1c.co</code></td>
+<td>Persistent kernel variant (<a href="../../../tutorial/ch05-branch-control/">Ch5</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>These align with the theme that scale DMA is an alternative when register pressure or load scheduling hurts WGMMA issue interval.</p>
+<h2 id="compile-and-run">Compile and Run<a class="headerlink" href="#compile-and-run" title="Permanent link">&para;</a></h2>
 <pre class="highlight"><code class="language-bash">./croktile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co \
   -o /tmp/bs.cute.result &amp;&amp; bash /tmp/bs.cute.result --execute</code></pre>
-<p><strong><code>-arch=sm_90a</code></strong> selects Hopper (WGMMA, TMA). <strong><code>--use-warpspec</code></strong> matches 1p1c producer/consumer lowering. <strong><code>--stmatrix</code></strong> enables store-matrix paths for accumulator writeback where the pipeline expects them. Pre-generated <strong>iter049 / iter051 / iter053 / iter066</strong> trees ship with <strong><code>run.sh</code></strong> for bit-identical reproduction of the README numbers.</p>
+<p>Pre-generated iter049/051/053/066 trees ship with <code>run.sh</code> for bit-identical reproduction. Full iteration history: <code>ai-tune/2026-03-22/blockscale_gemm_v2</code> (71 iterations).</p>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Blockscale adds a <strong>scale critical path</strong>; <strong>iter049</strong> shows scheduling (TMA vs <strong>scale_accumulator</strong>) matters as much as tile size.</li>
-<li><strong>N256</strong> (<strong>iter051</strong>) is the large-cube win: more FLOP per CTA, cost at small cubes.</li>
-<li><strong>L2 promotion</strong> (<strong>iter053</strong>) and <strong>scale prefetch</strong> (<strong>iter066</strong>) are late percentage gains on an already strong kernel—where memory hierarchy and operand latency dominate.</li>
-<li><strong><code>blockscale_gemm/</code></strong> and <strong><code>blockscale_gemm_v2/</code></strong> document alternative scale movement (DMA SMEM, transposed layouts) for future tuning when register or layout limits bind.</li>
+<li><strong>Scale scheduling matters as much as tile size.</strong> iter049 (+21%) shows that TMA vs <code>scale_accumulator</code> overlap is a first-order concern, not a micro-optimization.</li>
+<li><strong>N256 is the large-cube win</strong> — iter051 (+51% @4k). It costs at small cubes.</li>
+<li><strong>L2 promotion and scale prefetch are late percentage gains</strong> on an already strong kernel — iter053 and iter066 target memory hierarchy and operand latency, not raw WGMMA width.</li>
+<li><strong>Scale DMA variants</strong> (<code>blockscale_gemm_v2/</code>) document alternative scale movement for future tuning when register or layout limits bind.</li>
 </ol>
-<p>Full iteration history: <strong><code>ai-tune/2026-03-22/blockscale_gemm_v2</code></strong> (71 iterations). Summary: <code>croktile/benchmark/performance/blockscale_gemm_v2/README_blockscale_gemm_e4m3_aitune_2026-03-22.md</code>.</p>
+<p>The arc is the same as in dense and sparse: schedule first, widen second, cache-tune third. Block scaling adds scale tensors as first-class operands that need the same latency-hiding discipline as matrix data.</p>
 
 
 

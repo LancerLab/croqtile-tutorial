@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#baseline-analysis-why-24-sits-where-it-does" class="md-skip">
+        <a href="#baseline-why-24-sits-where-it-does" class="md-skip">
           Skip to content
         </a>
       
@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -1054,6 +1024,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline Analysis
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1070,6 +1058,102 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-24-structured-sparsity-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What 2:4 Structured Sparsity Means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-fp16-baseline-368-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The FP16 Baseline: 368 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-e4m3-baseline-671-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The E4M3 Baseline: 671 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-metadata-shows-up-in-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Metadata Shows Up in Profiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lower-bounding-what-the-kernel-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lower Bounding What the Kernel Does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestones-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestones Preview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape-and-measurement-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shape and Measurement Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2674,6 +2758,91 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-24-structured-sparsity-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What 2:4 Structured Sparsity Means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-fp16-baseline-368-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The FP16 Baseline: 368 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-e4m3-baseline-671-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The E4M3 Baseline: 671 TFLOPS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-metadata-shows-up-in-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Metadata Shows Up in Profiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lower-bounding-what-the-kernel-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lower Bounding What the Kernel Does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestones-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestones Preview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape-and-measurement-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shape and Measurement Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2758,27 +2927,95 @@
   
 
 
-<h1 id="baseline-analysis-why-24-sits-where-it-does">Baseline Analysis: Why 2:4 Sits Where It Does<a class="headerlink" href="#baseline-analysis-why-24-sits-where-it-does" title="Permanent link">&para;</a></h1>
-<p>You are optimizing <strong>structured 2:4</strong> sparse GEMM at <strong>4096 × 8192 × 8192</strong>. Along the sparse axis (here, <strong>K</strong> in the weight-like operand), every four consecutive values keep <strong>two</strong> nonzeros; the other two are zero. Hardware uses <strong>metadata</strong> to tell the sparse MMA path which lanes are live, so the core fetches <strong>packed</strong> nonzeros instead of pretending the matrix is dense.</p>
-<p>That regularity is what makes tiling and TMA predictable: you get a <strong>2×</strong> compression along <strong>K</strong> on the sparse side in terms of stored weights. The tradeoff is explicit: <strong>metadata traffic</strong> and <strong>instruction overhead</strong> ride next to operand traffic. Once operand TMA and WGMMA are in decent shape, <strong>metadata</strong> often becomes a first-class bottleneck—extra loads on the path from global memory (or staging) to the MMA interface, not a free sideband.</p>
-<p>When you profile, you want to separate <strong>tensor math</strong>, <strong>TMA / shared staging</strong>, <strong>metadata</strong> (latency, coalescing, cache behavior), and <strong>synchronization</strong> between producer and consumer warpgroups. Sparse work teaches you to never let MMA sit idle waiting on meta while DRAM looks fine.</p>
-<hr />
-<p><strong>FP16 baseline: 368 TFLOPS.</strong> The starting kernel is already using Hopper in earnest: <strong>1p1c</strong> (one TMA producer warpgroup, one consumer), <strong>swizzle 64</strong> on the lhs packing / shared layout, <strong>TK 64</strong>, and a <strong>2-stage</strong> operand pipeline. At 368 TFLOPS the schedule is not broken; it is <strong>shallow</strong> and <strong>metadata-conservative</strong> relative to what the SM can sustain when stages, warp mix, and vectorized or TMA-backed metadata line up. TK64 and two stages leave little slack to hide metadata latency next to the math path.</p>
-<p>Compare 368 TFLOPS to the <strong>1513 TFLOPS</strong> FP16 dense peak on this GPU class only for order of magnitude. Sparse effective FLOPs per stored element differ from dense, and metadata is real work. The question that matters is whether time goes to <strong>MMA</strong>, <strong>TMA</strong>, or <strong>metadata plus barriers</strong>.</p>
-<p><strong>E4M3 baseline: 671 TFLOPS.</strong> Here the baseline already reflects stronger FP8-oriented choices: still <strong>1p1c</strong>, but <strong>swizzle 128 / 128</strong> on lhs and rhs, a <strong>prepacked</strong> sparse operand, and <strong>2-stage</strong> pipelining. Roughly <strong>22%</strong> of the <strong>3026 TFLOPS</strong> FP8 headline peak is a reasonable sanity check for a first structured-sparse implementation before you push <strong>deep staging</strong> and <strong>producer–consumer overlap</strong>. The math ceiling is higher than FP16, so <strong>sync and pipeline bubbles</strong> tend to show up sooner in relative terms even when absolute TFLOPS looks strong.</p>
-<hr />
-<p><strong>Why metadata shows up in profiles.</strong> Symptoms include consumers with decent <code>wgmma</code> issue rates but <strong>gaps between fragments</strong>, extra L1/L2 traffic from scalar or poorly grouped loads compared to operand TMA, and <strong>serial dependence</strong> when metadata is read <strong>inside</strong> the K loop without prefetch into registers or shared. The FP16 AI-tune chain attacks that with <code>__ldg</code>, <strong><code>uint2</code> vectorization</strong>, <strong>hoisting</strong>, L2-friendly grouping, and eventually <strong>TMA-backed metadata</strong>. On E4M3, <strong>TMA metadata staging</strong> appears as early as <strong>iter001 (759 TFLOPS)</strong>—the same idea at a higher baseline.</p>
-<p><strong>Vocabulary you will see on the next pages:</strong> <strong>1p1c / 1p2c</strong> is one producer versus one producer with <strong>two</strong> consumer warpgroups (warp specialization). <strong>TK</strong> is the tile size along <strong>K</strong> in the inner steady state. <strong>2-stage / 3-stage</strong> counts buffered operand slots in the async ring. <strong>Prepack</strong> means the sparse operand is already in the hardware-packed 2:4 layout.</p>
-<hr />
-<p><strong>Milestones preview (same story, two dtypes).</strong> On FP16, the README anchors <strong>368</strong> (baseline) → <strong>434</strong> at <strong>iter120</strong> (best <code>.co</code>: 1p2c + 3-stage) → <strong>543</strong> at <strong>iter137</strong> (hand <code>.cu</code>: inner unroll 24 and FTZ) → <strong>655</strong> at <strong>iter143</strong> (TK128, TMA metadata, split RHS TMA). The step from 434 to 655 is the <strong><code>.co</code> versus <code>.cu</code> gap</strong> in miniature; <a href="../aitune-last-mile/">aitune-last-mile</a> unpacks that.</p>
-<p>On E4M3, the ladder runs <strong>671</strong> (baseline) → <strong>759</strong> (iter001, TMA metadata) → <strong>772</strong> (iter016, early empty + merged barrier) → <strong>811</strong> (iter023, software pipeline + <code>warpgroup_wait&lt;1&gt;</code>) → <strong>897</strong> (iter036, 1p2c) → <strong>1090</strong> (iter040, <strong>3-stage</strong>) → <strong>1127</strong> (iter068, early empty <strong>arrive</strong>). The jump into <strong>&gt;1000 TFLOPS</strong> at iter040 is the signature of <strong>pipeline depth</strong> once operands <strong>and</strong> metadata prefetch far enough ahead; the last tens of TFLOPS are <strong>sync polish</strong> on top of that.</p>
-<p><strong>Pipeline depth versus tile width.</strong> More stages hide TMA and metadata latency but cost shared memory and registers; if occupancy collapses, extra stages can hurt. For this shape, the measured E4M3 jump at <strong>3-stage</strong> says the SM had enough headroom—likely because metadata staging and warp specialization had already trimmed bubbles. Widening <strong>TK</strong> (FP16 <strong>TK128</strong> at iter143) amortizes inner-loop and epilogue overhead per K step but forces you to revisit <strong>swizzle</strong>, <strong>TMA descriptors</strong>, and <strong>metadata</strong> layout together—never TK in isolation.</p>
-<hr />
-<p><strong>Shape and measurement.</strong> At <strong>4096 × 8192 × 8192</strong>, <strong>N</strong> and <strong>K</strong> are large relative to <strong>M</strong>, so wave packing on <strong>114 SMs</strong> can make grid efficiency sensitive to tile choices. When you compare iterations, watch for CTA count changes that move tail-wave behavior; the cleanest A/B tests are edits that touch <strong>only</strong> inner-loop sync or scheduling while the grid stays the same. TFLOPS here follow the harness in <a href="../../setup-profiling/">setup-profiling</a> for 2:4 (nonzeros only); keep the formula fixed so before/after runs stay comparable.</p>
-<p>Timings can wobble with L2 state or clock behavior; prefer a <strong>median</strong> over many repeats and, when you need tight comparisons, controlled clocks. A few TFLOPS of noise at <strong>1100+</strong> is sub‑percent—small relative to iter040→iter068, so methodology matters for last-mile claims.</p>
-<p><strong>Correctness.</strong> Throughput is useless if metadata disagrees with packed indices. Keep host checks enabled while you churn <strong>TK</strong> and <strong>unroll</strong>—those are the edits most likely to misalign 2:4 silently.</p>
-<p><strong>Dense case study.</strong> The <a href="../../matmul-f16/">dense FP16 matmul</a> story tops out near cuBLAS-class throughput at <strong>8192³</strong>. Sparse FP16 here reaches <strong>655 TFLOPS</strong> at a different shape and FLOP definition; the habits still rhyme—<strong>stages</strong>, <strong>1p2c</strong>, <strong>swizzle</strong>, <strong>TMA</strong> first, micro-optimizations after you know where the profile points.</p>
-<p>When you are done with baselines, continue to <a href="../pattern-optimizations/">optimization patterns</a> for the pattern narrative tied to those TFLOPS numbers, and <a href="../aitune-last-mile/">aitune-last-mile</a> for where automation hands off to hand-authored CUDA on FP16.</p>
+<h1 id="baseline-why-24-sits-where-it-does">Baseline: Why 2:4 Sits Where It Does<a class="headerlink" href="#baseline-why-24-sits-where-it-does" title="Permanent link">&para;</a></h1>
+<p>Before we optimize anything, we need to understand what 2:4 structured sparsity actually costs and why the baselines land at 368 (FP16) and 671 (E4M3) TFLOPS.</p>
+<h2 id="what-24-structured-sparsity-means">What 2:4 Structured Sparsity Means<a class="headerlink" href="#what-24-structured-sparsity-means" title="Permanent link">&para;</a></h2>
+<p>Along the sparse axis (K in the weight-like operand), every four consecutive values keep <strong>two</strong> nonzeros; the other two are zero. The hardware uses <strong>metadata</strong> to tell the sparse MMA path which lanes are live, so the core fetches <strong>packed</strong> nonzeros instead of pretending the matrix is dense.</p>
+<p>This gives you 2× compression along K on the sparse side in terms of stored weights. The tradeoff is explicit: <strong>metadata traffic</strong> and <strong>instruction overhead</strong> ride alongside operand traffic. You are not getting sparsity for free — you are trading matrix bandwidth for metadata bandwidth.</p>
+<h2 id="the-fp16-baseline-368-tflops">The FP16 Baseline: 368 TFLOPS<a class="headerlink" href="#the-fp16-baseline-368-tflops" title="Permanent link">&para;</a></h2>
+<p>The starting kernel uses Hopper in earnest:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warp spec</td>
+<td>1p1c (one TMA producer, one WGMMA consumer)</td>
+</tr>
+<tr>
+<td>Swizzle</td>
+<td>64 on LHS packing / shared layout</td>
+</tr>
+<tr>
+<td>TK</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td>2-stage operand ring</td>
+</tr>
+</tbody>
+</table>
+<p>At 368 TFLOPS the schedule is not broken — it is <strong>shallow</strong> and <strong>metadata-conservative</strong>. TK64 and two stages leave little slack to hide metadata latency next to the math path. The pipeline works; it just does not run far enough ahead.</p>
+<p>Compare 368 to the 1513 TFLOPS FP16 dense peak only for order of magnitude — sparse effective FLOPs per stored element differ from dense, and metadata is real work. The question that matters is whether time goes to MMA, TMA, or metadata-plus-barriers.</p>
+<h2 id="the-e4m3-baseline-671-tflops">The E4M3 Baseline: 671 TFLOPS<a class="headerlink" href="#the-e4m3-baseline-671-tflops" title="Permanent link">&para;</a></h2>
+<p>The E4M3 baseline reflects stronger FP8-oriented choices from the start:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warp spec</td>
+<td>1p1c</td>
+</tr>
+<tr>
+<td>Swizzle</td>
+<td>128/128 on LHS and RHS</td>
+</tr>
+<tr>
+<td>Operand format</td>
+<td>Prepacked sparse</td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td>2-stage</td>
+</tr>
+</tbody>
+</table>
+<p>671 TFLOPS is roughly 22% of the 3026 TFLOPS FP8 peak — a reasonable starting point before pushing deep staging and producer-consumer overlap. The math ceiling is higher than FP16, so sync and pipeline bubbles show up sooner in relative terms even when absolute TFLOPS looks strong.</p>
+<h2 id="why-metadata-shows-up-in-profiles">Why Metadata Shows Up in Profiles<a class="headerlink" href="#why-metadata-shows-up-in-profiles" title="Permanent link">&para;</a></h2>
+<p>When you profile a 2:4 sparse GEMM, the symptoms of metadata bottlenecks look like this:</p>
+<ul>
+<li>Consumers show decent <code>wgmma</code> issue rates but <strong>gaps between fragments</strong></li>
+<li>Extra L1/L2 traffic from scalar or poorly grouped loads compared to operand TMA</li>
+<li><strong>Serial dependence</strong> when metadata is read inside the K loop without prefetch into registers or shared memory</li>
+</ul>
+<p>The optimization chains on both dtypes attack these symptoms with different tools: <code>__ldg</code> read-only cache paths, <code>uint2</code> vectorization, hoisting, L2-friendly grouping, and eventually TMA-backed metadata. On E4M3, TMA metadata staging appears as early as iter001 (759 TFLOPS). On FP16, it is part of the iter143 mix alongside TK128 and split RHS TMA.</p>
+<h2 id="lower-bounding-what-the-kernel-does">Lower Bounding What the Kernel Does<a class="headerlink" href="#lower-bounding-what-the-kernel-does" title="Permanent link">&para;</a></h2>
+<p>For a 4096 × 8192 × 8192 GEMM with 2:4 sparsity:</p>
+<pre class="highlight"><code>Effective FLOPs: 2 × 4096 × 8192 × 8192 × (2/4) ≈ 275 GFLOP
+                 (only 2 of 4 elements contribute per group)
+Packed operand:  8192 × (8192/2) × element_size
+                 (2× compression on sparse axis)
+Metadata:        proportional to K/4 groups per row</code></pre>
+<p>The metadata is small per tile, but it is touched every K iteration. Scalar loads that miss L2 behave like pointer chasing next to wide TMA — that is why vectorizing and hoisting metadata loads produces measurable gains.</p>
+<h2 id="milestones-preview">Milestones Preview<a class="headerlink" href="#milestones-preview" title="Permanent link">&para;</a></h2>
+<p>Both ladders follow the same structural arc, with different dominant bottlenecks:</p>
+<p><strong>FP16:</strong> 368 → 434 (iter120, best <code>.co</code>: 1p2c + 3-stage) → 543 (iter137, hand <code>.cu</code>: inner unroll + FTZ) → <strong>655</strong> (iter143, TK128 + TMA metadata + split RHS TMA). The 434 → 655 jump is the <code>.co</code> vs <code>.cu</code> gap in miniature — <a href="../aitune-last-mile/">AI-tune last mile</a> unpacks that.</p>
+<p><strong>E4M3:</strong> 671 → 759 (TMA metadata) → 772 (early empty + merged barrier) → 811 (software pipeline + <code>warpgroup_wait&lt;1&gt;</code>) → 897 (1p2c) → <strong>1090</strong> (3-stage) → <strong>1127</strong> (early empty arrive). The jump past 1000 TFLOPS at iter040 is the signature of pipeline depth — once operands and metadata prefetch far enough ahead, the math path stays fed.</p>
+<h2 id="shape-and-measurement-notes">Shape and Measurement Notes<a class="headerlink" href="#shape-and-measurement-notes" title="Permanent link">&para;</a></h2>
+<p>At 4096 × 8192 × 8192, N and K are large relative to M, so wave packing on 114 SMs makes grid efficiency sensitive to tile choices. The cleanest A/B tests are edits that touch only inner-loop sync or scheduling while the grid shape stays the same.</p>
+<p>Timings can wobble with L2 state or clock behavior. A few TFLOPS of noise at 1100+ is sub-percent — small relative to the iter040 → iter068 gap, but it means methodology matters for last-mile claims. Prefer median over many repeats and, when you need tight comparisons, controlled clocks.</p>
+<p><strong>Correctness:</strong> Throughput is useless if metadata disagrees with packed indices. Keep host checks enabled while churning TK and unroll — those are the edits most likely to misalign 2:4 silently.</p>
+<p>Next: <a href="../pattern-optimizations/">Optimization patterns</a> — step-by-step through each optimization with measurements.</p>
 
 
 

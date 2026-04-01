@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch10-cpp-inline-macros/">
+        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch06-synchronization/">
       
       
-        <link rel="prev" href="../ch09-view-from/">
+        <link rel="prev" href="../ch05-branch-control/">
       
       
-        <link rel="next" href="../../optimization/">
+        <link rel="next" href="../ch07-advanced-movement/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Ch 10: C++ Inline & Macros - Croktile</title>
+        <title>Ch 6: Synchronization - Croktile</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#c-inline-and-macros-interfacing-with-low-level-control" class="md-skip">
+        <a href="#synchronization-pipelines-events-and-double-buffering" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch 10: C++ Inline & Macros
+              Ch 6: Synchronization
             
           </span>
         </div>
@@ -344,8 +344,6 @@
       
         
       
-        
-      
     
     
     
@@ -430,7 +428,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch01-hello-choreo/" class="md-nav__link">
+      <a href="../ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -465,7 +463,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -486,14 +484,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch03-pipeline/" class="md-nav__link">
+      <a href="../ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -514,14 +512,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -542,126 +540,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch05-mma/" class="md-nav__link">
+      <a href="../ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch06-warpspec/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 6: Warp Specialization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch07-persistent/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 7: Persistent Matmul
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch08-multi-warpgroup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 8: Multi-Warpgroup
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch09-view-from/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 9: view/from
+    Ch 5: Branch & Control
   
 
     
@@ -698,7 +584,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 10: C++ Inline & Macros
+    Ch 6: Synchronization
   
 
     
@@ -716,7 +602,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 10: C++ Inline & Macros
+    Ch 6: Synchronization
   
 
     
@@ -742,10 +628,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#__cpp__-verbatim-c-in-generated-code" class="md-nav__link">
+  <a href="#the-problem-sequential-load-then-compute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        __cpp__: Verbatim C++ in Generated Code
+        The Problem: Sequential Load-Then-Compute
       
     </span>
   </a>
@@ -753,10 +639,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-croktile-preprocessor-macros-and-conditionals" class="md-nav__link">
+  <a href="#double-buffering-with-swap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Croktile Preprocessor: Macros and Conditionals
+        Double Buffering with swap
       
     </span>
   </a>
@@ -764,10 +650,120 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-read-a-production-co-file" class="md-nav__link">
+  <a href="#with-tile_k-in-16" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How to read a production .co file
+        with tile_k in 16
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dmaany-placeholder-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.any: Placeholder Futures
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#foreach-tile_k1-sliced-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        foreach tile_k(1:): Sliced Iteration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-three-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three Phases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swap-names-not-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        swap: Names, Not Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auto-return-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auto Return Type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#events-synchronization-between-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Events: Synchronization Between Roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credit-flow-for-one-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credit Flow for One Stage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-vs-local-for-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared vs Local for Staging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Syntax
       
     </span>
   </a>
@@ -778,6 +774,90 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch07-advanced-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Advanced Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch08-cpp-interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: C++ Interop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch09-debug-verbose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 9: Debug & Verbose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2749,10 +2829,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#__cpp__-verbatim-c-in-generated-code" class="md-nav__link">
+  <a href="#the-problem-sequential-load-then-compute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        __cpp__: Verbatim C++ in Generated Code
+        The Problem: Sequential Load-Then-Compute
       
     </span>
   </a>
@@ -2760,10 +2840,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-croktile-preprocessor-macros-and-conditionals" class="md-nav__link">
+  <a href="#double-buffering-with-swap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Croktile Preprocessor: Macros and Conditionals
+        Double Buffering with swap
       
     </span>
   </a>
@@ -2771,10 +2851,120 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-read-a-production-co-file" class="md-nav__link">
+  <a href="#with-tile_k-in-16" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How to read a production .co file
+        with tile_k in 16
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dmaany-placeholder-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.any: Placeholder Futures
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#foreach-tile_k1-sliced-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        foreach tile_k(1:): Sliced Iteration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-three-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three Phases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swap-names-not-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        swap: Names, Not Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auto-return-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auto Return Type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#events-synchronization-between-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Events: Synchronization Between Roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credit-flow-for-one-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credit Flow for One Stage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-vs-local-for-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared vs Local for Staging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Syntax
       
     </span>
   </a>
@@ -2849,148 +3039,210 @@
   
 
 
-<h1 id="c-inline-and-macros-interfacing-with-low-level-control">C++ Inline and Macros: Interfacing with Low-Level Control<a class="headerlink" href="#c-inline-and-macros-interfacing-with-low-level-control" title="Permanent link">&para;</a></h1>
-<p>Croktile is a high-level DSL: you describe tiles, pipelines, and memory levels, and the compiler generates the tedious parts of CUDA-style kernels. Most of the time that is exactly what you want.</p>
-<p>Sometimes, though, you need to reach <em>below</em> the abstraction — to issue a specific PTX instruction, to insert a guard the Croktile layer does not express cleanly, or to parameterize a family of kernels with compile-time constants and static checks.</p>
-<p>This final chapter covers the two main escape hatches: <strong><code>__cpp__</code></strong>, which injects raw C++ (including inline assembly and PTX) verbatim into generated code, and <strong>the Croktile preprocessor</strong> — <strong><code>#define</code></strong>, <strong><code>#if</code> / <code>#ifdef</code> / <code>#else</code> / <code>#endif</code></strong>, and <strong><code>#error</code></strong> for macros and conditional compilation. Neither mechanism replaces good Croktile design; they complement it when the hardware or the build system demands something the DSL does not spell out directly.</p>
-<p>If you read <a href="../ch06-warpspec/">Async Pipelining: inthreads, Events, and Warp Roles</a>, you already saw how <strong>different warps</strong> can own <strong>different stages</strong> of a pipeline. This chapter is the footnote engineers reach for when that pattern must also respect <strong>register-file limits</strong> and <strong>ISA-level</strong> tuning: <strong><code>setmaxnreg</code></strong> does not appear as a first-class Croktile keyword, but it <em>does</em> appear in shipping SM90 GEMMs via <strong><code>__cpp__</code></strong>.</p>
-<p>The matmul snippets in <a href="../ch05-mma/">Enable Tensor Cores in One Primitive: the <code>mma</code> Operations</a> used names like <strong><code>MATMUL_TILE_K</code></strong> for a reason — those names are almost always <strong><code>#define</code>d</strong> once at the top of real kernels so every slice of the program agrees on geometry.</p>
-<h2 id="__cpp__-verbatim-c-in-generated-code"><code>__cpp__</code>: Verbatim C++ in Generated Code<a class="headerlink" href="#__cpp__-verbatim-c-in-generated-code" title="Permanent link">&para;</a></h2>
-<p><strong><code>__cpp__</code></strong> takes a <strong>string literal</strong> containing C++ source. The compiler splices that string into the generated output <strong>as written</strong> — no rewriting, no Croktile semantics on the inside. Whatever you put there must be valid in the surrounding C++ context (scopes, types, semicolons) and legal for your target (CUDA device code, host code, etc.).</p>
-<p>The usual spellings are <strong><code>__cpp__("…")</code></strong> for ordinary strings (good for one or a few lines, as long as escaping quotes and newlines is tolerable) and <strong><code>__cpp__(R"(…)")</code></strong> for a C++ <strong>raw string literal</strong>: everything between <strong><code>R"(</code></strong> and <strong><code>)"</code></strong> is copied literally, including double quotes and newlines, without backslash escapes.</p>
-<p>For PTX wrapped in <strong><code>asm volatile("…")</code></strong>, the inner assembly string contains <strong>double quotes</strong>; a raw string avoids the pain of <strong><code>\"</code></strong> on every line.</p>
-<p>Multi-line injections work the same way: either embed <strong><code>\n</code></strong> in a normal string (as in the MoE-style guard below) or use a raw string that spans multiple lines inside <strong><code>R"( … )"</code></strong>. The compiler does not re-indent or reformat the string; whitespace inside the literal is preserved.</p>
-<p>It helps to have a concrete mental model of what <strong>verbatim</strong> means at compile time. Croktile parses the <code>__co__</code> body around your <strong><code>__cpp__</code></strong> call sites, emits C++ (or CUDA) that implements the Croktile function, and <strong>splices</strong> each <strong><code>__cpp__</code></strong> argument into the generated text <strong>exactly</strong> as if you had typed it yourself in the output file.</p>
-<p>There is no automatic bridge from Croktile symbols to C++ names unless the code generator already created those names and your string spells them correctly.</p>
-<p>That is why the early-return example names <strong><code>seg_end</code></strong> and <strong><code>seg_start</code></strong> explicitly: those identifiers must match the generated declarations in that function. If you rename something in the Croktile function and the generator changes its output, a stale <strong><code>__cpp__</code></strong> string can become a <strong>hard compile error</strong> in generated code — which is still preferable to silently wrong machine code, but it means <strong><code>__cpp__</code></strong> fragments deserve the same review attention as hand-written CUDA.</p>
-<p>On recent NVIDIA architectures, <strong>warp-specialized</strong> pipelines split work across warps or warpgroups: one side <strong>produces</strong> data (TMA loads, pointers, counters) and another <strong>consumes</strong> it (WGMMA, large register-resident accumulators). The producer needs <strong>few</strong> registers; the consumer needs <strong>many</strong>. The hardware exposes <strong>dynamic register budget</strong> hints via PTX such as <strong><code>setmaxnreg.dec</code></strong> and <strong><code>setmaxnreg.inc</code></strong>, which redistribute how many registers each warp is allowed to use at a given program point.</p>
-<p>In a Croktile function, you typically place these hints at the start of an <strong><code>inthreads.async</code></strong> branch that corresponds to producer vs consumer. The following pattern is adapted from high-performance GEMM kernels in the Croktile benchmark tree (for example block-scale GEMM on SM90):</p>
-<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : group-4 {
-  inthreads.async (p1 == 0) {
-    __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 104;");)");
-    foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-      // ... producer TMA loads ...
+<h1 id="synchronization-pipelines-events-and-double-buffering">Synchronization: Pipelines, Events, and Double Buffering<a class="headerlink" href="#synchronization-pipelines-events-and-double-buffering" title="Permanent link">&para;</a></h1>
+<p>Chapter 5 split the matmul into a producer (loads data) and a consumer (runs MMA). But the skeleton cheated: it assumed the consumer could read shared memory the instant the producer wrote it. In reality, you need <strong>synchronization</strong> — a way for the producer to say "this buffer is ready" and the consumer to wait until it is.</p>
+<p>This chapter introduces the primitives that make pipelined execution safe: <strong>events</strong> for signaling between roles, <strong><code>swap</code></strong> and <strong><code>rotate</code></strong> for double- and multi-buffering, <strong><code>dma.copy.async</code></strong> for non-blocking transfers, and the <strong>prologue / steady-state / epilogue</strong> pattern that overlaps memory movement with compute.</p>
+<h2 id="the-problem-sequential-load-then-compute">The Problem: Sequential Load-Then-Compute<a class="headerlink" href="#the-problem-sequential-load-then-compute" title="Permanent link">&para;</a></h2>
+<p>Picture the K loop from a naive tiled matmul. Each iteration:</p>
+<ol>
+<li>Copy the A-tile and B-tile into shared memory.</li>
+<li>Wait for the copies to finish.</li>
+<li>Run MMA on the loaded tiles.</li>
+</ol>
+<p>Steps 2 and 3 cannot overlap with the <strong>next</strong> iteration's step 1 if you hold only one buffer — you would overwrite data that the MMA is still reading. So the timeline is a staircase: load, compute, load, compute, with one side of the machine always idle.</p>
+<h2 id="double-buffering-with-swap">Double Buffering with <code>swap</code><a class="headerlink" href="#double-buffering-with-swap" title="Permanent link">&para;</a></h2>
+<p>The fix is two buffers. While the MMA reads buffer 0, the producer fills buffer 1 with the next tile. When the MMA finishes, you <strong>swap</strong> the buffers: what was "next" becomes "current," and the now-free slot is ready for the following load.</p>
+<p>Croktile spells this with <code>dma.copy.async</code> (non-blocking copy), <code>dma.any</code> (placeholder future), <code>swap</code> (exchange future handles), and a three-phase loop.</p>
+<pre class="highlight"><code class="language-choreo">__co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+
+  parallel {px, py} by [8, 16] : block
+    parallel {qx, qy} by [16, 16] : thread {
+
+    with tile_k in 16 {
+      // Prologue: start loading tile 0
+      lf0 = dma.copy lhs.chunkat(px, tile_k) =&gt; shared;
+      rf0 = dma.copy rhs.chunkat(tile_k, py) =&gt; shared;
+
+      // Placeholder futures for buffer 1
+      lf1 = dma.any;
+      rf1 = dma.any;
+
+      // Steady state: load next tile while computing on current
+      foreach tile_k(1:) {
+        lf1 = dma.copy lhs.chunkat(px, tile_k) =&gt; shared;
+        rf1 = dma.copy rhs.chunkat(tile_k, py) =&gt; shared;
+
+        foreach k in [256 / #tile_k]
+          output.at(px#qx, py#qy) += lf0.data.at(qx, k) * rf0.data.at(k, qy);
+
+        swap(lf0, lf1);
+        swap(rf0, rf1);
+      }
+
+      // Epilogue: compute on the last loaded tile
+      foreach k in [256 / #tile_k]
+        output.at(px#qx, py#qy) += lf0.data.at(qx, k) * rf0.data.at(k, qy);
     }
   }
 
-  inthreads.async (p1 == 1) {
-    __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 120;");)");
-    mc = mma.fill.f16 0.0f;
-    // ... consumer WGMMA compute ...
+  return output;
+}</code></pre>
+<p>Here is what each new construct does.</p>
+<h2 id="with-tile_k-in-16"><code>with tile_k in 16</code><a class="headerlink" href="#with-tile_k-in-16" title="Permanent link">&para;</a></h2>
+<pre class="highlight"><code class="language-choreo">with tile_k in 16 {</code></pre>
+<p>This opens a <strong>scoped region</strong> and binds <code>tile_k</code> as a tile axis with extent 16. Inside the block, <code>tile_k</code> serves as the chunk index for <code>chunkat</code> along the K dimension, and <code>#tile_k</code> gives its extent (16). Think of it as "within this scope, K is divided into 16 tiles."</p>
+<h2 id="dmaany-placeholder-futures"><code>dma.any</code>: Placeholder Futures<a class="headerlink" href="#dmaany-placeholder-futures" title="Permanent link">&para;</a></h2>
+<pre class="highlight"><code class="language-choreo">lf1 = dma.any;
+rf1 = dma.any;</code></pre>
+<p><code>dma.any</code> creates a future that does not yet represent any real transfer. It exists so the type system has something to <code>swap</code> with on the first iteration. Before any code reads <code>lf1.data</code>, a real <code>dma.copy</code> will have been assigned to it.</p>
+<h2 id="foreach-tile_k1-sliced-iteration"><code>foreach tile_k(1:)</code>: Sliced Iteration<a class="headerlink" href="#foreach-tile_k1-sliced-iteration" title="Permanent link">&para;</a></h2>
+<pre class="highlight"><code class="language-choreo">foreach tile_k(1:) {</code></pre>
+<p>The <code>(1:)</code> slice means "iterate <code>tile_k</code> starting at 1, through the remaining tiles." Tile 0 was already handled by the prologue — the initial loads into <code>lf0</code> and <code>rf0</code>. So the steady-state loop runs for tiles 1, 2, ..., 15.</p>
+<h2 id="the-three-phases">The Three Phases<a class="headerlink" href="#the-three-phases" title="Permanent link">&para;</a></h2>
+<p><strong>Prologue.</strong> Load tile 0 into <code>lf0</code>/<code>rf0</code>. No compute yet — the buffers are being filled.</p>
+<p><strong>Steady state.</strong> For each subsequent tile: start loading into <code>lf1</code>/<code>rf1</code> (the "next" buffers), then compute on <code>lf0</code>/<code>rf0</code> (the "current" buffers that were filled on the previous iteration). After computing, <code>swap(lf0, lf1)</code> exchanges the handles — what was "next" becomes "current" for the following iteration.</p>
+<p><strong>Epilogue.</strong> After the last swap, <code>lf0</code>/<code>rf0</code> hold the final tile. One more compute pass drains it.</p>
+<p>The ordering matters: new copies are assigned to <code>lf1</code>/<code>rf1</code> <strong>before</strong> the compute reads <code>lf0</code>/<code>rf0</code>. This keeps the dependence story clear: you never read from a buffer that is simultaneously being overwritten.</p>
+<h2 id="swap-names-not-data"><code>swap</code>: Names, Not Data<a class="headerlink" href="#swap-names-not-data" title="Permanent link">&para;</a></h2>
+<p><code>swap(lf0, lf1)</code> exchanges <strong>future handles</strong>, not tensor data. After a swap, the name <code>lf0</code> refers to whatever asynchronous operation <code>lf1</code> referred to before, and vice versa. The data already staged in shared memory stays where the hardware put it; only the Croktile-level handles rotate.</p>
+<p>In hand-written CUDA, the same idea appears as toggling between two <code>__shared__</code> arrays with a <code>^ 1</code> index or a boolean phase variable. Croktile makes the intent visible at the language level.</p>
+<p>For triple buffering, use <code>rotate(f0, f1, f2)</code> instead of two <code>swap</code> calls — it cycles three handles in one operation.</p>
+<h2 id="auto-return-type"><code>auto</code> Return Type<a class="headerlink" href="#auto-return-type" title="Permanent link">&para;</a></h2>
+<p>The kernel signature uses <code>__co__ auto matmul(...)</code>: the <code>auto</code> return type tells Croktile to infer the result type from <code>return output</code>. This keeps the header aligned with shape expressions and avoids repeating literal dimensions.</p>
+<h2 id="events-synchronization-between-roles">Events: Synchronization Between Roles<a class="headerlink" href="#events-synchronization-between-roles" title="Permanent link">&para;</a></h2>
+<p>Double buffering with <code>swap</code> works when one set of threads does both loading and computing — they interleave steps on the same program counter. Warp specialization (Chapter 5) assigns loading and computing to <strong>different</strong> warpgroups. Those groups need a different coordination mechanism: <strong>events</strong>.</p>
+<pre class="highlight"><code class="language-choreo">shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];</code></pre>
+<p><code>shared event</code> declares named synchronization barriers in shared scope. <code>wait event_name</code> blocks until the event has been signaled; <code>trigger event_name</code> signals it. In the 1P1C matmul:</p>
+<ul>
+<li><code>full[s]</code> means stage <code>s</code> has been filled by the producer — the consumer may read it.</li>
+<li><code>empty[s]</code> means the consumer is done with stage <code>s</code> — the producer may overwrite it.</li>
+</ul>
+<p>Here is the full 1P1C kernel with events:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
+    shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
+    shared f16 [MATMUL_STAGES * MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
+    shared f16 [MATMUL_STAGES * MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+
+    parallel p1 by 2 : group-4 {
+
+      inthreads.async (p1 == 0) {
+        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+          stage = iv_k % MATMUL_STAGES;
+          wait empty[stage];
+          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k)
+            =&gt; lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(stage, 0);
+          dma.copy rhs.chunkat(block_n, iv_k)
+            =&gt; rhs_load_s.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(stage, 0);
+          trigger full[stage];
+        }
+      }
+
+      inthreads.async (p1 == 1) {
+        mc = mma.fill.f16 0.0f;
+        foreach {s} in [MATMUL_STAGES] {
+          trigger empty[s];
+        }
+        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+          stage = iv_k % MATMUL_STAGES;
+          wait full[stage];
+          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+            ma = mma.load lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(stage, 0).chunkat(_, iv_warp);
+            mb = mma.load rhs_load_s.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(stage, 0).chunkat(_, iv_warp);
+            mma.row.row mc, ma, mb;
+          }
+          mma.commit;
+          trigger empty[stage];
+        }
+        mma.store mc, output_s;
+        dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+      }
+    }
   }
 }</code></pre>
-<p>Here each branch picks a <strong>different</strong> nominal register count (<code>104</code> vs <code>120</code>) so the compiler and hardware can schedule register pressure differently for the producer and consumer roles. The exact numbers are tuned per kernel, tile shape, and instruction mix.</p>
-<p>The tutorial point is <strong>where</strong> the hook lives: inside the async thread specialization, before the heavy loop body.</p>
-<p>Another kernel variant (<code>gemm_sp</code> style) pushes the asymmetry further: aggressively <strong>decrease</strong> the producer budget and <strong>increase</strong> the consumer budget so the MMA side keeps more accumulators live:</p>
-<pre class="highlight"><code class="language-choreo">inthreads.async (p1 == 0) {
-  __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 40;");)");
-  // producer: needs few registers, so decrease to 40
-}
-
-inthreads.async (p1 == 1) {
-  __cpp__(R"(asm volatile("setmaxnreg.inc.sync.aligned.u32 216;");)");
-  // consumer: needs many registers for accumulators, so increase to 216
-}</code></pre>
-<p>Read these snippets as <strong>documentation of intent</strong>: the producer thread role is register-light; the consumer is register-heavy. The <strong><code>.dec</code></strong> / <strong><code>.inc</code></strong> forms cooperate with the GPU’s register allocator so both sides can coexist without spilling the wrong side first.</p>
-<p>If you tried to write the same thing with an ordinary string, every embedded <strong><code>"</code></strong> inside the <strong><code>asm</code></strong> operand would need escaping, and multi-line assembly quickly becomes unreadable. <strong>Raw string literals</strong> are the standard C++ idiom for injecting <strong>quote-heavy</strong> or <strong>multi-line</strong> fragments; <strong><code>__cpp__</code></strong> simply forwards that string to the generated file.</p>
-<p><strong><code>__cpp__</code></strong> is not limited to inline assembly. Any C++ statement or snippet that makes sense at the splice point is fair game. For example, MoE-style GEMM code paths sometimes inject a <strong>host-visible or device-visible early return</strong> when a segment is empty, roughly along the lines of:</p>
-<pre class="highlight"><code class="language-choreo">__cpp__("if (seg_end - seg_start &lt;= 0) return;\n\n");</code></pre>
-<p>That is plain C++ control flow dropped into the generated function: if your indices say there is nothing to do, skip the rest. The exact variable names and types must match what the surrounding generated code actually declares — <strong><code>__cpp__</code></strong> does not magically know your Croktile symbols; it only pastes text.</p>
-<p>In <strong>MoE GEMM</strong>-style kernels, experts are processed in <strong>segments</strong>; some launches may have <strong>zero width</strong> for a given segment after routing. An early return avoids touching uninitialized ranges or issuing empty loops. The guard is trivial C++, but expressing “return from this generated function now” might not map cleanly to a single Croktile statement in every codegen path — hence a one-line <strong><code>__cpp__</code></strong> injection.</p>
-<p>Treat <strong><code>__cpp__</code></strong> as <strong>sharp</strong>. You bypass Croktile’s usual checks on whatever is inside the string.</p>
-<p>You are responsible for <strong>correctness</strong> on the target SM, <strong>synchronization</strong> with async pipelines, and <strong>ABI</strong> compatibility with neighboring generated code. Prefer keeping injected fragments <strong>small</strong> and <strong>localized</strong> — one asm blob, one guard, one pragma — and let the Croktile function own structure and data movement.</p>
-<p>When a single PTX hint or guard unlocks measurable performance (as with <strong><code>setmaxnreg</code></strong> in warp-specialized GEMM), <strong><code>__cpp__</code></strong> is the supported way to carry that detail into an otherwise declarative kernel.</p>
-<h2 id="the-croktile-preprocessor-macros-and-conditionals">The Croktile Preprocessor: Macros and Conditionals<a class="headerlink" href="#the-croktile-preprocessor-macros-and-conditionals" title="Permanent link">&para;</a></h2>
-<p>Croktile ships a <strong>preprocessor</strong> that runs over your source before the main compiler pass. It understands a familiar subset of C-style directives:</p>
+<p><strong>Ring indexing.</strong> <code>stage = iv_k % MATMUL_STAGES</code> maps the unbounded K timeline onto a fixed number of physical slots — like double buffering generalized to N buffers. With <code>MATMUL_STAGES = 4</code>, the producer can run up to 4 K-tiles ahead of the consumer before it has to wait for a slot to be freed.</p>
+<p><strong>Producer flow.</strong> For each <code>iv_k</code>: wait until <code>empty[stage]</code> says the slot is free, copy tiles into that stage's region of <code>lhs_load_s</code> and <code>rhs_load_s</code>, then <code>trigger full[stage]</code> to tell the consumer the data is ready.</p>
+<p><strong>Consumer flow.</strong> Before the K loop, <code>trigger empty[s]</code> for all stages bootstraps credits — every slot starts logically empty, which prevents the producer from deadlocking on the first <code>wait empty</code>. Then for each <code>iv_k</code>: <code>wait full[stage]</code>, run MMA on that stage's data, <code>mma.commit</code>, then <code>trigger empty[stage]</code> to return the slot.</p>
+<p><strong><code>mma.commit</code>.</strong> This marks a logical boundary after the MMA sequence for one K-slab. WGMMA on Hopper overlaps operand fetch, issue, and accumulation aggressively; <code>mma.commit</code> is the fence that says "fold this stage's partial products into <code>mc</code> before the shared buffer is reused." Treat it as mandatory glue between "done with this stage's math" and "signal empty."</p>
+<h2 id="credit-flow-for-one-stage">Credit Flow for One Stage<a class="headerlink" href="#credit-flow-for-one-stage" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Consumer pre-triggers <code>empty[stage]</code> (bootstrap).</li>
+<li>Producer passes <code>wait empty[stage]</code> — the slot is free.</li>
+<li>Producer fills shared memory for this K-tile, then <code>trigger full[stage]</code>.</li>
+<li>Consumer passes <code>wait full[stage]</code> — the data is ready.</li>
+<li>Consumer runs MMA, commits, then <code>trigger empty[stage]</code> — the slot is free again.</li>
+<li>When <code>iv_k</code> wraps around (modulo <code>MATMUL_STAGES</code>), the cycle repeats.</li>
+</ol>
+<p>The ring is not magic — <code>wait</code>/<code>trigger</code> on <code>full</code>/<code>empty</code> are what make <code>iv_k % MATMUL_STAGES</code> safe.</p>
+<h2 id="shared-vs-local-for-staging">Shared vs Local for Staging<a class="headerlink" href="#shared-vs-local-for-staging" title="Permanent link">&para;</a></h2>
+<p>Chapter 2 used <code>=&gt; local</code> for thread-private copies. Pipelining a tile that many threads read almost always points to <code>=&gt; shared</code>. The DMA futures track which asynchronous transfer owns which shared buffer; the <code>swap</code> or ring index keeps the bookkeeping straight.</p>
+<p>A useful rule: if every thread in the block reads overlapping regions of the same staged tile, <code>=&gt; shared</code>. If each thread consumes a disjoint piece with no cross-thread reuse, <code>=&gt; local</code> keeps data closer.</p>
+<h2 id="pitfalls">Pitfalls<a class="headerlink" href="#pitfalls" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Deadlock.</strong> Removing the initial <code>trigger empty[s]</code> loop leaves the producer's first <code>wait empty</code> waiting forever.</li>
+<li><strong>Undersynchronized reuse.</strong> Dropping <code>mma.commit</code> or mis-ordering <code>trigger empty</code> relative to loads risks stale data.</li>
+<li><strong>Mismatched trip counts.</strong> Producer and consumer must both use <code>foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)]</code>; asymmetric loops leak or orphan events.</li>
+<li><strong>Too few stages.</strong> If the consumer is faster than the producer, you stall on <code>wait full</code>; more stages increase run-ahead (at the cost of shared memory).</li>
+</ul>
+<p>When a pipeline edit breaks correctness, check <strong>event order</strong> before you suspect MMA layout — specialization bugs are usually synchronization bugs.</p>
+<h2 id="new-syntax">New Syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Directive</th>
-<th>Role</th>
+<th>Syntax</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>#define NAME value</code></td>
-<td>Object-like macro: textual replacement</td>
+<td><code>shared event name[N]</code></td>
+<td>Declare N named synchronization events in shared scope</td>
 </tr>
 <tr>
-<td><code>#if</code> / <code>#elif</code> / <code>#else</code> / <code>#endif</code></td>
-<td>Conditional inclusion</td>
+<td><code>wait event</code></td>
+<td>Block until <code>event</code> has been signaled</td>
 </tr>
 <tr>
-<td><code>#ifdef</code> / <code>#ifndef</code></td>
-<td>Shorthand for “macro defined or not”</td>
+<td><code>trigger event</code></td>
+<td>Signal <code>event</code>, waking any waiters</td>
 </tr>
 <tr>
-<td><code>#error message</code></td>
-<td>Force a compile-time error with a message</td>
+<td><code>dma.copy.async src =&gt; dst</code></td>
+<td>Non-blocking copy (returns immediately)</td>
+</tr>
+<tr>
+<td><code>dma.any</code></td>
+<td>Placeholder future (no transfer in flight yet)</td>
+</tr>
+<tr>
+<td><code>swap(f0, f1)</code></td>
+<td>Exchange two future handles without copying data</td>
+</tr>
+<tr>
+<td><code>rotate(f0, f1, f2)</code></td>
+<td>Cycle three future handles</td>
+</tr>
+<tr>
+<td><code>with tile_k in N { ... }</code></td>
+<td>Scoped tile axis binding with extent N</td>
+</tr>
+<tr>
+<td><code>foreach tile_k(1:)</code></td>
+<td>Iterate starting from index 1</td>
+</tr>
+<tr>
+<td><code>mma.commit</code></td>
+<td>Fence between pipeline stages for WGMMA</td>
+</tr>
+<tr>
+<td><code>__co__ auto fn(...)</code></td>
+<td>Return type inferred from <code>return</code> statement</td>
 </tr>
 </tbody>
 </table>
-<p>Macros expand in <strong>both</strong> Croktile function (<strong><code>__co__</code></strong>) regions and ordinary host or device C++ in the same file, so you can share numeric constants and feature flags across the whole program.</p>
-<p>The preprocessor evaluates <strong>integer constant expressions</strong> in <strong><code>#if</code></strong> conditions using the same names you <strong><code>#define</code></strong>.</p>
-<p>For nested configuration (architecture × precision × feature flags), chain <strong><code>#elif</code></strong> branches the way you would in C++; only the winning branch is visible to the Croktile parser afterward.</p>
-<p><strong>Object-like macros</strong> excel when the same numeric literal must appear in <strong>dozens</strong> of places (tile extents, <strong><code>cdiv</code></strong> bounds, shared memory sizing), when you want <strong><code>#error</code></strong> to enforce relationships between those literals (swizzle vs tile K, warp M vs WGMMA hardware expectations), or when you generate <strong>many kernel variants</strong> from one source file by varying defines on the <strong>compiler command line</strong> (<code>-DMATMUL_TILE_K=128</code>) without editing the body.</p>
-<p>When a value is truly local to one C++ function and never crosses into the <code>__co__</code> body, ordinary <strong><code>constexpr</code></strong> variables or templates in host/device C++ are often clearer. The tutorial’s matmul files skew toward macros because <strong><code>__co__</code> and C++ share</strong> those numbers; a single <strong><code>#define</code></strong> avoids drift between the two worlds.</p>
-<p>Typical matmul and GEMM sources centralize tile geometry in macros:</p>
-<pre class="highlight"><code class="language-choreo">#define MATMUL_WARP_M 64
-#define MATMUL_WARP_N 128
-#define MATMUL_TILE_K 64</code></pre>
-<p>Those names then appear in array extents, <strong><code>parallel … by […]</code></strong> bounds, and shared-memory declarations. One change to the macro updates every use site.</p>
-<p><strong>Important limitation:</strong> Croktile’s preprocessor does <strong>not</strong> support <strong>function-like</strong> macros. You cannot write <strong><code>#define MAX(a, b) …</code></strong> and expect it to expand with arguments. Stick to <strong>object-like</strong> <strong><code>#define NAME replacement</code></strong> or use <strong><code>constexpr</code></strong> / inline functions in plain C++ where you need functions.</p>
-<p>Libraries use <strong><code>#if</code></strong> together with <strong><code>#error</code></strong> to <strong>assert configuration constraints</strong> at compile time. If someone changes a swizzle width or warp tile incompatibly, the build fails immediately with a clear message instead of producing a wrong or illegal kernel:</p>
-<pre class="highlight"><code class="language-choreo">#if MATMUL_SWIZ != (2 * MATMUL_TILE_K)
-#error "MATMUL_SWIZ must equal 2 * MATMUL_TILE_K for f16 kernel"
-#endif
-
-#if MATMUL_WARP_M != 64
-#error "MATMUL_WARP_M must be 64 for f16 WGMMA constraints"
-#endif
-</code></pre>
-<p>This pattern documents <strong>why</strong> those equalities must hold (layout assumptions, ISA constraints) and enforces them in CI.</p>
-<p>You can select whole regions of code based on a defined macro — useful for experimental paths, architecture branches, or debug instrumentation:</p>
-<pre class="highlight"><code class="language-choreo">#define PATH0
-
-__co__ foo() {
-  // ...
-  #ifdef PATH0
-    // path 0 code
-  #else
-    // path 1 code
-  #endif
-}</code></pre>
-<p>The preprocessor keeps <strong>one</strong> branch and discards the other before Croktile parses the <code>__co__</code> body. That is different from a runtime <strong><code>if</code></strong>: no dead branch remains in the generated program for the disabled path.</p>
-<p>Earlier tutorial tracks (for example <strong>Lv1</strong> optimization material) lean heavily on macros to <strong>parameterize</strong> kernels: tile sizes, unroll factors, and feature toggles become compile-time constants so you can sweep a search space or generate variants without duplicating entire files. The same <strong><code>#define</code> / <code>#if</code></strong> machinery you saw in matmul benchmarks is the glue for those experiments.</p>
-<p>You might hope to write a register count once as a macro and reuse it inside <strong><code>__cpp__</code></strong>:</p>
-<pre class="highlight"><code class="language-choreo">#define PRODUCER_MAXNREG 40
-
-inthreads.async (p1 == 0) {
-  __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 PRODUCER_MAXNREG;");)");
-}</code></pre>
-<p>That snippet is <strong>not</strong> what you want: inside a string literal (including a raw string), the C-style preprocessor does <strong>not</strong> replace <strong><code>PRODUCER_MAXNREG</code></strong> with <code>40</code>.</p>
-<p>The generated asm would contain the <strong>identifier</strong> <strong><code>PRODUCER_MAXNREG</code></strong>, which is not a valid immediate for PTX.</p>
-<p>In shipping kernels, immediates inside <strong><code>R"(asm …)"</code></strong> are almost always <strong>numeric literals</strong> typed out (<code>40</code>, <code>216</code>, <code>104</code>, …). To keep them consistent with macro-defined tile geometry, teams typically document the relationship in comments, use <strong><code>#if</code> / <code>#error</code></strong> so illegal combinations fail at compile time, or generate the <strong><code>.co</code></strong> from a template or script when a single source of truth is mandatory across many asm sites.</p>
-<p>Use <strong><code>#define</code> freely for Croktile function geometry</strong> (sizes that appear <strong>outside</strong> string literals). Treat <strong><code>__cpp__</code> strings</strong> as opaque text the preprocessor will not reach into.</p>
-<p>When you review or write an injection, check <strong>scope</strong>: is this string valid C++ at the exact insertion point, with correct braces and semicolons? Check <strong>identifiers</strong>: do all names match what codegen emits for this kernel version?</p>
-<p>Ask whether the instruction is legal on the <strong>SM target</strong> you compile for, and whether a fallback path would need <strong><code>#if</code></strong> at the Croktile level. For <strong>synchronization</strong>, especially with async pipelines from Chapter 6, confirm this asm interacts safely with producer/consumer ordering and barriers. Prefer <strong>minimal surface</strong>: express most of the logic in the Croktile function and reserve <strong><code>__cpp__</code></strong> for the one line the DSL does not cover.</p>
-<p>If any answer is uncertain, prototype in a small CUDA file first, then port the proven fragment into <strong><code>__cpp__</code></strong>.</p>
-<p>Reach for <strong><code>__cpp__</code></strong> when you need <strong>exact</strong> control over a line of C++, inline assembly, or PTX in the <strong>generated</strong> output — register hints, targeted guards, intrinsics the DSL does not wrap. Reach for <strong><code>#define</code></strong> and conditionals when you want <strong>compile-time</strong> parameterization and <strong>validation</strong> shared across the <code>__co__</code> body and C++ — tile dimensions, algorithm variants, and static <strong><code>#error</code></strong> checks.</p>
-<p>Together they close the loop: Croktile keeps everyday kernels readable and structured, while <strong><code>__cpp__</code></strong> and the preprocessor let expert paths stay <strong>honest</strong> (asserted constraints) and <strong>complete</strong> (hardware-specific details where they matter).</p>
-<h2 id="how-to-read-a-production-co-file">How to read a production <code>.co</code> file<a class="headerlink" href="#how-to-read-a-production-co-file" title="Permanent link">&para;</a></h2>
-<p>When you open something like <strong><code>blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c_m2048_n2048_k2048.co</code></strong> or another entry in the Croktile benchmark tree, read <strong>top down</strong>.</p>
-<p>Start with <strong>macros and <code>#error</code> guards</strong>. They encode the contract: allowed tile sizes, swizzle rules, and architecture flags. If you change a define, the next <strong><code>#if</code></strong> might stop the build; treat that as documentation, not annoyance.</p>
-<p>Next is <strong>host setup</strong> — buffers, launch configuration, timing; often ordinary C++.</p>
-<p>Then scan the <strong><code>__co__</code> function</strong> for the orchestration story: <strong><code>parallel</code></strong>, <strong><code>foreach</code></strong>, TMA/MMA, <strong><code>inthreads.async</code></strong>, events. Map each region back to the chapters in this tutorial.</p>
-<p>Finally, find <strong><code>__cpp__</code> islands</strong> — usually a handful of lines. Pause on each one and ask what the hardware gets that the DSL does not spell out (register hints, returns, intrinsics).</p>
-<p>That order prevents getting lost in the middle of a warp-specialized loop before you know which <strong><code>MATMUL_*</code></strong> constants you are allowed to change.</p>
-<p><strong><code>__cpp__("…")</code></strong> and <strong><code>__cpp__(R"(…)")</code></strong> splice string contents verbatim into generated code; raw strings are ideal for <strong><code>asm volatile("…")</code></strong> and other quote-heavy snippets. Warp-specialized GEMM examples use <strong><code>setmaxnreg.dec</code></strong> / <strong><code>setmaxnreg.inc</code></strong> in producer vs consumer <strong><code>inthreads.async</code></strong> branches to tune register pressure for TMA-heavy vs MMA-heavy roles.</p>
-<p>Other <strong><code>__cpp__</code></strong> uses include simple C++ control flow such as early <strong><code>return</code></strong> when a segment range is empty (as in MoE-style GEMM sources).</p>
-<p>Croktile’s preprocessor supports <strong><code>#define</code></strong>, <strong><code>#if</code> / <code>#ifdef</code> / <code>#ifndef</code> / <code>#else</code> / <code>#endif</code></strong>, and <strong><code>#error</code></strong>; macros apply to <code>__co__</code> and C++ regions alike, with <strong>no function-like macros</strong> — only object-like <strong><code>#define NAME value</code></strong>. <strong><code>#error</code></strong> under <strong><code>#if</code></strong> encodes compile-time requirements on configuration constants, a pattern ubiquitous in matmul benchmarks.</p>
-<p>That finishes the Croktile DSL tutorial track at the boundary between declarative Croktile orchestration and the low-level reality of production GPU kernels. You started from a running program (<a href="../ch01-hello-choreo/">Hello Croktile</a>), learned how data moves and pipelines overlap, saw TMA and swizzle, and connected MMA and WGMMA to tile shapes.</p>
-<p>You specialized warps for async roles, iterated persistent tiles, scaled across warpgroups, and shaped irregular access with <strong><code>view</code></strong> / <strong><code>from</code></strong>. This chapter is the <strong>pressure valve</strong>: when the model is right but the last percent needs a PTX hint or a static configuration guard, you know which door to open.</p>
-<p>From here, the most productive next step is to read a full benchmark kernel end to end — <strong>macros at the top</strong>, <strong><code>__co__</code> function in the middle</strong>, and the occasional <strong><code>__cpp__</code> hook</strong> where the hardware demands it — then change one constant or one guard, rebuild, and measure.</p>
-<p>Small, deliberate edits beat large rewrites; the toolchain and the <strong><code>#error</code></strong> lines will tell you when a configuration stops being legal long before you chase mysterious numerical wrong answers on the GPU.</p>
+<p>The pipeline is now safe: producer and consumer overlap through events, the ring index cycles shared buffers, and <code>mma.commit</code> keeps the accumulator coherent. The <a href="../ch07-advanced-movement/">next chapter</a> pushes data movement further with hardware-accelerated TMA, swizzled shared-memory layouts, and <code>view</code>/<code>from</code> for irregular access patterns.</p>
 
 
 

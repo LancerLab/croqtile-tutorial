@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#baseline-and-block-scaling-background" class="md-skip">
+        <a href="#baseline-block-scaling-and-where-3979-tflops-comes-from" class="md-skip">
           Skip to content
         </a>
       
@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -1266,7 +1236,7 @@
   <a href="#why-block-scaling-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why block scaling exists
+        Why Block Scaling Exists
       
     </span>
   </a>
@@ -1274,24 +1244,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#croktile-surface-mmarowrowscale" class="md-nav__link">
+  <a href="#the-baseline-kernel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Croktile surface: mma.row.row.scale
+        The Baseline Kernel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Baseline Kernel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#baseline-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baseline Geometry
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline-kernel-geometry" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#scale-tensor-shapes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Baseline kernel geometry
+        Scale Tensor Shapes
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1299,7 +1286,35 @@
   <a href="#measured-baseline-throughput" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Measured baseline throughput
+        Measured Baseline Throughput
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Measured Baseline Throughput">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-13-of-peak-is-not-a-bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why 13% of Peak Is Not a Bug
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-cycles-go" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the Cycles Go
       
     </span>
   </a>
@@ -1307,54 +1322,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scale-tensor-shapes-conceptual" class="md-nav__link">
+  <a href="#source-variants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scale tensor shapes (conceptual)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-the-baseline-is-not-measuring" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What the baseline is not measuring
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#profiling-narrative-how-the-thread-was-guided" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Profiling narrative (how the thread was guided)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#relation-to-warp-specialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Relation to warp specialization
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
+        Source Variants
       
     </span>
   </a>
@@ -2820,7 +2791,7 @@
   <a href="#why-block-scaling-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why block scaling exists
+        Why Block Scaling Exists
       
     </span>
   </a>
@@ -2828,24 +2799,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#croktile-surface-mmarowrowscale" class="md-nav__link">
+  <a href="#the-baseline-kernel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Croktile surface: mma.row.row.scale
+        The Baseline Kernel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Baseline Kernel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#baseline-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baseline Geometry
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline-kernel-geometry" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#scale-tensor-shapes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Baseline kernel geometry
+        Scale Tensor Shapes
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2853,7 +2841,35 @@
   <a href="#measured-baseline-throughput" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Measured baseline throughput
+        Measured Baseline Throughput
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Measured Baseline Throughput">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-13-of-peak-is-not-a-bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why 13% of Peak Is Not a Bug
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-cycles-go" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the Cycles Go
       
     </span>
   </a>
@@ -2861,54 +2877,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scale-tensor-shapes-conceptual" class="md-nav__link">
+  <a href="#source-variants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scale tensor shapes (conceptual)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-the-baseline-is-not-measuring" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What the baseline is not measuring
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#profiling-narrative-how-the-thread-was-guided" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Profiling narrative (how the thread was guided)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#relation-to-warp-specialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Relation to warp specialization
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
+        Source Variants
       
     </span>
   </a>
@@ -3001,86 +2973,91 @@
   
 
 
-<h1 id="baseline-and-block-scaling-background">Baseline and Block-Scaling Background<a class="headerlink" href="#baseline-and-block-scaling-background" title="Permanent link">&para;</a></h1>
-<p>This section defines <strong>block-scaled GEMM</strong> in the sense used by the Croktile benchmarks, ties it to <strong>FP8 E4M3</strong> limitations, and describes the <strong>baseline kernel</strong> whose throughput anchors the AI-tune story. Unless noted, problem sizes are <strong>2048³</strong> and <strong>4096³</strong> cubes; hardware is <strong>H800 PCIe</strong> with <strong>3026 TFLOPS</strong> FP8 peak.</p>
-<h2 id="why-block-scaling-exists">Why block scaling exists<a class="headerlink" href="#why-block-scaling-exists" title="Permanent link">&para;</a></h2>
-<p><strong>FP8 E4M3</strong> trades dynamic range and mantissa precision for <strong>half the operand footprint</strong> of FP16 and a path to high tensor-core throughput. A naive GEMM that simply casts to FP8 and accumulates in low precision <strong>loses information</strong>: values that differ greatly in magnitude within a long <strong>K</strong> reduction cannot all be represented faithfully after quantization.</p>
-<p><strong>Per-block scaling</strong> repairs this without reverting to FP16 weights throughout. The idea is local: partition <strong>K</strong> into blocks (in these kernels, aligned with <strong>TILE_K = 128</strong>). For each <strong>(row, block)</strong> on the left and matching <strong>(column, block)</strong> on the right, store a <strong>single FP32 scale</strong> (or a small factor pair) that rescales the FP8 payloads in that block. During the dot product, contributions from block <strong>b</strong> are scaled consistently so that the <strong>reduction in FP16</strong> (or a widened internal path) approximates a higher-precision reference.</p>
-<p>Conceptually, if <code>\tilde{a}</code> and <code>\tilde{b}</code> are quantized blocks and <code>s_a</code>, <code>s_b</code> are their scales, the block’s contribution to the inner product scales like <code>s_a s_b \langle \tilde{a}, \tilde{b} \rangle</code>. The exact layout of <code>scale_lhs</code> and <code>scale_rhs</code> in memory depends on the kernel; the benchmarks use <strong>global</strong> tensors sized with <strong><code>DIV_BLK_K</code></strong> (and <strong><code>DIV_BLK_N</code></strong> where the right-hand scale grid is two-dimensional) so that each <strong>K-tile iteration</strong> can index the correct factors.</p>
-<p>Accumulation <strong>order</strong> still matters for <strong>finite</strong> <strong>FP16</strong>: the blockscaled formulation is <strong>not</strong> bitwise identical to <strong>FP32</strong> reference unless you widen internally. The shipped verification tolerances reflect that contract—<strong>close</strong> numerically, <strong>not</strong> <strong>ULP-perfect</strong>.</p>
-<p>This is the same family of tricks used in <strong>MXFP8</strong>-style training and inference stacks: <strong>FP8 for density</strong>, <strong>scales for fidelity</strong>.</p>
-<h2 id="croktile-surface-mmarowrowscale">Croktile surface: <code>mma.row.row.scale</code><a class="headerlink" href="#croktile-surface-mmarowrowscale" title="Permanent link">&para;</a></h2>
-<p>In Croktile, the fused path is expressed as a single MMA form that consumes <strong>fragments from shared memory</strong> (after <strong>TMA</strong> loads with <strong>swizzle</strong>) <strong>and</strong> the <strong>per-tile scale pointers</strong> appropriate to the current <strong>M</strong>, <strong>N</strong>, and <strong>K</strong> block.</p>
-<p>The baseline device code in <code>benchmark/performance/blockscale_gemm/blockscale_gemm_dyn_sm90.co</code> follows the dense GEMM skeleton—<strong>TMA</strong> in, <strong>WGMMA-shaped</strong> loads, accumulator in registers—except the inner MMA is <strong><code>mma.row.row.scale</code></strong> instead of a plain <strong><code>mma.row.row</code></strong>. That opcode ties <strong>WGMMA</strong> execution on <strong>E4M3</strong> operands to the <strong>scale factors</strong> for the active <strong>K</strong> slice, keeping the <strong>FP16</strong> accumulator contract described in the shipped README (verification uses <strong>FP32</strong> reference dots with blockscale factors, <strong>FP16</strong> output, tolerances <strong><code>base_tol=0.5</code></strong>, <strong><code>rel_tol=0.01</code></strong>).</p>
-<p><strong>One K-tile at a time (baseline control flow)</strong>:</p>
+<h1 id="baseline-block-scaling-and-where-3979-tflops-comes-from">Baseline: Block Scaling and Where 397.9 TFLOPS Comes From<a class="headerlink" href="#baseline-block-scaling-and-where-3979-tflops-comes-from" title="Permanent link">&para;</a></h1>
+<p>Before optimizing, we need to understand what block-scaled GEMM actually does, how the baseline kernel is wired, and what the first throughput numbers mean in context.</p>
+<h2 id="why-block-scaling-exists">Why Block Scaling Exists<a class="headerlink" href="#why-block-scaling-exists" title="Permanent link">&para;</a></h2>
+<p>FP8 E4M3 trades dynamic range and mantissa precision for half the operand footprint of FP16 and a path to high tensor-core throughput. A naive GEMM that simply casts to FP8 and accumulates in low precision loses information: values that differ greatly in magnitude within a long K reduction cannot all be represented faithfully after quantization.</p>
+<p>Per-block scaling repairs this without reverting to FP16 weights. The idea is local:</p>
 <ol>
-<li><strong>TMA</strong> <strong><code>lhs</code></strong> and <strong><code>rhs</code></strong> <strong>subspans</strong> of shape <strong>(WARP_M, TILE_K)</strong> and <strong>(WARP_N, TILE_K)</strong> into <strong><code>lhs_load_s</code></strong> / <strong><code>rhs_load_s</code></strong> with <strong>swizzle</strong> matching <strong>TILE_K</strong>.</li>
-<li><strong>Inner</strong> loop over <strong>WARP_K</strong> chunks along <strong>K</strong> inside the tile: <strong>MMA load</strong> fragments from <strong>SMEM</strong>, then <strong><code>mma.row.row.scale</code></strong> with <strong>views</strong> into <strong><code>scale_lhs</code></strong> and <strong><code>scale_rhs</code></strong> indexed by <strong><code>block_m</code></strong>, <strong><code>block_n</code></strong>, and <strong><code>iv_k</code></strong>.</li>
-<li>After all <strong>K</strong> tiles, <strong>store</strong> the <strong>accumulator tile</strong> to <strong>SMEM</strong> and <strong>TMA</strong> out to <strong>global</strong> <strong><code>output</code></strong>.</li>
+<li>Partition K into blocks (aligned with TILE_K = 128)</li>
+<li>For each (row, block) on the left and (column, block) on the right, store a single FP32 scale factor</li>
+<li>During the dot product, scale each block's contribution: <code>s_a × s_b × &lt;ã, b̃&gt;</code></li>
+<li>Accumulate in FP16 so the reduction stays useful</li>
 </ol>
-<p>Every <strong>iteration</strong> on <strong><code>iv_k</code></strong> touches <strong>fresh</strong> <strong>FP8</strong> data <strong>and</strong> the <strong>corresponding</strong> <strong>scale</strong> <strong>columns</strong>—that <strong>coupling</strong> is what distinguishes <strong>profiling</strong> <strong>blockscale</strong> from <strong>profiling</strong> <strong>vanilla</strong> <strong>GEMM</strong>.</p>
-<p>Readers coming from <a href="../../../tutorial/ch05-mma/">Chapter 5: MMA</a> should treat <strong><code>mma.row.row.scale</code></strong> as the blockscale analogue of the usual <strong><code>mma.row.row</code></strong>: same tiling discipline, <strong>extra operands</strong> for scales, and the same pressure to <strong>hide TMA latency</strong> behind math.</p>
-<h2 id="baseline-kernel-geometry">Baseline kernel geometry<a class="headerlink" href="#baseline-kernel-geometry" title="Permanent link">&para;</a></h2>
-<p>The reference baseline uses <strong>M64 × N128 × K32</strong> per warpgroup inner steps with <strong>TILE_K = 128</strong> along <strong>K</strong> (four <strong>K32</strong> steps per tile), <strong>swizzle 128</strong> on <strong>TMA</strong>, and <strong><code>MATMUL_WARP_M = 64</code></strong> fixed for <strong>E4M3 WGMMA</strong> constraints in the source comments.</p>
+<p>This is the same family of tricks used in MXFP8-style training and inference: FP8 for density, scales for fidelity. The verification tolerances reflect this contract — close numerically, not ULP-perfect.</p>
+<h2 id="the-baseline-kernel">The Baseline Kernel<a class="headerlink" href="#the-baseline-kernel" title="Permanent link">&para;</a></h2>
+<p>In Croktile, the fused path is expressed as <code>mma.row.row.scale</code> — the blockscale analogue of <code>mma.row.row</code> from <a href="../../../tutorial/ch04-mma/">Chapter 4</a>. Same tiling discipline, extra operands for scales.</p>
+<p>The baseline kernel in <code>blockscale_gemm_dyn_sm90.co</code> follows the dense GEMM skeleton — TMA in, WGMMA-shaped loads, accumulator in registers — except the inner MMA consumes scale factors for the active K slice alongside operand fragments.</p>
+<p><strong>One K-tile iteration (baseline control flow):</strong></p>
+<ol>
+<li><strong>TMA</strong> <code>lhs</code> and <code>rhs</code> subspans of shape (WARP_M, TILE_K) and (WARP_N, TILE_K) into shared memory with swizzle matching TILE_K</li>
+<li><strong>Inner loop</strong> over WARP_K chunks: MMA load fragments from SMEM, then <code>mma.row.row.scale</code> with views into <code>scale_lhs</code> and <code>scale_rhs</code> indexed by block_m, block_n, and iv_k</li>
+<li>After all K tiles, <strong>store</strong> accumulator to SMEM and TMA out to global output</li>
+</ol>
+<p>Every K iteration touches fresh FP8 data <strong>and</strong> the corresponding scale columns. That coupling is what distinguishes profiling blockscale from profiling vanilla GEMM.</p>
+<h3 id="baseline-geometry">Baseline Geometry<a class="headerlink" href="#baseline-geometry" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
 <th>Field</th>
-<th>Baseline choice</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Tile label</td>
-<td><strong>M64N128K32</strong> (per README)</td>
+<td>Tile</td>
+<td>M64 × N128 × K32 (four K32 steps per TILE_K=128)</td>
 </tr>
 <tr>
-<td>Operand staging</td>
-<td><code>lhs_load_s</code>, <code>rhs_load_s</code> in <strong>shared memory</strong></td>
+<td>Swizzle</td>
+<td>128 on TMA</td>
+</tr>
+<tr>
+<td>WARP_M</td>
+<td>64 (fixed for E4M3 WGMMA constraints)</td>
 </tr>
 <tr>
 <td>Parallelism</td>
-<td><strong>CTA grid</strong> over <strong>M</strong> and <strong>N</strong> tile indices</td>
+<td>CTA grid over M and N tile indices</td>
 </tr>
 </tbody>
 </table>
-<p>Representative <strong><code>.co</code></strong> entry points:</p>
+<h3 id="scale-tensor-shapes">Scale Tensor Shapes<a class="headerlink" href="#scale-tensor-shapes" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>Path</th>
+<th>Tensor</th>
+<th>Shape</th>
+<th>Indexing</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Baseline (this study)</td>
-<td><code>benchmark/performance/blockscale_gemm/blockscale_gemm_dyn_sm90.co</code></td>
+<td><code>scale_lhs</code></td>
+<td><code>[M, K/128]</code></td>
+<td>One scale per M-row per K-block</td>
 </tr>
 <tr>
-<td>Warp-specialized 1p1c</td>
-<td><code>benchmark/performance/blockscale_gemm/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co</code></td>
-</tr>
-<tr>
-<td>Tuned **<code>__launch_bounds__</code> / regs</td>
-<td><code>blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c_m2048_n2048_k2048.co</code></td>
+<td><code>scale_rhs</code></td>
+<td><code>[N/block_n, K/128]</code></td>
+<td>Aligned to block_n and K-block</td>
 </tr>
 </tbody>
 </table>
-<p>The <strong>v2</strong> folder adds experiments (<strong><code>tileN</code></strong>, <strong><code>rhs_scale_dma_smem</code></strong>, <strong><code>scale_dma_smem</code></strong>, <strong><code>transposed_scale</code></strong>) that change <strong>how</strong> scales reach the MMA path—<strong>registers vs TMA-to-SMEM</strong>—without changing the high-level problem.</p>
-<h2 id="measured-baseline-throughput">Measured baseline throughput<a class="headerlink" href="#measured-baseline-throughput" title="Permanent link">&para;</a></h2>
+<p>The device loop <code>iv_k</code> steps K-tiles, and <code>mma.row.row.scale</code> consumes the matching scale slice. Variants that transpose how scales are stored (<code>transposed_scale</code>) trade TMA friendliness against index arithmetic in the inner loop.</p>
+<h2 id="measured-baseline-throughput">Measured Baseline Throughput<a class="headerlink" href="#measured-baseline-throughput" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Shape</th>
 <th>TFLOPS</th>
-<th>Efficiency vs 3026 TFLOPS peak</th>
+<th>Efficiency vs 3026 peak</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>2048³</td>
-<td><strong>314.2</strong></td>
+<td>314.2</td>
 <td>10.4%</td>
 </tr>
 <tr>
@@ -3090,55 +3067,51 @@
 </tr>
 </tbody>
 </table>
-<p>For comparison, a <strong>plain</strong> <strong>dense FP8 GEMM</strong> on the same class of hardware can approach <strong>much higher</strong> fractions of peak because <strong>operand</strong> traffic dominates and <strong>fused scale</strong> paths are absent. <strong>Blockscale</strong> intentionally <strong>pays</strong> those costs for <strong>accuracy</strong>; tuning then asks how much of the <strong>lost</strong> throughput can be <strong>reclaimed</strong> with <strong>better overlap</strong> and <strong>memory hints</strong>—the subject of <a href="../pattern-optimizations/">pattern-optimizations.md</a>.</p>
-<p>These figures are <strong>not</strong> a statement that the baseline is “wrong”—they show that <strong>blockscaled FP8</strong> is <strong>more than matmul</strong>: every <strong>K-tile</strong> pulls <strong>matrix data and scale metadata</strong>, and <strong><code>mma.row.row.scale</code></strong> ties the math to that metadata. Compared with a highly tuned <strong>plain FP8 GEMM</strong>, <strong>extra loads and dependent instructions</strong> shrink the fraction of cycles spent in “pure” FMA throughput.</p>
-<p>Still, <strong>13%</strong> of headline peak leaves a large <strong>software margin</strong>. The optimization thread asks: <strong>where do cycles go</strong>—<strong>TMA bubbles</strong>, <strong>scale fetch latency</strong>, <strong>too small an N tile</strong>, or <strong>cache behavior on large RHS panels</strong>—and can <strong>warp specialization</strong>, <strong>overlap</strong>, <strong>wider N</strong>, <strong>L2 hints</strong>, and <strong>prefetch</strong> recover them?</p>
-<h2 id="scale-tensor-shapes-conceptual">Scale tensor shapes (conceptual)<a class="headerlink" href="#scale-tensor-shapes-conceptual" title="Permanent link">&para;</a></h2>
-<p>The benchmark entry points pass <strong>FP8 matrices</strong> and <strong>FP32 scale</strong> tensors. Naming matches the <strong><code>.co</code></strong> kernels:</p>
+<h3 id="why-13-of-peak-is-not-a-bug">Why 13% of Peak Is Not a Bug<a class="headerlink" href="#why-13-of-peak-is-not-a-bug" title="Permanent link">&para;</a></h3>
+<p>The 3026 TFLOPS figure is a tensor-core marketing peak under favorable assumptions. Block-scaled GEMM:</p>
+<ul>
+<li>Issues <strong>more global traffic per FLOP</strong> than dense GEMM (matrix + scales)</li>
+<li>Uses fused MMA that does not pack identically to the simplest FP8×FP8→FP32 throughput tests</li>
+<li>Runs at problem sizes where L2 and wave quantization matter</li>
+</ul>
+<p>So 13% is a lower bound on quality, not an upper bound on ambition. A plain dense FP8 GEMM approaches much higher fractions of peak because operand traffic dominates and fused scale paths are absent. Block-scaled intentionally pays those costs for accuracy. The optimization question is: how much of the lost throughput can we reclaim with better overlap and memory hints?</p>
+<h2 id="where-the-cycles-go">Where the Cycles Go<a class="headerlink" href="#where-the-cycles-go" title="Permanent link">&para;</a></h2>
+<p>The published README compresses 71 iterations into four shipped snapshots. The search was guided by four concerns:</p>
+<p><strong>1. Schedule overlap.</strong> The consumer finishes WGMMA, does scale_accumulator work, and only then drives the next K-tile TMA. The gap between "WGMMA done" and "next TMA started" is idle bandwidth. iter049 attacks this.</p>
+<p><strong>2. Tile width.</strong> N128 tiles finish K-pipeline steps quickly but launch many CTAs along N. On large N, wave quantization and per-CTA overhead hurt. iter051 doubles to N256.</p>
+<p><strong>3. Cache behavior.</strong> At 4096³, RHS panels are large. TMA traffic does not always stick in L2. iter053 adds L2 promotion hints.</p>
+<p><strong>4. Scale latency.</strong> Scale loads inside a tight WGMMA loop can stall the consumer if load latency is not hidden. iter066 prefetches scales before the hot loop.</p>
+<h2 id="source-variants">Source Variants<a class="headerlink" href="#source-variants" title="Permanent link">&para;</a></h2>
+<p>Under <code>blockscale_gemm_v2/</code>, additional <code>.co</code> files factor the scale path differently:</p>
 <table>
 <thead>
 <tr>
-<th>Tensor</th>
-<th>Typical role</th>
-<th>Indexing intuition</th>
+<th>Variant</th>
+<th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>scale_lhs</code></td>
-<td>Per <strong>M</strong>-row scale per <strong>K</strong>-block</td>
-<td><strong><code>[M, DIV_BLK_K]</code></strong> — one column per <strong>K</strong> block</td>
+<td><code>rhs_scale_dma_smem</code></td>
+<td>Stage RHS scales via TMA into shared memory</td>
 </tr>
 <tr>
-<td><code>scale_rhs</code></td>
-<td>Per <strong>N</strong>-column (and possibly <strong>M</strong>-tile) scale per <strong>K</strong>-block</td>
-<td><strong><code>[DIV_BLK_N, DIV_BLK_K]</code></strong> or layouts aligned to <strong>block_n</strong></td>
+<td><code>scale_dma_smem</code></td>
+<td>Stage all scales via TMA into shared memory</td>
+</tr>
+<tr>
+<td><code>transposed_scale</code></td>
+<td>Change scale layout for coalescing vs index cost</td>
+</tr>
+<tr>
+<td><code>tileN</code></td>
+<td>Tile along N explicitly in the Croktile structure</td>
 </tr>
 </tbody>
 </table>
-<p><strong><code>DIV_BLK_K</code></strong> is <strong><code>K / 128</code></strong> when <strong>K</strong> is a multiple of the tile; the device loop <strong><code>iv_k</code></strong> steps <strong>K-tiles</strong>, and <strong><code>mma.row.row.scale</code></strong> consumes the <strong>slice of scales</strong> matching <strong><code>iv_k</code></strong>. Variants that <strong>transpose</strong> how scales are stored (<strong><code>transposed_scale</code></strong>) trade <strong>TMA friendliness</strong> against <strong>index arithmetic</strong> in the inner loop.</p>
-<h2 id="what-the-baseline-is-not-measuring">What the baseline is not measuring<a class="headerlink" href="#what-the-baseline-is-not-measuring" title="Permanent link">&para;</a></h2>
-<p>The <strong>3026 TFLOPS</strong> figure is a <strong>tensor-core marketing peak</strong> under favorable assumptions. <strong>Blockscaled GEMM</strong>:</p>
-<ul>
-<li>Issues <strong>more global traffic per FLOP</strong> than dense GEMM (matrix + scales).</li>
-<li>Uses <strong>fused MMA</strong> that may not <strong>pack</strong> identically to the simplest <strong>FP8×FP8→FP32</strong> throughput tests.</li>
-<li>Runs at <strong>problem sizes</strong> where <strong>L2</strong> and <strong>wave quantization</strong> matter; <strong>2048³</strong> and <strong>4096³</strong> are useful for development but are not the largest cubes in the full benchmark matrix.</li>
-</ul>
-<p>So <strong>13% of peak</strong> is a <strong>lower bound on quality</strong>, not an upper bound on ambition. The case study treats <strong>relative speedups</strong> (baseline → iter066) as the primary signal.</p>
-<h2 id="profiling-narrative-how-the-thread-was-guided">Profiling narrative (how the thread was guided)<a class="headerlink" href="#profiling-narrative-how-the-thread-was-guided" title="Permanent link">&para;</a></h2>
-<p>The published README compresses <strong>71 iterations</strong> into four <strong>shipped</strong> snapshots. The search combined:</p>
-<ol>
-<li><strong>Size sweeps</strong> — a change that helps <strong>4096³</strong> can <strong>hurt 2048³</strong> if it <strong>halves the CTA count</strong> (<strong>N256</strong> story).</li>
-<li><strong>Occupancy vs shared memory</strong> — widening <strong>N</strong> to <strong>256</strong> <strong>doubles</strong> math per tile but pushes <strong>SMEM</strong> to about <strong>40 KB</strong> for operand staging in the winning configuration; that is still workable on Hopper but <strong>reduces headroom</strong> for extra pipeline stages.</li>
-<li><strong>Latency hiding</strong> — <strong>TMA</strong> completion, <strong>WGMMA</strong> completion, and <strong>scale accumulation</strong> are <strong>different critical paths</strong>. <strong>iter049</strong> explicitly <strong>overlaps</strong> the <strong>next</strong> <strong>K-block’s TMA</strong> with <strong>scale_accumulator</strong> work after <strong>WGMMA</strong> (<strong>+21%</strong> at <strong>2048³</strong>).</li>
-<li><strong>Memory hierarchy hints</strong> — <strong>iter053</strong> and <strong>iter066</strong> target <strong>RHS</strong> reuse and <strong>scale</strong> fetch latency, not raw <strong>WGMMA</strong> width.</li>
-</ol>
-<p>This is the same <strong>“throughput + resource arithmetic”</strong> style as <a href="../../matmul-f16/baseline-analysis/">Dense GEMM FP16 baseline notes</a>, with <strong>scale tensors</strong> added to the balance sheet.</p>
-<h2 id="relation-to-warp-specialization">Relation to warp specialization<a class="headerlink" href="#relation-to-warp-specialization" title="Permanent link">&para;</a></h2>
-<p>The baseline path can be written as <strong>single-group</strong> Croktile; production-style kernels in this tree often use <strong>1p1c</strong> warp specialization (<strong>one producer warpgroup for TMA</strong>, <strong>one consumer for WGMMA</strong>), as in <a href="../../../tutorial/ch06-warpspec/">Chapter 6: Warp specialization</a>. The <strong>AI-tune winners (iter049–iter066)</strong> are generated in that <strong>warp-specialized</strong> family; gains reported in the README are <strong>on top of</strong> an already structured pipeline, not on top of a trivial scalar loop.</p>
-<p><strong>Verification</strong> (from the README): <strong>512</strong> <strong>coprime-stride</strong> samples over <strong>M×N</strong>, each compared against a <strong>full FP32</strong> reference dot with blockscale factors. That keeps iteration velocity high while catching <strong>scale indexing</strong> and <strong>MMA</strong> mistakes.</p>
-<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
-<p>Block scaling makes <strong>FP8 GEMM numerically viable</strong> by attaching <strong>FP32 factors</strong> to <strong>K-blocks</strong>. The <strong>Croktile</strong> baseline realizes that as <strong><code>mma.row.row.scale</code></strong> with <strong>TMA-swizzled</strong> operands and lands near <strong>314 / 398 TFLOPS</strong> at <strong>2048³ / 4096³</strong>. The next document walks <strong>concrete schedule and memory changes</strong> that push <strong>4096³</strong> to <strong>621 TFLOPS</strong> (<strong>+56%</strong> vs baseline) while staying in the same <strong>ISA and framework</strong> family.</p>
+<p>These align with the theme that scale DMA is an alternative when register pressure or load scheduling hurts WGMMA issue interval.</p>
+<p><strong>Verification:</strong> 512 coprime-stride samples over M×N, each compared against a full FP32 reference dot with blockscale factors. That keeps iteration velocity high while catching scale indexing and MMA mistakes.</p>
+<p>Next: <a href="../pattern-optimizations/">Optimization patterns</a> — the four steps from 397.9 to 621 TFLOPS.</p>
 
 
 

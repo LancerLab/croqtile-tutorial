@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#block-scaled-gemm-fp8-e4m3-case-study" class="md-skip">
+        <a href="#how-to-optimize-a-croktile-block-scaled-fp8-gemm-a-worklog" class="md-skip">
           Skip to content
         </a>
       
@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -2664,6 +2634,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#results-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-makes-block-scaled-gemm-different" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Makes Block-Scaled GEMM Different
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read Order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-and-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile and Run
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2748,87 +2770,71 @@
   
 
 
-<h1 id="block-scaled-gemm-fp8-e4m3-case-study">Block-Scaled GEMM FP8 (E4M3): Case Study<a class="headerlink" href="#block-scaled-gemm-fp8-e4m3-case-study" title="Permanent link">&para;</a></h1>
-<p>This walkthrough follows <strong>FP8 E4M3 matrix multiply with per-block scaling</strong> on <strong>Hopper SM90a</strong>, measured on <strong>H800 PCIe</strong> (114 SMs). Operands are <strong>e4m3</strong>; the accumulator stays in <strong>FP16</strong>. Along <strong>K</strong>, each block aligned with <strong>128</strong>-element tiles carries <strong>FP32 scale factors</strong> for left and right operands so inner products stay useful after quantization without giving up FP8 bandwidth.</p>
-<p><strong>Reference peak (headline)</strong></p>
+<h1 id="how-to-optimize-a-croktile-block-scaled-fp8-gemm-a-worklog">How to Optimize a Croktile Block-Scaled FP8 GEMM: a Worklog<a class="headerlink" href="#how-to-optimize-a-croktile-block-scaled-fp8-gemm-a-worklog" title="Permanent link">&para;</a></h1>
+<p>This walkthrough follows FP8 E4M3 matrix multiply with <strong>per-block scaling</strong> on Hopper (SM90a), measured on H800 PCIe (114 SMs). Operands are E4M3; the accumulator stays in FP16. Along K, each block aligned with 128-element tiles carries FP32 scale factors so inner products stay useful after quantization — FP8 for density, scales for fidelity.</p>
+<h2 id="results-summary">Results Summary<a class="headerlink" href="#results-summary" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>H800 PCIe FP8 tensor peak</td>
-<td><strong>3026 TFLOPS</strong></td>
-</tr>
-<tr>
-<td>Problem shapes (reported)</td>
-<td><strong>2048³</strong>, <strong>4096³</strong></td>
-</tr>
-</tbody>
-</table>
-<p><strong>End-to-end results (AI-tune 2026-03-22)</strong></p>
-<table>
-<thead>
-<tr>
-<th>Variant</th>
+<th>Step</th>
+<th>Kernel</th>
 <th>TFLOPS @2048³</th>
 <th>TFLOPS @4096³</th>
-<th>HW eff @4096³</th>
-<th>Notes</th>
+<th>Δ vs baseline @4k</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Baseline (<code>blockscale_gemm_dyn_sm90.co</code>, M64N128K32)</td>
+<td>0</td>
+<td>Baseline (M64N128K32)</td>
 <td>314.2</td>
 <td>397.9</td>
-<td>13.2%</td>
-<td>Starting warp layout and tiling</td>
+<td>—</td>
 </tr>
 <tr>
-<td>iter049</td>
+<td>1</td>
+<td>TMA overlap with scale accumulation (iter049)</td>
 <td><strong>380</strong></td>
 <td>—</td>
-<td>—</td>
-<td><strong>+21% @2k</strong> — TMA overlap around scale accumulation</td>
+<td>+21% @2k</td>
 </tr>
 <tr>
-<td>iter051</td>
+<td>2</td>
+<td>N256 WGMMA (iter051)</td>
 <td>372</td>
 <td>602</td>
-<td>19.9%</td>
-<td>N256 WGMMA — doubled math per tile</td>
+<td>+51%</td>
 </tr>
 <tr>
-<td>iter053</td>
+<td>3</td>
+<td>N256 + L2 256B promotion (iter053)</td>
 <td>—</td>
 <td>610</td>
-<td>20.2%</td>
-<td>N256 + <strong>L2 256B promotion</strong> on RHS TMA</td>
+<td>+53%</td>
 </tr>
 <tr>
-<td><strong>iter066</strong></td>
+<td>4</td>
+<td>N256 + L2 + prefetch scale_a (iter066)</td>
 <td>—</td>
 <td><strong>621</strong></td>
-<td><strong>20.5%</strong></td>
-<td><strong>+56% @4k vs baseline</strong> — N256 + L2 + <strong>prefetch <code>scale_a</code></strong></td>
+<td><strong>+56%</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Efficiency vs <strong>3026 TFLOPS</strong> stays modest because blockscaled GEMM pays extra scale traffic and fused math compared with a plain FP8 GEMM; the interesting part is <strong>relative gain</strong> from scheduling, tile geometry, cache hints, and scale prefetch.</p>
-<p><strong>How to read the series</strong></p>
+<p>Reference peak: <strong>3026 TFLOPS</strong> (FP8 tensor on H800 PCIe). Efficiency vs peak stays modest because block-scaled GEMM pays extra scale traffic and fused math compared with a plain FP8 GEMM. The interesting part is relative gain from scheduling, tile geometry, cache hints, and scale prefetch.</p>
+<h2 id="what-makes-block-scaled-gemm-different">What Makes Block-Scaled GEMM Different<a class="headerlink" href="#what-makes-block-scaled-gemm-different" title="Permanent link">&para;</a></h2>
+<p>Plain FP8 trades dynamic range for bandwidth. Block scaling repairs this without reverting to FP16 weights: partition K into blocks (aligned with TILE_K = 128), and for each (row, block) on the left and (column, block) on the right, store a single FP32 scale factor. During the dot product, each block's contribution is scaled consistently so the FP16 accumulator approximates a higher-precision reference.</p>
+<p>This means every K-tile iteration pulls <strong>matrix data and scale metadata</strong>. The Croktile surface expresses this as <code>mma.row.row.scale</code> instead of a plain <code>mma.row.row</code> — same tiling discipline, extra operands for scales, and the same pressure to hide TMA latency behind math.</p>
+<h2 id="read-order">Read Order<a class="headerlink" href="#read-order" title="Permanent link">&para;</a></h2>
 <ol>
-<li><a href="baseline-analysis/">Baseline and block-scaling background</a> — why per-block scales exist, how the baseline kernel is wired, and what the first throughput numbers mean in context.</li>
-<li><a href="pattern-optimizations/">Optimization patterns</a> — TMA overlap, N256 tiles, L2 promotion, scale prefetch, and how sources under <code>benchmark/performance/blockscale_gemm/</code> and <code>blockscale_gemm_v2/</code> explore scale <strong>DMA to shared memory</strong> and layout variants.</li>
+<li><a href="baseline-analysis/">Baseline and block-scaling background</a> — why per-block scales exist, how the baseline kernel is wired, and the first throughput numbers in context</li>
+<li><a href="pattern-optimizations/">Optimization patterns</a> — TMA overlap, N256 tiles, L2 promotion, scale prefetch, with TFLOPS at each step</li>
 </ol>
-<p><strong>Compile and run (Cute backend example)</strong></p>
+<h2 id="compile-and-run">Compile and Run<a class="headerlink" href="#compile-and-run" title="Permanent link">&para;</a></h2>
 <pre class="highlight"><code class="language-bash">./croktile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co \
   -o /tmp/bs.cute.result &amp;&amp; bash /tmp/bs.cute.result --execute</code></pre>
-<p>Shipped winner harnesses with <code>run.sh</code> live under <code>croktile/benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_aitune_2026-03-22_iter{049,051,053,066}/</code>. Summary tables and iteration notes: <code>croktile/benchmark/performance/blockscale_gemm_v2/README_blockscale_gemm_e4m3_aitune_2026-03-22.md</code>.</p>
+<p>Shipped winner harnesses with <code>run.sh</code> live under <code>croktile/benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_aitune_2026-03-22_iter{049,051,053,066}/</code>. Full iteration history (71 iterations): <code>README_blockscale_gemm_e4m3_aitune_2026-03-22.md</code>.</p>
 
 
 

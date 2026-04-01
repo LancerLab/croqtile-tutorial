@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -1133,10 +1103,221 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-synchronization-and-warpgroup-tuning" class="md-nav__link">
+  <a href="#step-1-synchronization-and-warpgroup-tuning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Synchronization and warpgroup tuning
+        Step 1: Synchronization and Warpgroup Tuning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Synchronization and Warpgroup Tuning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fine-grained-warpgroup-waits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fine-Grained Warpgroup Waits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mma-batch-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MMA Batch Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#early-empty-merged-barriers-early-arrive-e4m3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Early Empty, Merged Barriers, Early Arrive (E4M3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-metadata-delivery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Metadata Delivery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Metadata Delivery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-only-cache-path-__ldg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read-Only Cache Path (__ldg)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vectorization-and-hoisting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vectorization and Hoisting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tma-metadata-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TMA Metadata Staging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risks-you-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risks You Own
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-1p2c-and-pipeline-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: 1p2c and Pipeline Depth
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: 1p2c and Pipeline Depth">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-1p2c-helps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why 1p2c Helps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-depth-the-3-stage-discontinuity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Depth: The 3-Stage Discontinuity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smem-and-occupancy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMEM and Occupancy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-inner-loop-epilogue-and-tile-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Inner Loop, Epilogue, and Tile Geometry
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: Inner Loop, Epilogue, and Tile Geometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#store-path-stmatrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Store Path (stmatrix)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inner-unroll-and-ftz-fp16-iter137-543-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inner Unroll and FTZ (FP16 iter137, 543 TFLOPS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tk128-tma-metadata-split-rhs-tma-fp16-iter143-655-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TK128, TMA Metadata, Split RHS TMA (FP16 iter143, 655 TFLOPS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-transferred-between-dtypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Transferred Between Dtypes
       
     </span>
   </a>
@@ -1144,43 +1325,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-metadata-delivery" class="md-nav__link">
+  <a href="#closing-checklist" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Metadata delivery
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-structural-changes-1p2c-and-pipeline-depth" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Structural changes: 1p2c and pipeline depth
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-inner-loop-epilogue-and-tile-geometry" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Inner loop, epilogue, and tile geometry
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#closing-discipline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Closing discipline
+        Closing Checklist
       
     </span>
   </a>
@@ -2773,10 +2921,221 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-synchronization-and-warpgroup-tuning" class="md-nav__link">
+  <a href="#step-1-synchronization-and-warpgroup-tuning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Synchronization and warpgroup tuning
+        Step 1: Synchronization and Warpgroup Tuning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Synchronization and Warpgroup Tuning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fine-grained-warpgroup-waits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fine-Grained Warpgroup Waits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mma-batch-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MMA Batch Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#early-empty-merged-barriers-early-arrive-e4m3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Early Empty, Merged Barriers, Early Arrive (E4M3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-metadata-delivery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Metadata Delivery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Metadata Delivery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-only-cache-path-__ldg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read-Only Cache Path (__ldg)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vectorization-and-hoisting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vectorization and Hoisting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tma-metadata-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TMA Metadata Staging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risks-you-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risks You Own
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-1p2c-and-pipeline-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: 1p2c and Pipeline Depth
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: 1p2c and Pipeline Depth">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-1p2c-helps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why 1p2c Helps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-depth-the-3-stage-discontinuity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Depth: The 3-Stage Discontinuity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smem-and-occupancy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMEM and Occupancy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-inner-loop-epilogue-and-tile-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Inner Loop, Epilogue, and Tile Geometry
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: Inner Loop, Epilogue, and Tile Geometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#store-path-stmatrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Store Path (stmatrix)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inner-unroll-and-ftz-fp16-iter137-543-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inner Unroll and FTZ (FP16 iter137, 543 TFLOPS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tk128-tma-metadata-split-rhs-tma-fp16-iter143-655-tflops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TK128, TMA Metadata, Split RHS TMA (FP16 iter143, 655 TFLOPS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-transferred-between-dtypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Transferred Between Dtypes
       
     </span>
   </a>
@@ -2784,43 +3143,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-metadata-delivery" class="md-nav__link">
+  <a href="#closing-checklist" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Metadata delivery
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-structural-changes-1p2c-and-pipeline-depth" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Structural changes: 1p2c and pipeline depth
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-inner-loop-epilogue-and-tile-geometry" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Inner loop, epilogue, and tile geometry
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#closing-discipline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Closing discipline
+        Closing Checklist
       
     </span>
   </a>
@@ -2914,43 +3240,193 @@
 
 
 <h1 id="optimization-patterns-one-campaign-two-ladders">Optimization Patterns: One Campaign, Two Ladders<a class="headerlink" href="#optimization-patterns-one-campaign-two-ladders" title="Permanent link">&para;</a></h1>
-<p>You are not memorizing a catalog—you are following a single thread: <strong>profile, form a bottleneck hypothesis, change one family of things, re-measure</strong>. The patterns below grouped the work from the 2026-03 AI-tune logs on <strong>4096 × 8192 × 8192</strong> 2:4 sparse GEMM. What helps FP16 usually helps E4M3; the difference is <strong>which</strong> concern binds first.</p>
-<p><strong>TFLOPS ladders (anchors, not every micro-step)</strong></p>
+<p>You are not memorizing a catalog — you are following a single thread: <strong>profile, form a bottleneck hypothesis, change one family of things, re-measure.</strong> What helps FP16 usually helps E4M3; the difference is which concern binds first.</p>
+<p>Here are the two ladders side by side for reference:</p>
+<p><strong>FP16:</strong> 368 → 434 → 543 → <strong>655</strong></p>
+<p><strong>E4M3:</strong> 671 → 759 → 772 → 811 → 897 → 1090 → <strong>1127</strong></p>
+<h2 id="step-1-synchronization-and-warpgroup-tuning">Step 1: Synchronization and Warpgroup Tuning<a class="headerlink" href="#step-1-synchronization-and-warpgroup-tuning" title="Permanent link">&para;</a></h2>
+<h3 id="fine-grained-warpgroup-waits">Fine-Grained Warpgroup Waits<a class="headerlink" href="#fine-grained-warpgroup-waits" title="Permanent link">&para;</a></h3>
+<p>Producer and consumer warpgroups coordinate through async proxies and barriers. Coarse waits leave lanes idle while data is already ready. The fix: tighten to <code>warpgroup_wait&lt;1&gt;</code> — the smallest sufficient wait depth.</p>
+<p><strong>FP16 result:</strong> ~+4% over the then-current kernel. Not a dramatic number, but it establishes that the pipeline has sync-induced bubbles worth recovering.</p>
+<p><strong>E4M3 result (iter023, 811 TFLOPS):</strong> Combines software pipelining with fine-grained waits. The profile pointed at sync bubbles between consumer warpgroup batches — narrowing wait granularity recovered cycles without changing tile shape. Up from 772 TFLOPS (+5%).</p>
+<p>Before you widen tiles or add stages, check that warpgroup-level waits are not over-serialized. It is the cheapest thing to fix.</p>
+<h3 id="mma-batch-configuration">MMA Batch Configuration<a class="headerlink" href="#mma-batch-configuration" title="Permanent link">&para;</a></h3>
+<p>Hopper WGMMA splits work across batches of K fragments. A poor split underfeeds tensor cores relative to operand delivery. Flags like <code>--wgmma-split-batch</code> reshape how batches map to instructions.</p>
+<p><strong>FP16 result:</strong> ~+5% from batch reshaping. If Nsight shows WGMMA issue slots gapping while shared memory is ready, revisit batching before you blame TMA.</p>
+<h3 id="early-empty-merged-barriers-early-arrive-e4m3">Early Empty, Merged Barriers, Early Arrive (E4M3)<a class="headerlink" href="#early-empty-merged-barriers-early-arrive-e4m3" title="Permanent link">&para;</a></h3>
+<p>Async pipelines use empty/full phases. Late signals or over-synchronized barriers steal overlap.</p>
+<table>
+<thead>
+<tr>
+<th>Iteration</th>
+<th>Change</th>
+<th>TFLOPS</th>
+<th>Δ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>iter016</td>
+<td>Early empty + merged barrier</td>
+<td>772</td>
+<td>+15% vs baseline</td>
+</tr>
+<tr>
+<td>iter068</td>
+<td>Early empty <strong>arrive</strong></td>
+<td>1127</td>
+<td>+68% vs baseline</td>
+</tr>
+</tbody>
+</table>
+<p>Above ~900 TFLOPS on E4M3, this kind of sync polish is worth double-digit TFLOPS. Use Nsight warp stall views filtered on barrier-related reasons to find these.</p>
+<h2 id="step-2-metadata-delivery">Step 2: Metadata Delivery<a class="headerlink" href="#step-2-metadata-delivery" title="Permanent link">&para;</a></h2>
+<p>This is where sparse GEMM diverges from dense. Metadata is a second operand plane that you must keep fed alongside the matrix data.</p>
+<h3 id="read-only-cache-path-__ldg">Read-Only Cache Path (<code>__ldg</code>)<a class="headerlink" href="#read-only-cache-path-__ldg" title="Permanent link">&para;</a></h3>
+<p>Metadata lives in global memory and is touched every K tile. Scalar loads that miss behave like pointer chasing next to wide TMA. Forcing a read-only, L2-friendly path with <code>__ldg</code>-style loads:</p>
+<p><strong>FP16 result:</strong> ~+0.5%. The baseline already cached somewhat, but consistency across tiles mattered.</p>
+<h3 id="vectorization-and-hoisting">Vectorization and Hoisting<a class="headerlink" href="#vectorization-and-hoisting" title="Permanent link">&para;</a></h3>
+<p>Small metadata arrays per tile still need 128B-line discipline to avoid L2 thrash across CTAs. Three changes that form one story — how metadata reaches registers before MMA consumes it:</p>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>FP16 Δ</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L2/128B-oriented grouping</td>
+<td>+0.7%</td>
+<td>Align metadata to cache line boundaries</td>
+</tr>
+<tr>
+<td><code>uint2</code> metadata vectorization</td>
+<td>+8%</td>
+<td>Load 2× metadata per instruction</td>
+</tr>
+<tr>
+<td>Hoisted <code>__ldg</code> metadata</td>
+<td>+7%</td>
+<td>Move metadata loads before the K inner loop</td>
+</tr>
+</tbody>
+</table>
+<p>These percents are local (each step vs the previous edit). They do not multiply cleanly to the full 368 → 655 because interactions matter — hoisting weighs more after vectorization.</p>
+<h3 id="tma-metadata-staging">TMA Metadata Staging<a class="headerlink" href="#tma-metadata-staging" title="Permanent link">&para;</a></h3>
+<p>The strongest move: put metadata on the <strong>same async machinery</strong> as operands. Instead of scalar loads inside the K loop, let TMA prefetch metadata tiles into shared memory on the producer side.</p>
+<p><strong>E4M3 (iter001, 759 TFLOPS):</strong> This is the headline jump — TMA metadata staging from day one. +13% over the 671 baseline.</p>
+<p><strong>FP16 (iter143, 655 TFLOPS):</strong> TMA-backed metadata arrives as part of the final bundle alongside TK128 and split RHS TMA. It was harder to introduce on FP16 because the compiler-generated <code>.co</code> schedule could not express the TMA descriptor work — that is the <code>.co</code> vs <code>.cu</code> story from the <a href="../aitune-last-mile/">AI-tune page</a>.</p>
+<h3 id="risks-you-own">Risks You Own<a class="headerlink" href="#risks-you-own" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>FP16:</strong> 368 (baseline) → <strong>434</strong> (iter120) → <strong>543</strong> (iter137) → <strong>655</strong> (iter143)</li>
-<li><strong>E4M3:</strong> 671 → <strong>759</strong> → <strong>772</strong> → <strong>811</strong> → <strong>897</strong> → <strong>1090</strong> → <strong>1127</strong></li>
+<li>Wrong metadata for a repacked operand is a <strong>silent numerical bug</strong>. Run host checks against a dense reference on small sizes when you change load paths.</li>
+<li>When TK changes, diff metadata offsets and fragment boundaries.</li>
+<li>3-stage can overflow SMEM — print shared usage and watch the occupancy cliff.</li>
+<li>TK128 without matching TMA descriptors invites bank conflicts; diff descriptor setup against TK64.</li>
 </ul>
-<p>The FP16 README also lists a <strong>percent chain</strong> (each step vs the kernel immediately before that edit). Those percents are <strong>local</strong>; they do not multiply cleanly to <strong>368 → 655</strong> because interactions matter—<strong>hoisting</strong> weighs more after <strong>vectorization</strong>, and so on. Always record <strong>absolute TFLOPS</strong> next to any percent so regressions stay visible.</p>
-<hr />
-<h2 id="1-synchronization-and-warpgroup-tuning">1. Synchronization and warpgroup tuning<a class="headerlink" href="#1-synchronization-and-warpgroup-tuning" title="Permanent link">&para;</a></h2>
-<p><strong>Fine-grained warpgroup waits.</strong> Producer and consumer warpgroups coordinate through async proxies and barriers. Coarse waits leave lanes idle while data is already ready. On FP16, tightening to something like <strong><code>warpgroup_wait&lt;1&gt;</code></strong> (smallest sufficient wait depth) showed up as an early gain on the order of <strong>+4%</strong> vs the then-current kernel. On E4M3, <strong>iter023 (811 TFLOPS)</strong> combines <strong>software pipelining</strong> with that same idea: the profile pointed at <strong>sync-induced bubbles</strong>, and narrowing wait granularity recovered cycles without changing tile shape. Before you widen tiles or add stages, check that warpgroup-level waits are not overserialized.</p>
-<p><strong>MMA batch configuration.</strong> Hopper <strong>WGMMA</strong> splits work across batches of K fragments; a poor split underfeeds tensor cores relative to operand delivery. Flags such as <strong><code>--wgmma-split-batch</code></strong> (as logged in the FP16 chain, on the order of <strong>+5%</strong>) reshape how batches map to instructions. The intent transfers to E4M3 even if exact flag spelling varies by build: if Nsight shows WGMMA issue slots gapping while shared memory is ready, revisit <strong>batching</strong> before you blame TMA alone.</p>
-<p><strong>Early empty, merged barriers, early arrive (E4M3-heavy).</strong> Async pipelines use empty/full phases; late signals or over-synchronized barriers steal overlap. <strong>iter016 (772 TFLOPS)</strong> uses <strong>early empty</strong> plus a <strong>merged barrier</strong> to cut round trips on proxy state. <strong>iter068 (1127 TFLOPS)</strong> refines <strong>who</strong> signals <strong>when</strong> with <strong>early empty arrive</strong>. Above roughly <strong>900 TFLOPS</strong> on E4M3, that kind of sync polish is worth double-digit TFLOPS—use Nsight <strong>warp stall</strong> views on barrier-related reasons. FP16 README emphasizes metadata and TMA more than this exact vocabulary, but <strong>warpgroup_wait</strong> and stage tuning play the same structural role.</p>
-<hr />
-<h2 id="2-metadata-delivery">2. Metadata delivery<a class="headerlink" href="#2-metadata-delivery" title="Permanent link">&para;</a></h2>
-<p><strong>Read-only cache path (<code>__ldg</code>).</strong> Metadata often lives in global memory and is touched every K tile. Scalar loads that miss behave like pointer chasing next to wide TMA. Forcing a read-only, L2-friendly path with <strong><code>__ldg</code>-style</strong> loads bought about <strong>+0.5%</strong> on FP16—the baseline already cached somewhat, but <strong>consistency</strong> across tiles mattered.</p>
-<p><strong>L2-friendly layout, <code>uint2</code>, hoisting.</strong> Small metadata arrays per tile still need <strong>128B-line</strong> discipline if you do not want L2 thrash across CTAs. <strong>L2 / 128B-oriented</strong> grouping logged near <strong>+0.7%</strong>; <strong><code>uint2</code> metadata</strong> near <strong>+8%</strong>; <strong>hoisted <code>__ldg</code> metadata</strong> near <strong>+7%</strong> on FP16. Treat those three as one story: <strong>how</strong> metadata reaches registers <strong>before</strong> MMA consumes it—vector width, alignment, and software pipelining on the <strong>metadata plane</strong>.</p>
-<p><strong>TMA metadata staging.</strong> The stronger move is to put metadata on the <strong>same async machinery</strong> as operands where the toolchain allows. On E4M3, <strong>iter001 (759 TFLOPS)</strong> is the headline jump from <strong>TMA metadata staging</strong>. On FP16, <strong>TMA-backed metadata</strong> is part of the <strong>iter143</strong> mix alongside TK128 and split RHS TMA.</p>
-<p><strong>Risk you own:</strong> wrong metadata for a repacked operand is a silent numerical bug. Run host checks against a dense reference on small sizes when you change load paths; when <strong>TK</strong> changes, diff metadata <strong>offsets</strong> and fragment boundaries. <strong>3-stage</strong> can overflow SMEM—print shared usage and watch the occupancy cliff. <strong>1p2c</strong> needs event ordering consistent with your warp-spec model (<a href="../../../tutorial/ch06-warpspec/">Ch6</a>). <strong>TK128</strong> without matching TMA descriptors invites bank conflicts; diff descriptor setup against TK64.</p>
-<hr />
-<h2 id="3-structural-changes-1p2c-and-pipeline-depth">3. Structural changes: 1p2c and pipeline depth<a class="headerlink" href="#3-structural-changes-1p2c-and-pipeline-depth" title="Permanent link">&para;</a></h2>
-<p><strong>1p2c and multi-stage rings.</strong> In <strong>1p1c</strong>, one producer warpgroup issues all TMA and often absorbs setup work that steals issue slots from the consumer’s steady <code>wgmma</code> stream. <strong>1p2c</strong> adds a second consumer warpgroup (exact role split follows the Croktile schedule) and pairs with <strong>3-stage</strong> (or deeper) operand buffering so producers run <strong>ahead</strong> of consumers.</p>
-<p>On FP16, <strong>iter120 (434 TFLOPS)</strong> is the best <strong><code>.co</code></strong> outcome: <strong>1p2c + 3-stage</strong>, a large structural step (~<strong>+9%</strong> class vs the prior step in the logged chain). On E4M3, <strong>iter036 (897 TFLOPS)</strong> marks <strong>1p2c</strong>; <strong>iter040 (1090 TFLOPS)</strong> is the <strong>3-stage</strong> breakthrough—about <strong>+62%</strong> vs the <strong>671</strong> baseline in the README narrative, and the move into <strong>&gt;1000 TFLOPS</strong> territory. <strong>Depth without producer throughput</strong> tends to fail; <strong>1p2c without enough stages</strong> still bubbles.</p>
-<p><strong>Shared memory and occupancy.</strong> Pushing from two to three stages increases SMEM footprint. If occupancy falls off a cliff, math gains can vanish—watch shared usage prints and profiler <strong>warps active</strong>. Stop pursuing deeper pipelines when SMEM exceeds what your cluster config allows or when three independent mutations in the same family no longer move TFLOPS—then borrow ideas from the other dtype’s milestones (for example, if FP16 is metadata-stuck, study <strong>iter001</strong> on E4M3 for TMA-meta layout).</p>
-<p><strong>iter040 as a bundled change.</strong> Stage depth rarely lands in isolation; <strong>iter040</strong> is an example where a <strong>bundled</strong> 3-stage change was justified because producer staging and metadata path were already compatible.</p>
-<p><strong>Automation guardrails.</strong> Fixed clocks (where policy allows) or wide repeat counts, pinned host memory if the harness uses async copies, and <strong>one</strong> change per run when debugging versus <strong>bundled</strong> changes when sweeping a known-good neighborhood keep noise from masquerading as signal.</p>
-<hr />
-<h2 id="4-inner-loop-epilogue-and-tile-geometry">4. Inner loop, epilogue, and tile geometry<a class="headerlink" href="#4-inner-loop-epilogue-and-tile-geometry" title="Permanent link">&para;</a></h2>
-<p><strong>Store path (<code>stmatrix</code>).</strong> Accumulators still have to exit through shared or registers with bank-safe stores. <strong><code>stmatrix</code></strong> where the toolchain supports it aligned store paths with Hopper preferences for about <strong>+2%</strong> on FP16. When the kernel is math- and sync-bound above <strong>1000 TFLOPS</strong> on E4M3, epilogue tricks matter less unless the profile says <strong>store</strong> is hot—if metadata is still the long pole, skip this until it is not.</p>
-<p><strong>Inner unroll and FTZ (FP16 iter137).</strong> Compiler-generated <strong><code>.co</code></strong> schedules may not unroll the inner K loop enough to overlap address math, metadata prefetch, and <code>wgmma</code>. Hand <strong><code>.cu</code></strong> at <strong>iter137 (543 TFLOPS)</strong> used <strong>unroll 24</strong> plus <strong>FTZ</strong> to cut denorm edge cases on the data you had. That is the strongest <strong>“organic” <code>.cu</code></strong> before <strong>iter143</strong>. Inner unroll still applies philosophically to E4M3; FTZ is less central when inputs are E4M3 and the accum path is already constrained. Gate <strong>FTZ</strong> behind a benchmark flag and document ULP impact if accuracy matters.</p>
-<p><strong>TK128, TMA metadata, split RHS TMA (FP16 iter143).</strong> <strong>TK64</strong> keeps K tiles small, which can inflate trip count and metadata traffic per unit work. <strong>iter143 at 655 TFLOPS</strong> combines <strong>TK128</strong>, <strong>TMA metadata</strong>, and <strong>split RHS TMA</strong> so bandwidth tracks consumer demand—<strong>+78%</strong> vs the <strong>368</strong> baseline overall. E4M3 already used <strong>128/128</strong> swizzle from the baseline; the parallel is <strong>iter001</strong> metadata plus <strong>iter040</strong> depth, not a literal copy of every FP16 knob.</p>
-<p><strong>Swizzle and dtype.</strong> Do not copy FP16 <strong>swizzle 64</strong> onto E4M3 <strong>128/128</strong> or vice versa without validation—bank conflict behavior changes. <strong>Accum dtype</strong> (E4M3 into FP16 accum) shifts register pressure relative to pure FP16 sparse. Croktile <strong><code>.co</code></strong> sources and AI-tune flags (e.g. <strong><code>--wgmma-split-batch</code></strong>) are the same CUDA ideas under different spelling—treat README flag names as “reshape WGMMA batching,” exact tokens may differ by revision.</p>
-<hr />
-<h2 id="closing-discipline">Closing discipline<a class="headerlink" href="#closing-discipline" title="Permanent link">&para;</a></h2>
-<p>Before you end a tuning session, sanity-check: metadata <strong>vectorized</strong>, <strong>hoisted</strong>, and ideally <strong>TMA-staged</strong> where possible; <strong>stage count</strong> matched to <strong>producer rate</strong> with <strong>1p2c</strong> justified by profiled slack; <strong>warpgroup waits</strong> and empty/full signaling <strong>minimal</strong> without races; <strong>TK</strong> changes forced a joint pass on <strong>swizzle, TMA, and metadata</strong>; and you know where <strong><code>.co</code> plateaus</strong> so you do not burn days on micro-tweaks that need <strong><code>.cu</code></strong> expressiveness (<a href="../aitune-last-mile/">aitune-last-mile</a>).</p>
-<p><strong>If FP16 is stuck below ~450 TFLOPS</strong> on this class of GPU, the logs suggest attacking <strong>metadata vectorization</strong>, <strong><code>__ldg</code></strong>, <strong>1p2c + 3-stage</strong>, and <strong><code>warpgroup_wait</code></strong> before the heaviest TMA-metadata experiments. <strong>If E4M3 is already ~850+ TFLOPS</strong>, <strong>barrier / early empty / arrive</strong> and <strong>stage</strong> tuning often beat more operand widening—math is fed enough that <strong>sync</strong> dominates.</p>
-<p>Patterns from <a href="../../matmul-f16/pattern-optimizations/">dense matmul</a>—<strong>1p2c</strong>, multi-stage rings, tile search—still apply, but sparse adds <strong>metadata as a second operand plane</strong>. Dense work teaches <strong>TMA + WGMMA rhythm</strong>; sparse work teaches <strong>not to starve MMA while waiting on meta</strong>. Keep one profiling preset that highlights DRAM and another that highlights <strong>L1/L2 on small meta arrays</strong>.</p>
-<p>For TFLOPS definitions and harness detail, see <a href="../../setup-profiling/">setup-profiling</a>. TMA swizzle vocabulary lives in <a href="../../../tutorial/ch04-tma-swizzle/">Ch4</a>; warp specialization in <a href="../../../tutorial/ch06-warpspec/">Ch6</a>. <a href="../../../tutorial/ch10-cpp-inline-macros/">Ch10</a> touches gemm_sp-style producer/consumer asymmetry.</p>
+<h2 id="step-3-1p2c-and-pipeline-depth">Step 3: 1p2c and Pipeline Depth<a class="headerlink" href="#step-3-1p2c-and-pipeline-depth" title="Permanent link">&para;</a></h2>
+<h3 id="why-1p2c-helps">Why 1p2c Helps<a class="headerlink" href="#why-1p2c-helps" title="Permanent link">&para;</a></h3>
+<p>In 1p1c, one producer warpgroup issues all TMA and often absorbs setup work that steals issue slots from the consumer's steady <code>wgmma</code> stream. 1p2c adds a second consumer warpgroup — more math capacity to keep up with the data delivery.</p>
+<p><strong>FP16 (iter120, 434 TFLOPS):</strong> Best <code>.co</code> outcome — 1p2c + 3-stage. A ~+9% jump vs the prior step in the chain.</p>
+<p><strong>E4M3 (iter036, 897 TFLOPS):</strong> 1p2c alone, before the 3-stage change. +34% over baseline.</p>
+<h3 id="pipeline-depth-the-3-stage-discontinuity">Pipeline Depth: The 3-Stage Discontinuity<a class="headerlink" href="#pipeline-depth-the-3-stage-discontinuity" title="Permanent link">&para;</a></h3>
+<p>Adding a third operand buffer slot lets the producer run ahead of the consumer, hiding TMA and metadata latency behind math.</p>
+<p><strong>E4M3 (iter040, 1090 TFLOPS):</strong> This is the breakthrough — +62% vs the 671 baseline. The move into &gt;1000 TFLOPS territory. This is not gradual improvement; it is a <strong>discontinuity</strong> that says the pipeline went from "producer regularly stalls" to "producer stays ahead."</p>
+<p><strong>FP16 (iter120):</strong> 3-stage pairs with 1p2c at the same step. The combined change was justified because producer staging and metadata path were already compatible.</p>
+<h3 id="smem-and-occupancy">SMEM and Occupancy<a class="headerlink" href="#smem-and-occupancy" title="Permanent link">&para;</a></h3>
+<p>Pushing from two to three stages increases SMEM footprint. If occupancy collapses, math gains vanish. Watch shared usage prints and profiler active-warps counts. Stop pursuing deeper pipelines when:</p>
+<ul>
+<li>SMEM exceeds what your cluster config allows</li>
+<li>Three independent mutations in the same family no longer move TFLOPS</li>
+</ul>
+<p>Then borrow ideas from the other dtype's milestones — if FP16 is metadata-stuck, study iter001 on E4M3 for TMA metadata layout.</p>
+<h2 id="step-4-inner-loop-epilogue-and-tile-geometry">Step 4: Inner Loop, Epilogue, and Tile Geometry<a class="headerlink" href="#step-4-inner-loop-epilogue-and-tile-geometry" title="Permanent link">&para;</a></h2>
+<h3 id="store-path-stmatrix">Store Path (<code>stmatrix</code>)<a class="headerlink" href="#store-path-stmatrix" title="Permanent link">&para;</a></h3>
+<p>Accumulators exit through shared or registers with bank-safe stores. <code>stmatrix</code> where the toolchain supports it aligned store paths with Hopper preferences:</p>
+<p><strong>FP16 result:</strong> ~+2%. When the kernel is math- and sync-bound above 1000 TFLOPS on E4M3, epilogue tricks matter less unless the profile says store is hot.</p>
+<h3 id="inner-unroll-and-ftz-fp16-iter137-543-tflops">Inner Unroll and FTZ (FP16 iter137, 543 TFLOPS)<a class="headerlink" href="#inner-unroll-and-ftz-fp16-iter137-543-tflops" title="Permanent link">&para;</a></h3>
+<p>Compiler-generated <code>.co</code> schedules may not unroll the inner K loop enough to overlap address math, metadata prefetch, and <code>wgmma</code>. Hand <code>.cu</code> at iter137 used <strong>unroll 24</strong> plus <strong>FTZ</strong> (flush-to-zero) to cut denorm edge cases:</p>
+<pre class="highlight"><code># Key changes in iter137 hand-written .cu:
+- Inner K loop unrolled 24× (vs compiler default)
+- FTZ enabled to avoid denorm penalties
+- Result: 543 TFLOPS (+47% vs baseline)</code></pre>
+<p>This is the strongest "organic" <code>.cu</code> before iter143. Inner unroll applies philosophically to E4M3; FTZ is less central when inputs are E4M3 and the accumulator path is already constrained.</p>
+<h3 id="tk128-tma-metadata-split-rhs-tma-fp16-iter143-655-tflops">TK128, TMA Metadata, Split RHS TMA (FP16 iter143, 655 TFLOPS)<a class="headerlink" href="#tk128-tma-metadata-split-rhs-tma-fp16-iter143-655-tflops" title="Permanent link">&para;</a></h3>
+<p>TK64 keeps K tiles small, which inflates trip count and metadata traffic per unit work. iter143 combines three structural changes:</p>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TK128</td>
+<td>Halve K-loop trip count, amortize inner-loop overhead</td>
+</tr>
+<tr>
+<td>TMA metadata</td>
+<td>Metadata on the async plane alongside operands</td>
+</tr>
+<tr>
+<td>Split RHS TMA</td>
+<td>Bandwidth tracks consumer demand on the RHS side</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Result:</strong> 655 TFLOPS — +78% vs baseline. This is not a polishing pass; it is structural memory-system work that the <code>.co</code> compiler could not express.</p>
+<p>E4M3 already used 128/128 swizzle from the baseline. The parallel is iter001 metadata plus iter040 depth, not a literal copy of every FP16 knob. Do not copy FP16 swizzle 64 onto E4M3 128/128 without validation — bank conflict behavior changes.</p>
+<h2 id="what-transferred-between-dtypes">What Transferred Between Dtypes<a class="headerlink" href="#what-transferred-between-dtypes" title="Permanent link">&para;</a></h2>
+<p>Copy <strong>causal structure</strong>, not parameter equality:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>FP16</th>
+<th>E4M3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Metadata on TMA plane</td>
+<td>iter143</td>
+<td>iter001</td>
+</tr>
+<tr>
+<td>Fine warpgroup sync</td>
+<td>early chain</td>
+<td>iter023</td>
+</tr>
+<tr>
+<td>1p2c</td>
+<td>iter120</td>
+<td>iter036</td>
+</tr>
+<tr>
+<td>3-stage depth</td>
+<td>iter120 (bundled)</td>
+<td>iter040</td>
+</tr>
+<tr>
+<td>Barrier micro-optimization</td>
+<td>secondary</td>
+<td>iter016, iter068</td>
+</tr>
+</tbody>
+</table>
+<h2 id="closing-checklist">Closing Checklist<a class="headerlink" href="#closing-checklist" title="Permanent link">&para;</a></h2>
+<p>Before you end a tuning session, verify:</p>
+<ul>
+<li>[ ] Metadata vectorized, hoisted, and ideally TMA-staged</li>
+<li>[ ] Stage count matched to producer rate with 1p2c justified by profiled slack</li>
+<li>[ ] Warpgroup waits and empty/full signaling minimal without races</li>
+<li>[ ] TK changes forced a joint pass on swizzle, TMA, and metadata</li>
+<li>[ ] You know where <code>.co</code> plateaus so you do not burn days on micro-tweaks that need <code>.cu</code> expressiveness</li>
+</ul>
+<p>If FP16 is stuck below ~450 TFLOPS, the logs suggest attacking metadata vectorization, <code>__ldg</code>, 1p2c + 3-stage, and <code>warpgroup_wait</code> first. If E4M3 is already ~850+ TFLOPS, barrier/early-empty/arrive and stage tuning often beat more operand widening.</p>
+<p>Next: <a href="../aitune-last-mile/">AI-tune last mile</a> — the <code>.co</code> ceiling, the <code>.cu</code> breakthrough, and workflow for each dtype.</p>
 
 
 

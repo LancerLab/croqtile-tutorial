@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch01-hello-choreo/">
+        <link rel="canonical" href="https://codes1gn.github.io/croktile-tutorial/tutorial/ch05-branch-control/">
       
       
-        <link rel="prev" href="../ch00-installation/">
+        <link rel="prev" href="../ch04-mma/">
       
       
-        <link rel="next" href="../ch02-data-movement/">
+        <link rel="next" href="../ch06-synchronization/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Ch 1: Hello Croktile - Croktile</title>
+        <title>Ch 5: Branch & Control - Croktile</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#hello-croktile-from-zero-to-running-kernel" class="md-skip">
+        <a href="#branch-and-control-warp-roles-and-persistent-kernels" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch 1: Hello Croktile
+              Ch 5: Branch & Control
             
           </span>
         </div>
@@ -344,8 +344,6 @@
       
         
       
-        
-      
     
     
     
@@ -427,6 +425,118 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch01-hello-croktile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 1: Hello Croktile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch02-data-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 2: Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch03-parallelism/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 3: Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch04-mma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 4: MMA Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -446,7 +556,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 1: Hello Croktile
+    Ch 5: Branch & Control
   
 
     
@@ -464,7 +574,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 1: Hello Croktile
+    Ch 5: Branch & Control
   
 
     
@@ -490,10 +600,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-two-parts-of-a-croktile-program" class="md-nav__link">
+  <a href="#inthreadsasync-splitting-roles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Two Parts of a Croktile Program
+        inthreads.async: Splitting Roles
       
     </span>
   </a>
@@ -501,10 +611,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-complete-example-element-wise-addition" class="md-nav__link">
+  <a href="#a-1p1c-matmul-skeleton" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A Complete Example: Element-Wise Addition
+        A 1P1C Matmul Skeleton
       
     </span>
   </a>
@@ -512,10 +622,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-croktile-function" class="md-nav__link">
+  <a href="#if-guards-conditional-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Croktile Function
+        if Guards: Conditional Execution
       
     </span>
   </a>
@@ -523,10 +633,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-host-program" class="md-nav__link">
+  <a href="#persistent-kernels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Host Program
+        Persistent Kernels
       
     </span>
   </a>
@@ -534,10 +644,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-and-compile" class="md-nav__link">
+  <a href="#cdiv-ceiling-division" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build and Compile
+        cdiv: Ceiling Division
       
     </span>
   </a>
@@ -545,10 +655,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-you-have-learned" class="md-nav__link">
+  <a href="#choosing-between-data-dependent-and-persistent-grids" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What You Have Learned
+        Choosing Between Data-Dependent and Persistent Grids
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Syntax
       
     </span>
   </a>
@@ -571,14 +692,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch02-data-movement/" class="md-nav__link">
+      <a href="../ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 6: Synchronization
   
 
     
@@ -599,14 +720,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch03-pipeline/" class="md-nav__link">
+      <a href="../ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 7: Advanced Movement
   
 
     
@@ -627,14 +748,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 8: C++ Interop
   
 
     
@@ -655,154 +776,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch05-mma/" class="md-nav__link">
+      <a href="../ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch06-warpspec/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 6: Warp Specialization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch07-persistent/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 7: Persistent Matmul
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch08-multi-warpgroup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 8: Multi-Warpgroup
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch09-view-from/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -2782,10 +2763,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-two-parts-of-a-croktile-program" class="md-nav__link">
+  <a href="#inthreadsasync-splitting-roles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Two Parts of a Croktile Program
+        inthreads.async: Splitting Roles
       
     </span>
   </a>
@@ -2793,10 +2774,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-complete-example-element-wise-addition" class="md-nav__link">
+  <a href="#a-1p1c-matmul-skeleton" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A Complete Example: Element-Wise Addition
+        A 1P1C Matmul Skeleton
       
     </span>
   </a>
@@ -2804,10 +2785,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-croktile-function" class="md-nav__link">
+  <a href="#if-guards-conditional-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Croktile Function
+        if Guards: Conditional Execution
       
     </span>
   </a>
@@ -2815,10 +2796,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-host-program" class="md-nav__link">
+  <a href="#persistent-kernels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Host Program
+        Persistent Kernels
       
     </span>
   </a>
@@ -2826,10 +2807,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-and-compile" class="md-nav__link">
+  <a href="#cdiv-ceiling-division" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build and Compile
+        cdiv: Ceiling Division
       
     </span>
   </a>
@@ -2837,10 +2818,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-you-have-learned" class="md-nav__link">
+  <a href="#choosing-between-data-dependent-and-persistent-grids" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What You Have Learned
+        Choosing Between Data-Dependent and Persistent Grids
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Syntax
       
     </span>
   </a>
@@ -2915,80 +2907,179 @@
   
 
 
-<h1 id="hello-croktile-from-zero-to-running-kernel">Hello Croktile: From Zero to Running Kernel<a class="headerlink" href="#hello-croktile-from-zero-to-running-kernel" title="Permanent link">&para;</a></h1>
-<p>This chapter is about understanding the structure of a Croktile program. You will write the simplest possible kernel — an element-wise addition — compile it, and run it. The example deliberately avoids advanced features like DMA or tiling so you can focus on how the pieces fit together.</p>
-<h2 id="the-two-parts-of-a-croktile-program">The Two Parts of a Croktile Program<a class="headerlink" href="#the-two-parts-of-a-croktile-program" title="Permanent link">&para;</a></h2>
-<p>Every Croktile program has exactly two parts:</p>
-<ol>
-<li><strong>Croktile Function</strong> (<code>__co__</code>) — the kernel logic, marked with the <code>__co__</code> prefix. It describes computation on shaped tensors. The compiler transpiles this into GPU-ready code.</li>
-<li><strong>Host Program</strong> — standard C++ that prepares data, calls the Croktile function, and checks results.</li>
-</ol>
-<p>Both parts live in a single <code>.co</code> file. The compiler knows which is which from the <code>__co__</code> prefix.</p>
-<h2 id="a-complete-example-element-wise-addition">A Complete Example: Element-Wise Addition<a class="headerlink" href="#a-complete-example-element-wise-addition" title="Permanent link">&para;</a></h2>
-<p>Here is the full program. It adds two <code>[4, 8]</code> matrices of 32-bit integers element by element:</p>
-<pre class="highlight"><code class="language-choreo">__co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {
-  s32 [lhs.span] output;
+<h1 id="branch-and-control-warp-roles-and-persistent-kernels">Branch and Control: Warp Roles and Persistent Kernels<a class="headerlink" href="#branch-and-control-warp-roles-and-persistent-kernels" title="Permanent link">&para;</a></h1>
+<p>Up to now, every thread in a block runs the same code. They all load the same tiles, they all run the same MMA, they all store the same result. That uniformity is clean, but it has a cost: while tensor cores are busy multiplying, the memory system could be prefetching the next tile — except nobody is asking it to, because every thread is stuck in the <code>mma.row.row</code> instruction.</p>
+<p>This chapter introduces two forms of control flow that break that uniformity on purpose. <strong>Warp specialization</strong> (<code>inthreads.async</code>) assigns different roles to different warpgroups — one loads data while another computes. <strong>Conditional guards</strong> (<code>if</code>) let you skip work when a tile index falls out of bounds, which is central to <strong>persistent kernels</strong> that run a fixed pool of blocks across a variable number of tiles.</p>
+<h2 id="inthreadsasync-splitting-roles"><code>inthreads.async</code>: Splitting Roles<a class="headerlink" href="#inthreadsasync-splitting-roles" title="Permanent link">&para;</a></h2>
+<p><code>inthreads.async (condition)</code> says: "only the threads for which <code>condition</code> is true execute this block." It is not a runtime branch that every thread evaluates and some skip — it is a <strong>structural split</strong> that creates two (or more) straight-line programs, one per role, which can run concurrently on different hardware units.</p>
+<p>The canonical pattern is the <strong>1 producer + 1 consumer (1P1C)</strong> matmul:</p>
+<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : group-4 {
 
-  foreach i in [output.span]
-    output.at(i) = lhs.at(i) + rhs.at(i);
+  inthreads.async (p1 == 0) {
+    // producer: only warpgroup 0 runs this
+    // issue DMA / TMA loads, fill shared memory
+  }
 
-  return output;
-}
-
-int main() {
-  auto lhs = crok::make_spandata&lt;crok::s32&gt;(4, 8);
-  auto rhs = crok::make_spandata&lt;crok::s32&gt;(4, 8);
-  lhs.fill_random(-10, 10);
-  rhs.fill_random(-10, 10);
-
-  auto res = ele_add(lhs.view(), rhs.view());
-
-  for (int i = 0; i &lt; 4; ++i)
-    for (int j = 0; j &lt; 8; ++j)
-      crok::choreo_assert(lhs[i][j] + rhs[i][j] == res[i][j],
-                          "values are not equal.");
-
-  std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
+  inthreads.async (p1 == 1) {
+    // consumer: only warpgroup 1 runs this
+    // run MMA on shared memory, accumulate results
+  }
 }</code></pre>
-<p>Save this as <code>ele_add.co</code>, compile, and run:</p>
-<pre class="highlight"><code class="language-bash">croktile ele_add.co -o ele_add
-./ele_add</code></pre>
-<p>You should see <code>Test Passed</code>. Now let's walk through each part.</p>
-<h2 id="the-croktile-function">The Croktile Function<a class="headerlink" href="#the-croktile-function" title="Permanent link">&para;</a></h2>
-<p>This is the heart of the program. Let's break it down piece by piece.</p>
-<p><strong>Function signature.</strong></p>
-<pre class="highlight"><code class="language-choreo">__co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {</code></pre>
-<p>The <code>__co__</code> prefix marks this as a Croktile function. Unlike regular C++ functions, the signature carries full shape information: <code>s32 [4, 8]</code> means "a 2D tensor of shape 4 x 8 with element type <code>s32</code> (signed 32-bit integer)." Both parameters and the return type follow this convention — <code>type [shape] name</code>. The compiler uses these shapes to verify that every indexing operation is in-bounds at compile time.</p>
-<p>Croktile supports these element types: <code>s32</code> (signed 32-bit int), <code>f16</code> (half-precision float), <code>bf16</code> (brain float), <code>f32</code> (single-precision float), and <code>f8_e4m3</code> / <code>f8_e5m2</code> (8-bit floats). For now, <code>s32</code> is the simplest to reason about.</p>
-<p><strong>Output buffer declaration.</strong></p>
-<pre class="highlight"><code class="language-choreo">s32 [lhs.span] output;</code></pre>
-<p>This allocates the output tensor. The expression <code>lhs.span</code> copies the full shape from <code>lhs</code>, so <code>output</code> automatically has shape <code>[4, 8]</code>. If you later change the input shape, the output adjusts — a pattern that makes Croktile functions easier to generalize.</p>
-<p><strong>The computation loop.</strong></p>
-<pre class="highlight"><code class="language-choreo">foreach i in [output.span]
-  output.at(i) = lhs.at(i) + rhs.at(i);</code></pre>
-<p><code>foreach i in [output.span]</code> iterates over every element position in <code>output</code>. The <code>.at(i)</code> accessor indexes into a tensor at position <code>i</code> — it works with flat or multi-dimensional index tuples depending on context. Here <code>i</code> visits all <code>4 x 8 = 32</code> positions, and at each one the addition is straightforward.</p>
-<p><strong>Return.</strong></p>
-<pre class="highlight"><code class="language-choreo">return output;</code></pre>
-<p>A <code>__co__</code> function returns its result tensor. The return type in the signature (<code>s32 [4, 8]</code>) must match what you actually return. The caller on the host side receives a <code>crok::spanned_data</code> — an owning buffer with shape metadata that you can index into with <code>[i][j]</code>.</p>
-<h2 id="the-host-program">The Host Program<a class="headerlink" href="#the-host-program" title="Permanent link">&para;</a></h2>
-<p>The host is plain C++ with a few Croktile API calls:</p>
-<pre class="highlight"><code class="language-choreo">auto lhs = crok::make_spandata&lt;crok::s32&gt;(4, 8);
-auto rhs = crok::make_spandata&lt;crok::s32&gt;(4, 8);
-lhs.fill_random(-10, 10);
-rhs.fill_random(-10, 10);</code></pre>
-<p><code>crok::make_spandata&lt;T&gt;(dims...)</code> creates an owning tensor buffer on the host. You pass the element type as a template parameter and the dimensions as arguments. <code>fill_random</code> populates it with values in the given range.</p>
-<pre class="highlight"><code class="language-choreo">auto res = ele_add(lhs.view(), rhs.view());</code></pre>
-<p>Calling a <code>__co__</code> function from C++ looks like a normal function call. The <code>.view()</code> method produces a non-owning <code>spanned_view</code> from an owning <code>spanned_data</code> — this is how you pass host tensors into a Croktile function without transferring ownership. The return value <code>res</code> is a <code>crok::spanned_data</code> that owns its buffer.</p>
-<p>The rest of <code>main</code> is ordinary verification: loop over every element and assert equality. The host program is deliberately boring — the interesting work happens in the <code>__co__</code> function.</p>
-<h2 id="build-and-compile">Build and Compile<a class="headerlink" href="#build-and-compile" title="Permanent link">&para;</a></h2>
-<p>Croktile files use the <code>.co</code> extension. The compiler works like <code>gcc</code> or <code>clang</code>:</p>
-<pre class="highlight"><code class="language-bash">croktile ele_add.co                          # produces a.out
-croktile ele_add.co -o ele_add               # specify output name
-croktile -es -t cuda ele_add.co -o out.cu    # emit CUDA source only</code></pre>
-<p>The <code>-es</code> flag stops after transpilation, letting you inspect the generated CUDA code. The <code>-t</code> flag selects the target platform. See <a href="../ch00-installation/">Chapter 0</a> for the full set of compiler flags.</p>
-<h2 id="what-you-have-learned">What You Have Learned<a class="headerlink" href="#what-you-have-learned" title="Permanent link">&para;</a></h2>
-<p>This chapter covered the skeleton of every Croktile program: a <code>__co__</code> function with typed, shaped parameters and return value; <code>foreach</code> and <code>.at()</code> for element-wise computation; <code>lhs.span</code> for deriving output shapes from inputs; and the host-side <code>make_spandata</code> / <code>.view()</code> API for creating and passing tensors.</p>
-<p>The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — GPUs achieve peak throughput by moving data in bulk, not element by element. The <a href="../ch02-data-movement/">next chapter</a> introduces <code>dma.copy</code> and <code>chunkat</code> to express block-level data movement, and shows why that is the foundation of high-performance kernels.</p>
+<p><code>parallel p1 by 2 : group-4</code> creates two warpgroups of 128 threads each. The first <code>inthreads.async</code> block runs only on warpgroup 0 (the producer); the second runs only on warpgroup 1 (the consumer). Because the two bodies are structurally independent, the hardware can schedule TMA loads on one warpgroup while WGMMA runs on the other — true overlap, not interleaving.</p>
+<p>Compare this with Chapter 3's <code>parallel</code>, where every thread runs the same body. Here, <code>inthreads.async</code> <strong>differentiates</strong> the bodies based on the parallel index. Think of it as "each warpgroup has a different job description."</p>
+<h2 id="a-1p1c-matmul-skeleton">A 1P1C Matmul Skeleton<a class="headerlink" href="#a-1p1c-matmul-skeleton" title="Permanent link">&para;</a></h2>
+<p>Here is how <code>inthreads.async</code> fits into a Hopper matmul. The synchronization details (events, wait, trigger) are deliberately omitted — Chapter 6 will add them. Focus on the role split:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
+    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
+    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+
+    parallel p1 by 2 : group-4 {
+
+      inthreads.async (p1 == 0) {
+        // Producer: walk K, load tiles into shared
+        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+          dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
+        }
+      }
+
+      inthreads.async (p1 == 1) {
+        // Consumer: walk K, MMA on loaded tiles
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+            ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+            mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+            mma.row.row mc, ma, mb;
+          }
+        }
+        mma.store mc, output_s;
+        dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+}</code></pre>
+<p>The producer never touches <code>mc</code>, <code>mma.load</code>, or <code>mma.row.row</code>. The consumer never issues <code>dma.copy</code> to fill shared. Each body is a clean, straight-line loop over K. The missing piece — how the consumer knows a tile is ready before reading it — is synchronization, which comes in Chapter 6.</p>
+<h2 id="if-guards-conditional-execution"><code>if</code> Guards: Conditional Execution<a class="headerlink" href="#if-guards-conditional-execution" title="Permanent link">&para;</a></h2>
+<p>Sometimes you need a plain old conditional. Croktile's <code>if</code> works like C:</p>
+<pre class="highlight"><code class="language-choreo">if (tile_id &lt; total_tiles) {
+  // only execute this body when the condition is true
+}</code></pre>
+<p>This is a <strong>runtime</strong> check, not a structural role split like <code>inthreads.async</code>. Every thread evaluates the condition; threads where it is false skip the body.</p>
+<p>Where do you need this? Primarily in <strong>persistent kernels</strong>, where a fixed number of blocks iterate over a variable number of tiles, and some blocks may have one extra iteration with no real work to do.</p>
+<h2 id="persistent-kernels">Persistent Kernels<a class="headerlink" href="#persistent-kernels" title="Permanent link">&para;</a></h2>
+<p>In Chapters 3–4, the grid size was proportional to the problem: one block per output tile. For a big matrix, that can mean hundreds of thousands of blocks. The GPU schedules them in <strong>waves</strong>, and the last wave often leaves many SMs idle — <strong>tail underutilization</strong>.</p>
+<p>A <strong>persistent kernel</strong> flips this: you launch a <strong>fixed</strong> number of blocks (typically matching the SM count), and each block loops over multiple tiles:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  int total_tiles = cdiv(M, MATMUL_WARP_M) * cdiv(N, MATMUL_WARP_N);
+
+  parallel block_id by NUM_SMS : block {
+    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
+    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+
+    foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)] {
+      tile_id = tile_iter # block_id;
+
+      if (tile_id &lt; total_tiles) {
+        block_m = tile_id / cdiv(N, MATMUL_WARP_N);
+        block_n = tile_id % cdiv(N, MATMUL_WARP_N);
+
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+          dma.copy rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k) =&gt; rhs_load_s;
+
+          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+            parallel p by 1 : group-4 {
+              ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+              mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+              mma.row.row mc, ma, mb;
+            }
+          }
+        }
+        mma.store mc, output_s;
+        dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+}</code></pre>
+<p>Three new ideas work together here:</p>
+<p><strong>Fixed launch.</strong> <code>parallel block_id by NUM_SMS : block</code> creates exactly <code>NUM_SMS</code> blocks (for example, 114 on an H800 PCIe). The index <code>block_id</code> is not tied to a single output tile — it names which persistent worker you are.</p>
+<p><strong>Tile striping.</strong> <code>tile_id = tile_iter # block_id</code> composes the iteration count with the block index to produce a unique tile id. Block <code>b</code> processes tiles <code>b</code>, <code>b + NUM_SMS</code>, <code>b + 2 * NUM_SMS</code>, and so on — a stride-<code>NUM_SMS</code> walk through the linearized tile list. The <code>#</code> compose operator is the same one from Chapter 2, applied here to scheduling arithmetic instead of tensor indexing.</p>
+<p><strong>Linear-to-2D mapping.</strong> <code>block_m = tile_id / cdiv(N, MATMUL_WARP_N)</code> and <code>block_n = tile_id % cdiv(N, MATMUL_WARP_N)</code> recover the 2D tile position from the linear id, the same way you would convert a flat array index to row and column in C.</p>
+<p><strong>The <code>if</code> guard.</strong> Because <code>foreach {tile_iter}</code> runs <code>cdiv(total_tiles, NUM_SMS)</code> iterations and some blocks may have one more than needed, <code>tile_id</code> can exceed <code>total_tiles</code>. The <code>if</code> skips all TMA, MMA, and store work for those padding iterations. Without it, you would index out of bounds.</p>
+<p>The inner body — K loop, MMA, store — is identical to the non-persistent version from Chapter 4. Only the <strong>wrapper</strong> changed: fixed parallel, tile loop, compose, and guard.</p>
+<h2 id="cdiv-ceiling-division"><code>cdiv</code>: Ceiling Division<a class="headerlink" href="#cdiv-ceiling-division" title="Permanent link">&para;</a></h2>
+<p><code>cdiv(a, b)</code> computes \(\lceil a / b \rceil\) — the number of tiles when the dimension might not be evenly divisible. It appears everywhere: grid extents (<code>cdiv(M, MATMUL_WARP_M)</code>), loop bounds (<code>cdiv(K, MATMUL_TILE_K)</code>), and persistent iteration counts (<code>cdiv(total_tiles, NUM_SMS)</code>).</p>
+<p>When the last tile is partial (fewer valid elements than the tile size), real kernels pair <code>cdiv</code> with predicate masks, zero-padding, or epilogue cleanup. The tutorial stays on the clean-divisibility case, but <code>cdiv</code> is how you write tile counts that do not assume perfect division.</p>
+<h2 id="choosing-between-data-dependent-and-persistent-grids">Choosing Between Data-Dependent and Persistent Grids<a class="headerlink" href="#choosing-between-data-dependent-and-persistent-grids" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>One block per tile</th>
+<th>Persistent (<code>NUM_SMS</code> blocks)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grid size</td>
+<td>Grows with problem</td>
+<td>Fixed</td>
+</tr>
+<tr>
+<td>Tail utilization</td>
+<td>Last wave may leave SMs idle</td>
+<td>All SMs stay busy</td>
+</tr>
+<tr>
+<td>Extra constructs</td>
+<td>Minimal</td>
+<td><code>total_tiles</code>, <code>tile_iter # block_id</code>, <code>if</code></td>
+</tr>
+<tr>
+<td>Complexity</td>
+<td>Lower</td>
+<td>Higher</td>
+</tr>
+</tbody>
+</table>
+<p>Neither changes correctness; both produce the same output modulo floating-point associativity. Persistent layout pays off when <code>total_tiles</code> greatly exceeds the SM count, which is common for large matrix problems.</p>
+<h2 id="new-syntax">New Syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inthreads.async (condition)</code></td>
+<td>Only threads satisfying <code>condition</code> execute this block — structural role split</td>
+</tr>
+<tr>
+<td><code>if (expr) { ... }</code></td>
+<td>Runtime conditional — skip body when <code>expr</code> is false</td>
+</tr>
+<tr>
+<td><code>cdiv(a, b)</code></td>
+<td>Ceiling division</td>
+</tr>
+<tr>
+<td><code>tile_id = tile_iter # block_id</code></td>
+<td>Compose iteration index with block index for tile striping</td>
+</tr>
+<tr>
+<td><code>int total_tiles = expr</code></td>
+<td>Local integer variable in a Croktile function</td>
+</tr>
+</tbody>
+</table>
+<p>Warp specialization splits roles; <code>if</code> guards edge cases. But the producer and consumer in the 1P1C skeleton still run their K loops independently with no coordination — the consumer assumes the tile is ready. The <a href="../ch06-synchronization/">next chapter</a> introduces events, swap, and pipeline patterns so producer and consumer can safely overlap in time.</p>
 
 
 

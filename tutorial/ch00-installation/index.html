@@ -14,7 +14,7 @@
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../ch01-hello-choreo/">
+        <link rel="next" href="../ch01-hello-croktile/">
       
       
         
@@ -344,8 +344,6 @@
       
         
       
-        
-      
     
     
     
@@ -532,7 +530,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch01-hello-choreo/" class="md-nav__link">
+      <a href="../ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -567,7 +565,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -588,14 +586,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch03-pipeline/" class="md-nav__link">
+      <a href="../ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -616,14 +614,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -644,14 +642,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch05-mma/" class="md-nav__link">
+      <a href="../ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -672,14 +670,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch06-warpspec/" class="md-nav__link">
+      <a href="../ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -700,14 +698,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch07-persistent/" class="md-nav__link">
+      <a href="../ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -728,14 +726,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -756,42 +754,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ch09-view-from/" class="md-nav__link">
+      <a href="../ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -2928,8 +2898,8 @@
 <p>Clone the repository and run the automated setup:</p>
 <pre class="highlight"><code class="language-bash">git clone https://github.com/codes1gn/croktile.git
 cd croktile
-make setup</code></pre>
-<p><code>make setup</code> downloads the required versions of Flex, Bison, FileCheck, and GoogleTest if they are not already present. Once setup finishes, build the compiler:</p>
+make setup-core</code></pre>
+<p><code>make setup-core</code> pulls git submodules and downloads the required versions of Flex, Bison, FileCheck, and GoogleTest if they are not already present. Once setup finishes, build the compiler:</p>
 <pre class="highlight"><code class="language-bash">make</code></pre>
 <p>Then run the test suite to confirm everything works:</p>
 <pre class="highlight"><code class="language-bash">make test</code></pre>
@@ -2937,14 +2907,18 @@ make setup</code></pre>
 <h2 id="verify-the-installation">Verify the Installation<a class="headerlink" href="#verify-the-installation" title="Permanent link">&para;</a></h2>
 <p>Create a minimal <code>.co</code> file to confirm the compiler runs:</p>
 <pre class="highlight"><code class="language-choreo">__co__ s32 [4] identity(s32 [4] input) {
-  return input;
+  s32 [input.span] output;
+  parallel i by 4
+    output.at(i) = input.at(i);
+  return output;
 }
 
 int main() {
-  crok::s32 data[4] = {1, 2, 3, 4};
-  auto result = identity(crok::make_spanview&lt;1&gt;(&amp;data[0], {4}));
+  auto input = choreo::make_spandata&lt;choreo::s32&gt;(4);
+  input[0] = 1; input[1] = 2; input[2] = 3; input[3] = 4;
+  auto result = identity(input.view());
   for (int i = 0; i &lt; 4; ++i)
-    if (data[i] != result[i]) { std::cerr &lt;&lt; "FAIL\n"; return 1; }
+    if (input[i] != result[i]) { std::cerr &lt;&lt; "FAIL\n"; return 1; }
   std::cout &lt;&lt; "OK\n";
 }</code></pre>
 <p>Compile and run:</p>
@@ -3006,7 +2980,7 @@ croktile -E program.co                  # preprocess only</code></pre>
 make sample-test                       # run all sample operator tests
 make sample-test-operator OPERATOR=add # test a specific operator</code></pre>
 <p>These are useful when you modify Croktile itself or want to verify a specific operator family.</p>
-<p>With the compiler installed and verified, you are ready to write your first real Croktile program in <a href="../ch01-hello-choreo/">Chapter 1</a>.</p>
+<p>With the compiler installed and verified, you are ready to write your first real Croktile program in <a href="../ch01-hello-croktile/">Chapter 1</a>.</p>
 
 
 

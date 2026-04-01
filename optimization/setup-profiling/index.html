@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -428,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch01-hello-choreo/" class="md-nav__link">
+      <a href="../../tutorial/ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -463,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -484,14 +482,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch03-pipeline/" class="md-nav__link">
+      <a href="../../tutorial/ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -512,14 +510,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch04-tma-swizzle/" class="md-nav__link">
+      <a href="../../tutorial/ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -540,14 +538,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch05-mma/" class="md-nav__link">
+      <a href="../../tutorial/ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -568,14 +566,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch06-warpspec/" class="md-nav__link">
+      <a href="../../tutorial/ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch07-persistent/" class="md-nav__link">
+      <a href="../../tutorial/ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="../../tutorial/ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -652,42 +650,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorial/ch09-view-from/" class="md-nav__link">
+      <a href="../../tutorial/ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorial/ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -847,10 +817,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-croktiming-works" class="md-nav__link">
+  <a href="#timing-a-kernel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How crok::timing Works
+        Timing a Kernel
       
     </span>
   </a>
@@ -858,10 +828,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from-average-milliseconds-to-tflops" class="md-nav__link">
+  <a href="#computing-tflops" class="md-nav__link">
     <span class="md-ellipsis">
       
-        From Average Milliseconds to TFLOPS
+        Computing TFLOPS
       
     </span>
   </a>
@@ -869,10 +839,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#hardware-efficiency-percent-of-peak" class="md-nav__link">
+  <a href="#hardware-efficiency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hardware Efficiency (Percent of Peak)
+        Hardware Efficiency
       
     </span>
   </a>
@@ -880,10 +850,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#environment-compile-and-run" class="md-nav__link">
+  <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment, Compile, and Run
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-and-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile and Run
       
     </span>
   </a>
@@ -2760,10 +2741,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-croktiming-works" class="md-nav__link">
+  <a href="#timing-a-kernel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How crok::timing Works
+        Timing a Kernel
       
     </span>
   </a>
@@ -2771,10 +2752,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from-average-milliseconds-to-tflops" class="md-nav__link">
+  <a href="#computing-tflops" class="md-nav__link">
     <span class="md-ellipsis">
       
-        From Average Milliseconds to TFLOPS
+        Computing TFLOPS
       
     </span>
   </a>
@@ -2782,10 +2763,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#hardware-efficiency-percent-of-peak" class="md-nav__link">
+  <a href="#hardware-efficiency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hardware Efficiency (Percent of Peak)
+        Hardware Efficiency
       
     </span>
   </a>
@@ -2793,10 +2774,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#environment-compile-and-run" class="md-nav__link">
+  <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment, Compile, and Run
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-and-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile and Run
       
     </span>
   </a>
@@ -2872,59 +2864,64 @@
 
 
 <h1 id="setting-up-timeroption-tflops-and-hw-efficiency">Setting Up: TimerOption, TFLOPS, and HW Efficiency<a class="headerlink" href="#setting-up-timeroption-tflops-and-hw-efficiency" title="Permanent link">&para;</a></h1>
-<p>This page is the shared measurement contract for the optimization walkthroughs. You will see the same ideas in every matmul host program: Croktile wraps the kernel in <code>crok::timing</code> with a <code>crok::TimerOption</code>, prints mean milliseconds, then derives TFLOPS and sometimes efficiency vs peak. Once that pipeline is familiar, you can read each case study as an A/B story on the same yardstick.</p>
-<h2 id="how-croktiming-works">How <code>crok::timing</code> Works<a class="headerlink" href="#how-croktiming-works" title="Permanent link">&para;</a></h2>
-<p><code>TimerOption</code> carries <strong><code>warmup</code></strong> and <strong><code>repeat</code></strong>. Warmup runs are executed but excluded from the average so caches, TLBs, and steady-state behavior settle first. The timed runs are averaged; the reported value is <strong>mean elapsed time in milliseconds</strong>.</p>
-<p>Host code often reads overrides from the environment, then times a lambda that launches the kernel and synchronizes:</p>
+<p>Every kernel in the case studies uses the same measurement pipeline. This page shows the code once so the walkthroughs can focus on what changes between kernels.</p>
+<h2 id="timing-a-kernel">Timing a Kernel<a class="headerlink" href="#timing-a-kernel" title="Permanent link">&para;</a></h2>
+<p><code>choreo::timing</code> wraps the kernel in a warmup/repeat loop, excludes warmup from the average, and returns the <strong>mean elapsed time in milliseconds</strong>:</p>
 <pre class="highlight"><code class="language-cpp">int warmup = 10;
 int repeat = 500;
 const char* warmup_env = std::getenv("CROKTILE_TIMING_WARMUP");
 const char* repeat_env = std::getenv("CROKTILE_TIMING_REPEAT");
 if (warmup_env) { int value = std::atoi(warmup_env); if (value &gt;= 0) warmup = value; }
 if (repeat_env) { int value = std::atoi(repeat_env); if (value &gt; 0) repeat = value; }
-crok::TimerOption topt;
+
+choreo::TimerOption topt;
 topt.warmup = warmup;
 topt.repeat = repeat;
-auto avg_ms = crok::timing([&amp;]() { matmul(lhs_d, rhs_d, res_d); cudaDeviceSynchronize(); }, topt);
+
+auto avg_ms = choreo::timing([&amp;]() {
+  matmul(lhs_d, rhs_d, res_d);
+  cudaDeviceSynchronize();
+}, topt);
+
 std::cout &lt;&lt; "Timing avg ms: " &lt;&lt; avg_ms &lt;&lt; "\n";</code></pre>
-<p>Include whatever belongs in a fair wall-clock slice—typically the launch plus <code>cudaDeviceSynchronize()</code> so the GPU has finished before the timer stops.</p>
-<h2 id="from-average-milliseconds-to-tflops">From Average Milliseconds to TFLOPS<a class="headerlink" href="#from-average-milliseconds-to-tflops" title="Permanent link">&para;</a></h2>
-<p>For dense <code>C = A × B</code> with shapes <code>(M, K)</code> and <code>(K, N)</code>:</p>
-<p><code>FLOPs = 2 * M * N * K</code></p>
-<p>Each output element does <code>K</code> multiply-add pairs, hence the factor of two. Sparse variants count <strong>effective</strong> multiply-adds for nonzeros; if a benchmark documents FLOPs differently (e.g. MACs counted as one op), align with that host program rather than forcing this formula everywhere.</p>
-<p>With average time <code>avg_ms</code>:</p>
-<p><code>TFLOPS = (FLOPs / (avg_ms / 1000.0)) / 1e12</code></p>
+<p>The lambda includes <code>cudaDeviceSynchronize()</code> so the GPU finishes before the timer stops. Warmup lets caches, TLBs, and steady-state behavior settle.</p>
+<h2 id="computing-tflops">Computing TFLOPS<a class="headerlink" href="#computing-tflops" title="Permanent link">&para;</a></h2>
+<p>For dense <code>C = A × B</code> with shapes <code>(M, K)</code> and <code>(K, N)</code>, each of the <code>M × N</code> output elements requires <code>K</code> multiply-add pairs. A multiply-add counts as two FLOPs (one multiply, one add — often a single FMA instruction):</p>
+<pre class="highlight"><code>FLOPs = 2 × M × N × K</code></pre>
+<p>For an 8192³ GEMM: <code>2 × 8192³ = 1,099,511,627,776 ≈ 1.1 TFLOP</code> of work per kernel call.</p>
+<p>With the measured average time:</p>
 <pre class="highlight"><code class="language-cpp">double flops = 2.0 * double(M) * double(N) * double(K);
 double tflops = (flops / (avg_ms / 1000.0)) / 1e12;
 std::cout &lt;&lt; "TFLOPS: " &lt;&lt; tflops &lt;&lt; "\n";</code></pre>
-<h2 id="hardware-efficiency-percent-of-peak">Hardware Efficiency (Percent of Peak)<a class="headerlink" href="#hardware-efficiency-percent-of-peak" title="Permanent link">&para;</a></h2>
-<p>Throughput needs a ceiling. Many benchmarks print efficiency as TFLOPS divided by a documented GPU peak for that precision, times 100:</p>
+<p>Sparse variants count effective multiply-adds for nonzeros. If a benchmark documents FLOPs differently (e.g. MACs as one op), align with that host program's formula.</p>
+<h2 id="hardware-efficiency">Hardware Efficiency<a class="headerlink" href="#hardware-efficiency" title="Permanent link">&para;</a></h2>
+<p>TFLOPS alone is meaningless without a ceiling. The benchmarks print efficiency as a fraction of the documented GPU peak:</p>
 <pre class="highlight"><code class="language-cpp">double eff = (tflops / H800_PCIE_PEAK_F16_TFLOPS) * 100.0;
 std::cout &lt;&lt; "HW efficiency: " &lt;&lt; eff &lt;&lt; "%\n";</code></pre>
-<p>Reference peaks used in Croktile matmul benchmarks for <strong>H800 PCIe</strong>:</p>
+<p>Reference peaks for <strong>H800 PCIe</strong>:</p>
 <table>
 <thead>
 <tr>
 <th>Constant</th>
-<th>Value (TFLOPS)</th>
+<th>Value</th>
 <th>Use</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>H800_PCIE_PEAK_F16_TFLOPS</code></td>
-<td>1513</td>
-<td>FP16 dense and similar</td>
+<td>1513 TFLOPS</td>
+<td>FP16 dense</td>
 </tr>
 <tr>
 <td><code>H800_PCIE_PEAK_F8_TFLOPS</code></td>
-<td>3026</td>
-<td>FP8 dense and similar</td>
+<td>3026 TFLOPS</td>
+<td>FP8 dense</td>
 </tr>
 </tbody>
 </table>
-<p>Those numbers are theoretical peaks; real kernels rarely sit at 100%. Use the same peak constant before and after a change so you are comparing apples to apples, not treating the percentage as a final grade.</p>
-<h2 id="environment-compile-and-run">Environment, Compile, and Run<a class="headerlink" href="#environment-compile-and-run" title="Permanent link">&para;</a></h2>
+<p>These are theoretical peaks; real kernels rarely hit 100%. In the case studies, we compare against <strong>cuBLAS</strong> on the same hardware (~380 TFLOPS for FP16 dense at 8192³) as a practical ceiling. Use the same peak constant before and after a change — you are comparing deltas, not final grades.</p>
+<h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2937,32 +2934,32 @@ std::cout &lt;&lt; "HW efficiency: " &lt;&lt; eff &lt;&lt; "%\n";</code></pre>
 <tr>
 <td><code>CROKTILE_TIMING_WARMUP</code></td>
 <td><code>10</code></td>
-<td>Warmup iterations (non-negative; <code>0</code> disables warmup).</td>
+<td>Warmup iterations (0 disables)</td>
 </tr>
 <tr>
 <td><code>CROKTILE_TIMING_REPEAT</code></td>
 <td><code>500</code></td>
-<td>Timed iterations (must be positive to take effect).</td>
+<td>Timed iterations (must be &gt; 0)</td>
 </tr>
 <tr>
 <td><code>CROKTILE_DISABLE_TIMING</code></td>
 <td>unset</td>
-<td>Set to <code>1</code> to skip timing (compile or correctness only).</td>
+<td>Set to <code>1</code> to skip timing entirely</td>
 </tr>
 <tr>
 <td><code>CROKTILE_SKIP_VERIFY</code></td>
 <td>unset</td>
-<td>Set to <code>1</code> to skip numerical verification (faster iteration when you trust the math).</td>
+<td>Set to <code>1</code> to skip numerical verification</td>
 </tr>
 </tbody>
 </table>
-<p>Verification compares the kernel against a reference and adds host work. For timing-focused runs after layout or precision are stable, <code>export CROKTILE_SKIP_VERIFY=1</code> keeps the measurement focused on the device path. Turn verification back on when you change data layout, precision, or tiling.</p>
-<p>Performance <code>.co</code> files are built through the Croktile driver: pass <strong><code>-gs</code></strong> (generate script), <strong><code>-t cute</code></strong>, <strong><code>-arch</code></strong>, and codegen flags; <strong><code>-o</code></strong> points at a shell script (often under <code>/tmp</code>); run that script with <strong><code>--execute</code></strong> to compile and run. Keep flags fixed when you are hunting regressions—change one knob at a time.</p>
+<p>Use <code>CROKTILE_SKIP_VERIFY=1</code> only when you trust correctness. A fast wrong kernel sends the optimization search backward — always re-enable verification after changing data layout, precision, or tiling.</p>
+<h2 id="compile-and-run">Compile and Run<a class="headerlink" href="#compile-and-run" title="Permanent link">&para;</a></h2>
+<p>Performance <code>.co</code> files are built through the Croktile driver. A typical invocation:</p>
 <pre class="highlight"><code class="language-bash">./croktile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/matmul/matmul_f16_dyn_sm90.co \
   -o /tmp/matmul.cute.result &amp;&amp; bash /tmp/matmul.cute.result --execute</code></pre>
-<p>SM90-class matmul command lines often include flags such as <strong><code>--use-warpspec</code></strong>, <strong><code>--stmatrix</code></strong>, <strong><code>--hoist-offset</code></strong>, <strong><code>--hoist-scale</code></strong>, <strong><code>--ptx-barrier</code></strong>, <strong><code>--tma-cluster-aware</code></strong>, and <strong><code>--wgmma-wait-depth=N</code></strong>. Exact semantics live in Croktile’s CLI help; copy the recipe from the benchmark you are reproducing, then vary flags deliberately.</p>
-<p>With warmup/repeat, TFLOPS, efficiency, env vars, and the compile-and-run loop in hand, the case studies read as one measurement harness and many controlled kernel experiments.</p>
+<p>Common SM90 flags: <code>--use-warpspec</code>, <code>--stmatrix</code>, <code>--hoist-offset</code>, <code>--hoist-scale</code>, <code>--ptx-barrier</code>, <code>--tma-cluster-aware</code>, <code>--wgmma-wait-depth=N</code>. Exact semantics live in Croktile's CLI help. Copy the recipe from the benchmark you are reproducing, then vary one flag at a time.</p>
 
 
 

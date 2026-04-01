@@ -344,8 +344,6 @@
       
         
       
-        
-      
     
     
     
@@ -430,7 +428,7 @@
   
   
     <li class="md-nav__item">
-      <a href="ch01-hello-choreo/" class="md-nav__link">
+      <a href="ch01-hello-croktile/" class="md-nav__link">
         
   
   
@@ -465,7 +463,7 @@
   <span class="md-ellipsis">
     
   
-    Ch 2: Data Movement Basics
+    Ch 2: Data Movement
   
 
     
@@ -486,14 +484,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch03-pipeline/" class="md-nav__link">
+      <a href="ch03-parallelism/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 3: Pipeline Patterns
+    Ch 3: Parallelism
   
 
     
@@ -514,14 +512,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch04-tma-swizzle/" class="md-nav__link">
+      <a href="ch04-mma/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 4: TMA and Swizzle
+    Ch 4: MMA Operations
   
 
     
@@ -542,14 +540,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch05-mma/" class="md-nav__link">
+      <a href="ch05-branch-control/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 5: MMA Operations
+    Ch 5: Branch & Control
   
 
     
@@ -570,14 +568,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch06-warpspec/" class="md-nav__link">
+      <a href="ch06-synchronization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 6: Warp Specialization
+    Ch 6: Synchronization
   
 
     
@@ -598,14 +596,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch07-persistent/" class="md-nav__link">
+      <a href="ch07-advanced-movement/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 7: Persistent Matmul
+    Ch 7: Advanced Movement
   
 
     
@@ -626,14 +624,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch08-multi-warpgroup/" class="md-nav__link">
+      <a href="ch08-cpp-interop/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 8: Multi-Warpgroup
+    Ch 8: C++ Interop
   
 
     
@@ -654,42 +652,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ch09-view-from/" class="md-nav__link">
+      <a href="ch09-debug-verbose/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ch 9: view/from
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="ch10-cpp-inline-macros/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Ch 10: C++ Inline & Macros
+    Ch 9: Debug & Verbose
   
 
     
@@ -2764,16 +2734,15 @@
 <h2 id="chapters">Chapters<a class="headerlink" href="#chapters" title="Permanent link">&para;</a></h2>
 <ol>
 <li><a href="ch00-installation/">Installation: Setting Up the Croktile Compiler</a></li>
-<li><a href="ch01-hello-choreo/">Hello Croktile: From Zero to Running Kernel</a></li>
-<li><a href="ch02-data-movement/">Data Movement Basics: Moving Data Blocks as a Whole</a></li>
-<li><a href="ch03-pipeline/">Overlapping Compute and DMA: Pipeline Patterns</a></li>
-<li><a href="ch04-tma-swizzle/">High-Performance Data Movement: TMA and Swizzle</a></li>
-<li><a href="ch05-mma/">Enable Tensor Cores in One Primitive: the mma Operations</a></li>
-<li><a href="ch06-warpspec/">Async Pipelining: inthreads, Events, and Warp Roles</a></li>
-<li><a href="ch07-persistent/">Persistent Matmul: if-guards, step, and Tile Iteration</a></li>
-<li><a href="ch08-multi-warpgroup/">Multi-Warpgroup Matmul: Scaling with Multiple Accumulators</a></li>
-<li><a href="ch09-view-from/">Beyond chunkat: view and from for Irregular Access</a></li>
-<li><a href="ch10-cpp-inline-macros/">C++ Inline and Macros: Interfacing with Low-Level Control</a></li>
+<li><a href="ch01-hello-croktile/">Hello Croktile: From Zero to Running Kernel</a></li>
+<li><a href="ch02-data-movement/">Data Movement: Tiles Instead of Elements</a></li>
+<li><a href="ch03-parallelism/">Parallelism: Mapping Work to Hardware</a></li>
+<li><a href="ch04-mma/">Tensor Cores: The <code>mma</code> Operations</a></li>
+<li><a href="ch05-branch-control/">Branch and Control: Warp Roles and Persistent Kernels</a></li>
+<li><a href="ch06-synchronization/">Synchronization: Pipelines, Events, and Double Buffering</a></li>
+<li><a href="ch07-advanced-movement/">Advanced Data Movement: TMA, Swizzle, and Irregular Access</a></li>
+<li><a href="ch08-cpp-interop/">C++ Interop: Inline Code and the Preprocessor</a></li>
+<li><a href="ch09-debug-verbose/">Debug and Verbose: Printing, RTTI, and GDB</a></li>
 </ol>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>

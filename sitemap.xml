@@ -209,7 +209,7 @@
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch01-hello-choreo/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch01-hello-croktile/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
@@ -217,35 +217,31 @@
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch03-pipeline/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch03-parallelism/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch04-tma-swizzle/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch04-mma/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch05-mma/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch05-branch-control/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch06-warpspec/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch06-synchronization/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch07-persistent/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch07-advanced-movement/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch08-multi-warpgroup/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch08-cpp-interop/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
     <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch09-view-from/</loc>
-         <lastmod>2026-04-01</lastmod>
-    </url>
-    <url>
-         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch10-cpp-inline-macros/</loc>
+         <loc>https://codes1gn.github.io/croktile-tutorial/tutorial/ch09-debug-verbose/</loc>
          <lastmod>2026-04-01</lastmod>
     </url>
 </urlset>
