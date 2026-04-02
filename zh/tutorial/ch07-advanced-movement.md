@@ -1,8 +1,10 @@
 # 高级数据搬运：TMA、Swizzle 与不规则访问
 
-第 6 章完成了**安全流水线**的闭环：生产者通过 `dma.copy` 向共享内存各级发起传输，消费者在 **event** 上等待，K-tile 循环让载入与 MMA 重叠，而**双缓冲或多缓冲**确保各阶段互不覆盖。但所有这些传输都是**软件驱动**的——warp 协作完成，每条 lane 参与地址运算，程序按照普通 CUDA 的方式发起载入——只是在鳄霸（Croktile）中表达得更清晰。
+在 CPU 上，数据搬运几乎不可见。你写 `a[i] = b[j]`，剩下的由缓存层级包办——预取、一致性、淘汰。程序员关心的是*计算*；硬件关心的是*搬运*。在加速器上，这一抽象被打破。GPU 拥有显式的存储层级（寄存器、共享内存、L2、HBM），程序员必须主动编排数据在各层之间的搬运。随着硬件演进，搬运引擎本身也越来越复杂：DMA 单元让位于原生理解多维寻址的 **Tensor Memory Accelerator (TMA)**，而 **swizzle** 模式重新排列共享内存布局以避免 bank conflict——否则本应并行的访问会被硬件串行化。
 
-本章保持同一条主线——**高级数据搬运**——但改变了底层机制。**`dma.copy`** 在旧架构和某些 DMA 大小的 store 上仍然是正确的思维模型，但在 **Hopper（SM90）** 上，你通常会把 ingress 替换为 **`tma.copy`**。**Tensor Memory Accelerator (TMA)** 是一个专用硬件单元，它接受一个**张量描述符**，以**几乎零线程开销**的方式完成多维 tile 移动，而不再用 warp 来承担地址运算。与 TMA 一起，**swizzle** 对列索引做了一次**固定 XOR 重映射**，使得一个 warp 的同时访问不会全部落在**同一个 4 字节 bank** 上——这正是 **bank conflict** 的根源，硬件不得不把本该并行的读取串行化。最后，鳄霸的 **`view` / `from`**、**`subspan` 步长**、**`.zfill`** 和 **`span_as`** 覆盖了 tile 并非张量整除倍数或窗口起点任意偏移时的**不规则和锯齿状**访问。
+对编程模型而言，挑战在于抽象这些引擎的同时不隐藏性能关键的选择。鳄霸（Croktile）使用统一的 `copy` 语法——`dma.copy` 和 `tma.copy` 共享相同的源/目标箭头记法——同时允许程序员在目标支持时选用硬件专有特性（swizzle 模式、描述符驱动加载）。
+
+第 6 章完成了**安全流水线**的闭环：生产者、消费者、事件与双缓冲。该章所有传输均为**软件驱动**的 DMA。本章引入硬件加速的替代方案以及处理现实边界情况的不规则访问工具。
 
 ![软件 DMA 与 TMA 对比：线程协作载入 vs 描述符驱动的硬件张量拷贝](../assets/images/ch07/fig1_tma_vs_dma_dark.png#only-dark)
 ![软件 DMA 与 TMA 对比：线程协作载入 vs 描述符驱动的硬件张量拷贝](../assets/images/ch07/fig1_tma_vs_dma_light.png#only-light)
@@ -42,7 +44,7 @@ ma = mma.load.swiz<3> lhs_load_s.chunkat(_, iv_warp);
 
 **Swizzle 级别。** 模板参数控制**粒度**：`swiz<0>` 为恒等映射，`<1>`、`<2>`、`<3>` 分别对应 **64 B、128 B 和 256 B** 的 XOR 模式。更大的粒度可以消除**更宽**的冲突模式，但要求 **tile 尺寸**与该粒度对齐。
 
-**匹配规则。** **`tma.copy.swiz<N>`** 的 `<N>` 必须与 **`mma.load.swiz<N>`** 一致。如果你用 plain `mma.load` 去读 **`swiz<3>`** 布局的数据，地址不匹配，读出来的就是**垃圾**。编译器**不会**强制这一配对——这是你自行维护的**正确性不变量**。(如[第 4 章 MMA 变体表](ch04-mma.md#load-variants)所述，`mma.load.swiz<N>` 属于 MMA 加载家族。)
+**匹配规则。** **`tma.copy.swiz<N>`** 的 `<N>` 必须与 **`mma.load.swiz<N>`** 一致。如果你用 plain `mma.load` 去读 **`swiz<3>`** 布局的数据，地址不匹配，读出来的就是**垃圾**。编译器**不会**强制这一配对——这是你自行维护的**正确性不变量**。(如[第 4 章](ch04-mma.md)所述，`mma.load.swiz<N>` 属于 MMA 加载家族。)
 
 ![无 swizzle 的 bank 冲突 vs XOR swizzle 将 warp lane 分散到各 bank](../assets/images/ch07/fig2_swizzle_dark.png#only-dark)
 ![无 swizzle 的 bank 冲突 vs XOR swizzle 将 warp lane 分散到各 bank](../assets/images/ch07/fig2_swizzle_light.png#only-light)

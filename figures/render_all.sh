@@ -64,6 +64,7 @@ render_static ch04_fig2_sm86_vs_sm90.py SM86vsSM90 fig4_sm86_vs_sm90 "$DOCS/imag
 
 echo "=== Ch05 static ==="
 mkdir -p "$DOCS/images/ch05"
+render_static ch05_fig1_role_comparison.py RoleComparison fig1_role_comparison "$DOCS/images/ch05"
 render_static ch05_fig1_role_split.py Ch05Fig1RoleSplit fig1_role_split "$DOCS/images/ch05"
 render_static ch05_fig2_persistent_kernel.py Ch05Fig2PersistentKernel fig2_persistent_kernel "$DOCS/images/ch05"
 

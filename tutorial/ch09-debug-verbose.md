@@ -1,10 +1,12 @@
 # Debug and Verbose: Printing, RTTI, and GDB
 
-So far you have walked the full Croktile stack: from **element-wise addition** (Chapter 1) through **data movement** with `dma.copy` and tiles (Chapter 2), **parallelism** across blocks and threads (Chapter 3), **tensor cores** and `mma` (Chapter 4), **warp specialization** (Chapter 5), **pipelined execution** with producer–consumer roles (Chapter 6), **TMA** and irregular access (Chapter 7), and **C++ escape hatches** (Chapter 8). Each step added performance — and complexity.
+GPU kernels are **opaque systems**. Thousands of threads execute concurrently, shared memory is invisible from the host, and when results are wrong, there is no stack trace pointing to the bad line. This opacity is not unique to GPUs — any system where the programmer cannot directly observe intermediate state faces the same challenge: distributed systems (where is the lost message?), embedded firmware (which interrupt handler corrupted the register?), optimizing compilers (which pass broke the semantics?).
 
-Your kernel compiles and launches without errors, but the results are wrong. On a CPU you might set a breakpoint on a single iteration and step forward with confidence. On a GPU that mental model breaks: **thousands of threads**, **nondeterministic interleaving** of `printf` output, and **no practical way to stop “this warp, this iteration”** the way you would in a scalar loop. Croktile does not remove those constraints, but it gives you **compile-time shape printing**, **guarded device `println`**, **debug RTTI for `cuda-gdb`**, and a clear **order of suspicion** so debugging stays tractable.
+The universal debugging discipline is the same everywhere: **systematically narrow the search space**, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list. The cost of each level increases, so you want to catch as many bugs as possible at the cheapest level.
 
-This chapter follows one storyline — **debugging Croktile kernels** — from compile-time inspection to runtime `printf`, through MMA-specific pitfalls, to stepping in GDB.
+Croktile provides tools at each level: **compile-time shape printing** (`print!`, `println!`) to verify tile dimensions without launching a kernel, **guarded device `println`** for runtime inspection of specific threads, **`choreo_assert`** for invariant checks, **debug RTTI** for `cuda-gdb`, and a clear **order of suspicion** that guides where to look first.
+
+So far you have walked the full Croktile stack — element-wise addition, data movement, parallelism, tensor cores, warp specialization, pipelines, TMA, and C++ escape hatches. Each step added performance and complexity. This chapter is about what to do when the results are wrong.
 
 ## `print!` and `println!`: compile-time inspection
 

@@ -34,16 +34,15 @@ Every tensor-contraction kernel follows the same rhythm:
 
 You loop steps 2–3 over K (loading the next K-slice each iteration, accumulating into the same `mc`), then run step 4 once to flush the completed output tile. The names `mc`, `ma`, and `mb` are opaque register tiles — you do not declare per-lane layouts; the compiler derives them from the target and your layout choice (`row.row` here).
 
-## SM86 (Ampere): one warp, one MMA tile
+The `.row.row` suffix is a **layout contract** — it tells the hardware how to interpret the bits in `ma` and `mb`. Both operands are row-major. If B is stored column-major in shared memory, you write `mma.row.col mc, ma, mb` instead. The full set of layout combinations is `row.row`, `row.col`, `col.row`, and `col.col`; in practice, `row.row` and `row.col` cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint — the hardware interprets register bits differently for each layout.
 
-On SM86, tensor-core MMA is scoped to a **single warp** (32 threads). In Croktile, that corresponds to `: group`.
+## Scaling the cooperation scope
 
-![Ampere vs Hopper MMA cooperation scope](../assets/images/ch04/fig4_sm86_vs_sm90_dark.png#only-dark)
-![Ampere vs Hopper MMA cooperation scope](../assets/images/ch04/fig4_sm86_vs_sm90_light.png#only-light)
+The four-step syntax stays the same regardless of how many threads cooperate on a single contraction. What changes is the **cooperation scope** — one warp, one warpgroup, two warpgroups — and that progression is the story of this section.
 
-*SM86: one warp per MMA. SM90: four warps (`: group-4`) cooperate on WGMMA.*
+### One warp, one tile: the simplest MMA matmul
 
-Here is a complete FP16 matmul kernel for SM86. Tile sizes match the Croktile benchmark defaults: all `MATMUL_*` constants are 16, so one block tile equals one MMA tile along M and N.
+On Ampere (SM86), tensor-core MMA is scoped to a **single warp** (32 threads). In Croktile, that corresponds to `: group`. Here is a complete FP16 matmul kernel where every `MATMUL_*` constant is 16, so one block tile equals one MMA tile:
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -72,7 +71,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-**`__co__ void` and in-place output.** The kernel returns nothing; results go through `output`. That matches the usual GPU pattern of writing through a global pointer.
+**`__co__ void` and in-place output.** The kernel returns nothing; results go through `output`, matching the usual GPU pattern of writing through a global pointer.
 
 **Block grid.** `cdiv(M, MATMUL_TILE_M)` is ceiling division — how many tiles along M, including partial tiles. `block_m` and `block_n` pick which output tile this block owns.
 
@@ -82,13 +81,18 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 **Operand loads.** `mma.load` moves the warp's tile from shared memory into `ma` / `mb`. `chunkat(warp_m, iv_warp_k)` selects the M×K slice for this warp and inner-K step.
 
-**The contraction.** `mma.row.row mc, ma, mb` is the tensor-core multiply-accumulate. **`row.row` is a layout contract**: both operands are interpreted as row-major. Choosing the wrong variant is a correctness bug, not a performance hint.
-
 **Store and epilogue.** After K completes, `mma.store` writes `mc` into the warp's sub-rectangle of `output_s`, then `dma.copy` sends the full block tile to global memory.
 
-## SM90 (Hopper): WGMMA and warp groups
+This kernel is simple because the cooperation scope is narrow: 32 threads, one warp, one MMA tile at a time. The four-step syntax reads linearly and the tile geometry is obvious. But what happens when the hardware offers a wider cooperation window?
 
-Hopper adds **Warpgroup Matrix Multiply-Accumulate (WGMMA)**: the same contraction, but issued cooperatively by **four warps** (128 threads). In Croktile that wider scope is `: group-4` instead of `: group`.
+### Widening the scope: warpgroups and WGMMA
+
+Hopper (SM90) adds **Warpgroup Matrix Multiply-Accumulate (WGMMA)**: the same C += A × B contraction, but issued cooperatively by **four warps** (128 threads). The hardware instruction is wider, the tiles are bigger, and throughput improves — but the four-step syntax does not change. The only thing that changes in Croktile is the space specifier: `: group-4` instead of `: group`.
+
+![Ampere vs Hopper MMA cooperation scope](../assets/images/ch04/fig4_sm86_vs_sm90_dark.png#only-dark)
+![Ampere vs Hopper MMA cooperation scope](../assets/images/ch04/fig4_sm86_vs_sm90_light.png#only-light)
+
+*SM86: one warp per MMA. SM90: four warps (`: group-4`) cooperate on WGMMA.*
 
 ```choreo
 parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
@@ -116,25 +120,19 @@ parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] 
 }
 ```
 
-**Same four steps.** Fill, load, multiply, store — the mental model does not change; the cooperation scope does.
+Read it side by side with the SM86 kernel. Fill, load, multiply, store — the rhythm is identical. The differences are mechanical:
 
-**`mma.fill.f16`.** Hopper often spells accumulator precision explicitly — `.f16`, `.f32`, etc. FP16 operands with FP32 accumulation is a common pattern for long K. SM86 commonly uses the shorter `mma.fill 0.0` and relies on inference.
+**`mma.fill.f16 0.0f`.** Hopper often spells accumulator precision explicitly — `.f16`, `.f32`, etc. FP16 operands with FP32 accumulation is a common pattern for long K dimensions, avoiding numerical overflow in partial sums. SM86 commonly uses the shorter `mma.fill 0.0` and relies on inference.
 
 **`parallel p by 1 : group-4`.** One warpgroup (four warps) executes the inner loads and MMA. The mnemonic `mma.row.row` matches Ampere, but the hardware issue is wider.
 
-**`chunkat(_, iv_warp)`.** `_` means "do not tile that dimension here" — keep the full M (or N) extent already resident in shared memory for this block; only K is subdivided per MMA slice.
+**`chunkat(_, iv_warp)`.** `_` means "do not tile that dimension" — keep the full M (or N) extent already resident in shared memory; only K is subdivided per MMA slice.
 
-| Aspect | SM86 (Ampere) | SM90 (Hopper) |
-|--------|---------------|---------------|
-| Thread scope | One warp — `: group` | Four warps — `: group-4` |
-| Accumulator init | `mma.fill 0.0` | `mma.fill.f16 0.0f` (precision suffix) |
-| Global → shared | `dma.copy` | Same (TMA appears in Chapter 7) |
-| Core math | `mma.row.row mc, ma, mb` | Same mnemonic, wider hardware |
-| Store | `mma.store` into per-warp tile | `mma.store` into warpgroup tile |
+That is the whole point of the abstraction: the same four operations, the same layout contract, the same `chunkat` / `subspan` expressions. The compiler maps them to different hardware instructions depending on whether the target is SM86 or SM90. You think about *what* contraction to perform; the cooperation width is a deployment detail.
 
-## Multi-warpgroup MMA
+### Tiling further: two warpgroups sharing operands
 
-Chapter 3 introduced `parallel p1 by 2 : group-4` — two warpgroups in one block. With MMA, both groups can share the same B tile while loading different rows of A:
+Chapter 3 introduced `parallel p1 by 2 : group-4` — two warpgroups in one block. With MMA, both groups can share the same B tile while loading different rows of A. This is how large block tiles get split into multiple MMA tiles without duplicating the B operand in shared memory:
 
 ```choreo
 parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_WARP_N)] : block {
@@ -168,87 +166,47 @@ parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_WARP_N)] 
 
 **Mirrored store.** `mma.store` targets `output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0)` so each warpgroup writes its half of the staging buffer, then one `dma.copy` emits the combined tile.
 
-## MMA variants
+The pattern scales: three warpgroups, four warpgroups, or any count that divides your block tile. The four-step syntax stays invariant; only the parallel decomposition of the tile changes.
 
-The examples above use `mma.row.row` on dense FP16 tiles. Croktile's MMA syntax is actually a family of operations that vary along several axes. Here is the complete landscape — some variants appear in later chapters; the forward references tell you where.
+| Aspect | One warp (`: group`) | One warpgroup (`: group-4`) | Two warpgroups |
+|--------|---------------------|----------------------------|----------------|
+| Threads | 32 | 128 | 256 |
+| Accumulator | `mma.fill 0.0` | `mma.fill.f16 0.0f` | `mma.fill.f32 0.0f` |
+| Tile split | One MMA tile per warp | One MMA tile per warpgroup | Block tile split across warpgroups |
+| Operand sharing | N/A | N/A | B tile shared, A rows split by `p1` |
 
-### Layout variants: `mma.<A>.<B>`
+## Beyond dense FP16: what else the four steps express
 
-The two-part suffix declares the **storage layout contract** of operands A and B. Choosing the wrong variant is a correctness bug — the hardware interprets register bits differently for each.
+The examples above use `mma.row.row` on dense FP16 tiles. The same four-step pattern extends to workloads the basic form cannot reach.
 
-| Variant | Operand A | Operand B | Typical use |
-|---------|-----------|-----------|-------------|
-| `mma.row.row mc, ma, mb` | row-major | row-major | Standard GEMM (all tutorial examples) |
-| `mma.row.col mc, ma, mb` | row-major | col-major | B stored transposed (common in benchmarks) |
-| `mma.col.row mc, ma, mb` | col-major | row-major | A stored transposed |
-| `mma.col.col mc, ma, mb` | col-major | col-major | Both transposed |
-
-In practice, `mma.row.row` and `mma.row.col` cover most kernels. The layout must match how the data physically sits in shared memory after `dma.copy` or `tma.copy` — there is no automatic transposition.
-
-### Sparse variants: `.sp`
-
-Structured sparsity (2:4 pattern on Ampere+) uses a **metadata operand** `me` alongside the standard A, B, C:
+**Structured sparsity.** When half the elements of A follow a 2:4 zero pattern (Ampere and later), the hardware can skip the zero products and roughly double throughput — but it needs a **metadata operand** `me` that encodes which elements are nonzero:
 
 ```choreo
 mma.row.row.sp mc, ma, mb, me;
 ```
 
-`me` is loaded from a separate metadata tensor that encodes which elements of A are nonzero. The hardware skips the zero products, roughly doubling throughput for the same tile size. Any layout combination works: `mma.row.col.sp`, etc.
+The `.sp` suffix adds the metadata operand; everything else is the same fill-load-multiply-store rhythm. Any layout combination works: `mma.row.col.sp`, etc. You load `me` from a separate metadata tensor alongside A and B.
 
-### Scale variants: fused and standalone
-
-For **FP8** quantized operands (`f8_e4m3`, `f8_e5m2`), per-tile scaling is needed:
+**Quantized operands with per-tile scaling.** FP8 operands (`f8_e4m3`, `f8_e5m2`) need per-tile dequantization so the accumulator stays numerically accurate. Croktile fuses the scaling into the contraction:
 
 ```choreo
 mma.row.row.scale mc, ma, mb, sc_a, sc_b;
 ```
 
-This fuses the multiply-accumulate with per-tile dequantization — each result element is scaled by `sc_a` and `sc_b` after the contraction. No separate scaling pass is needed.
-
-Alternatively, scaling can be a **separate statement** after a regular MMA:
+Each result element is scaled by `sc_a` and `sc_b` after the contraction — no separate dequant kernel needed. Alternatively, scaling can be a **standalone statement** when the scale source differs from the standard fused path:
 
 ```choreo
 mma.row.row mc, ma, mb;
 mma.scale mc, sc_a, sc_b;
 ```
 
-The standalone `mma.scale` applies scales after the contraction completes. This form appears in some MoE and mixed-precision kernels where the scale source differs from the standard fused path.
+The standalone `mma.scale` appears in some MoE and mixed-precision kernels.
 
-### Fill precision variants
+**Swizzled loads and transposed stores.** When shared memory uses a swizzle pattern to avoid bank conflicts ([Chapter 7](ch07-advanced-movement.md)), the MMA load must use the matching swizzle mode: `mma.load.swiz<N>`. The `<N>` must agree between `tma.copy.swiz<N>` and `mma.load.swiz<N>` — a mismatch reads garbage. For output, `mma.store.transp mc, dst` writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.
 
-| Variant | Meaning |
-|---------|---------|
-| `mma.fill 0.0` | Inferred precision (SM86 default) |
-| `mma.fill.f16 0.0f` | Explicit FP16 accumulator |
-| `mma.fill.f32 0.0f` | Explicit FP32 accumulator (common for mixed-precision) |
+**Pipeline synchronization.** In pipelined kernels where producer and consumer warpgroups overlap ([Chapter 6](ch06-synchronization.md)), `mma.commit` marks the boundary between "done reading this K-slab's operands" and "safe to reuse the shared-memory buffer." It is mandatory glue in event-driven pipelines.
 
-FP16 operands with FP32 accumulation is the standard choice when K is large — it avoids numerical overflow in the partial sums.
-
-### Load variants
-
-| Variant | Meaning | Detailed in |
-|---------|---------|-------------|
-| `mma.load src` | Plain load from shared memory | This chapter |
-| `mma.load.swiz<N> src` | Load with swizzle mode to match shared-memory layout | [Chapter 7](ch07-advanced-movement.md) |
-
-When shared memory is laid out with a swizzle pattern (to avoid bank conflicts), the MMA load must use the **matching** swizzle mode. The `<N>` parameter must agree between `tma.copy.swiz<N>` (or `dma.copy.swiz<N>`) and `mma.load.swiz<N>` — a mismatch reads garbage.
-
-### Store variants
-
-| Variant | Meaning |
-|---------|---------|
-| `mma.store mc, dst` | Standard store to shared memory |
-| `mma.store.transp mc, dst` | Transposed output layout |
-
-`mma.store.transp` writes the accumulator with rows and columns swapped. This is useful when the output needs to be in column-major order for the next stage.
-
-### Synchronization
-
-| Variant | Meaning | Detailed in |
-|---------|---------|-------------|
-| `mma.commit` | Fence between pipeline stages for WGMMA | [Chapter 6](ch06-synchronization.md) |
-
-In pipelined kernels where producer and consumer warpgroups overlap, `mma.commit` marks the boundary between "done reading this K-slab's operands" and "safe to reuse the shared-memory buffer." It is mandatory glue in event-driven pipelines.
+These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the hardware. The table below collects every variant for reference.
 
 ## New syntax
 
@@ -258,7 +216,7 @@ In pipelined kernels where producer and consumer warpgroups overlap, `mma.commit
 | `mma.fill.f16 0.0f` / `mma.fill.f32 0.0f` | Accumulator with explicit precision |
 | `ma = mma.load src.chunkat(...)` | Load operand tile from shared into MMA registers |
 | `mma.load.swiz<N> src` | Load with swizzle mode (see [Ch 7](ch07-advanced-movement.md)) |
-| `mma.row.row mc, ma, mb` | C += A × B (row-major operands) |
+| `mma.row.row mc, ma, mb` | C += A × B (both row-major) |
 | `mma.row.col mc, ma, mb` | C += A × B (A row-major, B col-major) |
 | `mma.row.row.sp mc, ma, mb, me` | Sparse MMA with metadata operand |
 | `mma.row.row.scale mc, ma, mb, sc_a, sc_b` | Fused MMA + per-tile dequantization |
@@ -268,8 +226,6 @@ In pipelined kernels where producer and consumer warpgroups overlap, `mma.commit
 | `mma.commit` | Pipeline stage fence for WGMMA (see [Ch 6](ch06-synchronization.md)) |
 | `cdiv(a, b)` | Ceiling division |
 | `__co__ void fn(...)` | Kernel that writes results in-place |
-| `subspan(M, K).at(i, j)` | View with explicit tile extents, by index |
-| `chunkat(_, iv_warp)` | `_` wildcard: no tiling on that dimension |
 
 ## Chapter summary
 
@@ -277,11 +233,10 @@ In pipelined kernels where producer and consumer warpgroups overlap, `mma.commit
 |-------|----------|
 | 2D tensor contraction | C += A × B on tile-shaped operands — the universal inner kernel |
 | Hardware diversity | GPU tensor cores, TPU MXU, Intel AMX, custom DSAs all implement this; tile sizes and register layouts differ |
-| Register fragmentation | Threads own scattered fragments; raw CUDA requires manual lane management |
-| Croktile's abstraction | Four operations: **fill → load → multiply → store**; the compiler handles fragment layouts |
-| SM86 | `: group` — 32-thread warp, one MMA scope |
-| SM90 | `: group-4` — 128-thread warpgroup, WGMMA |
+| Four-step abstraction | **fill → load → multiply → store**; the compiler handles fragment layouts for each target |
+| Scaling cooperation | `: group` (one warp) → `: group-4` (one warpgroup) → multiple warpgroups — syntax stays invariant |
 | Layout contract | `mma.row.row`, `mma.row.col`, etc. — must match data in shared memory |
-| Variant axes | Layout, sparse (`.sp`), scale (`.scale` / `mma.scale`), swizzle (`.swiz`), transposed store |
+| Sparse and quantized | `.sp` adds a metadata operand; `.scale` fuses per-tile dequantization |
+| Swizzle and pipeline | `mma.load.swiz<N>` matches swizzled shared layouts; `mma.commit` fences pipeline stages |
 
-The contraction is fast, but loads and compute still take turns — while tensor cores multiply, the memory system idles. The [next chapter](ch05-branch-control.md) introduces **warp specialization and conditional control** so different threads can play different roles: one group loading data while another computes.
+The contraction is fast, but loads and compute still take turns — while tensor cores multiply, the memory system idles. The [next chapter](ch05-branch-control.md) introduces **role specialization** so different thread groups can play different roles: one group loading data while another computes, overlapping memory and math in time.

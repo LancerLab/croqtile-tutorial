@@ -1,8 +1,12 @@
 # Synchronization: Pipelines, Events, and Double Buffering
 
-Chapter 5 carved the matmul into two jobs: a **producer** warpgroup that issues loads into shared memory, and a **consumer** warpgroup that runs MMA on those tiles. The skeleton was honest about the split, but it quietly assumed something impossible: that the consumer could treat shared memory as if it updated the moment the producer wrote it. Real hardware does not work that way. Without coordination, the consumer might read a tile mid-write, or the producer might stomp a buffer still in use — classic **data races**.
+Wherever two workers share a buffer — a CPU thread writing to a queue while another reads from it, a network adapter filling a ring buffer while the driver drains it, a shell pipe connecting `grep` to `sort` — the same problem appears: **producer-consumer synchronization**. The producer must not overwrite data the consumer is still reading; the consumer must not read data the producer has not finished writing. The classical solutions are well-known from any operating systems course: semaphores, bounded buffers, credit-based flow control. They all establish a happens-before relationship between "write complete" and "read begins."
 
-This chapter is one story: **how to make pipelined execution safe.** Croktile gives you **events** so separate roles can signal readiness, **`swap` / `rotate`** so double- or multi-buffering stays legible, **`dma.copy.async`** so loads can overlap with compute, and the **prologue / steady-state / epilogue** pattern to structure the K-loop. We start from the single-threaded case (same program counter loads and computes), then add events when producer and consumer truly diverge.
+On a GPU, the challenge is performance. Traditional synchronization primitives — mutexes, condition variables, CAS loops — are far too expensive when thousands of threads share the same memory. The GPU needs something lightweight: hardware-supported barriers, named events, and explicit credit protocols that compile to a few PTX instructions rather than spin loops. This is exactly what Croktile provides.
+
+Chapter 5 carved the matmul into two roles with `inthreads.async`: a **producer** warpgroup that issues loads, and a **consumer** warpgroup that runs MMA. It also introduced `shared event`, `wait`, and `trigger` as the signaling mechanism between roles. This chapter puts those primitives to work in a full pipeline and adds **`swap` / `rotate`** for multi-buffering, **`dma.copy.async`** for non-blocking copies, and the **prologue / steady-state / epilogue** pattern that structures the K-loop.
+
+We start from the single-buffer case (same program counter loads and computes), then add double buffering with `swap`, then graduate to the full event-driven pipeline where producer and consumer run as separate programs.
 
 ## Why You Cannot "Just Overlap" Without Coordination
 
@@ -100,15 +104,17 @@ foreach tile_k(1:) {
 
 `__co__ auto matmul(...)` lets Croktile infer the result type from `return output`, which keeps the signature aligned with shape expressions.
 
-## Events: When Producer and Consumer Are Different Programs
+## Events in action: the full pipeline
 
-`swap` works when **one** thread group interleaves loads and MMA in a single schedule. Warp specialization (Chapter 5) puts loading and computing on **different** warpgroups with different program counters. They cannot share a `swap` schedule line-by-line; they need **events** — named synchronization in shared scope.
+`swap` works when **one** thread group interleaves loads and MMA in a single schedule. Warp specialization ([Chapter 5](ch05-branch-control.md)) puts loading and computing on **different** warpgroups with different program counters. They cannot share a `swap` schedule line-by-line; they need **events** — the signaling mechanism introduced in Chapter 5.
+
+Recall: `shared event` declares a synchronization token, `trigger` signals "condition met," and `wait` blocks until the signal arrives. Here we put them to work with multiple pipeline stages:
 
 ```choreo
 shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
 ```
 
-`wait event_name` blocks until that event has been signaled; `trigger event_name` wakes waiters. For the 1P1C matmul, a common convention is:
+With an array of events, each physical buffer slot gets its own `full`/`empty` pair. The convention is:
 
 - `full[s]` — stage `s` has been filled; the consumer may read it.
 - `empty[s]` — the consumer has released stage `s`; the producer may overwrite it.

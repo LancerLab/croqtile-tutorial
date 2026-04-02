@@ -1,24 +1,36 @@
-# Warp 特化与控制流
+# 角色专化与控制流
 
-第 4 章在 Hopper 上走通了 MMA 生命周期：从共享内存 `mma.load`、`mma.row.row` 在张量核心上运算、寄存器累加，再到 `mma.store` 与 `dma.copy` 写回全局内存。该流水线有效，但它存在结构性局限：张量核心忙于乘法时，内存子系统往往空闲，因为 block 内每条线程执行同一内核体。没有剩余线程在 MMA 执行期间发起下一批 bulk load。
+第 4 章的矩阵乘内核在结构上存在局限：block 内每条线程执行同一程序——加载、相乘、存储，周而复始。张量核心忙于乘法时，内存子系统空闲；DMA 取下一块 K 条带时，张量核心无事可做。加载与计算轮流进行，二者均无法达到满吞吐。
 
-真实流水线并非如此均匀：生产者加载数据，消费者将其转化为运算。在 CPU 上可能用线程与队列；在 GPU 上，经典 CUDA 做法是保留单一内核并辅以谨慎同步，使不同 warp 扮演不同角色。鳄霸（Croktile）将这一划分变为**结构性**的：`inthreads.async` 为不同 warpgroup 指派不同的直线型程序，硬件从而可在不令每条线程同时执行两条路径的前提下重叠 DMA 与 MMA。当调度本身需要判断——例如跳过问题末尾之外的 tile——则使用普通的 **`if`**，它是**运行时**分支，而非角色划分。
+这并非 GPU 所特有的问题，而是**流水线阶段串行化**的普遍瓶颈。凡由单一工作者在两种活动——读数据与处理数据——之间交替执行的系统，都会在每次切换时损失时间。经典解法，无论见于 CPU 线程池、Unix 管道抑或工厂流水线，均为**角色专化**：为不同阶段指派不同工作者，使各人专注一职，并在时间上重叠各阶段。
 
-本章只有一条主线：如何赋予 warpgroup 不同任务，以及何时用条件语句保护工作。后半部分介绍**持久化内核（persistent kernel）**：固定大小的 block 池在多个输出 tile 上条带化遍历，并用 `if` 防止越界写。
+GPU 的特殊之处在于，CUDA 的默认执行模型为 **SPMD**（Single Program, Multiple Data）：warp 内每条线程执行同一指令流。要在单内核内重叠访存与计算，要么依赖指令级交错（硬件调度器对大 tile 往往调度不佳），要么采用显式 **warp specialization**，由程序员手工划分 warp 并以屏障协同。在原始 CUDA 中，这意味着直接使用 `__syncthreads()`、共享内存标志位，并仔细推断各 warp 的职责。
 
-![1P1C 时间线：生产者 DMA 与消费者 MMA 在同一时间轴上重叠](../assets/images/ch05/fig1_role_split_dark.png#only-dark)
-![1P1C 时间线：生产者 DMA 与消费者 MMA 在同一时间轴上重叠](../assets/images/ch05/fig1_role_split_light.png#only-light)
+鳄霸（Croktile）采取不同路径：不以控制流技巧隐式刻画角色边界，而将其提升为**一等语言构造**——`inthreads.async` 在编译期为不同线程子集指派不同指令流。编译器可为各角色生成真正分离的程序，运行时则并发调度之。下图对比二者差异：
 
-## `inthreads.async`：结构性划分，非运行时分支
+![Uniform vs role-specialized execution: sequential alternation vs overlapping stages](../assets/images/ch05/fig1_role_comparison_dark.png#only-dark)
+![Uniform vs role-specialized execution: sequential alternation vs overlapping stages](../assets/images/ch05/fig1_role_comparison_light.png#only-light)
 
-`inthreads.async (condition)` 的含义是：仅当 `condition` 为真的那些线程，其程序中**才包含**该代码块。它**不是**“每条线程都求值条件，部分跳过 body”——那是 `if` 的行为。该区别影响你对硬件的理解：
+*左：单一 warpgroup 在 DMA 与 MMA 之间交替——无重叠。右：两个 warpgroup 承担静态角色——生产者 DMA 与消费者 MMA 并发执行，墙钟时间大致减半。*
 
-- **结构性划分**（`inthreads.async`）：两条（或更多）独立的直线型 body，为不同线程子集编译。生产者 warpgroup 与消费者 warpgroup 是共享地址空间的不同程序。
-- **运行时分支**（`if`）：单一程序；每条活跃线程测试谓词；部分执行所取分支，部分不执行。
+鳄霸提供三种控制流原语，各针对一类用途：
 
-在传统 GPU 编程中，整个 block 通常共享一个内核。加载与运算之间的重叠则依赖指令级交错，或手工展开的 warp 特化配合屏障与原子操作。鳄霸的 `inthreads.async` 将角色边界纳入语言，使划分显式且各 body 保持简单。
+- **`inthreads.async`** —— **静态角色划分**：在编译期将不同程序指派给不同线程子集。在单内核内类比 MPMD（Multiple Program, Multiple Data）。
+- **`if`** —— **受控执行**：运行时谓词，全体线程求值条件，分歧线程被屏蔽。标准 SPMD 控制流。
+- **`shared event`** / **`wait`** / **`trigger`** —— **角色间信令**：使静态划分后的角色得以安全通信的协调机制。
 
-矩阵乘法的典型模式是 **一生产者 + 一消费者（1P1C）**：一个 warpgroup 向共享内存发起 DMA（或 TMA）；另一个对相应 tile 运行 MMA。下面是无同步的骨架：
+## 以 `inthreads.async` 实现静态角色划分
+
+`inthreads.async (condition)` 的含义是：仅当 `condition` 为真时，相应线程**其程序中才包含本代码块**。它并非「每条线程都求值条件，部分跳过 body」——后者由 `if` 承担。二者区分具有根本性：
+
+- **`inthreads.async`**：编译器为各角色生成独立指令流。属于假子集的线程永远见不到 body——其不在其二进制中。`.async` 后缀表示各角色在不同硬件资源（不同 warpgroup、不同功能单元）上**并发且独立**执行。
+- **`if`**：单一指令流、单一程序。全体线程求值谓词；谓词为假的线程被屏蔽。warp 内分歧会使一侧停顿。
+
+何以需要二者？因其解决的问题不同。`inthreads.async` 面向**持久角色指派**——生产者在内核整个生命周期内保持为生产者。`if` 面向**数据相关决策**——若索引越界则跳过本 tile。不会用 `if` 做 warp specialization（它不产生真正的并发），也不会用 `inthreads.async` 做边界检查（它是编译期构造，而非运行时谓词）。
+
+若无 `.async`，`inthreads` 将表示顺序、阻塞的角色执行——线程子集轮流执行。`.async` 修饰符正是上图所示重叠流水线执行得以成立的关键。
+
+矩阵乘的典式模式为 **一生产者加一消费者（1P1C）**：
 
 ```choreo
 parallel p1 by 2 : group-4 {
@@ -35,17 +47,32 @@ parallel p1 by 2 : group-4 {
 }
 ```
 
-**`parallel p1 by 2 : group-4`** — 两个 warpgroup，每个四个 warp（每个 warpgroup 128 条线程），由 `p1` 索引。
+**`parallel p1 by 2 : group-4`** —— 两个 warpgroup，每个含四个 warp（每个 warpgroup 128 条线程），由 `p1` 索引。
 
-**`inthreads.async (p1 == 0)`** — 仅 warpgroup 0 编译并执行生产者 body；对其他线程并非空转一次。
+**`inthreads.async (p1 == 0)`** —— warpgroup 0 编译并执行生产者 body；warpgroup 1 永远不包含此代码。
 
-**`inthreads.async (p1 == 1)`** — 仅 warpgroup 1 执行消费者 body。两段并非同一循环的两个分支，而是两种角色。
+**`inthreads.async (p1 == 1)`** —— warpgroup 1 执行消费者 body。两块代码为共享地址空间下的分离程序。
 
-与第 3 章的 `parallel` 对比：那里每条线程执行相同 body。此处并行索引**选择**适用哪份任务描述。硬件可在生产者 warpgroup 上调度 TMA 工作，同时在消费者上运行 WGMMA——时间上的重叠，而非对单条指令流做时间片轮转。
+## 协调角色：事件概览
 
-## 1P1C 矩阵乘法骨架
+静态角色划分得到两个并发程序——但二者共享同一片共享内存。生产者写入、消费者读取。若无协调，消费者可能在生产者写完 tile 之前就读取（竞态），或生产者可能在消费者尚未读完时覆盖 tile（数据冒险）。
 
-下面展示该划分如何嵌入 Hopper 矩阵乘法。事件、等待与触发有意省略；[第 6 章](ch06-synchronization.md) 补充同步。请关注分工：
+鳄霸以 **event** 作为角色间信令机制。event 为在共享内存中声明的轻量级同步令牌：
+
+```choreo
+shared event full;
+shared event empty;
+```
+
+生产者在写完 tile 后调用 `trigger full`，表示「数据已就绪」。消费者在读取前调用 `wait full`，阻塞直至信号到达。对称地，消费者读完之后触发 `empty`（缓冲区可复用），生产者在写下一 tile 之前于 `empty` 上等待。
+
+这是 **基于信用的有界缓冲区** 协议——与网络流控及操作系统有界队列所用模式相同。`full` 表示「数据可用」信用；`empty` 表示「缓冲区空闲」信用。
+
+第 6 章将据此展开完整的双缓冲与软件流水矩阵乘。此处要点在于：event 是 `inthreads.async` 各角色之间的黏合剂——将两个独立程序接成协调的流水线。
+
+## 实践中的角色专化：1P1C 矩阵乘
+
+以下展示该划分如何置于 Hopper 矩阵乘之中。基于 event 的同步有意省略；[第 6 章](ch06-synchronization.md) 给出完整流水线协议。此处关注职责分工：
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -82,17 +109,15 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-**`parallel {block_m, block_n} by [...] : block`** — 与前几章相同的 tile 网格；`cdiv`（向上取整除法）在维度非整除时统计沿 M、N 的 tile 数。
+**生产者 `foreach`** —— 以 `cdiv(K, MATMUL_TILE_K)` 步沿 K 维遍历；仅 warpgroup 0 向 `lhs_load_s` 与 `rhs_load_s` 发出 `dma.copy`。
 
-**生产者 `foreach`** — 以 `cdiv(K, MATMUL_TILE_K)` 步遍历 K 维；仅生产者向 `lhs_load_s` 与 `rhs_load_s` 发出 `dma.copy`。
+**消费者 `mma.fill` / `mma.row.row` / `mma.store`** —— warpgroup 1 从不发出上述 DMA 填充；仅读共享内存、在 `mc` 中累加并写出结果 tile。
 
-**消费者 `mma.fill` / `mma.row.row` / `mma.store`** — 消费者从不执行上述 DMA 填充；只读共享内存，在 `mc` 中累加并写回结果 tile。
+**缺失的协调** —— 两侧各自独立沿 K 循环。消费者读取时假定各 K 条带已就绪；使该假定成立即为同步（见[第 6 章](ch06-synchronization.md)）。
 
-**缺失的协调** — 两侧此处各自独立遍历 K。消费者假定读取每一 K 条带时已就绪；使该假设成立属于同步问题（第 6 章）。
+## 以 `if` 实现受控执行
 
-## `if` 守卫：运行时条件执行
-
-有时需要每条线程都参与的谓词。鳄霸的 `if` 行为与 C 一致：
+有时需要每条线程在运行时求值的谓词。鳄霸的 `if` 语义与 C 类似：
 
 ```choreo
 if (tile_id < total_tiles) {
@@ -100,15 +125,15 @@ if (tile_id < total_tiles) {
 }
 ```
 
-**`if (tile_id < total_tiles)`** — 作用域内所有线程测试条件；为假则跳过 body。这与 `inthreads.async` 相反：单一程序，发散执行。
+作用域内全体线程均测试条件；条件为假的线程跳过 body。这与 `inthreads.async` 相反：单一程序、分歧执行——而非两套分离程序。
 
-该模式最常见于**持久化内核**：循环迭代次数可能使部分 block 多出一次不对应真实 tile 的“填充”迭代。
+该模式最常见于**持久化内核（persistent kernel）**：循环迭代次数可能使部分 block 多出一轮不对应真实 tile 的「填充」迭代。
 
-## 持久化内核
+## 持久调度与 `if` 守卫
 
-在第 3–4 章中，网格随问题规模增长：大致每个输出 tile 一个 block。对大矩阵而言 launch 次数可能极大。GPU 以**波（wave）**运行 block；最后一波常使 SM 部分空闲——**尾部利用率不足（tail underutilization）**。
+在第 3–4 章中，网格随问题规模增长：大致每块输出 tile 对应一个 block。对大矩阵而言，启动次数可能极大。GPU 以**波次（waves）** 运行 block；末波往往使部分 SM 仅部分占用——**尾部利用率不足**。
 
-**持久化内核**将 launch 规模固定（常接近 SM 数量），并让每个 block 遍历多个 tile：
+**持久化内核** 将启动规模固定（常接近 SM 数量），并使每个 block 在多个 tile 上迭代：
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -147,37 +172,31 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-**`int total_tiles`** — 输出 tile 的线性计数；各轴 tile 数之积，每轴用 `cdiv` 计算以包含部分 tile。
+**`parallel block_id by NUM_SMS : block`** —— 工作者数量固定；`block_id` 标识本持久工作者身份，而非单一输出 tile。
 
-**`parallel block_id by NUM_SMS : block`** — 固定 worker 数量；`block_id` 表示该持久 worker 的编号，而非单个输出 tile。
+**`foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)]`** —— 各 block 遍历其份额的迭代；向上取整可能使部分 block 多一次迭代。
 
-**`foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)]`** — 每个 block 走过其份额的迭代；向上取整可能为部分 block 增加一次额外迭代。
+**`tile_id = tile_iter # block_id`** —— 将迭代与 block 索引组合，在线性 tile 列表上条带化（与第 2 章相同的 `#` 运算符，此处用于调度）。
 
-**`tile_id = tile_iter # block_id`** — 将迭代索引与 block 索引组合，在线性 tile 列表上条带化（与第 2 章相同的 `#` 运算符，此处用于调度）。
+**`if (tile_id < total_tiles)`** —— 当条带越过最后一个真实 tile 时跳过 DMA、MMA 与存储。此为运行时守卫，而非角色划分。
 
-**`block_m` / `block_n`** — 将线性 `tile_id` 映射为二维 tile 坐标，用除法与取模，`cdiv(N, MATMUL_WARP_N)` 为沿 tile 的行宽。
+![Persistent kernel: striped tiles, block colors, and if guard for padding](../assets/images/ch05/fig2_persistent_kernel_dark.png#only-dark)
+![Persistent kernel: striped tiles, block colors, and if guard for padding](../assets/images/ch05/fig2_persistent_kernel_light.png#only-light)
 
-**`if (tile_id < total_tiles)`** — 当条带越过最后一个真实 tile 时跳过 TMA、MMA 与存储。若无此守卫，将读写越界。
+### 数据相关网格与持久网格之对比
 
-内层 K 循环与 MMA body 与第 4 章非持久化风格一致。仅**外层**变化：固定 launch、条带化与守卫。域边界上的部分 tile 在生产内核中仍需掩码或收尾处理；`cdiv` 用于在无法保证整除时确定网格与循环规模。
-
-![持久化内核：条带化 tile、block 着色，以及针对填充的 if 守卫](../assets/images/ch05/fig2_persistent_kernel_dark.png#only-dark)
-![持久化内核：条带化 tile、block 着色，以及针对填充的 if 守卫](../assets/images/ch05/fig2_persistent_kernel_light.png#only-light)
-
-## 数据相关网格与持久化网格的选择
-
-| 方面 | 每 tile 一个 block | 持久化（`NUM_SMS` 个 block） |
+| 方面 | 每 tile 一块 | 持久化（`NUM_SMS` 个 block） |
 |--------|-------------------|-------------------------------|
 | 网格规模 | 随问题增长 | 固定 |
-| 尾部利用率 | 最后一波可能使 SM 空闲 | 各 SM 保持忙碌 |
+| 尾部利用 | 末波可能使 SM 空闲 | 各 SM 保持忙碌 |
 | 额外构造 | 最少 | `total_tiles`、`tile_iter # block_id`、`if` |
 | 复杂度 | 较低 | 较高 |
 
-两种布局本身不会改变数学结果；在浮点结合律意义下均可一致。当 `total_tiles` 远大于 SM 数量时——大 GEMM 常见——持久化调度往往更划算。
+两种布局本身均不改变数学结果；在浮点结合律意义下二者一致。当 `total_tiles` 远大于 SM 数量时，持久调度往往更有收益。
 
 ## `parallel.async` 与 `stream s`：非阻塞启动
 
-上文均在**内核**内部运行。有时你需要的控制在**宿主端**：在不阻塞宿主线程的情况下启动网格，或将不同网格绑定到不同 CUDA 流，使它们在 GPU 上并发执行。
+上文均在 kernel 内部运行。有时所需控制位于**主机侧**：启动网格而不阻塞主机线程，或将不同网格绑定到不同 CUDA 流以使 GPU 上并发执行。
 
 ```choreo
 parallel.async {px, py} by [grid_m, grid_n] : block {
@@ -186,32 +205,35 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 }
 ```
 
-**`parallel.async`** 立即将控制权交还宿主——内核已入队，但宿主不等待其完成。这相当于在鳄霸（Croktile）中用非默认流调用 `cudaLaunchKernel` 的**非阻塞** launch。
+**`parallel.async`** 立即将控制权交还主机——kernel 已入队，主机不等待其完成。这相当于在非默认流上使用 `cudaLaunchKernel` 的鳄霸写法。
 
-**`stream s`** 在 block 体内将内核绑定到 CUDA 流 `s`。若有足够 SM，使用不同流的多个 `parallel.async` 块可在 GPU 上重叠。若无 `stream s`，默认流会使各次 launch 串行。
+**`stream s`** 置于块体内部时，将 kernel 固定到 CUDA 流 `s`。若 SM 资源充足，不同流上的多个 `parallel.async` 块可在 GPU 上重叠。若无 `stream s`，默认流会使各次启动串行化。
 
-这是**宿主端编排**，而非内核内控制流。它不能替代用于 **warp 特化**的 `inthreads.async` 或用于运行时谓词的 `if`——它决定的是相对其他网格，*何时*、*在何处*运行某一网格。
+此为**主机编排**，而非 kernel 内控制流。它不能替代 `inthreads.async` 的角色划分或 `if` 的运行时谓词——它决定的是相对其他网格，本网格于*何时*、在*何处*运行。
+
+## 新语法
+
+| 语法 | 含义 |
+|--------|---------|
+| `inthreads.async (condition)` | 静态角色划分——仅满足 `condition` 的线程包含本块 |
+| `if (expr) { ... }` | 受控执行——运行时条件，当 `expr` 为假时跳过 body |
+| `shared event name` | 在共享内存中声明 event 令牌 |
+| `trigger name` | 表明某条件已满足（例如「数据就绪」） |
+| `wait name` | 阻塞直至对应 `trigger` 发生 |
+| `tile_id = tile_iter # block_id` | 将迭代索引与 block 索引组合以实现 tile 条带化 |
+| `int total_tiles = expr` | 鳄霸函数中的局部整型 |
+| `parallel.async ... : block` | 非阻塞异步 kernel 启动 |
+| `stream s` | 将 kernel 体绑定到 CUDA 流 `s` |
 
 ## 本章小结
 
 | 主题 | 要点 |
 |-------|----------|
-| 均匀 vs 特化 | 每条线程同一内核最简单；角色划分可重叠内存与计算。 |
-| `inthreads.async` | 结构性：不同线程不同 body——并非共享的 `if`。 |
-| `if` | 运行时：每条线程求值条件；为假则跳过 body。 |
-| 持久化内核 | 固定 `NUM_SMS` 个 block，线性 tile id，用 `#` 条带化，用 `if` 守卫。 |
-| `parallel.async` / `stream s` | 宿主端异步 launch 与流绑定——与内核内特化正交。 |
-| `cdiv` | 向上取整除法，用于 tile 计数与循环边界（全书通用；无单独配方）。 |
+| 流水线串行化 | 单工作者在加载/计算间交替浪费时间；角色专化使各阶段重叠 |
+| 静态角色划分 | `inthreads.async` —— kernel 内编译期 MPMD；不同线程子集对应不同程序 |
+| 受控执行 | `if` —— 运行时 SPMD 谓词；全体线程求值，分歧线程被屏蔽 |
+| Event（预告） | `shared event` / `wait` / `trigger` —— 角色间信令；基于信用的有界缓冲区协议 |
+| 持久化内核 | 固定 `NUM_SMS` 个 block、线性 tile id、以 `#` 条带化、以 `if` 守卫 |
+| 主机编排 | `parallel.async` / `stream s` —— 与 kernel 内专化正交 |
 
-**新语法**
-
-| 语法 | 含义 |
-|--------|---------|
-| `inthreads.async (condition)` | 仅满足 `condition` 的线程包含该代码块——结构性角色划分 |
-| `if (expr) { ... }` | 运行时条件——`expr` 为假时跳过 body |
-| `tile_id = tile_iter # block_id` | 组合迭代索引与 block 索引以实现 tile 条带化 |
-| `int total_tiles = expr` | 鳄霸函数中的局部整数 |
-| `parallel.async ... : block` | 非阻塞异步内核 launch |
-| `stream s` | 将内核 body 绑定到 CUDA 流 `s` |
-
-要使 1P1C 骨架安全，生产者与消费者仍需对“就绪”有共同约定。[第 6 章](ch06-synchronization.md) 增加 **event**、**swap** 与 **pipeline** 模式，使两侧可在时间上重叠而不在共享内存上竞态。
+上文 1P1C 骨架并不完整：若无 `wait` / `trigger`，消费者可能在生产者写入之前读取。[第 6 章](ch06-synchronization.md) 补充完整同步协议——event、`swap` 与双缓冲——从而使流水线安全并以满吞吐运行。
