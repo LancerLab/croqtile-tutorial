@@ -48,7 +48,7 @@ class MMASyntax(Scene):
             syn_t = Text(syntax, font_size=13, color=C["fg"], font="Monospace")
             syn_t.move_to(box.get_center() + LEFT * 0.3)
 
-            desc_t = Text(desc, font_size=11, color=C["dim"], font="Monospace")
+            desc_t = Text(desc, font_size=12, color=C["dim"], font="Monospace")
             desc_t.move_to(box.get_right() + LEFT * 1.5)
 
             self.add(box, step_t, syn_t, desc_t)
@@ -63,7 +63,7 @@ class MMASyntax(Scene):
 
         loop_label = Text(
             "loop 2–3 over K slices; run 4 once",
-            font_size=11, color=C["fg3"], font="Monospace",
+            font_size=12, color=C["fg3"], font="Monospace",
         )
         brace = BraceBetweenPoints(
             [box_w/2 + 0.3, y_start - y_step + box_h/2, 0],
@@ -76,7 +76,7 @@ class MMASyntax(Scene):
 
         foot = Text(
             "Abstract operations — not tied to GPU tensor cores; any 2D contraction hardware can map here.",
-            font_size=10, color=C["fg3"], font="Monospace",
+            font_size=12, color=C["fg3"], font="Monospace",
         )
         foot.to_edge(DOWN, buff=0.3)
         self.add(foot)

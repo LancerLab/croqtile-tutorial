@@ -33,7 +33,7 @@ class MemoryHierarchy(Scene):
         dram.move_to(LEFT * 3.2 + UP * 1.4)
         dram_lbl = Text("HBM / DRAM  (Global Memory)", font_size=13,
                          color=C["fg"], font="Monospace").move_to(dram)
-        dram_size = Text("~80 GB, ~2 TB/s", font_size=10,
+        dram_size = Text("~80 GB, ~2 TB/s", font_size=12,
                           color=C["label_c"], font="Monospace")
         dram_size.next_to(dram, DOWN, buff=0.05)
         self.add(dram, dram_lbl, dram_size)
@@ -42,7 +42,7 @@ class MemoryHierarchy(Scene):
         l2 = Rectangle(width=4.5, height=0.6, fill_color=C["l2_c"],
                         fill_opacity=0.4, stroke_color=C["fg3"], stroke_width=1)
         l2.move_to(LEFT * 3.2 + UP * 0.2)
-        l2_lbl = Text("L2 Cache (hardware-managed)", font_size=11,
+        l2_lbl = Text("L2 Cache (hardware-managed)", font_size=12,
                        color=C["label_c"], font="Monospace").move_to(l2)
         self.add(l2, l2_lbl)
 
@@ -61,9 +61,9 @@ class MemoryHierarchy(Scene):
             smem = Rectangle(width=2.1, height=0.6, fill_color=C["smem_c"],
                               fill_opacity=0.4, stroke_color=C["shared_c"], stroke_width=1.5)
             smem.move_to(sm_x + DOWN * 0.7)
-            smem_lbl = Text("Shared Memory (SMEM)", font_size=9,
+            smem_lbl = Text("Shared Memory (SMEM)", font_size=12,
                              color=C["fg"], font="Monospace").move_to(smem)
-            smem_size = Text("~228 KB", font_size=8, color=C["label_c"],
+            smem_size = Text("~228 KB", font_size=12, color=C["label_c"],
                               font="Monospace").next_to(smem, DOWN, buff=0.03)
 
             regs = VGroup()
@@ -71,10 +71,10 @@ class MemoryHierarchy(Scene):
                 r = Rectangle(width=0.4, height=0.4, fill_color=C["reg_c"],
                                 fill_opacity=0.4, stroke_color=C["local_c"], stroke_width=1)
                 r.move_to(sm_x + RIGHT * (t - 1.5) * 0.5 + DOWN * 1.7)
-                rl = Text(f"R{t}", font_size=7, color=C["fg"], font="Monospace").move_to(r)
+                rl = Text(f"R{t}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
                 regs.add(VGroup(r, rl))
 
-            reg_label = Text("Registers (per-thread)", font_size=9,
+            reg_label = Text("Registers (per-thread)", font_size=12,
                               color=C["label_c"], font="Monospace")
             reg_label.move_to(sm_x + DOWN * 2.2)
 
@@ -99,7 +99,7 @@ class MemoryHierarchy(Scene):
             name_t = Text(syntax, font_size=16, color=color, font="Monospace")
             name_t.move_to(box.get_top() + DOWN * 0.25)
 
-            desc_t = Text(desc, font_size=10, color=C["label_c"], font="Monospace",
+            desc_t = Text(desc, font_size=12, color=C["label_c"], font="Monospace",
                            line_spacing=1.2)
             desc_t.move_to(box.get_bottom() + UP * 0.25)
 
@@ -118,6 +118,6 @@ class MemoryHierarchy(Scene):
 
         # Bandwidth annotation
         bw = Text("← faster, smaller →\n← slower, larger →",
-                   font_size=10, color=C["fg3"], font="Monospace", line_spacing=1.2)
+                   font_size=12, color=C["fg3"], font="Monospace", line_spacing=1.2)
         bw.move_to(LEFT * 3.2 + DOWN * 3.2)
         self.add(bw)

@@ -78,7 +78,7 @@ class Ch05Fig2PersistentKernel(Scene):
                     tid = Text(str(idx), font_size=14, color=C["fg"], font="Monospace")
                     tid.move_to(x + UP * 0.06)
                     self.add(tid)
-                    bid = Text(f"b{idx % num_sms}", font_size=9, color=C["fg2"], font="Monospace")
+                    bid = Text(f"b{idx % num_sms}", font_size=12, color=C["fg2"], font="Monospace")
                     bid.move_to(x + DOWN * 0.12)
                     self.add(bid)
                 else:
@@ -100,14 +100,14 @@ class Ch05Fig2PersistentKernel(Scene):
                     self.add(skip)
                 idx += 1
 
-        legend_title = Text("Stripe key (tile_id % NUM_SMS)", font_size=11, color=C["fg2"], font="Monospace")
+        legend_title = Text("Stripe key (tile_id % NUM_SMS)", font_size=12, color=C["fg2"], font="Monospace")
         legend_title.move_to(RIGHT * 4.2 + UP * 1.1)
         self.add(legend_title)
         for i in range(num_sms):
             row = DOWN * i * 0.38
             sq = Square(side_length=0.22, fill_color=block_colors[i], fill_opacity=0.5, stroke_width=0)
             sq.move_to(RIGHT * 3.35 + UP * 0.75 + row)
-            lb = Text(f"block_id = {i}", font_size=10, color=C["fg"], font="Monospace")
+            lb = Text(f"block_id = {i}", font_size=12, color=C["fg"], font="Monospace")
             lb.next_to(sq, RIGHT, buff=0.2)
             self.add(sq, lb)
 
@@ -132,7 +132,7 @@ class Ch05Fig2PersistentKernel(Scene):
 
         foot = Text(
             "Grid launch size fixed (e.g. NUM_SMS); foreach may pad — guard avoids OOB stores",
-            font_size=10,
+            font_size=12,
             color=C["dim"],
             font="Monospace",
         )

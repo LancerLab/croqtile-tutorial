@@ -34,7 +34,7 @@ class DmaCopy(Scene):
             r = Rectangle(width=0.55, height=0.45, fill_color=C["global_c"],
                           fill_opacity=0.4, stroke_color=C["global_c"], stroke_width=1)
             r.move_to(LEFT * 3 + LEFT * 1.5 + RIGHT * i * 0.6 + UP * 0.55)
-            v = Text(f"a{i}", font_size=9, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(f"a{i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             src_cells.add(VGroup(r, v))
         dots_s = Text("...", font_size=14, color=C["fg2"], font="Monospace")
         dots_s.next_to(src_cells, RIGHT, buff=0.08)
@@ -66,7 +66,7 @@ class DmaCopy(Scene):
             r = Rectangle(width=0.55, height=0.45, fill_color=C["local_c"],
                           fill_opacity=0.4, stroke_color=C["local_c"], stroke_width=1)
             r.move_to(RIGHT * 3.5 + LEFT * 1.5 + RIGHT * i * 0.6 + UP * 0.55)
-            v = Text(f"a{i}", font_size=9, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(f"a{i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             dst_cells.add(VGroup(r, v))
         dots_d = Text("...", font_size=14, color=C["fg2"], font="Monospace")
         dots_d.next_to(dst_cells, RIGHT, buff=0.08)
@@ -93,7 +93,7 @@ class DmaCopy(Scene):
         result_arrow = Arrow(RIGHT * 3.5 + DOWN * 0.0, future_box.get_top(),
                               buff=0.15, stroke_width=2, color=C["future_c"],
                               max_tip_length_to_length_ratio=0.08)
-        result_lbl = Text("returns", font_size=11, color=C["future_c"], font="Monospace")
+        result_lbl = Text("returns", font_size=12, color=C["future_c"], font="Monospace")
         result_lbl.next_to(result_arrow, RIGHT, buff=0.1)
 
         self.add(future_box, future_lbl, future_fields, result_arrow, result_lbl)

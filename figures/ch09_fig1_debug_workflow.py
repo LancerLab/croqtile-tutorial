@@ -2,7 +2,7 @@
 Ch09 Fig1: Debugging workflow — compile-time shapes → one tile → sync → layout → GDB.
 Top-to-bottom flow with decision-style prompts between stages.
 """
-import sys
+import sys, os
 
 sys.path.insert(0, os.path.dirname(__file__))
 from manim import *
@@ -42,7 +42,7 @@ class DebugWorkflow(Scene):
             return VGroup(r, inner)
 
         def decision_lbl():
-            return Text("still wrong?", font_size=11, color=C["dim"], font="Monospace")
+            return Text("still wrong?", font_size=12, color=C["dim"], font="Monospace")
 
         # Stack: boxes centered at x=0, decreasing y
         s1 = step_box(
@@ -95,7 +95,7 @@ class DebugWorkflow(Scene):
 
         foot = Text(
             "Prefer this order: cheap compile-time checks before heavy runtime prints.",
-            font_size=11,
+            font_size=12,
             color=C["dim"],
             font="Monospace",
         )

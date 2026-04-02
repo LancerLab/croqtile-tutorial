@@ -56,7 +56,7 @@ class ElementVsBlock(Scene):
             t = Circle(radius=0.18, fill_color=C["elem"], fill_opacity=0.8,
                        stroke_color=C["fg"], stroke_width=1)
             t.move_to(left_origin + DOWN * 2.8 + RIGHT * (i - 3.5) * 0.6)
-            tid = Text(f"t{i}", font_size=10, color=C["fg"], font="Monospace").move_to(t)
+            tid = Text(f"t{i}", font_size=12, color=C["fg"], font="Monospace").move_to(t)
             threads_l.add(VGroup(t, tid))
 
             arr = Arrow(

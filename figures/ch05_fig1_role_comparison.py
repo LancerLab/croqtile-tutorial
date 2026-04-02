@@ -66,7 +66,7 @@ class RoleComparison(Scene):
             )
             r.move_to(RIGHT * (x0 + w / 2) + UP * bar_y)
             self.add(r)
-            t = Text(lab, font_size=11, color=C["fg"], font="Monospace")
+            t = Text(lab, font_size=12, color=C["fg"], font="Monospace")
             t.move_to(r)
             self.add(t)
 
@@ -76,13 +76,13 @@ class RoleComparison(Scene):
             color=C["dim"],
             stroke_width=1.5,
         )
-        top_time = Text("time ->", font_size=10, color=C["dim"], font="Monospace")
+        top_time = Text("time ->", font_size=12, color=C["dim"], font="Monospace")
         top_time.next_to(top_axis, RIGHT, buff=0.08)
         self.add(top_axis, top_time)
 
         total_top = Text(
             "total = sum(DMA + MMA)  -- no overlap",
-            font_size=11,
+            font_size=12,
             color=C["red"],
             font="Monospace",
         )
@@ -141,7 +141,7 @@ class RoleComparison(Scene):
             )
             r.move_to(RIGHT * (x0 + w / 2) + UP * prod_bar_y)
             self.add(r)
-            t = Text(lab, font_size=11, color=C["fg"], font="Monospace")
+            t = Text(lab, font_size=12, color=C["fg"], font="Monospace")
             t.move_to(r)
             self.add(t)
 
@@ -162,7 +162,7 @@ class RoleComparison(Scene):
             )
             r.move_to(RIGHT * (x0 + w / 2) + UP * cons_bar_y)
             self.add(r)
-            t = Text(lab, font_size=11, color=C["fg"], font="Monospace")
+            t = Text(lab, font_size=12, color=C["fg"], font="Monospace")
             t.move_to(r)
             self.add(t)
 
@@ -172,13 +172,13 @@ class RoleComparison(Scene):
             color=C["dim"],
             stroke_width=1.5,
         )
-        bot_time = Text("time ->", font_size=10, color=C["dim"], font="Monospace")
+        bot_time = Text("time ->", font_size=12, color=C["dim"], font="Monospace")
         bot_time.next_to(bot_axis, RIGHT, buff=0.08)
         self.add(bot_axis, bot_time)
 
         total_bot = Text(
             "total = max(DMA, MMA) x stages  -- overlap",
-            font_size=11,
+            font_size=12,
             color=C["green"],
             font="Monospace",
         )
@@ -189,7 +189,7 @@ class RoleComparison(Scene):
         note = Text(
             "inthreads.async partitions threads into concurrent regions"
             " -- overlap is real concurrency, not interleaving",
-            font_size=10,
+            font_size=12,
             color=C["fg3"],
             font="Monospace",
         )

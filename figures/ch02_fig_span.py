@@ -91,7 +91,7 @@ class SpanDimension(Scene):
         for i, (code, desc, color) in enumerate(examples):
             c = Text(code, font_size=12, color=color, font="Monospace")
             c.move_to([0, use_y + 0.65 - i * 0.7, 0])
-            d = Text(desc, font_size=10, color=C["fg3"], font="Monospace")
+            d = Text(desc, font_size=12, color=C["fg3"], font="Monospace")
             d.move_to([0, use_y + 0.35 - i * 0.7, 0])
             self.add(c, d)
 

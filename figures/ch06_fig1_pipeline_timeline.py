@@ -65,7 +65,7 @@ class PipelineTimeline(Scene):
             r.move_to(np.array([x0 + w / 2, y, 0]))
             g = VGroup(r)
             if label:
-                t = Text(label, font_size=11, color=C["bg"] if THEME == "light" else C["fg"], font="Monospace")
+                t = Text(label, font_size=12, color=C["bg"] if THEME == "light" else C["fg"], font="Monospace")
                 t.scale(min(1.0, w / (len(label) * 0.09 + 0.01)))
                 t.move_to(r)
                 g.add(t)
@@ -104,7 +104,7 @@ class PipelineTimeline(Scene):
             stroke_width=0,
         )
         idle2.move_to(np.array([2.05, axis_y - 0.05, 0]))
-        idle_note = Text("idle", font_size=11, color=C["dim"], font="Monospace")
+        idle_note = Text("idle", font_size=12, color=C["dim"], font="Monospace")
         idle_note.next_to(idle1, UP, buff=0.08)
         self.add(idle1, idle2, idle_note)
 
@@ -173,7 +173,7 @@ class PipelineTimeline(Scene):
 
         br = Text(
             "(Bar widths are schematic — real kernels depend on tile sizes and latency.)",
-            font_size=10,
+            font_size=12,
             color=C["dim"],
             font="Monospace",
         )

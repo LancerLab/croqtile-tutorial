@@ -1,4 +1,4 @@
-# Warp Specialization: Concurrent Regions and Events
+# Control Flow: Divergence, Concurrency, and Coordination
 
 Every programming language that targets a parallel machine must answer one question: **what happens when different threads need to do different things?**
 

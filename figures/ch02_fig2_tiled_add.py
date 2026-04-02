@@ -22,7 +22,7 @@ def make_row(n, x0, y0, w, h, fill, label_fn=None, stroke=C["fg3"]):
                       stroke_color=stroke, stroke_width=1)
         r.move_to([x0 + i * w, y0, 0])
         if label_fn:
-            t = Text(label_fn(i), font_size=9, color=C["fg"], font="Monospace").move_to(r)
+            t = Text(label_fn(i), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             g.add(VGroup(r, t))
         else:
             g.add(r)
@@ -55,7 +55,7 @@ class TiledAdd(Scene):
                           fill_opacity=0.25 if t != 2 else 0.7,
                           stroke_color=C["lhs_c"], stroke_width=1.5 if t == 2 else 0.8)
             r.move_to([x_start + t * full_w, top_y, 0])
-            lbl = Text(str(t), font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            lbl = Text(str(t), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             lhs_tiles.add(VGroup(r, lbl))
         self.add(lhs_tiles)
 
@@ -70,7 +70,7 @@ class TiledAdd(Scene):
                           fill_opacity=0.25 if t != 2 else 0.7,
                           stroke_color=C["rhs_c"], stroke_width=1.5 if t == 2 else 0.8)
             r.move_to([x_start + t * full_w, top_y - 1.05, 0])
-            lbl = Text(str(t), font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            lbl = Text(str(t), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             rhs_tiles.add(VGroup(r, lbl))
         self.add(rhs_tiles)
 
@@ -103,7 +103,7 @@ class TiledAdd(Scene):
             r = Rectangle(width=cell_w, height=0.35, fill_color=C["lhs_c"],
                           fill_opacity=0.5, stroke_color=C["lhs_c"], stroke_width=1)
             r.move_to([-2.5 + (i - 2.5) * (cell_w + 0.02), mid_y + 0.35, 0])
-            v = Text(f"a{32+i}", font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(f"a{32+i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             lhs_local.add(VGroup(r, v))
         dots_l = Text("...", font_size=14, color=C["fg2"], font="Monospace")
         dots_l.next_to(lhs_local, RIGHT, buff=0.1)
@@ -117,7 +117,7 @@ class TiledAdd(Scene):
             r = Rectangle(width=cell_w, height=0.35, fill_color=C["rhs_c"],
                           fill_opacity=0.5, stroke_color=C["rhs_c"], stroke_width=1)
             r.move_to([2.5 + (i - 2.5) * (cell_w + 0.02), mid_y + 0.35, 0])
-            v = Text(f"b{32+i}", font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(f"b{32+i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             rhs_local.add(VGroup(r, v))
         dots_r = Text("...", font_size=14, color=C["fg2"], font="Monospace")
         dots_r.next_to(rhs_local, RIGHT, buff=0.1)
@@ -128,14 +128,14 @@ class TiledAdd(Scene):
                           [-2.5, mid_y + 0.95, 0],
                           buff=0.1, stroke_width=2, color=C["arrow_c"],
                           max_tip_length_to_length_ratio=0.08)
-        dma_lbl_l = Text("dma.copy => local", font_size=10, color=C["arrow_c"], font="Monospace")
+        dma_lbl_l = Text("dma.copy => local", font_size=12, color=C["arrow_c"], font="Monospace")
         dma_lbl_l.move_to([-3.2, top_y - 0.7, 0])
 
         dma_arr_r = Arrow([tile2_x + 0.3, top_y - 1.3, 0],
                           [2.5, mid_y + 0.95, 0],
                           buff=0.1, stroke_width=2, color=C["arrow_c"],
                           max_tip_length_to_length_ratio=0.08)
-        dma_lbl_r = Text("dma.copy => local", font_size=10, color=C["arrow_c"], font="Monospace")
+        dma_lbl_r = Text("dma.copy => local", font_size=12, color=C["arrow_c"], font="Monospace")
         dma_lbl_r.move_to([3.2, top_y - 1.7, 0])
         self.add(dma_arr_l, dma_lbl_l, dma_arr_r, dma_lbl_r)
 
@@ -154,7 +154,7 @@ class TiledAdd(Scene):
             r = Rectangle(width=cell_w, height=0.35, fill_color=C["out_c"],
                           fill_opacity=0.5, stroke_color=C["out_c"], stroke_width=1)
             r.move_to([(i - 2.5) * (cell_w + 0.02), mid_y - 0.7, 0])
-            v = Text(f"a{32+i}+b{32+i}", font_size=6, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(f"a{32+i}+b{32+i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             result_cells.add(VGroup(r, v))
         dots_o = Text("...", font_size=14, color=C["fg2"], font="Monospace")
         dots_o.next_to(result_cells, RIGHT, buff=0.1)
@@ -175,13 +175,13 @@ class TiledAdd(Scene):
                           fill_opacity=0.25 if t != 2 else 0.7,
                           stroke_color=C["out_c"], stroke_width=1.5 if t == 2 else 0.8)
             r.move_to([x_start + t * full_w, bot_y, 0])
-            lbl = Text(str(t), font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            lbl = Text(str(t), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             out_tiles.add(VGroup(r, lbl))
         self.add(out_tiles)
 
         store_arr = Arrow([0, mid_y - 1.35, 0], [tile2_x, bot_y + 0.25, 0],
                           buff=0.1, stroke_width=2, color=C["out_c"],
                           max_tip_length_to_length_ratio=0.08)
-        store_lbl = Text("write back", font_size=10, color=C["out_c"], font="Monospace")
+        store_lbl = Text("write back", font_size=12, color=C["out_c"], font="Monospace")
         store_lbl.move_to([1.5, bot_y + 1.0, 0])
         self.add(store_arr, store_lbl)

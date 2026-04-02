@@ -43,7 +43,7 @@ class ElementVsBlockAnim(Scene):
             t = Circle(radius=0.22, fill_color=C["elem"], fill_opacity=0.8,
                        stroke_color=C["fg"], stroke_width=1)
             t.move_to(LEFT * 2.45 + RIGHT * i * 0.75 + DOWN * 1.2)
-            tid = Text(f"t{i}", font_size=11, color=C["fg"], font="Monospace").move_to(t)
+            tid = Text(f"t{i}", font_size=12, color=C["fg"], font="Monospace").move_to(t)
             threads.add(VGroup(t, tid))
 
         self.play(FadeIn(thread_label), *[FadeIn(t) for t in threads], run_time=0.5)

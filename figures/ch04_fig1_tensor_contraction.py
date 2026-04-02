@@ -45,11 +45,11 @@ class TensorContraction(Scene):
 
         self.add(a, b, c_tile, times, arrow, eq_label)
 
-        dim_a = Text("M rows, K cols", font_size=10, color=C["dim"], font="Monospace")
+        dim_a = Text("M rows, K cols", font_size=12, color=C["dim"], font="Monospace")
         dim_a.next_to(a, DOWN, buff=0.12)
-        dim_b = Text("K rows, N cols", font_size=10, color=C["dim"], font="Monospace")
+        dim_b = Text("K rows, N cols", font_size=12, color=C["dim"], font="Monospace")
         dim_b.next_to(b, DOWN, buff=0.12)
-        dim_c = Text("M rows, N cols", font_size=10, color=C["dim"], font="Monospace")
+        dim_c = Text("M rows, N cols", font_size=12, color=C["dim"], font="Monospace")
         dim_c.next_to(c_tile, DOWN, buff=0.12)
         self.add(dim_a, dim_b, dim_c)
 
@@ -80,13 +80,13 @@ class TensorContraction(Scene):
             )
             box.move_to([x, y_hw, 0])
             n = Text(name, font_size=12, color=color, font="Monospace")
-            d = Text(detail, font_size=10, color=C["dim"], font="Monospace")
+            d = Text(detail, font_size=12, color=C["dim"], font="Monospace")
             VGroup(n, d).arrange(DOWN, buff=0.08).move_to(box)
             self.add(box, n, d)
 
         foot = Text(
             "Croqtile's mma syntax targets the abstract operation, not a specific chip.",
-            font_size=11, color=C["fg3"], font="Monospace",
+            font_size=12, color=C["fg3"], font="Monospace",
         )
         foot.to_edge(DOWN, buff=0.3)
         self.add(foot)

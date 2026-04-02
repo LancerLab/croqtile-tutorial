@@ -90,7 +90,7 @@ class EventCreditFlow(Scene):
             color=C["purple"],
             max_tip_length_to_length_ratio=0.1,
         )
-        handoff = Text("handoff", font_size=11, color=C["purple"], font="Monospace")
+        handoff = Text("handoff", font_size=12, color=C["purple"], font="Monospace")
         handoff.next_to(a2, UP, buff=0.02)
 
         a3 = CurvedArrow(
@@ -107,7 +107,7 @@ class EventCreditFlow(Scene):
 
         foot = Text(
             "Ring index stage = iv_k % MATMUL_STAGES reuses physical slots; events serialize access.",
-            font_size=11,
+            font_size=12,
             color=C["dim"],
             font="Monospace",
         )

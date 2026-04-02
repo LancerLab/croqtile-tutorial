@@ -31,7 +31,7 @@ class FutureData(Scene):
         # Phase 1: dma.copy issued
         p1_x = -3.0
         p1_dot = Dot([p1_x, tl_y, 0], radius=0.08, color=C["future_c"])
-        p1_lbl = Text("dma.copy issued", font_size=11, color=C["future_c"], font="Monospace")
+        p1_lbl = Text("dma.copy issued", font_size=12, color=C["future_c"], font="Monospace")
         p1_lbl.move_to([p1_x, tl_y + 0.35, 0])
         self.add(p1_dot, p1_lbl)
 
@@ -39,7 +39,7 @@ class FutureData(Scene):
         transfer_bar = Rectangle(width=3.5, height=0.25, fill_color=C["arrow"],
                                   fill_opacity=0.3, stroke_color=C["arrow"], stroke_width=1)
         transfer_bar.move_to([-0.5, tl_y, 0])
-        transfer_lbl = Text("hardware DMA in flight", font_size=10,
+        transfer_lbl = Text("hardware DMA in flight", font_size=12,
                              color=C["arrow"], font="Monospace")
         transfer_lbl.move_to([-0.5, tl_y - 0.35, 0])
         self.add(transfer_bar, transfer_lbl)
@@ -47,7 +47,7 @@ class FutureData(Scene):
         # Phase 2: .data access
         p2_x = 2.5
         p2_dot = Dot([p2_x, tl_y, 0], radius=0.08, color=C["data_c"])
-        p2_lbl = Text(".data access", font_size=11, color=C["data_c"], font="Monospace")
+        p2_lbl = Text(".data access", font_size=12, color=C["data_c"], font="Monospace")
         p2_lbl.move_to([p2_x, tl_y + 0.35, 0])
         self.add(p2_dot, p2_lbl)
 
@@ -59,15 +59,15 @@ class FutureData(Scene):
                              color=C["future_c"], font="Monospace")
         future_title.move_to(future_box.get_top() + DOWN * 0.3)
 
-        status_t = Text("status: in_flight → complete", font_size=11,
+        status_t = Text("status: in_flight → complete", font_size=12,
                           color=C["fg2"], font="Monospace")
         status_t.move_to(LEFT * 2.5 + DOWN * 0.5)
 
-        data_t = Text(".data → spanned tensor in local mem", font_size=11,
+        data_t = Text(".data → spanned tensor in local mem", font_size=12,
                         color=C["data_c"], font="Monospace")
         data_t.move_to(LEFT * 2.5 + DOWN * 1.0)
 
-        shape_t = Text("shape: [chunk_size]", font_size=11,
+        shape_t = Text("shape: [chunk_size]", font_size=12,
                          color=C["fg3"], font="Monospace")
         shape_t.move_to(LEFT * 2.5 + DOWN * 1.45)
 
@@ -85,12 +85,12 @@ class FutureData(Scene):
             r = Rectangle(width=0.4, height=0.35, fill_color=C["data_c"],
                           fill_opacity=0.4, stroke_color=C["data_c"], stroke_width=1)
             r.move_to(RIGHT * 3.0 + LEFT * 1.2 + RIGHT * i * 0.45 + DOWN * 0.7)
-            v = Text(f"{i}", font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(f"{i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             data_cells.add(VGroup(r, v))
         dots = Text("...", font_size=12, color=C["fg2"], font="Monospace")
         dots.next_to(data_cells, RIGHT, buff=0.06)
 
-        access_t = Text(".at(i)  → element at position i", font_size=11,
+        access_t = Text(".at(i)  → element at position i", font_size=12,
                           color=C["fg2"], font="Monospace")
         access_t.move_to(RIGHT * 3.0 + DOWN * 1.3)
 
@@ -114,7 +114,7 @@ class FutureData(Scene):
 
         note = Text(
             "sync now: .data valid immediately  |  async later: wait then .data",
-            font_size=10, color=C["fg3"], font="Monospace"
+            font_size=12, color=C["fg3"], font="Monospace"
         )
         note.move_to(DOWN * 3.3)
         self.add(note)

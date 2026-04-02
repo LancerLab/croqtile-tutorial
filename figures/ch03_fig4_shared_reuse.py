@@ -34,7 +34,7 @@ class SharedReuse(Scene):
         glob_l = Rectangle(width=4.5, height=0.7, fill_color=C["global_c"],
                             fill_opacity=0.15, stroke_color=C["global_c"], stroke_width=1.5)
         glob_l.move_to(lx + UP * 1.2)
-        gl_t = Text("Global Memory (tile A)", font_size=11, color=C["global_c"],
+        gl_t = Text("Global Memory (tile A)", font_size=12, color=C["global_c"],
                      font="Monospace").move_to(glob_l)
         self.add(glob_l, gl_t)
 
@@ -45,14 +45,14 @@ class SharedReuse(Scene):
             lb = Rectangle(width=0.9, height=0.5, fill_color=C["local_c"],
                            fill_opacity=0.2, stroke_color=C["local_c"], stroke_width=1)
             lb.move_to(tx + DOWN * 0.2)
-            ll = Text(f"local_{i}", font_size=8, color=C["local_c"],
+            ll = Text(f"local_{i}", font_size=12, color=C["local_c"],
                        font="Monospace").move_to(lb)
 
             # thread circle
             tc = Circle(radius=0.2, fill_color=C["green"], fill_opacity=0.6,
                         stroke_color=C["fg"], stroke_width=1)
             tc.move_to(tx + DOWN * 1.2)
-            tt = Text(f"t{i}", font_size=9, color=C["fg"], font="Monospace").move_to(tc)
+            tt = Text(f"t{i}", font_size=12, color=C["fg"], font="Monospace").move_to(tc)
 
             # arrow global -> local
             a1 = Arrow(glob_l.get_bottom() + RIGHT * (i - 1.5) * 0.8,
@@ -66,7 +66,7 @@ class SharedReuse(Scene):
 
             self.add(lb, ll, tc, tt, a1, a2)
 
-        cost_l = Text("4 copies of the same tile\n4× bandwidth", font_size=11,
+        cost_l = Text("4 copies of the same tile\n4× bandwidth", font_size=12,
                        color=C["red"], font="Monospace")
         cost_l.move_to(lx + DOWN * 2.2)
         self.add(cost_l)
@@ -82,7 +82,7 @@ class SharedReuse(Scene):
         glob_r = Rectangle(width=4.5, height=0.7, fill_color=C["global_c"],
                             fill_opacity=0.15, stroke_color=C["global_c"], stroke_width=1.5)
         glob_r.move_to(rx + UP * 1.2)
-        gr_t = Text("Global Memory (tile A)", font_size=11, color=C["global_c"],
+        gr_t = Text("Global Memory (tile A)", font_size=12, color=C["global_c"],
                      font="Monospace").move_to(glob_r)
         self.add(glob_r, gr_t)
 
@@ -90,7 +90,7 @@ class SharedReuse(Scene):
         sb = Rectangle(width=3.5, height=0.6, fill_color=C["shared_c"],
                         fill_opacity=0.2, stroke_color=C["shared_c"], stroke_width=2)
         sb.move_to(rx + DOWN * 0.1)
-        sl = Text("Shared Memory (1 copy)", font_size=11, color=C["shared_c"],
+        sl = Text("Shared Memory (1 copy)", font_size=12, color=C["shared_c"],
                    font="Monospace").move_to(sb)
         self.add(sb, sl)
 
@@ -98,7 +98,7 @@ class SharedReuse(Scene):
         dma = Arrow(glob_r.get_bottom(), sb.get_top(), buff=0.05,
                     stroke_width=3, color=C["arrow"],
                     max_tip_length_to_length_ratio=0.08)
-        dma_lbl = Text("1× dma.copy", font_size=10, color=C["arrow"],
+        dma_lbl = Text("1× dma.copy", font_size=12, color=C["arrow"],
                         font="Monospace")
         dma_lbl.next_to(dma, RIGHT, buff=0.1)
         self.add(dma, dma_lbl)
@@ -109,7 +109,7 @@ class SharedReuse(Scene):
             tc = Circle(radius=0.2, fill_color=C["green"], fill_opacity=0.6,
                         stroke_color=C["fg"], stroke_width=1)
             tc.move_to(tx + DOWN * 1.2)
-            tt = Text(f"t{i}", font_size=9, color=C["fg"], font="Monospace").move_to(tc)
+            tt = Text(f"t{i}", font_size=12, color=C["fg"], font="Monospace").move_to(tc)
 
             a = Arrow(sb.get_bottom() + RIGHT * (i - 1.5) * 0.6,
                       tc.get_top(), buff=0.05, stroke_width=1.2,
@@ -117,7 +117,7 @@ class SharedReuse(Scene):
                       max_tip_length_to_length_ratio=0.12)
             self.add(tc, tt, a)
 
-        cost_r = Text("1 copy, all threads read it\n1× bandwidth", font_size=11,
+        cost_r = Text("1 copy, all threads read it\n1× bandwidth", font_size=12,
                        color=C["green"], font="Monospace")
         cost_r.move_to(rx + DOWN * 2.2)
         self.add(cost_r)

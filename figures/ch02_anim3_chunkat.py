@@ -41,7 +41,7 @@ class ChunkatAnim(Scene):
                 x = ox + c * cw
                 y = oy - r * ch
                 rect.move_to([x, y, 0])
-                lbl = Text(f"({r},{c})", font_size=9, color=C["dim_c"],
+                lbl = Text(f"({r},{c})", font_size=12, color=C["dim_c"],
                            font="Monospace").move_to(rect)
                 cell = VGroup(rect, lbl)
                 grid.add(cell)
@@ -50,11 +50,11 @@ class ChunkatAnim(Scene):
         # Row/col labels
         axis_labels = VGroup()
         for r in range(rows):
-            t = Text(f"tr={r}", font_size=11, color=C["dim_c"], font="Monospace")
+            t = Text(f"tr={r}", font_size=12, color=C["dim_c"], font="Monospace")
             t.move_to([ox - cw * 0.8, oy - r * ch, 0])
             axis_labels.add(t)
         for c in range(cols):
-            t = Text(f"{c}", font_size=10, color=C["dim_c"], font="Monospace")
+            t = Text(f"{c}", font_size=12, color=C["dim_c"], font="Monospace")
             t.move_to([ox + c * cw, oy + rows * ch / 2 + 0.05, 0])
             axis_labels.add(t)
 
@@ -117,11 +117,11 @@ class ChunkatAnim(Scene):
                 r.move_to(pos)
                 real_r = 16 + mr
                 real_c = 48 + mc
-                v = Text(f"{real_r},{real_c}", font_size=5, color=C["fg"],
+                v = Text(f"{real_r},{real_c}", font_size=12, color=C["fg"],
                          font="Monospace").move_to(r)
                 mini_grid.add(VGroup(r, v))
 
-        dots = Text("... (16x16)", font_size=11, color=C["fg2"], font="Monospace")
+        dots = Text("... (16x16)", font_size=12, color=C["fg2"], font="Monospace")
         dots.move_to(RIGHT * 4 + DOWN * 1.5)
 
         arrow = Arrow(cell_map[(1, 3)][0].get_right(),

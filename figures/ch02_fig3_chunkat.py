@@ -50,7 +50,7 @@ class ChunkatSemantics(Scene):
                 y = grid_origin_y - r * cell_h
                 rect.move_to([x, y, 0])
 
-                lbl = Text(f"({r},{c})", font_size=9, color=C["fg"] if is_hl else C["dim_c"],
+                lbl = Text(f"({r},{c})", font_size=12, color=C["fg"] if is_hl else C["dim_c"],
                            font="Monospace").move_to(rect)
                 grid.add(VGroup(rect, lbl))
 
@@ -58,23 +58,23 @@ class ChunkatSemantics(Scene):
 
         # Row axis labels
         for r in range(rows):
-            t = Text(f"tr={r}", font_size=11, color=C["dim_c"], font="Monospace")
+            t = Text(f"tr={r}", font_size=12, color=C["dim_c"], font="Monospace")
             t.move_to([grid_origin_x - cell_w * 0.75, grid_origin_y - r * cell_h, 0])
             self.add(t)
 
         # Col axis labels
         for c in range(cols):
-            t = Text(f"tc={c}", font_size=9, color=C["dim_c"], font="Monospace")
+            t = Text(f"tc={c}", font_size=12, color=C["dim_c"], font="Monospace")
             t.move_to([grid_origin_x + c * cell_w, grid_origin_y + rows * cell_h / 2 + 0.05, 0])
             self.add(t)
 
         # Dimension annotations
         row_dim = Text("4 row-tiles  (64 / #tr = 64 / 4 = 16 rows each)",
-                       font_size=11, color=C["dim_c"], font="Monospace")
+                       font_size=12, color=C["dim_c"], font="Monospace")
         row_dim.move_to([0, grid_origin_y - rows * cell_h - 0.25, 0])
 
         col_dim = Text("8 col-tiles  (128 / #tc = 128 / 8 = 16 cols each)",
-                       font_size=11, color=C["dim_c"], font="Monospace")
+                       font_size=12, color=C["dim_c"], font="Monospace")
         col_dim.next_to(row_dim, DOWN, buff=0.15)
         self.add(row_dim, col_dim)
 
@@ -108,7 +108,7 @@ class ChunkatSemantics(Scene):
 
                 real_r = hl_r * (64 // rows) + mr
                 real_c = hl_c * (128 // cols) + mc
-                v = Text(f"{real_r},{real_c}", font_size=6, color=C["fg"], font="Monospace")
+                v = Text(f"{real_r},{real_c}", font_size=12, color=C["fg"], font="Monospace")
                 v.move_to(r)
                 mini_grid.add(VGroup(r, v))
 
@@ -143,7 +143,7 @@ class ChunkatSemantics(Scene):
         compose = Text(
             "Index: output.at(tr # i, tc # j)\n"
             "       = output.at(tr*16 + i, tc*16 + j)",
-            font_size=11, color=C["dim_c"], font="Monospace"
+            font_size=12, color=C["dim_c"], font="Monospace"
         )
         compose.move_to([-2.0, -3.6, 0])
 

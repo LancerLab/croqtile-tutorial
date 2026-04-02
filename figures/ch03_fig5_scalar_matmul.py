@@ -45,35 +45,35 @@ class ScalarMatmul(Scene):
                 rect.move_to(origin + RIGHT * c_ * cell_w + DOWN * r * cell_h)
 
                 if is_highlight:
-                    lbl = Text(f"(p=1,q=3)\n8×4 tile", font_size=8,
+                    lbl = Text(f"(p=1,q=3)\n8×4 tile", font_size=12,
                                color=C["fg"], font="Monospace")
                 else:
-                    lbl = Text(f"({r},{c_})", font_size=7, color=C["fg3"],
+                    lbl = Text(f"({r},{c_})", font_size=12, color=C["fg3"],
                                font="Monospace")
                 lbl.move_to(rect)
                 self.add(rect, lbl)
 
         # Row/col annotations
-        p_lbl = Text("p: 0..15 (16 row-tiles)", font_size=11, color=C["fg2"],
+        p_lbl = Text("p: 0..15 (16 row-tiles)", font_size=12, color=C["fg2"],
                       font="Monospace")
         p_lbl.move_to(LEFT * 5.5 + DOWN * 0.3)
         p_lbl.rotate(PI / 2)
 
-        q_lbl = Text("q: 0..63 (64 col-tiles)", font_size=11, color=C["fg2"],
+        q_lbl = Text("q: 0..63 (64 col-tiles)", font_size=12, color=C["fg2"],
                       font="Monospace")
         q_lbl.move_to(DOWN * 2.3)
         self.add(p_lbl, q_lbl)
 
         # Dimensions
-        dim_m = Text("128 rows", font_size=10, color=C["fg3"], font="Monospace")
+        dim_m = Text("128 rows", font_size=12, color=C["fg3"], font="Monospace")
         dim_m.move_to(LEFT * 5.8 + UP * 0.5)
         dim_m.rotate(PI / 2)
-        dim_n = Text("256 cols", font_size=10, color=C["fg3"], font="Monospace")
+        dim_n = Text("256 cols", font_size=12, color=C["fg3"], font="Monospace")
         dim_n.move_to(UP * 1.7)
         self.add(dim_m, dim_n)
 
         # Note about grid (only showing 4x8 of the 16x64 grid)
-        note = Text("(showing 4×8 of the 16×64 tile grid)", font_size=10,
+        note = Text("(showing 4×8 of the 16×64 tile grid)", font_size=12,
                      color=C["dim"], font="Monospace")
         note.to_edge(DOWN, buff=0.4)
         self.add(note)
@@ -83,7 +83,7 @@ class ScalarMatmul(Scene):
             "parallel p by 16, q by 64\n"
             "  foreach {m,n,k} in [8, 4, 256]\n"
             "    output.at(p#m, q#n) += ...",
-            font_size=11, color=C["fg2"], font="Monospace"
+            font_size=12, color=C["fg2"], font="Monospace"
         )
         code.move_to(DOWN * 3.0)
         self.add(code)

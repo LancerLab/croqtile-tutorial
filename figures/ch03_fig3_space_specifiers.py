@@ -64,14 +64,14 @@ class SpaceSpecifiers(Scene):
             hw_t = Text(lv["hw"], font_size=14, color=C["fg"], font="Monospace")
             hw_t.move_to(LEFT * 1.8 + UP * y + UP * 0.15)
 
-            threads_t = Text(lv["threads"], font_size=10, color=C["fg3"],
+            threads_t = Text(lv["threads"], font_size=12, color=C["fg3"],
                               font="Monospace")
             threads_t.move_to(LEFT * 1.8 + UP * y + DOWN * 0.2)
 
-            ops_t = Text(lv["ops"], font_size=11, color=color, font="Monospace")
+            ops_t = Text(lv["ops"], font_size=12, color=color, font="Monospace")
             ops_t.move_to(RIGHT * 2.0 + UP * y + UP * 0.15)
 
-            mem_t = Text(lv["mem"], font_size=10, color=C["fg3"], font="Monospace")
+            mem_t = Text(lv["mem"], font_size=12, color=C["fg3"], font="Monospace")
             mem_t.move_to(RIGHT * 2.0 + UP * y + DOWN * 0.2)
 
             self.add(outer, spec_t, hw_t, threads_t, ops_t, mem_t)
@@ -80,16 +80,16 @@ class SpaceSpecifiers(Scene):
                 arr = Arrow(UP * (y - 0.65), UP * (y - y_step + 0.65),
                             buff=0, stroke_width=1.5, color=C["dim"],
                             max_tip_length_to_length_ratio=0.08)
-                contains = Text("contains ↓", font_size=8, color=C["dim"],
+                contains = Text("contains ↓", font_size=12, color=C["dim"],
                                 font="Monospace")
                 contains.next_to(arr, RIGHT, buff=0.1)
                 self.add(arr, contains)
 
         # Column headers
-        hdr_spec = Text("Specifier", font_size=11, color=C["fg3"], font="Monospace")
+        hdr_spec = Text("Specifier", font_size=12, color=C["fg3"], font="Monospace")
         hdr_spec.move_to(LEFT * 4.8 + UP * 2.8)
-        hdr_hw = Text("Hardware Unit", font_size=11, color=C["fg3"], font="Monospace")
+        hdr_hw = Text("Hardware Unit", font_size=12, color=C["fg3"], font="Monospace")
         hdr_hw.move_to(LEFT * 1.8 + UP * 2.8)
-        hdr_ops = Text("Typical Operations", font_size=11, color=C["fg3"], font="Monospace")
+        hdr_ops = Text("Typical Operations", font_size=12, color=C["fg3"], font="Monospace")
         hdr_ops.move_to(RIGHT * 2.0 + UP * 2.8)
         self.add(hdr_spec, hdr_hw, hdr_ops)

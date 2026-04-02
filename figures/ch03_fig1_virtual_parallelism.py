@@ -50,7 +50,7 @@ class VirtualParallelism(Scene):
                                   stroke_color=task_colors[task_idx],
                                   stroke_width=1)
                     r.move_to(RIGHT * (col_x + row * (col_width + row_gap)) + UP * y_pos)
-                    t = Text(f"T{task_idx}", font_size=9, color=C["fg"],
+                    t = Text(f"T{task_idx}", font_size=12, color=C["fg"],
                              font="Monospace").move_to(r)
                     grp.add(r, t)
                     task_idx += 1
@@ -61,7 +61,7 @@ class VirtualParallelism(Scene):
                 buff=0, stroke_width=1, color=C["dim"],
                 max_tip_length_to_length_ratio=0.02
             )
-            time_lbl = Text("time →", font_size=9, color=C["dim"],
+            time_lbl = Text("time →", font_size=12, color=C["dim"],
                             font="Monospace")
             time_lbl.next_to(time_arrow, DOWN, buff=0.05).align_to(time_arrow, RIGHT)
             grp.add(time_arrow, time_lbl)
@@ -71,7 +71,7 @@ class VirtualParallelism(Scene):
         seq_label = Text("Sequential", font_size=16, color=C["elem"],
                          font="Monospace")
         seq_label.move_to(LEFT * 5.2 + UP * 1.5)
-        seq_sub = Text("1 core", font_size=11, color=C["fg3"], font="Monospace")
+        seq_sub = Text("1 core", font_size=12, color=C["fg3"], font="Monospace")
         seq_sub.next_to(seq_label, DOWN, buff=0.08)
         self.add(seq_label, seq_sub)
 
@@ -80,20 +80,20 @@ class VirtualParallelism(Scene):
             r = Rectangle(width=0.5, height=0.4, fill_color=task_colors[i],
                            fill_opacity=0.7, stroke_color=task_colors[i], stroke_width=1)
             r.move_to(RIGHT * (seq_x + i * 0.6) + UP * 1.5)
-            t = Text(f"T{i}", font_size=9, color=C["fg"], font="Monospace").move_to(r)
+            t = Text(f"T{i}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             self.add(r, t)
 
         arr1 = Arrow(LEFT * 3.2 + UP * 0.95, RIGHT * 2.2 + UP * 0.95, buff=0,
                      stroke_width=1, color=C["dim"], max_tip_length_to_length_ratio=0.03)
         self.add(arr1)
-        self.add(Text("time →", font_size=9, color=C["dim"], font="Monospace"
+        self.add(Text("time →", font_size=12, color=C["dim"], font="Monospace"
                        ).next_to(arr1, DOWN, buff=0.03).align_to(arr1, RIGHT))
 
         # 4-wide: CPU style (2 columns of 4)
         cpu_label = Text("4-wide (CPU)", font_size=16, color=C["blue"],
                          font="Monospace")
         cpu_label.move_to(LEFT * 5.2 + DOWN * 0.1)
-        cpu_sub = Text("4 cores", font_size=11, color=C["fg3"], font="Monospace")
+        cpu_sub = Text("4 cores", font_size=12, color=C["fg3"], font="Monospace")
         cpu_sub.next_to(cpu_label, DOWN, buff=0.08)
         self.add(cpu_label, cpu_sub)
 
@@ -106,20 +106,20 @@ class VirtualParallelism(Scene):
                 r.move_to(RIGHT * (cpu_x + step * 2.8 + lane * 0.0) + DOWN * (0.35 - lane * 0.45))
                 # stack vertically within each time step
                 r.move_to(RIGHT * (cpu_x + step * 2.5) + DOWN * (lane * 0.45 - 0.55))
-                t = Text(f"T{idx}", font_size=9, color=C["fg"], font="Monospace").move_to(r)
+                t = Text(f"T{idx}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
                 self.add(r, t)
 
         arr2 = Arrow(LEFT * 3.2 + DOWN * 1.5, RIGHT * 2.2 + DOWN * 1.5, buff=0,
                      stroke_width=1, color=C["dim"], max_tip_length_to_length_ratio=0.03)
         self.add(arr2)
-        self.add(Text("time →", font_size=9, color=C["dim"], font="Monospace"
+        self.add(Text("time →", font_size=12, color=C["dim"], font="Monospace"
                        ).next_to(arr2, DOWN, buff=0.03).align_to(arr2, RIGHT))
 
         # 8-wide: GPU style (1 column of 8)
         gpu_label = Text("8-wide (GPU)", font_size=16, color=C["green"],
                          font="Monospace")
         gpu_label.move_to(LEFT * 5.2 + DOWN * 2.2)
-        gpu_sub = Text("1 warp", font_size=11, color=C["fg3"], font="Monospace")
+        gpu_sub = Text("1 warp", font_size=12, color=C["fg3"], font="Monospace")
         gpu_sub.next_to(gpu_label, DOWN, buff=0.08)
         self.add(gpu_label, gpu_sub)
 
@@ -128,13 +128,13 @@ class VirtualParallelism(Scene):
             r = Rectangle(width=0.5, height=0.35, fill_color=task_colors[lane],
                            fill_opacity=0.7, stroke_color=task_colors[lane], stroke_width=1)
             r.move_to(RIGHT * gpu_x + DOWN * (2.2 + lane * 0.38 - 1.3))
-            t = Text(f"T{lane}", font_size=9, color=C["fg"], font="Monospace").move_to(r)
+            t = Text(f"T{lane}", font_size=12, color=C["fg"], font="Monospace").move_to(r)
             self.add(r, t)
 
         arr3 = Arrow(LEFT * 3.2 + DOWN * 3.4, RIGHT * 2.2 + DOWN * 3.4, buff=0,
                      stroke_width=1, color=C["dim"], max_tip_length_to_length_ratio=0.03)
         self.add(arr3)
-        self.add(Text("time →", font_size=9, color=C["dim"], font="Monospace"
+        self.add(Text("time →", font_size=12, color=C["dim"], font="Monospace"
                        ).next_to(arr3, DOWN, buff=0.03).align_to(arr3, RIGHT))
 
         # Key takeaway

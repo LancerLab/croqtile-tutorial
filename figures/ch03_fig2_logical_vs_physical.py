@@ -37,7 +37,7 @@ class LogicalVsPhysical(Scene):
             r = Rectangle(width=w, height=h, fill_color=color,
                           fill_opacity=0.15, stroke_color=color, stroke_width=1.5)
             r.move_to(pos)
-            t = Text(text, font_size=11, color=color, font="Monospace")
+            t = Text(text, font_size=12, color=color, font="Monospace")
             t.move_to(r)
             return VGroup(r, t)
 
@@ -58,13 +58,13 @@ class LogicalVsPhysical(Scene):
                       max_tip_length_to_length_ratio=0.12)
             self.add(a)
 
-        lbl_p = Text("concurrent", font_size=9, color=C["orange"],
+        lbl_p = Text("concurrent", font_size=12, color=C["orange"],
                       font="Monospace").next_to(b1, RIGHT, buff=0.1)
-        lbl_f = Text("sequential", font_size=9, color=C["purple"],
+        lbl_f = Text("sequential", font_size=12, color=C["purple"],
                       font="Monospace").next_to(b2, RIGHT, buff=0.1)
-        lbl_p2 = Text("concurrent", font_size=9, color=C["green"],
+        lbl_p2 = Text("concurrent", font_size=12, color=C["green"],
                        font="Monospace").next_to(b3, RIGHT, buff=0.1)
-        lbl_f2 = Text("sequential", font_size=9, color=C["teal"],
+        lbl_f2 = Text("sequential", font_size=12, color=C["teal"],
                        font="Monospace").next_to(b4, RIGHT, buff=0.1)
         self.add(lbl_p, lbl_f, lbl_p2, lbl_f2)
 
@@ -83,7 +83,7 @@ class LogicalVsPhysical(Scene):
             r = Rectangle(width=w, height=h, fill_color=color,
                           fill_opacity=0.2, stroke_color=color, stroke_width=2)
             r.move_to(pos)
-            t = Text(text, font_size=11, color=color, font="Monospace")
+            t = Text(text, font_size=12, color=color, font="Monospace")
             t.move_to(r)
             return VGroup(r, t)
 
@@ -111,14 +111,14 @@ class LogicalVsPhysical(Scene):
             a = Arrow(src, dst, buff=0.2, stroke_width=2, color=color,
                       max_tip_length_to_length_ratio=0.06)
             self.add(a)
-            lt = Text(lbl, font_size=10, color=color, font="Monospace")
+            lt = Text(lbl, font_size=12, color=color, font="Monospace")
             lt.next_to(a, UP, buff=0.05)
             self.add(lt)
 
         # Bottom caption
         cap = Text(
             "parallel = concurrent (hardware maps it)    foreach = sequential (loop)",
-            font_size=11, color=C["fg3"], font="Monospace"
+            font_size=12, color=C["fg3"], font="Monospace"
         )
         cap.to_edge(DOWN, buff=0.3)
         self.add(cap)

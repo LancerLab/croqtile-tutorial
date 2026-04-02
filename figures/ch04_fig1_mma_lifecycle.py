@@ -29,8 +29,8 @@ class MMALifecycle(Scene):
         # Legend
         reg_box = Square(side_length=0.22, color=C["reg_c"], fill_opacity=0.35, stroke_width=1.2)
         smem_box = Square(side_length=0.22, color=C["smem_c"], fill_opacity=0.35, stroke_width=1.2)
-        leg_reg = Text("Registers (mc, ma, mb)", font_size=11, color=C["fg2"], font="Monospace")
-        leg_smem = Text("Shared memory", font_size=11, color=C["fg2"], font="Monospace")
+        leg_reg = Text("Registers (mc, ma, mb)", font_size=12, color=C["fg2"], font="Monospace")
+        leg_smem = Text("Shared memory", font_size=12, color=C["fg2"], font="Monospace")
         leg_row = VGroup(
             reg_box, leg_reg,
             smem_box.next_to(leg_reg, RIGHT, buff=0.35).shift(LEFT * 0.1),
@@ -101,7 +101,7 @@ class MMALifecycle(Scene):
 
             n_t = Text(st["n"], font_size=14, color=C["yellow"], font="Monospace")
             op_t = Text(st["op"], font_size=16, color=C["blue"], font="Monospace")
-            det_t = Text(st["detail"], font_size=11, color=C["fg"], font="Monospace")
+            det_t = Text(st["detail"], font_size=12, color=C["fg"], font="Monospace")
             col = VGroup(n_t, op_t, det_t).arrange(DOWN, buff=0.12)
             col.move_to(center)
             self.add(box, col)
@@ -130,7 +130,7 @@ class MMALifecycle(Scene):
 
         hint = Text(
             "Hardware: ~16×16×16 FP16 tile per instruction; Croqtile hides fragment layouts.",
-            font_size=10,
+            font_size=12,
             color=C["dim"],
             font="Monospace",
         )

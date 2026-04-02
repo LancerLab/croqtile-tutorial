@@ -81,14 +81,14 @@ nav:
 
   - "Part I — Tutorial":
     - Overview: tutorial/index.md
-    - "Ch 0: Installation": tutorial/ch00-installation.md
+    - "Ch 0: Installing Croqtile": tutorial/ch00-installation.md
     - "Ch 1: Hello Croqtile": tutorial/ch01-hello-croqtile.md
     - "Ch 2: Data Movement": tutorial/ch02-data-movement.md
     - "Ch 3: Parallelism": tutorial/ch03-parallelism.md
-    - "Ch 4: MMA Operations": tutorial/ch04-mma.md
-    - "Ch 5: Warp Specialization": tutorial/ch05-branch-control.md
+    - "Ch 4: Tensor Contraction (MMA)": tutorial/ch04-mma.md
+    - "Ch 5: Control Flow": tutorial/ch05-branch-control.md
     - "Ch 6: Synchronization": tutorial/ch06-synchronization.md
-    - "Ch 7: Advanced Movement": tutorial/ch07-advanced-movement.md
+    - "Ch 7: Advanced Data Movement": tutorial/ch07-advanced-movement.md
     - "Ch 8: C++ Interop": tutorial/ch08-cpp-interop.md
     - "Ch 9: Debug & Verbose": tutorial/ch09-debug-verbose.md
 

@@ -73,14 +73,14 @@ class ViewFrom(Scene):
         self.add(right_note)
 
         # Code comparison at bottom
-        code_left = Text('lhs.chunkat(i, j)', font_size=11, color=C["blue"], font="Monospace")
+        code_left = Text('lhs.chunkat(i, j)', font_size=12, color=C["blue"], font="Monospace")
         code_left.move_to(LEFT * 3.0 + DOWN * 2.7)
         self.add(code_left)
 
-        vs = Text("vs", font_size=11, color=C["dim"], font="Monospace")
+        vs = Text("vs", font_size=12, color=C["dim"], font="Monospace")
         vs.move_to(DOWN * 2.7)
         self.add(vs)
 
-        code_right = Text('lhs.view(4,4).from(2,3)', font_size=11, color=C["red"], font="Monospace")
+        code_right = Text('lhs.view(4,4).from(2,3)', font_size=12, color=C["red"], font="Monospace")
         code_right.move_to(RIGHT * 3.2 + DOWN * 2.7)
         self.add(code_right)

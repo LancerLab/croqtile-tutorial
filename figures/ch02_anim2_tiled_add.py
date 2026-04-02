@@ -46,13 +46,13 @@ class TiledAddAnim(Scene):
             lr = Rectangle(width=cw - 0.04, height=0.4, fill_color=C["lhs_c"],
                            fill_opacity=0.3, stroke_color=C["lhs_c"], stroke_width=1)
             lr.move_to([ox + i * cw, 1.6, 0])
-            lt = Text(str(i), font_size=10, color=C["fg"], font="Monospace").move_to(lr)
+            lt = Text(str(i), font_size=12, color=C["fg"], font="Monospace").move_to(lr)
             lhs_tiles.add(VGroup(lr, lt))
 
             rr = Rectangle(width=cw - 0.04, height=0.4, fill_color=C["rhs_c"],
                            fill_opacity=0.3, stroke_color=C["rhs_c"], stroke_width=1)
             rr.move_to([ox + i * cw, 0.5, 0])
-            rt = Text(str(i), font_size=10, color=C["fg"], font="Monospace").move_to(rr)
+            rt = Text(str(i), font_size=12, color=C["fg"], font="Monospace").move_to(rr)
             rhs_tiles.add(VGroup(rr, rt))
 
         self.play(FadeIn(lhs_lbl), FadeIn(rhs_lbl),
@@ -87,13 +87,13 @@ class TiledAddAnim(Scene):
             lr = Rectangle(width=0.5, height=0.35, fill_color=C["lhs_c"],
                            fill_opacity=0.5, stroke_color=C["lhs_c"], stroke_width=1)
             lr.move_to([-1.5 + i * 0.55, -1.0, 0])
-            lt = Text(f"a{32+i}", font_size=8, color=C["fg"], font="Monospace").move_to(lr)
+            lt = Text(f"a{32+i}", font_size=12, color=C["fg"], font="Monospace").move_to(lr)
             lhs_local.add(VGroup(lr, lt))
 
             rr = Rectangle(width=0.5, height=0.35, fill_color=C["rhs_c"],
                            fill_opacity=0.5, stroke_color=C["rhs_c"], stroke_width=1)
             rr.move_to([1.0 + i * 0.55, -1.0, 0])
-            rt = Text(f"b{32+i}", font_size=8, color=C["fg"], font="Monospace").move_to(rr)
+            rt = Text(f"b{32+i}", font_size=12, color=C["fg"], font="Monospace").move_to(rr)
             rhs_local.add(VGroup(rr, rt))
 
         dots_l = Text("...", font_size=12, color=C["fg2"], font="Monospace")
@@ -136,7 +136,7 @@ class TiledAddAnim(Scene):
             rr = Rectangle(width=0.55, height=0.35, fill_color=C["out_c"],
                            fill_opacity=0.5, stroke_color=C["out_c"], stroke_width=1)
             rr.move_to([-0.9 + i * 0.6, -2.0, 0])
-            rt = Text(f"a+b", font_size=8, color=C["fg"], font="Monospace").move_to(rr)
+            rt = Text(f"a+b", font_size=12, color=C["fg"], font="Monospace").move_to(rr)
             result.add(VGroup(rr, rt))
 
         dots_o = Text("...", font_size=12, color=C["fg2"], font="Monospace")
@@ -168,7 +168,7 @@ class TiledAddAnim(Scene):
                            fill_opacity=0.15 if i != 2 else 0.7,
                            stroke_color=C["out_c"], stroke_width=1)
             rr.move_to([ox + i * cw, -3.0, 0])
-            rt = Text(str(i), font_size=10, color=C["fg"], font="Monospace").move_to(rr)
+            rt = Text(str(i), font_size=12, color=C["fg"], font="Monospace").move_to(rr)
             out_tiles.add(VGroup(rr, rt))
 
         store_arr = Arrow([0, -2.3, 0], [ox + 2 * cw, -2.7, 0],

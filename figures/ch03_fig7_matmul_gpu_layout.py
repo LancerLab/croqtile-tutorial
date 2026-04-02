@@ -35,7 +35,7 @@ class MatmulGpuLayout(Scene):
         ]
 
         for i, (text, color, indent) in enumerate(code_lines):
-            t = Text(text, font_size=10, color=color, font="Monospace")
+            t = Text(text, font_size=12, color=color, font="Monospace")
             t.move_to(LEFT * (4.5 - indent * 0.2) + UP * (1.5 - i * 0.45))
             t.align_to(LEFT * (6.5 - indent * 0.3), LEFT)
             self.add(t)
@@ -64,7 +64,7 @@ class MatmulGpuLayout(Scene):
             sm = Rectangle(width=2.2, height=1.8, fill_color=C["sm_c"],
                            fill_opacity=0.1, stroke_color=C["sm_c"], stroke_width=1)
             sm.move_to(pos)
-            sm_lbl = Text(sm_name, font_size=9, color=C["sm_c"],
+            sm_lbl = Text(sm_name, font_size=12, color=C["sm_c"],
                           font="Monospace")
             sm_lbl.move_to(sm.get_top() + DOWN * 0.15)
             self.add(sm, sm_lbl)
@@ -74,13 +74,13 @@ class MatmulGpuLayout(Scene):
                               fill_opacity=0.25, stroke_color=C["shared_c"],
                               stroke_width=1)
             smem.move_to(pos + DOWN * 0.0)
-            smem_l = Text("SMEM", font_size=7, color=C["shared_c"],
+            smem_l = Text("SMEM", font_size=12, color=C["shared_c"],
                            font="Monospace").move_to(smem)
             self.add(smem, smem_l)
 
             # Block labels
             for j, blk in enumerate(blocks):
-                bt = Text(f"block{blk}", font_size=7, color=C["orange"],
+                bt = Text(f"block{blk}", font_size=12, color=C["orange"],
                            font="Monospace")
                 bt.move_to(pos + LEFT * 0.4 + RIGHT * j * 0.9 + DOWN * 0.45)
                 self.add(bt)
@@ -97,7 +97,7 @@ class MatmulGpuLayout(Scene):
         arr1 = Arrow(LEFT * 1.5 + UP * 1.5, RIGHT * 0.0 + UP * 1.0,
                      buff=0.1, stroke_width=2, color=C["orange"],
                      max_tip_length_to_length_ratio=0.06)
-        a1_lbl = Text(": block", font_size=9, color=C["orange"],
+        a1_lbl = Text(": block", font_size=12, color=C["orange"],
                        font="Monospace")
         a1_lbl.next_to(arr1, UP, buff=0.03)
         self.add(arr1, a1_lbl)
@@ -105,7 +105,7 @@ class MatmulGpuLayout(Scene):
         arr2 = Arrow(LEFT * 1.5 + DOWN * 0.0, RIGHT * 0.0 + DOWN * 0.8,
                      buff=0.1, stroke_width=2, color=C["green"],
                      max_tip_length_to_length_ratio=0.06)
-        a2_lbl = Text(": thread", font_size=9, color=C["green"],
+        a2_lbl = Text(": thread", font_size=12, color=C["green"],
                        font="Monospace")
         a2_lbl.next_to(arr2, DOWN, buff=0.03)
         self.add(arr2, a2_lbl)
@@ -113,6 +113,6 @@ class MatmulGpuLayout(Scene):
         # Note
         note = Text("128 blocks total (8×16), each with 256 threads (16×16)\n"
                      "showing 4 SMs with 2 blocks each",
-                     font_size=9, color=C["dim"], font="Monospace")
+                     font_size=12, color=C["dim"], font="Monospace")
         note.to_edge(DOWN, buff=0.3)
         self.add(note)

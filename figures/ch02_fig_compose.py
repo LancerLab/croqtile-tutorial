@@ -46,7 +46,7 @@ class ComposeOperator(Scene):
                           stroke_color=C["orange"] if t == hl_tile else C["dim"],
                           stroke_width=2 if t == hl_tile else 0.8)
             r.move_to([ox + t * cw, vec_y, 0])
-            lbl = Text(str(t), font_size=10, color=C["fg"], font="Monospace").move_to(r)
+            lbl = Text(str(t), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             tiles.add(VGroup(r, lbl))
         self.add(tiles)
 
@@ -70,10 +70,10 @@ class ComposeOperator(Scene):
                           stroke_width=2 if i == hl_i else 0.8)
             r.move_to([(i - n_show / 2 + 0.5) * (zoom_cw + 0.02), zoom_y, 0])
             global_idx = hl_tile * tile_size + i
-            v = Text(str(global_idx), font_size=8, color=C["fg"], font="Monospace").move_to(r)
+            v = Text(str(global_idx), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             zoom_cells.add(VGroup(r, v))
 
-        dots_z = Text("... (16 elements total)", font_size=10, color=C["fg2"], font="Monospace")
+        dots_z = Text("... (16 elements total)", font_size=12, color=C["fg2"], font="Monospace")
         dots_z.next_to(zoom_cells, RIGHT, buff=0.1)
         self.add(zoom_cells, dots_z)
 
@@ -86,7 +86,7 @@ class ComposeOperator(Scene):
 
         # Local index labels
         for i in range(n_show):
-            il = Text(f"i={i}", font_size=7, color=C["fg3"], font="Monospace")
+            il = Text(f"i={i}", font_size=12, color=C["fg3"], font="Monospace")
             il.move_to([(i - n_show / 2 + 0.5) * (zoom_cw + 0.02), zoom_y - 0.3, 0])
             self.add(il)
 
@@ -105,7 +105,7 @@ class ComposeOperator(Scene):
         compose_eq.move_to([0, example_y, 0])
 
         meaning = Text("output.at(tile # i)  →  output.at(35)  →  element at position 35",
-                         font_size=11, color=C["fg2"], font="Monospace")
+                         font_size=12, color=C["fg2"], font="Monospace")
         meaning.move_to([0, example_y - 0.45, 0])
 
         self.add(ex_box, ex_title, compose_eq, meaning)

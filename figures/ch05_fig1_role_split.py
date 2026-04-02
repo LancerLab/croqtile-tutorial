@@ -74,7 +74,7 @@ class Ch05Fig1RoleSplit(Scene):
             )
             r.move_to(RIGHT * (x0 + w / 2) + UP * 0.35)
             self.add(r)
-            t = Text(lab, font_size=11, color=C["fg"], font="Monospace")
+            t = Text(lab, font_size=12, color=C["fg"], font="Monospace")
             t.move_to(r)
             self.add(t)
 
@@ -101,13 +101,13 @@ class Ch05Fig1RoleSplit(Scene):
             )
             r.move_to(RIGHT * (x0 + w / 2) + DOWN * 0.35)
             self.add(r)
-            t = Text(lab, font_size=11, color=C["fg"], font="Monospace")
+            t = Text(lab, font_size=12, color=C["fg"], font="Monospace")
             t.move_to(r)
             self.add(t)
 
         note = Text(
             "inthreads.async — structural roles; overlap is real concurrency, not a branch",
-            font_size=11,
+            font_size=12,
             color=C["fg3"],
             font="Monospace",
         )

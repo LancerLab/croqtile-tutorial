@@ -32,7 +32,7 @@ class SM86vsSM90(Scene):
             t1 = Text(threads, font_size=13, color=C["fg"], font="Monospace")
             t2 = Text(warps, font_size=12, color=C["fg3"], font="Monospace")
             sp = Text(spec, font_size=15, color=C["yellow"], font="Monospace")
-            op = Text(ops, font_size=11, color=C["fg2"], font="Monospace")
+            op = Text(ops, font_size=12, color=C["fg2"], font="Monospace")
 
             # Mini warp visualization (explicit n_threads — avoid "32" in "128")
             dots = VGroup()
@@ -54,7 +54,7 @@ class SM86vsSM90(Scene):
 
             cap = Text(
                 f"{n_threads} threads",
-                font_size=10,
+                font_size=12,
                 color=C["dim"],
                 font="Monospace",
             )
@@ -107,7 +107,7 @@ class SM86vsSM90(Scene):
 
         foot = Text(
             "Croqtile maps : group vs : group-4 to the correct register groups and barriers.",
-            font_size=11,
+            font_size=12,
             color=C["fg3"],
             font="Monospace",
         )

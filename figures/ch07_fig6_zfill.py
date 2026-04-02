@@ -31,7 +31,7 @@ class ZFill(Scene):
                 sq.move_to(origin + RIGHT * c * cell + DOWN * r * cell)
                 self.add(sq)
 
-        data_label = Text("actual data (M=6, K=8)", font_size=11, color=C["blue"], font="Monospace")
+        data_label = Text("actual data (M=6, K=8)", font_size=12, color=C["blue"], font="Monospace")
         data_label.move_to(origin + RIGHT * 3.5 * cell + UP * 0.5)
         self.add(data_label)
 
@@ -80,7 +80,7 @@ class ZFill(Scene):
         # Code at bottom
         code = Text(
             "tma.copy src.subspan(4,4).at(1,1).zfill => shared",
-            font_size=11, color=C["fg3"], font="Monospace")
+            font_size=12, color=C["fg3"], font="Monospace")
         code.to_edge(DOWN, buff=0.5)
         self.add(code)
 

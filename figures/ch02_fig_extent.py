@@ -38,7 +38,7 @@ class ExtentOperator(Scene):
                           fill_color=C["orange"], fill_opacity=0.3,
                           stroke_color=C["orange"], stroke_width=1)
             r.move_to([ox + t * cw, vec_y, 0])
-            lbl = Text(str(t), font_size=10, color=C["fg"], font="Monospace").move_to(r)
+            lbl = Text(str(t), font_size=12, color=C["fg"], font="Monospace").move_to(r)
             tiles.add(VGroup(r, lbl))
         self.add(tiles)
 
@@ -93,7 +93,7 @@ class ExtentOperator(Scene):
         # Key rule
         key = Text(
             "#name alone = extent  |  a # b = compose  — context disambiguates",
-            font_size=11, color=C["fg3"], font="Monospace"
+            font_size=12, color=C["fg3"], font="Monospace"
         )
         key.move_to(DOWN * 2.8)
         self.add(key)
