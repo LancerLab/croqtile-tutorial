@@ -817,14 +817,14 @@
   
   
     <li class="md-nav__item">
-      <a href="dense-gemm-fp16/" class="md-nav__link">
+      <a href="dense-gemm-fp16-from-naive/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dense GEMM FP16
+    Dense GEMM FP16 (from naive)
   
 
     
@@ -2333,10 +2333,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dense-gemm-fp16" class="md-nav__link">
+  <a href="#dense-gemm-fp16-from-naive-to-tuned" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dense GEMM FP16
+        Dense GEMM FP16: From Naive to Tuned
       
     </span>
   </a>
@@ -2447,8 +2447,8 @@
 <h1 id="performance-tuning-demos">Performance Tuning Demos<a class="headerlink" href="#performance-tuning-demos" title="Permanent link">&para;</a></h1>
 <p>In this part, we iteratively optimize three Croqtile GEMM kernels on H800 PCIe (SM90a, 114 SMs). Each is written as a continuous worklog: start from a correct baseline, measure against hardware limits, change one thing, re-measure, and tell the story of why each optimization works.</p>
 <p>Before diving in, skim <a href="setup-profiling/">Setting Up: TimerOption, TFLOPS, and HW Efficiency</a> for how timing and efficiency are computed — every story uses the same harness.</p>
-<h2 id="dense-gemm-fp16"><a href="dense-gemm-fp16/">Dense GEMM FP16</a><a class="headerlink" href="#dense-gemm-fp16" title="Permanent link">&para;</a></h2>
-<p>Half-precision matmul from <strong>208 → 382 TFLOPS</strong> (+83%), matching cuBLAS. Tile geometry, pipeline depth, split-output 1p2c, and the WN=168 occupancy cliff.</p>
+<h2 id="dense-gemm-fp16-from-naive-to-tuned"><a href="dense-gemm-fp16-from-naive/">Dense GEMM FP16: From Naive to Tuned</a><a class="headerlink" href="#dense-gemm-fp16-from-naive-to-tuned" title="Permanent link">&para;</a></h2>
+<p>Five-stage tutorial: naive → shared memory → Hopper TMA+WGMMA → warp specialization → production-tuned. Reaches <strong>471 TFLOPS</strong> (105% of cuBLAS) via a 28-iteration parameter sweep. Each stage introduces new Croqtile primitives with side-by-side generated CUDA. <a href="dense-gemm-fp16-from-naive/assets/matmul_tutorial_kernels.tar.gz">Download kernel source files</a>.</p>
 <h2 id="sparse-gemm-fp16-and-e4m3"><a href="sparse-gemm/">Sparse GEMM: FP16 and E4M3</a><a class="headerlink" href="#sparse-gemm-fp16-and-e4m3" title="Permanent link">&para;</a></h2>
 <p>Structured 2:4 sparse GEMM at 4096 × 8192 × 8192. FP16: <strong>368 → 655 TFLOPS</strong> (+78%). E4M3: <strong>671 → 1127 TFLOPS</strong> (+68%). Metadata delivery, the <code>.co</code> vs <code>.cu</code> boundary, and the 3-stage discontinuity.</p>
 <h2 id="block-scaled-gemm-fp8"><a href="blockscale-gemm-fp8/">Block-Scaled GEMM FP8</a><a class="headerlink" href="#block-scaled-gemm-fp8" title="Permanent link">&para;</a></h2>

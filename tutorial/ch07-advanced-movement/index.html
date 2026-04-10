@@ -991,14 +991,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../optimization/dense-gemm-fp16/" class="md-nav__link">
+      <a href="../../optimization/dense-gemm-fp16-from-naive/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dense GEMM FP16
+    Dense GEMM FP16 (from naive)
   
 
     
@@ -2747,20 +2747,19 @@ tma.copy.swiz&lt;3&gt; src =&gt; dst;       // hardware TMA with swizzle</code><
 <pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
     shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
-    shared f16 [MATMUL_STAGES * MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-    shared f16 [MATMUL_STAGES * MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s[MATMUL_STAGES];
+    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s[MATMUL_STAGES];
     shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
 
     parallel p1 by 2 : group-4 {
-
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
           stage = iv_k % MATMUL_STAGES;
           wait empty[stage];
           tma.copy.swiz&lt;3&gt; lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k)
-            =&gt; lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(stage, 0);
+            =&gt; lhs_load_s[stage];
           tma.copy.swiz&lt;3&gt; rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k)
-            =&gt; rhs_load_s.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(stage, 0);
+            =&gt; rhs_load_s[stage];
           trigger full[stage];
         }
       }
@@ -2772,8 +2771,8 @@ tma.copy.swiz&lt;3&gt; src =&gt; dst;       // hardware TMA with swizzle</code><
           stage = iv_k % MATMUL_STAGES;
           wait full[stage];
           foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-            ma = mma.load.swiz&lt;3&gt; lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(stage, 0).chunkat(_, iv_warp);
-            mb = mma.load.swiz&lt;3&gt; rhs_load_s.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(stage, 0).chunkat(_, iv_warp);
+            ma = mma.load.swiz&lt;3&gt; lhs_load_s[stage].chunkat(_, iv_warp);
+            mb = mma.load.swiz&lt;3&gt; rhs_load_s[stage].chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
           mma.commit;

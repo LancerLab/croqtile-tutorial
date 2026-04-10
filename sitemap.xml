@@ -274,11 +274,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/blockscale-gemm-fp8/"/>
     </url>
     <url>
-        <loc>https://codes1gn.github.io/croqtile-tutorial/optimization/dense-gemm-fp16/</loc>
+        <loc>https://codes1gn.github.io/croqtile-tutorial/optimization/dense-gemm-fp16-from-naive/</loc>
         <lastmod>2026-04-10</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://codes1gn.github.io/croqtile-tutorial/optimization/dense-gemm-fp16/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://codes1gn.github.io/croqtile-tutorial/optimization/dense-gemm-fp16-from-naive/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16-from-naive/"/>
     </url>
     <url>
         <loc>https://codes1gn.github.io/croqtile-tutorial/optimization/fused-moe-fp8/</loc>
@@ -652,11 +652,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://codes1gn.github.io/croqtile-tutorial/optimization/blockscale-gemm-fp8/"/>
     </url>
     <url>
-        <loc>https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16/</loc>
+        <loc>https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16-from-naive/</loc>
         <lastmod>2026-04-10</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://codes1gn.github.io/croqtile-tutorial/optimization/dense-gemm-fp16/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16-from-naive/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://codes1gn.github.io/croqtile-tutorial/optimization/dense-gemm-fp16-from-naive/"/>
     </url>
     <url>
         <loc>https://codes1gn.github.io/croqtile-tutorial/zh/optimization/fused-moe-fp8/</loc>
@@ -755,5 +755,11 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/tutorial/ch09-debug-verbose/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://codes1gn.github.io/croqtile-tutorial/tutorial/ch09-debug-verbose/"/>
+    </url>
+    <url>
+        <loc>https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16/</loc>
+        <lastmod>2026-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16/"/>
     </url>
 </urlset>

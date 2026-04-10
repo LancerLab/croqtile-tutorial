@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://codes1gn.github.io/croqtile-tutorial/optimization/sparse-gemm/">
       
       
-        <link rel="prev" href="../dense-gemm-fp16/">
+        <link rel="prev" href="../dense-gemm-fp16-from-naive/">
       
       
         <link rel="next" href="../blockscale-gemm-fp8/">
@@ -817,14 +817,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../dense-gemm-fp16/" class="md-nav__link">
+      <a href="../dense-gemm-fp16-from-naive/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dense GEMM FP16
+    Dense GEMM FP16 (from naive)
   
 
     
@@ -2669,7 +2669,7 @@
 
 <h1 id="how-to-optimize-a-croqtile-24-sparse-gemm-fp16-and-e4m3-worklog">How to Optimize a Croqtile 2:4 Sparse GEMM: FP16 and E4M3 Worklog<a class="headerlink" href="#how-to-optimize-a-croqtile-24-sparse-gemm-fp16-and-e4m3-worklog" title="Permanent link">&para;</a></h1>
 <p>In this post, I'll walk the optimization of structured 2:4 sparse GEMM on Hopper (SM90a), measured on H800 PCIe (114 SMs). One sparsity pattern, one metadata story, two math paths. The FP16 kernel goes from 368 to 655 TFLOPS; the E4M3 kernel goes from 671 to 1127 TFLOPS. The same ideas help both, but which concern binds first is different.</p>
-<p>Dense GEMM teaches TMA + WGMMA rhythm. Sparse GEMM teaches <strong>not to starve MMA while waiting on metadata</strong>. That distinction is what makes this walkthrough worth reading separately from the <a href="../dense-gemm-fp16/">dense FP16 story</a>.</p>
+<p>Dense GEMM teaches TMA + WGMMA rhythm. Sparse GEMM teaches <strong>not to starve MMA while waiting on metadata</strong>. That distinction is what makes this walkthrough worth reading separately from the <a href="dense-gemm-fp16.md">dense FP16 story</a>.</p>
 <p><strong>FP16 (4096 × 8192 × 8192, 2:4 structured sparsity):</strong></p>
 <table>
 <thead>
@@ -2780,7 +2780,7 @@
 <p><strong>Early empty, merged barriers, early arrive (E4M3).</strong> Async pipelines use empty/full phases; late signals steal overlap. iter016 (772 TFLOPS) uses early empty plus a merged barrier. iter068 (1127 TFLOPS) refines who signals when with early empty arrive. Above ~900 TFLOPS on E4M3, sync polish is worth double-digit TFLOPS.</p>
 <hr />
 <h2 id="metadata-delivery-where-sparse-diverges-from-dense">Metadata Delivery: Where Sparse Diverges from Dense<a class="headerlink" href="#metadata-delivery-where-sparse-diverges-from-dense" title="Permanent link">&para;</a></h2>
-<p>This is the section that does not exist in the <a href="../dense-gemm-fp16/">dense FP16 story</a>. Metadata is a second operand plane that you must keep fed alongside matrix data.</p>
+<p>This is the section that does not exist in the <a href="dense-gemm-fp16.md">dense FP16 story</a>. Metadata is a second operand plane that you must keep fed alongside matrix data.</p>
 <p><img alt="Metadata delivery: scalar vs TMA-staged" src="../images/MetadataBottleneck_ManimCE_v0.19.1_dark.png#only-dark" />
 <img alt="Metadata delivery: scalar vs TMA-staged" src="../images/MetadataBottleneck_ManimCE_v0.19.1_light.png#only-light" /></p>
 <p><strong>Read-only cache path.</strong> Forcing <code>__ldg</code>-style loads on metadata gives ~+0.5% on FP16. Small, but it establishes consistency across tiles.</p>

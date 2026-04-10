@@ -817,14 +817,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../dense-gemm-fp16/" class="md-nav__link">
+      <a href="../dense-gemm-fp16-from-naive/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dense GEMM FP16
+    Dense GEMM FP16 (from naive)
   
 
     
@@ -2758,7 +2758,7 @@
 <img alt="N128 vs N256 tile layout" src="../images/N256VsN128_ManimCE_v0.19.1_light.png#only-light" /></p>
 <p>SMEM impact: <code>WN=256 → (64 + 256) × 128 × 1B = 40 KB</code> per stage for operand staging. Workable on Hopper, but reduces headroom for extra pipeline stages.</p>
 <p><strong>Result:</strong> <strong>602 TFLOPS</strong> at 4096³ (+51% over baseline). But 2048³ drops to 372 TFLOPS (vs 380 on iter049) — fewer blocks cover N, the grid is coarser. N256 trades small-cube grid density for large-cube throughput.</p>
-<p>This is the same WN tradeoff as in the <a href="../dense-gemm-fp16/">dense FP16 story</a>: more math per block, fewer blocks, heavier SMEM. For block-scaled GEMM, RHS <strong>and</strong> <code>scale_rhs</code> footprint both grow with N.</p>
+<p>This is the same WN tradeoff as in the <a href="dense-gemm-fp16.md">dense FP16 story</a>: more math per block, fewer blocks, heavier SMEM. For block-scaled GEMM, RHS <strong>and</strong> <code>scale_rhs</code> footprint both grow with N.</p>
 <hr />
 <h2 id="step-3-l2-promotion-on-rhs-tma-iter053">Step 3: L2 Promotion on RHS TMA — iter053<a class="headerlink" href="#step-3-l2-promotion-on-rhs-tma-iter053" title="Permanent link">&para;</a></h2>
 <p><strong>The problem.</strong> At 4096³, RHS panels are large. TMA traffic does not always stick in L2 — lines get evicted before they can be reused across K iterations or neighboring CTAs.</p>

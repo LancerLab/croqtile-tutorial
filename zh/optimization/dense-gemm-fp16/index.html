@@ -11,14 +11,10 @@
         <link rel="canonical" href="https://codes1gn.github.io/croqtile-tutorial/zh/optimization/dense-gemm-fp16/">
       
       
-        <link rel="prev" href="../setup-profiling/">
-      
-      
-        <link rel="next" href="../sparse-gemm/">
       
       
         
-          <link rel="alternate" href="../../../optimization/dense-gemm-fp16/" hreflang="en">
+          <link rel="alternate" href="/croqtile-tutorial/" hreflang="en">
         
           <link rel="alternate" href="./" hreflang="zh">
         
@@ -29,7 +25,7 @@
     
     
       
-        <title>Dense GEMM FP16 - Croqtile</title>
+        <title>如何将鳄霸 FP16 GEMM 优化到接近 cuBLAS 的性能：一份工作日志 - Croqtile</title>
       
     
     
@@ -119,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Dense GEMM FP16
+              如何将鳄霸 FP16 GEMM 优化到接近 cuBLAS 的性能：一份工作日志
             
           </span>
         </div>
@@ -166,7 +162,7 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="../../../optimization/dense-gemm-fp16/" hreflang="en" class="md-select__link">
+            <a href="/croqtile-tutorial/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
@@ -712,8 +708,6 @@
       
   
   
-    
-  
   
   
     
@@ -737,11 +731,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -769,7 +763,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -814,44 +808,17 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Dense GEMM FP16
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../dense-gemm-fp16-from-naive/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dense GEMM FP16
+    Dense GEMM FP16 (from naive)
   
 
     
@@ -860,181 +827,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="目录">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#0" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        步骤 0：基线
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="步骤 0：基线">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        最快可能运行时间的下界
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2087" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        为何 208.7 是调度受限，而非实现错误
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        占用率算术
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#1-wn176stages2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        步骤 1：分块几何 —— WN=176，STAGES=2
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-stages3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        步骤 2：流水线深度 —— STAGES=3
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="步骤 2：流水线深度 —— STAGES=3">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        隐患：级数 × 问题规模的相互作用
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-1p2c" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        步骤 3：分离输出 1p2c
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-iter057" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        步骤 4：最佳标题数字 —— iter057
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5wn-iter061" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        步骤 5：WN 扫描与占用率断崖 —— iter061
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        编译器标志：最后一层
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        发布检查点与复现
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        结论
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2706,46 +2498,6 @@
 
   
 
-
-  <nav class="md-path" aria-label="导航栏" >
-    <ol class="md-path__list">
-      
-        
-  
-  
-    <li class="md-path__item">
-      <a href="../../" class="md-path__link">
-        
-  <span class="md-ellipsis">
-    Home
-  </span>
-
-      </a>
-    </li>
-  
-
-      
-      
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="../" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    Part II — Performance Tuning Demos
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
-    </ol>
-  </nav>
 
               
               <article class="md-content__inner md-typeset">
