@@ -731,6 +731,8 @@
       
         
       
+        
+      
     
     
     
@@ -879,6 +881,34 @@
     
   
     Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="fused-moe-fp8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fused MoE FP8
   
 
     
@@ -2335,6 +2365,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#fused-moe-fp8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fused MoE FP8
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2412,6 +2453,8 @@
 <p>Structured 2:4 sparse GEMM at 4096 × 8192 × 8192. FP16: <strong>368 → 655 TFLOPS</strong> (+78%). E4M3: <strong>671 → 1127 TFLOPS</strong> (+68%). Metadata delivery, the <code>.co</code> vs <code>.cu</code> boundary, and the 3-stage discontinuity.</p>
 <h2 id="block-scaled-gemm-fp8"><a href="blockscale-gemm-fp8/">Block-Scaled GEMM FP8</a><a class="headerlink" href="#block-scaled-gemm-fp8" title="Permanent link">&para;</a></h2>
 <p>FP8 E4M3 with per-block scaling: <strong>397 → 621 TFLOPS</strong> (+56%). TMA overlap with scale accumulation, N256 tiles, L2 promotion, and scale prefetch.</p>
+<h2 id="fused-moe-fp8"><a href="fused-moe-fp8/">Fused MoE FP8</a><a class="headerlink" href="#fused-moe-fp8" title="Permanent link">&para;</a></h2>
+<p>Fused Mixture-of-Experts end-to-end kernel for Qwen3.5-35B-A3B inference: <strong>7.11 → 13.14 TFLOPS</strong> (+85%). Kernel fusion (7→4 kernels), <code>parallel.async</code>, CUDA Graphs, L2 persistence, QSG load pipelining, and the <code>__cpp__</code> escape hatch.</p>
 
 
 
