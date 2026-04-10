@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-optimize-a-croqtile-24-sparse-gemm-fp16-and-e4m3-worklog" class="md-skip">
+        <a href="#how-to-optimize-a-croqtile-24-sparse-gemm-e4m3-worklog" class="md-skip">
           Skip to content
         </a>
       
@@ -905,10 +905,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-24-structured-sparsity-costs-you" class="md-nav__link">
+  <a href="#sparse-tensor-core-what-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What 2:4 Structured Sparsity Costs You
+        Sparse Tensor Core: What Changes
       
     </span>
   </a>
@@ -916,10 +916,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fp16-baseline-368-tflops" class="md-nav__link">
+  <a href="#what-transfers-from-dense-gemm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FP16 Baseline: 368 TFLOPS
+        What Transfers From Dense GEMM
       
     </span>
   </a>
@@ -927,10 +927,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#e4m3-baseline-671-tflops" class="md-nav__link">
+  <a href="#what-is-different" class="md-nav__link">
     <span class="md-ellipsis">
       
-        E4M3 Baseline: 671 TFLOPS
+        What Is Different
       
     </span>
   </a>
@@ -938,10 +938,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#synchronization-and-warpgroup-tuning" class="md-nav__link">
+  <a href="#metadata-prepack-the-starting-point-for-both-precisions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Synchronization and Warpgroup Tuning
+        Metadata Prepack: The Starting Point for Both Precisions
       
     </span>
   </a>
@@ -949,10 +949,155 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata-delivery-where-sparse-diverges-from-dense" class="md-nav__link">
+  <a href="#e4m3-baseline-what-we-start-with" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Metadata Delivery: Where Sparse Diverges from Dense
+        E4M3 Baseline: What We Start With
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="E4M3 Baseline: What We Start With">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ncu-snapshot-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NCU snapshot (Baseline)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-warp-specialization-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Warp Specialization + Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Warp Specialization + Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ncu-snapshot-step-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NCU snapshot (Step 1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-swizzle-and-layout-restructuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Swizzle and Layout Restructuring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Swizzle and Layout Restructuring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ncu-snapshot-step-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NCU snapshot (Step 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-barrier-decomposed-overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Barrier-Decomposed Overlap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Barrier-Decomposed Overlap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#speculative-metadata-decode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Speculative Metadata Decode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#early-buffer-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Early Buffer Release
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#depth-1-instruction-overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Depth-1 Instruction Overlap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combined-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combined Effect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e4m3-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4M3 Summary
       
     </span>
   </a>
@@ -960,43 +1105,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1p2c-and-the-3-stage-discontinuity" class="md-nav__link">
+  <a href="#fp16-path" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1p2c and the 3-Stage Discontinuity
+        FP16 Path
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FP16 Path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FP16 Baseline
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#inner-loop-epilogue-and-tile-geometry" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-step-1-warp-specialization-3-stage-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inner Loop, Epilogue, and Tile Geometry
+        FP16 Step 1: Warp Specialization + 3-Stage Pipeline
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#the-co-plateau-and-the-cu-breakthrough" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-step-2-wider-k-tma-metadata-split-rhs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The .co Plateau and the .cu Breakthrough
+        FP16 Step 2: Wider-K + TMA Metadata + Split RHS
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#what-transferred-between-dtypes" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Transferred Between Dtypes
+        FP16 Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-checkout-reproduction-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Checkout Reproduction Notes
       
     </span>
   </a>
@@ -2490,10 +2663,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-24-structured-sparsity-costs-you" class="md-nav__link">
+  <a href="#sparse-tensor-core-what-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What 2:4 Structured Sparsity Costs You
+        Sparse Tensor Core: What Changes
       
     </span>
   </a>
@@ -2501,10 +2674,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fp16-baseline-368-tflops" class="md-nav__link">
+  <a href="#what-transfers-from-dense-gemm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FP16 Baseline: 368 TFLOPS
+        What Transfers From Dense GEMM
       
     </span>
   </a>
@@ -2512,10 +2685,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#e4m3-baseline-671-tflops" class="md-nav__link">
+  <a href="#what-is-different" class="md-nav__link">
     <span class="md-ellipsis">
       
-        E4M3 Baseline: 671 TFLOPS
+        What Is Different
       
     </span>
   </a>
@@ -2523,10 +2696,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#synchronization-and-warpgroup-tuning" class="md-nav__link">
+  <a href="#metadata-prepack-the-starting-point-for-both-precisions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Synchronization and Warpgroup Tuning
+        Metadata Prepack: The Starting Point for Both Precisions
       
     </span>
   </a>
@@ -2534,10 +2707,155 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata-delivery-where-sparse-diverges-from-dense" class="md-nav__link">
+  <a href="#e4m3-baseline-what-we-start-with" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Metadata Delivery: Where Sparse Diverges from Dense
+        E4M3 Baseline: What We Start With
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="E4M3 Baseline: What We Start With">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ncu-snapshot-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NCU snapshot (Baseline)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-warp-specialization-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Warp Specialization + Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Warp Specialization + Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ncu-snapshot-step-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NCU snapshot (Step 1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-swizzle-and-layout-restructuring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Swizzle and Layout Restructuring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Swizzle and Layout Restructuring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ncu-snapshot-step-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NCU snapshot (Step 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-barrier-decomposed-overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Barrier-Decomposed Overlap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Barrier-Decomposed Overlap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#speculative-metadata-decode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Speculative Metadata Decode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#early-buffer-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Early Buffer Release
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#depth-1-instruction-overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Depth-1 Instruction Overlap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combined-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combined Effect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e4m3-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4M3 Summary
       
     </span>
   </a>
@@ -2545,43 +2863,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1p2c-and-the-3-stage-discontinuity" class="md-nav__link">
+  <a href="#fp16-path" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1p2c and the 3-Stage Discontinuity
+        FP16 Path
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FP16 Path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FP16 Baseline
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#inner-loop-epilogue-and-tile-geometry" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-step-1-warp-specialization-3-stage-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inner Loop, Epilogue, and Tile Geometry
+        FP16 Step 1: Warp Specialization + 3-Stage Pipeline
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#the-co-plateau-and-the-cu-breakthrough" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-step-2-wider-k-tma-metadata-split-rhs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The .co Plateau and the .cu Breakthrough
+        FP16 Step 2: Wider-K + TMA Metadata + Split RHS
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#what-transferred-between-dtypes" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fp16-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Transferred Between Dtypes
+        FP16 Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-checkout-reproduction-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Checkout Reproduction Notes
       
     </span>
   </a>
@@ -2667,224 +3013,816 @@
   
 
 
-<h1 id="how-to-optimize-a-croqtile-24-sparse-gemm-fp16-and-e4m3-worklog">How to Optimize a Croqtile 2:4 Sparse GEMM: FP16 and E4M3 Worklog<a class="headerlink" href="#how-to-optimize-a-croqtile-24-sparse-gemm-fp16-and-e4m3-worklog" title="Permanent link">&para;</a></h1>
-<p>In this post, I'll walk the optimization of structured 2:4 sparse GEMM on Hopper (SM90a), measured on H800 PCIe (114 SMs). One sparsity pattern, one metadata story, two math paths. The FP16 kernel goes from 368 to 655 TFLOPS; the E4M3 kernel goes from 671 to 1127 TFLOPS. The same ideas help both, but which concern binds first is different.</p>
-<p>Dense GEMM teaches TMA + WGMMA rhythm. Sparse GEMM teaches <strong>not to starve MMA while waiting on metadata</strong>. That distinction is what makes this walkthrough worth reading separately from the <a href="dense-gemm-fp16.md">dense FP16 story</a>.</p>
-<p><strong>FP16 (4096 × 8192 × 8192, 2:4 structured sparsity):</strong></p>
+<h1 id="how-to-optimize-a-croqtile-24-sparse-gemm-e4m3-worklog">How to Optimize a Croqtile 2:4 Sparse GEMM: E4M3 Worklog<a class="headerlink" href="#how-to-optimize-a-croqtile-24-sparse-gemm-e4m3-worklog" title="Permanent link">&para;</a></h1>
+<p><em>April 2026 · GPU: NVIDIA H800 PCIe (SM90a, 114 SMs) · Precision: E4M3 · Problem: 4096×8192×8192, 2:4 structured sparsity</em></p>
+<hr />
+<p>This worklog picks up where the <a href="../dense-gemm-fp16-from-naive/">dense FP16 tutorial</a> left off. That tutorial taught the Hopper producer–consumer rhythm: TMA, WGMMA, warp specialization, pipeline staging. Sparse GEMM inherits all of that, but adds one more operand path — <strong>metadata</strong> — that changes the bottleneck ranking and the optimization sequence.</p>
+<p>The E4M3 optimization path starts from a prepack baseline and reaches the final tuned kernel through three structural steps:</p>
 <table>
 <thead>
 <tr>
 <th>Step</th>
 <th>Kernel</th>
-<th>TFLOPS</th>
+<th style="text-align: right;">TFLOPS</th>
 <th>Δ vs baseline</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>0</td>
-<td>Baseline: 1p1c, TK64, 2-stage</td>
-<td>368</td>
+<td>Baseline</td>
+<td>prepack, swizzle32/64, no warpspec</td>
+<td style="text-align: right;">430</td>
 <td>—</td>
 </tr>
 <tr>
 <td>1</td>
-<td>Best <code>.co</code>: 1p2c + 3-stage (iter120)</td>
-<td>434</td>
-<td>+18%</td>
+<td>Warp specialization: 1P2C, 2-stage</td>
+<td style="text-align: right;">586</td>
+<td>+36%</td>
 </tr>
 <tr>
 <td>2</td>
-<td>Hand <code>.cu</code>: inner unroll 24 + FTZ (iter137)</td>
-<td>543</td>
-<td>+47%</td>
+<td>Swizzle + TK128: swizzle64/128, TK128</td>
+<td style="text-align: right;">718</td>
+<td>+67%</td>
 </tr>
 <tr>
 <td>3</td>
-<td>TK128, TMA metadata, split RHS TMA (iter143)</td>
-<td><strong>655</strong></td>
-<td><strong>+78%</strong></td>
+<td>Barrier-decomposed overlap</td>
+<td style="text-align: right;"><strong>1,401</strong></td>
+<td><strong>+226%</strong></td>
 </tr>
 </tbody>
 </table>
-<p><strong>E4M3 (same shape):</strong></p>
+<p>Each step delivers a measurable improvement over the previous one, and each one builds the foundation that the next step requires.</p>
+<div class="admonition tip">
+<p class="admonition-title">Prerequisites</p>
+<p>This worklog assumes familiarity with the dense GEMM tutorial's concepts: TMA, WGMMA, warp specialization, pipeline staging, and the <code>shared event</code> / <code>wait</code> / <code>trigger</code> vocabulary. If those are new, read the <a href="../dense-gemm-fp16-from-naive/">dense FP16 worklog</a> first.</p>
+</div>
+<hr />
+<h2 id="sparse-tensor-core-what-changes">Sparse Tensor Core: What Changes<a class="headerlink" href="#sparse-tensor-core-what-changes" title="Permanent link">&para;</a></h2>
+<p>On Hopper, the <strong>Sparse Tensor Core</strong> path is exposed through warpgroup-level sparse WGMMA instructions (<code>wgmma.mma_async.sp</code>). The key contract:</p>
+<ul>
+<li>The <strong>A/LHS operand</strong> must satisfy <strong>2:4 structured sparsity</strong>: every contiguous group of 4 elements keeps exactly 2 nonzeros.</li>
+<li>The hardware consumes a <strong>compressed data matrix</strong> (50% of original A) and a <strong>metadata matrix</strong> that encodes the two nonzero positions per group using 2-bit indices.</li>
+<li>The dense B/RHS operand is unchanged.</li>
+</ul>
+<p>This means a sparse GEMM kernel must manage <strong>three</strong> data paths instead of two:</p>
 <table>
 <thead>
 <tr>
-<th>Step</th>
-<th>Kernel</th>
-<th>TFLOPS</th>
-<th>Δ vs baseline</th>
+<th>Path</th>
+<th>Dense GEMM</th>
+<th>Sparse GEMM</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>0</td>
-<td>Baseline: 1p1c, swizzle 128/128, 2-stage</td>
-<td>671</td>
+<td>LHS operand</td>
+<td>dense A tile via TMA</td>
+<td><strong>compressed</strong> A tile via TMA</td>
+</tr>
+<tr>
+<td>RHS operand</td>
+<td>dense B tile via TMA</td>
+<td>dense B tile via TMA (unchanged)</td>
+</tr>
+<tr>
+<td>Metadata</td>
 <td>—</td>
-</tr>
-<tr>
-<td>1</td>
-<td>TMA metadata staging (iter001)</td>
-<td>759</td>
-<td>+13%</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Early empty + merged barrier (iter016)</td>
-<td>772</td>
-<td>+15%</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Software pipeline + warpgroup_wait (iter023)</td>
-<td>811</td>
-<td>+21%</td>
-</tr>
-<tr>
-<td>4</td>
-<td>1p2c (iter036)</td>
-<td>897</td>
-<td>+34%</td>
-</tr>
-<tr>
-<td>5</td>
-<td>3-stage pipeline (iter040)</td>
-<td>1090</td>
-<td>+62%</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Early empty arrive (iter068)</td>
-<td><strong>1127</strong></td>
-<td><strong>+68%</strong></td>
+<td><strong>metadata tile</strong> (new)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="what-24-structured-sparsity-costs-you">What 2:4 Structured Sparsity Costs You<a class="headerlink" href="#what-24-structured-sparsity-costs-you" title="Permanent link">&para;</a></h2>
-<p>Along the sparse axis (K in the weight-like operand), every four consecutive values keep two nonzeros; the other two are zero. Hardware uses <strong>metadata</strong> — small index arrays that tell the sparse MMA path which lanes are live — so the core fetches packed nonzeros instead of pretending the matrix is dense.</p>
+<p>The metadata path is small (2 KB per K-step for the default tile), but it touches a different memory region and has different latency characteristics than the operand tiles. Managing it well is the central sparse-specific optimization challenge.</p>
 <p><img alt="2:4 sparsity pattern and metadata" src="../images/SparsityPattern_ManimCE_v0.19.1_dark.png#only-dark" />
 <img alt="2:4 sparsity pattern and metadata" src="../images/SparsityPattern_ManimCE_v0.19.1_light.png#only-light" /></p>
-<p>You get 2× compression along K on the sparse side. The tradeoff is explicit: <strong>metadata traffic</strong> and <strong>instruction overhead</strong> ride alongside operand traffic. Metadata is small per tile, but it is touched every K iteration. Scalar loads that miss L2 behave like pointer chasing next to wide TMA — that is why vectorizing and hoisting metadata loads later produces measurable gains.</p>
+<h2 id="what-transfers-from-dense-gemm">What Transfers From Dense GEMM<a class="headerlink" href="#what-transfers-from-dense-gemm" title="Permanent link">&para;</a></h2>
+<p>Most of the dense Hopper playbook still applies:</p>
+<ul>
+<li><strong>Warp specialization</strong> so producers and consumers overlap</li>
+<li><strong>TMA</strong> to move big tiles instead of scalar global loads</li>
+<li><strong>Pipeline stages</strong> to keep the producer ahead of the consumer</li>
+<li><strong>1P2C</strong> (1 producer, 2 consumers) once the consumer side becomes the limiter</li>
+</ul>
+<p>The <a href="../dense-gemm-fp16-from-naive/">dense FP16 worklog</a> is the prerequisite, because sparse GEMM inherits the same scheduling vocabulary. What changes is the bottleneck ranking: after Sparse Tensor Core is enabled, the next question is often not "is WGMMA fed?" but "is metadata arriving early enough?"</p>
+<h2 id="what-is-different">What Is Different<a class="headerlink" href="#what-is-different" title="Permanent link">&para;</a></h2>
+<p><strong>Sparse Tensor Core</strong> adds one more design axis on top of the dense recipe:</p>
+<ol>
+<li><strong>Operand preparation.</strong> The sparse LHS is not consumed as a normal dense tile. It must be compressed into values + metadata before the kernel runs.</li>
+<li><strong>Memory traffic.</strong> A small metadata tile is touched every K-iteration. Even though metadata is compact, repeated scalar loads can become the critical path.</li>
+<li><strong>Synchronization.</strong> If metadata is staged separately from operand tiles, barriers and wait placement start to matter sooner.</li>
+</ol>
+<p>This is why the first sparse-specific optimization is <strong>metadata prepack</strong> (<code>--use-prepack</code>): pack metadata into the layout expected by the Sparse Tensor Core fast path before runtime.</p>
+<h2 id="metadata-prepack-the-starting-point-for-both-precisions">Metadata Prepack: The Starting Point for Both Precisions<a class="headerlink" href="#metadata-prepack-the-starting-point-for-both-precisions" title="Permanent link">&para;</a></h2>
+<p>Before any tiling or pipeline optimization, the first universal step is to use <code>--use-prepack</code> so that the metadata layout matches what <code>wgmma.sp</code> expects. Without prepack, metadata must be transformed on the fly inside the inner loop, wasting issue bandwidth on address computation that the hardware could skip.</p>
+<p>In practical terms:</p>
+<ul>
+<li>Dense GEMM only has to deliver A/B tiles</li>
+<li>Sparse GEMM has to deliver <strong>compressed A tiles + metadata tiles</strong></li>
+<li><code>--use-prepack</code> is the cheapest general optimization because it improves metadata delivery before touching the schedule</li>
+</ul>
+<p>The E4M3 optimization starting point is <code>gemm_sp_e4m3_dynamic_sm90_swizzle32_64_prepack.co</code>, and the FP16 starting point is <code>gemm_sp_f16_dynamic_sm90_swizzle64_128_prepack.co</code>.</p>
+<p>Both are simple kernels with <strong>no</strong> warp specialization — a single warpgroup, synchronous TMA, and metadata loaded from global memory via <code>mma.load</code>:</p>
+<pre class="highlight"><code class="language-bash"># E4M3 baseline
+./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+  benchmark/performance/gemm_sp/gemm_sp_e4m3_dynamic_sm90_swizzle32_64_prepack.co \
+  -o /tmp/e4m3_baseline.cute.result
+CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_baseline.cute.result --execute</code></pre>
+<pre class="highlight"><code class="language-bash"># FP16 baseline
+./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+  benchmark/performance/gemm_sp/gemm_sp_f16_dynamic_sm90_swizzle64_128_prepack.co \
+  -o /tmp/f16_baseline.cute.result
+CUDA_VISIBLE_DEVICES=0 bash /tmp/f16_baseline.cute.result --execute</code></pre>
+<p>With prepack baselines established, the two precisions diverge. The rest of this worklog covers <strong>E4M3</strong> first, then <strong>FP16</strong>.</p>
 <hr />
-<h2 id="fp16-baseline-368-tflops">FP16 Baseline: 368 TFLOPS<a class="headerlink" href="#fp16-baseline-368-tflops" title="Permanent link">&para;</a></h2>
-<p>The starting kernel uses 1p1c warp specialization, swizzle 64 on LHS packing, TK=64, and a 2-stage operand ring. At 368 TFLOPS the schedule is not broken — it is <strong>shallow</strong> and <strong>metadata-conservative</strong>. TK64 and two stages leave little slack to hide metadata latency next to the math path.</p>
-<h2 id="e4m3-baseline-671-tflops">E4M3 Baseline: 671 TFLOPS<a class="headerlink" href="#e4m3-baseline-671-tflops" title="Permanent link">&para;</a></h2>
-<p>The E4M3 baseline reflects stronger FP8-oriented choices from the start: 1p1c, swizzle 128/128 on both sides, prepacked sparse operand, and 2-stage pipeline. 671 TFLOPS is roughly 22% of the 3026 TFLOPS FP8 peak — a reasonable starting point before deep staging.</p>
-<hr />
-<h2 id="synchronization-and-warpgroup-tuning">Synchronization and Warpgroup Tuning<a class="headerlink" href="#synchronization-and-warpgroup-tuning" title="Permanent link">&para;</a></h2>
-<p>Before widening tiles or adding stages, check that warpgroup-level waits are not over-serialized. It is the cheapest thing to fix.</p>
-<p><strong>Fine-grained waits.</strong> Producer and consumer warpgroups coordinate through async proxies and barriers. Coarse waits leave lanes idle while data is already ready. Tightening to <code>warpgroup_wait&lt;1&gt;</code> — the smallest sufficient wait depth — gives ~+4% on FP16 and is part of the E4M3 iter023 jump (811 TFLOPS, combining software pipelining with fine-grained waits).</p>
-<p><strong>MMA batch configuration.</strong> Hopper WGMMA splits work across batches of K fragments. A poor split underfeeds tensor cores relative to operand delivery. <code>--wgmma-split-batch</code> gives ~+5% on FP16. If Nsight shows WGMMA issue slots gapping while SMEM is ready, revisit batching before blaming TMA.</p>
-<p><strong>Early empty, merged barriers, early arrive (E4M3).</strong> Async pipelines use empty/full phases; late signals steal overlap. iter016 (772 TFLOPS) uses early empty plus a merged barrier. iter068 (1127 TFLOPS) refines who signals when with early empty arrive. Above ~900 TFLOPS on E4M3, sync polish is worth double-digit TFLOPS.</p>
-<hr />
-<h2 id="metadata-delivery-where-sparse-diverges-from-dense">Metadata Delivery: Where Sparse Diverges from Dense<a class="headerlink" href="#metadata-delivery-where-sparse-diverges-from-dense" title="Permanent link">&para;</a></h2>
-<p>This is the section that does not exist in the <a href="dense-gemm-fp16.md">dense FP16 story</a>. Metadata is a second operand plane that you must keep fed alongside matrix data.</p>
-<p><img alt="Metadata delivery: scalar vs TMA-staged" src="../images/MetadataBottleneck_ManimCE_v0.19.1_dark.png#only-dark" />
-<img alt="Metadata delivery: scalar vs TMA-staged" src="../images/MetadataBottleneck_ManimCE_v0.19.1_light.png#only-light" /></p>
-<p><strong>Read-only cache path.</strong> Forcing <code>__ldg</code>-style loads on metadata gives ~+0.5% on FP16. Small, but it establishes consistency across tiles.</p>
-<p><strong>Vectorization and hoisting.</strong> Three changes that form one story — how metadata reaches registers before MMA consumes it:</p>
+<h2 id="e4m3-baseline-what-we-start-with">E4M3 Baseline: What We Start With<a class="headerlink" href="#e4m3-baseline-what-we-start-with" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>gemm_sp_e4m3_dynamic_sm90_swizzle32_64_prepack.co</code></p>
+<p>The baseline kernel is the simplest sparse E4M3 kernel that compiles and runs correctly with metadata prepack. Its configuration:</p>
 <table>
 <thead>
 <tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SPMM_WARP_M</code></td>
+<td>64</td>
+<td>WGMMA M dimension</td>
+</tr>
+<tr>
+<td><code>SPMM_WARP_N</code></td>
+<td>256</td>
+<td>WGMMA N dimension</td>
+</tr>
+<tr>
+<td><code>SPMM_TILE_K</code></td>
+<td>64</td>
+<td>K-tile loaded per TMA transfer</td>
+</tr>
+<tr>
+<td><code>SPMM_WARP_K</code></td>
+<td>64</td>
+<td>K-step per WGMMA instruction</td>
+</tr>
+<tr>
+<td><code>SPMM_LHS_SWIZ</code></td>
+<td>32</td>
+<td>Narrow swizzle for compressed LHS</td>
+</tr>
+<tr>
+<td><code>SPMM_RHS_SWIZ</code></td>
+<td>64</td>
+<td>Swizzle for dense RHS</td>
+</tr>
+<tr>
+<td>Warp specialization</td>
+<td><strong>none</strong></td>
+<td>Single warpgroup, synchronous path</td>
+</tr>
+<tr>
+<td>Pipeline stages</td>
+<td><strong>1</strong></td>
+<td>No software pipelining</td>
+</tr>
+</tbody>
+</table>
+<p>The kernel function:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void spmm(global f8_e4m3 [M, PACKED_K] lhs_packed,
+                 global u32 [M, META_COLS] lhs_meta,
+                 global f8_e4m3 [N, K] rhs,
+                 global f16 [M, N] output) {
+  parallel {block_m, block_n}
+      by [cdiv(M, SPMM_WARP_M), cdiv(N, SPMM_WARP_N)] : block {
+    shared f8_e4m3 [SPMM_WARP_M, SPMM_PACKED_TILE_K] lhs_load_s;
+    shared f8_e4m3 [SPMM_WARP_N, SPMM_TILE_K] rhs_load_s;
+    mc = mma.fill.f16 0.0f;
+    foreach {iv_k} in [cdiv(K, SPMM_TILE_K)] {
+      tma.copy.swiz&lt;SPMM_LHS_SWIZ&gt; lhs_packed
+          .subspan(SPMM_WARP_M, SPMM_PACKED_TILE_K)
+          .at(block_m, iv_k) =&gt; lhs_load_s;
+      tma.copy.swiz&lt;SPMM_RHS_SWIZ&gt; rhs
+          .subspan(SPMM_WARP_N, SPMM_TILE_K)
+          .at(block_n, iv_k) =&gt; rhs_load_s;
+      foreach {iv_warp} in [cdiv(SPMM_TILE_K, SPMM_WARP_K)] {
+        parallel p by 1 : group-4 {
+          ma = mma.load.swiz&lt;SPMM_LHS_SWIZ&gt; lhs_load_s.chunkat(_, iv_warp);
+          mb = mma.load.swiz&lt;SPMM_RHS_SWIZ&gt; rhs_load_s.chunkat(_, iv_warp);
+          me = mma.load lhs_meta
+              .subspan(SPMM_WARP_M, SPMM_META_TILE_COLS)
+              .at(block_m, iv_k);
+          mma.row.row.sp mc, ma, mb, me;
+        }
+      }
+    }
+    shared f16 [SPMM_WARP_M, SPMM_WARP_N] output_s;
+    mma.store mc, output_s;
+    tma.copy output_s =&gt; output.subspan(SPMM_WARP_M, SPMM_WARP_N)
+        .at(block_m, block_n);
+  }
+}</code></pre>
+<p><strong>New concept vs dense GEMM:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Construct</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>global u32 [M, META_COLS] lhs_meta</code></td>
+<td>Metadata tensor in global memory. Prepacked layout where each <code>u32</code> encodes 16 × 2-bit position indices.</td>
+</tr>
+<tr>
+<td><code>me = mma.load lhs_meta...</code></td>
+<td>Load metadata for the current K-step from global memory into registers.</td>
+</tr>
+<tr>
+<td><code>mma.row.row.sp mc, ma, mb, me</code></td>
+<td><strong>Sparse</strong> WGMMA: uses <code>wgmma.mma_async.sp</code> under the hood. The <code>.sp</code> suffix tells the Tensor Core to consume compressed A + metadata instead of dense A.</td>
+</tr>
+</tbody>
+</table>
+<p>Compared to the dense GEMM baseline (v2 in the dense tutorial), the structure is identical except for the third operand <code>me</code>. The kernel loads compressed LHS and dense RHS via TMA, loads metadata from global memory, and issues sparse WGMMA.</p>
+<p><strong>Result: ~430 TFLOPS (14.2% HW efficiency)</strong></p>
+<h3 id="ncu-snapshot-baseline">NCU snapshot (Baseline)<a class="headerlink" href="#ncu-snapshot-baseline" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code>gpu__time_duration               :   ~1.28 ms
+sm__throughput   (% of peak)     :  25.30%
+dram__throughput (% of peak)     :   8.06%
+pipe_tensor_hmma (% of peak)     :  ~25%
+pipe_tensor instructions         :   1,056,768
+global ld sectors                :  16,777,216</code></pre>
+<p>DRAM throughput at only 8% means the TMA engine is grossly underutilized — the synchronous copy path blocks the entire warpgroup while data transfers. SM throughput at 25% and tensor core utilization around the same level confirm that the kernel spends most of its time waiting. The kernel has all the same problems as v2 in the dense tutorial (TMA and WGMMA serialized, no pipelining) plus an extra problem: metadata loads from global memory inside the hot loop.</p>
+<hr />
+<h2 id="step-1-warp-specialization-pipeline">Step 1: Warp Specialization + Pipeline<a class="headerlink" href="#step-1-warp-specialization-pipeline" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>gemm_sp_e4m3_dyn_sm90_warpspec_1p2c_swizzle32_64_prepack.co</code> (modified to 2-stage)</p>
+<p>Just like in the dense GEMM tutorial, the first structural optimization is to introduce <strong>warp specialization</strong> and <strong>multi-stage pipelining</strong>. The logic is identical: the single-warpgroup baseline serializes TMA and WGMMA, so we split them into a producer warpgroup (TMA) and consumer warpgroups (WGMMA) connected by a software ring buffer.</p>
+<p>The key configuration changes from the baseline:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Baseline</th>
+<th>Step 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SPMM_TILE_M</code></td>
+<td>64 (= WARP_M)</td>
+<td><strong>128</strong> (= 2 × WARP_M)</td>
+</tr>
+<tr>
+<td>Pipeline stages</td>
+<td>1</td>
+<td><strong>2</strong></td>
+</tr>
+<tr>
+<td>Consumers</td>
+<td>1</td>
+<td><strong>2</strong> (1P2C)</td>
+</tr>
+<tr>
+<td>Swizzle</td>
+<td>32/64</td>
+<td>32/64 (unchanged)</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-choreo">__co__ void spmm(global f8_e4m3 [M, PACKED_K] lhs_packed,
+                 global u32 [M, META_COLS] lhs_meta,
+                 global f8_e4m3 [N, K] rhs,
+                 global f16 [M, N] output) {
+  parallel {block_m, block_n}
+      by [cdiv(M, SPMM_TILE_M), cdiv(N, SPMM_WARP_N)] : block {
+    shared event full[2], empty[2];
+    shared f8_e4m3 [2 * SPMM_TILE_M, SPMM_PACKED_TILE_K] lhs_load_s;
+    shared f8_e4m3 [2 * SPMM_WARP_N, SPMM_TILE_K] rhs_load_s;
+    shared f16 [SPMM_TILE_M, SPMM_WARP_N] output_s;
+
+    parallel p1 by 3 : group-4, t by 128 : thread {
+      // ── Producer (p1=0): TMA loads ──
+      inthreads.async (p1 == 0 &amp;&amp; t == 0) {
+        foreach {iv_k} in [cdiv(K, SPMM_TILE_K)] {
+          stage = iv_k % 2;
+          wait empty[stage];
+          tma.copy.async&lt;full[stage]&gt;.swiz&lt;SPMM_LHS_SWIZ&gt; lhs_packed
+              .subspan(SPMM_TILE_M, SPMM_PACKED_TILE_K)
+              .at(block_m, iv_k)
+              =&gt; lhs_load_s.subspan(SPMM_TILE_M, SPMM_PACKED_TILE_K)
+                  .at(stage, 0);
+          tma.copy.async&lt;full[stage]&gt;.swiz&lt;SPMM_RHS_SWIZ&gt; rhs
+              .subspan(SPMM_WARP_N, SPMM_TILE_K)
+              .at(block_n, iv_k)
+              =&gt; rhs_load_s.subspan(SPMM_WARP_N, SPMM_TILE_K)
+                  .at(stage, 0);
+          trigger full[stage];
+        }
+      }
+
+      // ── Consumers (p1&gt;0): sparse WGMMA ──
+      inthreads.async (p1 &gt; 0) {
+        mc = mma.fill.f16 0.0f;
+        foreach {s} in [2] { trigger empty[s]; }
+        foreach {iv_k} in [cdiv(K, SPMM_TILE_K)] {
+          stage = iv_k % 2;
+          wait full[stage];
+          foreach {iv_warp} in [cdiv(SPMM_TILE_K, SPMM_WARP_K)] {
+            ma = mma.load.swiz&lt;SPMM_LHS_SWIZ&gt; lhs_load_s
+                .subspan(SPMM_TILE_M, SPMM_PACKED_TILE_K)
+                .at(stage, 0)
+                .subspan(SPMM_WARP_M, SPMM_PACKED_TILE_K)
+                .at(p1 - 1, 0)
+                .chunkat(_, iv_warp);
+            mb = mma.load.swiz&lt;SPMM_RHS_SWIZ&gt; rhs_load_s
+                .subspan(SPMM_WARP_N, SPMM_TILE_K)
+                .at(stage, 0)
+                .chunkat(_, iv_warp);
+            me = mma.load lhs_meta
+                .subspan(SPMM_TILE_M, SPMM_META_TILE_COLS)
+                .at(block_m, iv_k)
+                .subspan(SPMM_WARP_M, 1)
+                .at(p1 - 1, iv_warp);
+            mma.row.row.sp mc, ma, mb, me;
+          }
+          mma.commit;
+          trigger empty[stage];
+        }
+        mma.store mc,
+            output_s.subspan(SPMM_WARP_M, SPMM_WARP_N).at(p1 - 1, 0);
+      }
+    }
+
+    tma.copy output_s =&gt; output.subspan(SPMM_TILE_M, SPMM_WARP_N)
+        .at(block_m, block_n);
+  }
+}</code></pre>
+<p>This is the exact same structural move as v3→v4 in the dense tutorial:</p>
+<ul>
+<li><code>parallel p1 by 3 : group-4</code> spawns 3 warpgroups (1 producer + 2 consumers)</li>
+<li><code>shared event full[2], empty[2]</code> creates a 2-stage ring buffer (double-buffering)</li>
+<li>The producer runs the K-loop independently, issuing async TMA loads</li>
+<li>Both consumers process the same stage but on different M-tile halves (<code>p1 - 1</code> selects top/bottom)</li>
+<li>Metadata is still loaded from global memory (<code>mma.load lhs_meta...</code>) inside the consumer loop</li>
+</ul>
+<p>We start with 2-stage rather than deeper pipelining because it is the simplest configuration that demonstrates the producer–consumer overlap benefit while keeping shared memory usage reasonable.</p>
+<p>Compile and run:</p>
+<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+  benchmark/performance/gemm_sp/gemm_sp_e4m3_dyn_sm90_warpspec_1p2c_swizzle32_64_prepack.co \
+  -o /tmp/e4m3_step1.cute.result
+CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_step1.cute.result --execute</code></pre>
+<p><strong>Result: ~586 TFLOPS (+36% vs baseline, 19.4% HW efficiency)</strong></p>
+<h3 id="ncu-snapshot-step-1">NCU snapshot (Step 1)<a class="headerlink" href="#ncu-snapshot-step-1" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code>gpu__time_duration               :   1.28 ms
+sm__throughput   (% of peak)     :  24.44%
+dram__throughput (% of peak)     :  12.52%
+pipe_tensor_hmma (% of peak)     :  23.11%
+pipe_tensor instructions         :   1,048,576
+global ld sectors                :  16,777,216</code></pre>
+<p>The improvement comes from the same mechanisms as the dense tutorial: warp specialization decouples producer and consumer, double-buffering lets the producer prefetch the next tile while consumers compute, and 1P2C doubles the consumer-side compute capacity. But tensor core utilization is only 23% — the kernel spends too much time in loop overhead because <code>TK64</code> forces 128 K-steps for K=8192, and the narrow swizzle32/64 layout does not match the optimal TMA access pattern for this data type.</p>
+<hr />
+<h2 id="step-2-swizzle-and-layout-restructuring">Step 2: Swizzle and Layout Restructuring<a class="headerlink" href="#step-2-swizzle-and-layout-restructuring" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>gemm_sp_e4m3_dyn_sm90_warpspec_1p2c_swizzle128_128_prepack.co</code></p>
+<p>Before we can apply the advanced sparse optimizations (barrier decomposition, decoupled metadata staging), the memory layout must be restructured. The narrow <code>swizzle32/64</code> layout from Step 1 does not support the wider K-tile and per-operand barrier design that the final kernel requires.</p>
+<p>The key changes:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Step 1</th>
+<th>Step 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SPMM_TILE_K</code></td>
+<td>64</td>
+<td><strong>128</strong></td>
+</tr>
+<tr>
+<td><code>SPMM_PACKED_TILE_K</code></td>
+<td>32</td>
+<td><strong>64</strong></td>
+</tr>
+<tr>
+<td><code>SPMM_LHS_SWIZ</code></td>
+<td>32</td>
+<td><strong>64</strong></td>
+</tr>
+<tr>
+<td><code>SPMM_RHS_SWIZ</code></td>
+<td>64</td>
+<td><strong>128</strong></td>
+</tr>
+<tr>
+<td><code>SPMM_STAGES</code></td>
+<td>2</td>
+<td>2 (unchanged)</td>
+</tr>
+<tr>
+<td><code>SPMM_META_TILE_COLS</code></td>
+<td>2</td>
+<td><strong>4</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Why these changes matter:</p>
+<ol>
+<li>
+<p><strong>Wider K-tile (TK128).</strong> Doubling <code>TILE_K</code> from 64 to 128 halves the K-loop trip count, which means fewer metadata loads and fewer barrier round-trips. Each K-step now does more useful work.</p>
+</li>
+<li>
+<p><strong>Wider swizzle (B64 LHS, B128 RHS).</strong> The <code>wgmma.sp</code> instruction reads the compressed LHS with a K-major access pattern. For E4M3 (1 byte per element), the access stride is 64 bytes, matching B64 swizzle. The dense RHS always benefits from B128 swizzle regardless of data type. Without proper swizzle alignment, shared memory bank conflicts can reduce effective bandwidth by up to 32×.</p>
+</li>
+<li>
+<p><strong>Wider metadata tile.</strong> <code>SPMM_META_TILE_COLS</code> grows from 2 to 4, matching the doubled K-tile so that metadata covers the full TK128 step.</p>
+</li>
+</ol>
+<p>The kernel structure is identical to Step 1 — only the defines change. The Croqtile compiler regenerates the correct TMA tensor descriptors, swizzle layouts, and mbarrier counts automatically for the new tile shape.</p>
+<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+  benchmark/performance/gemm_sp/gemm_sp_e4m3_dyn_sm90_warpspec_1p2c_swizzle128_128_prepack.co \
+  -o /tmp/e4m3_step2.cute.result
+CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_step2.cute.result --execute</code></pre>
+<p><strong>Result: ~718 TFLOPS (+67% vs baseline, +23% vs Step 1, 23.7% HW efficiency)</strong></p>
+<h3 id="ncu-snapshot-step-2">NCU snapshot (Step 2)<a class="headerlink" href="#ncu-snapshot-step-2" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code>gpu__time_duration               :   0.876 ms
+sm__throughput   (% of peak)     :  34.16%
+dram__throughput (% of peak)     :  18.35%
+pipe_tensor_hmma (% of peak)     :  32.16%
+pipe_tensor instructions         :   1,048,576
+global ld sectors                :  16,777,216</code></pre>
+<p>Comparing the NCU numbers between Step 1 and Step 2 reveals the improvement mechanism:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Step 1 (swizzle32, TK64)</th>
+<th style="text-align: right;">Step 2 (swizzle64/128, TK128)</th>
 <th>Change</th>
-<th>FP16 Δ</th>
-<th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>L2/128B-oriented grouping</td>
-<td>+0.7%</td>
-<td>Align metadata to cache line boundaries</td>
+<td>Kernel time</td>
+<td style="text-align: right;">1.28 ms</td>
+<td style="text-align: right;">0.876 ms</td>
+<td>−32%</td>
 </tr>
 <tr>
-<td><code>uint2</code> metadata vectorization</td>
-<td>+8%</td>
-<td>Load 2× metadata per instruction</td>
+<td>Tensor core utilization</td>
+<td style="text-align: right;">23.1%</td>
+<td style="text-align: right;">32.2%</td>
+<td>+39%</td>
 </tr>
 <tr>
-<td>Hoisted <code>__ldg</code> metadata</td>
-<td>+7%</td>
-<td>Move metadata loads before the K inner loop</td>
+<td>SM throughput</td>
+<td style="text-align: right;">24.4%</td>
+<td style="text-align: right;">34.2%</td>
+<td>+40%</td>
+</tr>
+<tr>
+<td>DRAM throughput</td>
+<td style="text-align: right;">12.5%</td>
+<td style="text-align: right;">18.4%</td>
+<td>+47%</td>
 </tr>
 </tbody>
 </table>
-<p>These percents are local (each step vs the previous edit). They do not multiply cleanly because interactions matter — hoisting weighs more after vectorization.</p>
-<p><strong>TMA metadata staging — the strongest move.</strong> Put metadata on the same async machinery as operands. Let TMA prefetch metadata tiles into shared memory on the producer side, instead of scalar loads inside the K loop.</p>
-<p>On E4M3, this is <strong>iter001 (759 TFLOPS)</strong> — the very first optimization, +13% over baseline. On FP16, TMA-backed metadata arrives as part of the iter143 bundle alongside TK128 and split RHS TMA — it was harder to introduce on FP16 because the <code>.co</code> compiler could not express the TMA descriptor work.</p>
-<p><strong>Risks you own:</strong> wrong metadata for a repacked operand is a silent numerical bug. Run host checks on small sizes when you change load paths. When TK changes, diff metadata offsets and fragment boundaries.</p>
+<p>The total number of tensor instructions and global load sectors are identical (1,048,576 and 16,777,216 respectively) — both kernels do the same amount of work. The improvement comes from <strong>how efficiently that work is scheduled</strong>:</p>
+<ol>
+<li><strong>TK128 halves the K-loop trip count</strong> from 128 to 64 iterations. Each iteration has fixed overhead (barrier wait/signal, metadata load, loop control), so halving the trip count removes half that overhead.</li>
+<li><strong>Wider swizzle (B64 LHS, B128 RHS) improves TMA transfer efficiency.</strong> The TMA hardware transfers 128-byte cache lines. With B128 swizzle on the RHS, each TMA transfer aligns perfectly with the cache line boundary, raising DRAM throughput from 12.5% to 18.4%.</li>
+<li><strong>Higher tensor core utilization</strong> (23% → 32%) is the compound effect: less loop overhead means more cycles spent on actual <code>wgmma.sp</code> instructions.</li>
+</ol>
+<p>This layout also creates the foundation that Step 3's barrier-decomposed design requires — the wider TK128 geometry enables meaningful per-operand barrier splitting because each K-step now contains enough work to overlap metadata decode with data transfer.</p>
 <hr />
-<h2 id="1p2c-and-the-3-stage-discontinuity">1p2c and the 3-Stage Discontinuity<a class="headerlink" href="#1p2c-and-the-3-stage-discontinuity" title="Permanent link">&para;</a></h2>
-<p>In 1p1c, one producer warpgroup issues all TMA and often absorbs setup work that steals issue slots from the consumer. 1p2c adds a second consumer warpgroup — more math capacity to keep up with data delivery.</p>
-<p><strong>FP16 (iter120, 434 TFLOPS):</strong> Best <code>.co</code> outcome — 1p2c + 3-stage. About +9% over the prior step in the chain.</p>
-<p><strong>E4M3 (iter036, 897 TFLOPS):</strong> 1p2c alone, before the 3-stage change. +34% over baseline.</p>
-<p>Then comes the 3-stage discontinuity:</p>
-<p><img alt="E4M3: the 3-stage discontinuity at iter040" src="../images/ThreeStagePipelineJump_ManimCE_v0.19.1_dark.png#only-dark" />
-<img alt="E4M3: the 3-stage discontinuity at iter040" src="../images/ThreeStagePipelineJump_ManimCE_v0.19.1_light.png#only-light" /></p>
-<p><strong>E4M3 (iter040, 1090 TFLOPS):</strong> This is the breakthrough — +62% vs baseline. The move past 1000 TFLOPS. This is not gradual improvement; it is a <strong>step function</strong> that says the pipeline went from "producer regularly stalls" to "producer stays ahead." Three stages lets the producer run ahead of the consumer, hiding TMA and metadata latency behind math.</p>
-<p><strong>SMEM and occupancy.</strong> Pushing from two to three stages increases SMEM footprint. If occupancy collapses, the math gains vanish. The E4M3 jump at 3-stage says the SM had enough headroom — metadata staging and warp specialization had already trimmed per-block SMEM before depth was added. Stop pursuing deeper pipelines when three independent mutations no longer move TFLOPS.</p>
+<h2 id="step-3-barrier-decomposed-overlap">Step 3: Barrier-Decomposed Overlap<a class="headerlink" href="#step-3-barrier-decomposed-overlap" title="Permanent link">&para;</a></h2>
+<p>Step 3 is where the sparse-specific optimizations compound into a large performance jump. The key insight comes from the paper: conventional pipelined GEMM uses a single monolithic barrier per stage — the consumer blocks on <code>full</code> until <strong>all</strong> operands arrive, then computes. With the per-step memory-to-compute ratio around 1.9× (memory takes almost twice as long as compute), the consumer sits idle for nearly half of each pipeline step.</p>
+<p>Choreo's barrier-decomposed design eliminates this idle window through three mechanisms:</p>
+<h3 id="speculative-metadata-decode">Speculative Metadata Decode<a class="headerlink" href="#speculative-metadata-decode" title="Permanent link">&para;</a></h3>
+<p>Metadata (2 KB per step) arrives via TMA in ~0.1 μs, while bulk operand data (LHS + RHS, ~80 KB) requires ~1.0 μs. Instead of bundling metadata into the same <code>full</code> barrier, the kernel gives it a <strong>separate <code>meta_full</code> barrier</strong>. The consumer waits on <code>meta_full</code>, decodes the 2:4 sparse positions into register descriptors for <code>wgmma.sp</code>, and only then waits on <code>full</code>. The decode runs concurrently with the remaining ~0.9 μs of bulk data transfer.</p>
+<h3 id="early-buffer-release">Early Buffer Release<a class="headerlink" href="#early-buffer-release" title="Permanent link">&para;</a></h3>
+<p>With 3 pipeline stages, each K-step issues two <code>wgmma.sp</code> instructions from the same buffer. After the first instruction is dispatched, the consumer signals <code>empty[stage].arrive()</code>, releasing the buffer back to the producer <strong>before</strong> the second instruction finishes. This is safe because WGMMA reads its shared memory operands at dispatch time — the buffer contents are no longer needed once the instruction enters the Tensor Core queue.</p>
+<h3 id="depth-1-instruction-overlap">Depth-1 Instruction Overlap<a class="headerlink" href="#depth-1-instruction-overlap" title="Permanent link">&para;</a></h3>
+<p>Both kernels use <code>warpgroup_wait&lt;1&gt;()</code> rather than <code>warpgroup_wait&lt;0&gt;()</code>. This means the consumer issues the next K-step's first <code>wgmma.sp</code> before the current step's last <code>wgmma.sp</code> retires. There is always one instruction in flight while the next is being prepared, hiding completion latency.</p>
+<h3 id="combined-effect">Combined Effect<a class="headerlink" href="#combined-effect" title="Permanent link">&para;</a></h3>
+<p>The three mechanisms fill the idle window in every pipeline step:</p>
+<ul>
+<li>Metadata decode consumes ~0.1 μs (overlapped with data transfer)</li>
+<li>Depth-1 overlap hides ~0.2 μs of instruction latency</li>
+<li>Early buffer release lets the producer start ~0.15 μs sooner</li>
+</ul>
+<p>The net effect: the effective memory-to-compute ratio drops from 1.9× to ~1.1×, bringing each pipeline step close to the compute-bound regime.</p>
+<p>The 3-stage pipeline is the dominant contributor: E4M3's smaller per-stage data (43 KB vs 84 KB for FP16) fits 3 stages within the 228 KB shared memory budget, and the faster consumer compute (0.37 μs per step) critically needs the extra stage to avoid starving the compute pipeline.</p>
+<p>The final tuned kernel, incorporating all barrier-decomposed optimizations, reaches:</p>
+<pre class="highlight"><code class="language-bash">CUDA_VISIBLE_DEVICES=0 CHOREO_TIMING_WARMUP=5 CHOREO_TIMING_REPEAT=50 \
+  bash benchmark/performance/gemm_sp/e4m3_aitune_2026-03-21_iter068/run.sh</code></pre>
+<p><strong>Result: ~1,401 TFLOPS (+226% vs baseline, 46.3% HW efficiency)</strong></p>
 <hr />
-<h2 id="inner-loop-epilogue-and-tile-geometry">Inner Loop, Epilogue, and Tile Geometry<a class="headerlink" href="#inner-loop-epilogue-and-tile-geometry" title="Permanent link">&para;</a></h2>
-<p><strong><code>stmatrix</code>.</strong> Store-matrix paths for accumulators give ~+2% on FP16. Above 1000 TFLOPS on E4M3, epilogue matters less unless the profile says store is hot.</p>
-<p><strong>Inner unroll and FTZ (FP16 iter137, 543 TFLOPS).</strong> Compiler-generated <code>.co</code> schedules may not unroll the inner K loop enough to overlap address math, metadata prefetch, and WGMMA. Hand <code>.cu</code> at iter137 used <strong>unroll 24</strong> and <strong>FTZ</strong> to cut denorm penalties. This is the strongest "organic" <code>.cu</code> before iter143, and the first move that required leaving the <code>.co</code> world.</p>
-<p><strong>TK128, TMA metadata, split RHS TMA (FP16 iter143, 655 TFLOPS).</strong> TK64 keeps K tiles small, inflating trip count and metadata traffic per unit work. iter143 combines three structural changes: TK128 (halve K-loop trips), TMA metadata (async metadata plane), and split RHS TMA (bandwidth tracks consumer demand). Result: <strong>+78% over baseline</strong>. This is not a polishing pass — it is structural memory-system work that the <code>.co</code> compiler could not express.</p>
-<p>E4M3 already used 128/128 swizzle from the baseline. The parallel is iter001 metadata + iter040 depth, not a literal copy of FP16 knobs. Do not copy FP16 swizzle 64 onto E4M3 128/128 without validation — bank conflict behavior changes.</p>
-<hr />
-<h2 id="the-co-plateau-and-the-cu-breakthrough">The <code>.co</code> Plateau and the <code>.cu</code> Breakthrough<a class="headerlink" href="#the-co-plateau-and-the-cu-breakthrough" title="Permanent link">&para;</a></h2>
-<p>The FP16 story has a sharp boundary between what automation can find and what needs human CUDA:</p>
-<pre class="highlight"><code>368 ─── .co automation ───&gt; 434 (iter120, +18%)  ═══ CEILING ═══
-                                                      │
-434 ─── hand .cu ─────────&gt; 543 (iter137, unroll+FTZ)
-543 ─── hand .cu ─────────&gt; 655 (iter143, TK128+TMA meta+split RHS)</code></pre>
-<p>That is +18% from baseline to best <code>.co</code>, then +51% from iter120 to iter143 once you have CUDA-level control. The second leg is <strong>different expressiveness</strong>: Croqtile's <code>.co</code> compiler chooses loop nests, register allocation, and async-proxy placement, but sparse GEMM couples operand TMA, metadata, and WGMMA batching with warpgroup barriers. When the compiler serializes metadata consumption with MMA in a way no single pragma fixes, you need <code>.cu</code> surface area.</p>
-<p>E4M3 has no analogous cliff. The search stays in automation territory from 671 to 1127, with 3-stage and barrier work as the headline structural wins. The baseline's stronger TMA and layout choices mean the compiler had less to trip over.</p>
-<hr />
-<h2 id="what-transferred-between-dtypes">What Transferred Between Dtypes<a class="headerlink" href="#what-transferred-between-dtypes" title="Permanent link">&para;</a></h2>
-<p>Copy <strong>causal structure</strong>, not parameter equality:</p>
+<h2 id="e4m3-summary">E4M3 Summary<a class="headerlink" href="#e4m3-summary" title="Permanent link">&para;</a></h2>
+<p><img alt="E4M3 optimization steps" src="../images/E4M3_OptSteps_dark.png#only-dark" />
+<img alt="E4M3 optimization steps" src="../images/E4M3_OptSteps_light.png#only-light" /></p>
 <table>
 <thead>
 <tr>
-<th>Pattern</th>
-<th>FP16</th>
-<th>E4M3</th>
+<th>Step</th>
+<th>What changed</th>
+<th style="text-align: right;">TFLOPS</th>
+<th>Why it matters</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Metadata on TMA plane</td>
-<td>iter143 (late, <code>.cu</code>)</td>
-<td>iter001 (early, automated)</td>
+<td>Baseline</td>
+<td>Prepack, swizzle32/64, no warpspec</td>
+<td style="text-align: right;">430</td>
+<td>Establishes the sparse metadata fast path</td>
 </tr>
 <tr>
-<td>Fine warpgroup sync</td>
-<td>Early in chain</td>
-<td>iter023</td>
+<td>Step 1</td>
+<td>1P2C + 2-stage, swizzle32/64</td>
+<td style="text-align: right;">586</td>
+<td>Imports the dense GEMM structural wins</td>
 </tr>
 <tr>
-<td>1p2c</td>
-<td>iter120</td>
-<td>iter036</td>
+<td>Step 2</td>
+<td>TK128, swizzle64/128</td>
+<td style="text-align: right;">718</td>
+<td>Eliminates bank conflicts, reduces loop overhead</td>
 </tr>
 <tr>
-<td>3-stage depth</td>
-<td>iter120 (bundled)</td>
-<td>iter040 (the &gt;1000 jump)</td>
-</tr>
-<tr>
-<td>Barrier micro-optimization</td>
-<td>Secondary</td>
-<td>iter016, iter068</td>
+<td>Step 3</td>
+<td>Barrier-decomposed overlap</td>
+<td style="text-align: right;">1,401</td>
+<td>Fills the idle window between memory and compute</td>
 </tr>
 </tbody>
 </table>
-<p>If FP16 is stuck below ~450 TFLOPS, attack metadata vectorization, <code>__ldg</code>, 1p2c + 3-stage, and <code>warpgroup_wait</code> first. If E4M3 is already ~850+ TFLOPS, barrier/early-empty/arrive and stage tuning often beat more operand widening.</p>
+<p>The optimization sequence has a clear causal structure:</p>
+<ol>
+<li><strong>Prepack first</strong> — put metadata on the intended fast path before touching the schedule.</li>
+<li><strong>Import the dense playbook</strong> — warp specialization, TMA, pipeline stages, 1P2C. This is Step 1 and it delivers a 36% improvement.</li>
+<li><strong>Fix the layout</strong> — wider K-tile and proper swizzle alignment eliminate bank conflicts and reduce loop overhead. This is Step 2, and it delivers another 23% on top.</li>
+<li><strong>Decompose the barriers</strong> — speculative metadata decode, early buffer release, and depth-1 overlap turn the idle window into useful work. This is Step 3 and it delivers the final ~2× jump.</li>
+</ol>
+<hr />
+<h2 id="fp16-path">FP16 Path<a class="headerlink" href="#fp16-path" title="Permanent link">&para;</a></h2>
+<p>The FP16 path follows the same logical structure as E4M3 but hits different constraints. FP16 elements are 2× larger than E4M3, which means:</p>
+<ul>
+<li><strong>Per-stage data is 2× larger</strong> (84 KB vs 43 KB), limiting the pipeline depth</li>
+<li><strong>Compute is 2× slower</strong> (FP16 Sparse TC peak is 1,513 TFLOPS vs E4M3's 3,026 TFLOPS), so the memory-to-compute ratio is different</li>
+<li><strong>The dominant optimization target shifts</strong> from pipeline depth to memory layout and metadata delivery</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Kernel</th>
+<th style="text-align: right;">TFLOPS</th>
+<th>Δ vs baseline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td>prepack, swizzle64/128, no warpspec</td>
+<td style="text-align: right;">457</td>
+<td>—</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1P2C + 3-stage, swizzle64/128</td>
+<td style="text-align: right;">531</td>
+<td>+16%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>TK128 + TMA metadata + split RHS</td>
+<td style="text-align: right;"><strong>784</strong></td>
+<td><strong>+72%</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="fp16-baseline">FP16 Baseline<a class="headerlink" href="#fp16-baseline" title="Permanent link">&para;</a></h3>
+<p><strong>File:</strong> <code>gemm_sp_f16_dynamic_sm90_swizzle64_128_prepack.co</code></p>
+<p>The FP16 baseline is structurally identical to the E4M3 baseline: a single warpgroup, synchronous TMA, metadata loaded from global memory. The key difference is the swizzle configuration — FP16 (2 bytes per element) uses <code>swizzle64</code> for LHS and <code>swizzle128</code> for RHS, matching the larger access stride.</p>
+<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-prepack \
+  benchmark/performance/gemm_sp/gemm_sp_f16_dynamic_sm90_swizzle64_128_prepack.co \
+  -o /tmp/f16_baseline.cute.result
+CUDA_VISIBLE_DEVICES=0 bash /tmp/f16_baseline.cute.result --execute</code></pre>
+<p><strong>Result: ~457 TFLOPS (30.2% HW efficiency)</strong></p>
+<p>NCU snapshot:</p>
+<pre class="highlight"><code>gpu__time_duration               :   1.89 ms
+sm__throughput   (% of peak)     :  32.29%
+dram__throughput (% of peak)     :   9.62%
+pipe_tensor_hmma (% of peak)     :  30.31%
+pipe_tensor instructions         :   2,105,344</code></pre>
+<p>The FP16 baseline starts higher than E4M3 (457 vs 430 TFLOPS) because FP16's larger elements mean fewer K-steps per iteration, and the synchronous copy path handles the wider data more efficiently. But DRAM throughput at 9.6% shows the same TMA underutilization pattern.</p>
+<h3 id="fp16-step-1-warp-specialization-3-stage-pipeline">FP16 Step 1: Warp Specialization + 3-Stage Pipeline<a class="headerlink" href="#fp16-step-1-warp-specialization-3-stage-pipeline" title="Permanent link">&para;</a></h3>
+<p><strong>File:</strong> <code>gemm_sp_f16_aitune_2026-03-25_iter120.co</code></p>
+<p>The first FP16 optimization applies the same structural move as E4M3 Step 1: introduce warp specialization (1P2C) and pipeline stages. The configuration:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Baseline</th>
+<th>Step 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SPMM_TILE_M</code></td>
+<td>64 (= WARP_M)</td>
+<td><strong>128</strong> (= 2 × WARP_M)</td>
+</tr>
+<tr>
+<td>Pipeline stages</td>
+<td>1</td>
+<td><strong>3</strong></td>
+</tr>
+<tr>
+<td>Consumers</td>
+<td>1</td>
+<td><strong>2</strong> (1P2C)</td>
+</tr>
+<tr>
+<td>Swizzle</td>
+<td>64/128</td>
+<td>64/128 (unchanged)</td>
+</tr>
+<tr>
+<td><code>TILE_K</code></td>
+<td>64</td>
+<td>64 (unchanged)</td>
+</tr>
+</tbody>
+</table>
+<p>FP16's larger per-stage data (84 KB) limits it to 3 stages (vs 4 for E4M3), which still provides enough buffering for the producer to stay ahead.</p>
+<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack --stmatrix \
+  benchmark/performance/gemm_sp/gemm_sp_f16_aitune_2026-03-25_iter120.co \
+  -o /tmp/f16_step1.cute.result
+CUDA_VISIBLE_DEVICES=0 bash /tmp/f16_step1.cute.result --execute</code></pre>
+<p><strong>Result: ~531 TFLOPS (+16% vs baseline, 35.1% HW efficiency)</strong></p>
+<p>NCU snapshot:</p>
+<pre class="highlight"><code>gpu__time_duration               :   1.42 ms
+sm__throughput   (% of peak)     :  41.99%
+dram__throughput (% of peak)     :  19.72%
+pipe_tensor_hmma (% of peak)     :  40.07%
+pipe_tensor instructions         :   2,097,152</code></pre>
+<p>Comparing with the baseline:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Baseline</th>
+<th style="text-align: right;">Step 1</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kernel time</td>
+<td style="text-align: right;">1.89 ms</td>
+<td style="text-align: right;">1.42 ms</td>
+<td>−25%</td>
+</tr>
+<tr>
+<td>SM throughput</td>
+<td style="text-align: right;">32.3%</td>
+<td style="text-align: right;">42.0%</td>
+<td>+30%</td>
+</tr>
+<tr>
+<td>DRAM throughput</td>
+<td style="text-align: right;">9.6%</td>
+<td style="text-align: right;">19.7%</td>
+<td>+105%</td>
+</tr>
+<tr>
+<td>Tensor core utilization</td>
+<td style="text-align: right;">30.3%</td>
+<td style="text-align: right;">40.1%</td>
+<td>+32%</td>
+</tr>
+</tbody>
+</table>
+<p>DRAM throughput more than doubles — the async TMA path is now moving data much more efficiently because the producer warpgroup runs independently. But tensor core utilization at 40% indicates the consumer is still frequently stalled, likely on metadata loads and loop overhead within the narrow TK64 K-step.</p>
+<h3 id="fp16-step-2-wider-k-tma-metadata-split-rhs">FP16 Step 2: Wider-K + TMA Metadata + Split RHS<a class="headerlink" href="#fp16-step-2-wider-k-tma-metadata-split-rhs" title="Permanent link">&para;</a></h3>
+<p>The final FP16 optimization addresses the remaining 60% of idle tensor core cycles through a memory-path redesign. This is the FP16 analogue of E4M3 Step 3's barrier-decomposed overlap, but adapted to FP16's constraints:</p>
+<ol>
+<li><strong>TK128</strong> doubles the work per K-step, halving the K-loop trip count from 128 to 64</li>
+<li><strong>TMA metadata staging</strong> moves metadata onto the async path instead of loading it from global memory in the consumer loop</li>
+<li><strong>Split RHS TMA</strong> issues two separate 64-column TMA loads per K-step instead of one 128-column load, enabling finer-grained pipeline overlap</li>
+</ol>
+<p>FP16's per-stage data at TK128 (168 KB) cannot fit 3 stages, so this kernel uses 2 stages — but the wider K-tile compensates by doing more work per step.</p>
+<pre class="highlight"><code class="language-bash">CUDA_VISIBLE_DEVICES=0 CHOREO_TIMING_WARMUP=5 CHOREO_TIMING_REPEAT=50 \
+  bash benchmark/performance/gemm_sp/gemm_sp_f16_aitune_2026-03-25_iter143/run.sh</code></pre>
+<p><strong>Result: ~784 TFLOPS (+72% vs baseline, 51.8% HW efficiency)</strong></p>
+<p>This is the FP16 sparse analogue of a memory-system redesign: instead of waiting for all data to arrive before computing, the kernel overlaps metadata decode with bulk data transfer, splits the RHS load for finer-grained scheduling, and uses the wider K-tile to amortize fixed overhead.</p>
+<h3 id="fp16-summary">FP16 Summary<a class="headerlink" href="#fp16-summary" title="Permanent link">&para;</a></h3>
+<p><img alt="FP16 optimization steps" src="../images/FP16_OptSteps_dark.png#only-dark" />
+<img alt="FP16 optimization steps" src="../images/FP16_OptSteps_light.png#only-light" /></p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What changed</th>
+<th style="text-align: right;">TFLOPS</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td>Prepack, swizzle64/128, no warpspec</td>
+<td style="text-align: right;">457</td>
+<td>Establishes the sparse metadata fast path</td>
+</tr>
+<tr>
+<td>Step 1</td>
+<td>1P2C + 3-stage</td>
+<td style="text-align: right;">531</td>
+<td>Imports the dense GEMM structural wins</td>
+</tr>
+<tr>
+<td>Step 2</td>
+<td>TK128 + TMA metadata + split RHS</td>
+<td style="text-align: right;">784</td>
+<td>Memory-path redesign eliminates idle tensor cycles</td>
+</tr>
+</tbody>
+</table>
+<p>The FP16 optimization story is more compressed than E4M3: fewer steps, and the biggest gain comes from the memory-path redesign (Step 2, +48% over Step 1) rather than from pipeline architecture (Step 1, +16% over baseline). This is because FP16's larger elements make the per-tile memory-to-compute ratio less severe than E4M3, so the pipeline architecture provides a smaller initial lift — but the metadata and memory layout redesign in Step 2 is correspondingly more impactful.</p>
+<hr />
+<h2 id="current-checkout-reproduction-notes">Current Checkout Reproduction Notes<a class="headerlink" href="#current-checkout-reproduction-notes" title="Permanent link">&para;</a></h2>
+<p>Re-run on the current machine (<code>NVIDIA H800 PCIe</code>, <code>CUDA_VISIBLE_DEVICES=0</code>) with <code>CHOREO_TIMING_WARMUP=5</code>, <code>CHOREO_TIMING_REPEAT=50</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Kernel</th>
+<th style="text-align: right;">TFLOPS</th>
+<th>HW efficiency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E4M3 baseline prepack <code>swizzle32_64</code></td>
+<td style="text-align: right;">430</td>
+<td>14.2%</td>
+</tr>
+<tr>
+<td>E4M3 Step 1: 1P2C + 2-stage <code>swizzle32_64</code></td>
+<td style="text-align: right;">586</td>
+<td>19.4%</td>
+</tr>
+<tr>
+<td>E4M3 Step 2: 1P2C + 2-stage <code>swizzle64_128</code>, TK128</td>
+<td style="text-align: right;">718</td>
+<td>23.7%</td>
+</tr>
+<tr>
+<td>E4M3 Step 3: barrier-decomposed overlap</td>
+<td style="text-align: right;">1,401</td>
+<td>46.3%</td>
+</tr>
+<tr>
+<td>FP16 baseline prepack <code>swizzle64_128</code></td>
+<td style="text-align: right;">457</td>
+<td>30.2%</td>
+</tr>
+<tr>
+<td>FP16 Step 1: 1P2C + 3-stage</td>
+<td style="text-align: right;">531</td>
+<td>35.1%</td>
+</tr>
+<tr>
+<td>FP16 Step 2: TK128 + TMA metadata + split RHS</td>
+<td style="text-align: right;">784</td>
+<td>51.8%</td>
+</tr>
+</tbody>
+</table>
+<p>For review, the raw table is saved in the local data directory.</p>
 <hr />
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
-<p>Sparse GEMM optimization follows the same arc as dense — schedule first, widen second, cache-tune third — but adds <strong>metadata as a second operand plane</strong>. The metadata story is what makes 2:4 sparse kernels harder than dense: you can have WGMMA fed and ready while the metadata load path is still pointer-chasing through L2. Once metadata is on the TMA plane and the pipeline has enough depth, the same 1p2c and barrier polish from dense applies.</p>
-<p>The FP16 case taught that <code>.co</code> automation has limits — the last +51% needed hand <code>.cu</code>. The E4M3 case taught that with stronger baseline choices, automation can carry you from 671 to 1127 without leaving the <code>.co</code> world.</p>
-<p>Iteration tables: <code>README_gemm_sp_f16_aitune_2026-03-25.md</code> and <code>README_e4m3_aitune_2026-03-21.md</code>. Kernel artifacts: <code>benchmark/performance/gemm_sp/</code>.</p>
+<p>The dense GEMM recipe still gives the right backbone: warp specialization, TMA, stage depth, occupancy, then 1P2C. Sparse GEMM adds one more requirement: <strong>metadata is a real operand path</strong> and must be optimized like one.</p>
+<p>That leads to a cleaner rule of thumb:</p>
+<ol>
+<li><strong>Prepack</strong> — put metadata on the intended fast path</li>
+<li><strong>Import the dense playbook</strong> — warp specialization, pipelining, 1P2C</li>
+<li><strong>Restructure the layout</strong> — wider K-tile, proper swizzle for the target dtype</li>
+<li><strong>Decompose the barriers</strong> — speculative metadata decode, early buffer release, depth-1 instruction overlap</li>
+</ol>
+<p>The two precision paths tell complementary stories:</p>
+<ul>
+<li><strong>E4M3</strong> (430 → 586 → 718 → 1,401 TFLOPS): smaller elements enable deeper pipelines and more layout configurations. The final 2× jump from barrier decomposition is only possible because the earlier steps created the right layout foundation.</li>
+<li><strong>FP16</strong> (457 → 531 → 784 TFLOPS): larger elements constrain pipeline depth, so the biggest gain comes from memory-path redesign (TK128 + TMA metadata + split RHS) rather than pipeline architecture.</li>
+</ul>
+<p>Both paths converge on the same insight: once the dense GEMM structural wins are in place, the remaining performance gap is dominated by <strong>how metadata is delivered to the Sparse Tensor Core</strong> — and closing that gap requires treating metadata as a first-class pipelined operand.</p>
 
 
 
