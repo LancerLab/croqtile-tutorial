@@ -326,7 +326,6 @@ __co__ void matmul(
     shared event full[STAGES], empty[STAGES];
     shared f16 [TILE_M, TILE_K] lhs_s[STAGES];
     shared f16 [WARP_N, TILE_K] rhs_s[STAGES];
-    shared f16 [WARP_M, WARP_N] output_s[CONSUMERS];
 
     // 3 warpgroups × 128 threads = 384 threads/block
     parallel wg by 3 : group-4, t by 128 : thread {
@@ -362,7 +361,7 @@ __co__ void matmul(
           }
           trigger empty[stage];
         }
-
+        shared f16 [WARP_M, WARP_N] output_s[CONSUMERS];
         mma.store mc, output_s[cidx];
         tma.copy output_s[cidx] =>
           output.subspan(WARP_M, WARP_N).at(block_m * CONSUMERS + cidx, block_n);
