@@ -888,14 +888,16 @@ To put the numbers in perspective, we compare directly against [vLLM](https://gi
 
 ### Head-to-head results
 
-| Metric | Croqtile | vLLM Triton |
-|--------|:---:|:---:|
-| GEMM-only latency | — | 0.218 ms |
-| End-to-end latency | **0.164 ms** | 0.293 ms |
-| End-to-end TFLOPS | **13.18** | 7.33 |
-| **Speedup** | **1.80×** | 1.00× |
+| Metric | Croqtile | vLLM (default) | vLLM (tuned) |
+|--------|:---:|:---:|:---:|
+| GEMM-only latency | — | 0.216 ms | 0.172 ms |
+| End-to-end latency | **0.164 ms** | 0.295 ms | 0.252 ms |
+| End-to-end TFLOPS | **13.18** | 7.29 | 8.54 |
+| **Croqtile speedup** | — | **1.81×** | **1.54×** |
 
 Both sides perform identical work: route (softmax + top-k) → quantize (BF16→FP8) → align/sort → grouped GEMM → scatter/reduce, with the same FLOPs formula `2 × (M × topk) × N × K = 2.147 GFLOP`.
+
+vLLM ships no tuned Triton config for this shape (E=256, H800), so the "default" column uses its built-in fallback (`BLOCK_SIZE_M=64`). The "tuned" column uses the best config found by an 864-point grid search (`BLOCK_SIZE_M=16, N=64, K=128, GROUP_SIZE_M=4, num_warps=4, num_stages=3`), which cuts GEMM-only latency by 20%. Even with this tuned config, Croqtile's entire end-to-end pipeline (0.164 ms) still runs faster than vLLM's GEMM-only kernel (0.172 ms).
 
 Two factors contribute to the gap: (1) Croqtile's WGMMA kernel with hand-tuned TMA pipelines is inherently faster than vLLM's Triton-generated GEMM for this shape, and (2) the fused pipeline stages (routing, quantization, scatter) overlap with the GEMM's memory access, adding near-zero additional latency — whereas in vLLM each stage is a separate kernel launch with its own overhead.
 
@@ -905,16 +907,20 @@ Despite the name, vLLM's `fused_experts` is a Python orchestrator that launches 
 
 | Pipeline stage | vLLM | Croqtile |
 |----------------|------|----------|
-| Router + top-k | `fused_topk` (1 kernel) | Fused into `.co` kernel |
-| Align / sort / pad | `moe_align_block_size` (1 CUDA kernel) | Fused into `.co` kernel |
-| Input quantize BF16→FP8 | `moe_kernel_quantize_input` (~1 kernel) | Fused into `.co` kernel |
-| Grouped GEMM | `fused_moe_kernel` (1 Triton kernel) | Single WGMMA kernel |
-| Scatter / reduce | `moe_sum` (1 kernel) | Fused into GEMM epilogue |
+| Router + top-k | `fused_topk` (1 kernel) | Compiled into `fused_moe_route` |
+| Align / sort / pad | `moe_align_block_size` (1 CUDA kernel) | Compiled into `fused_moe_count_and_build` |
+| Input quantize BF16→FP8 | `moe_kernel_quantize_input` (~1 kernel) | Compiled into `fused_moe_quant_sort_gather` |
+| Grouped GEMM | `fused_moe_kernel` (1 Triton kernel) | Compiled into `fused_moe_grouped_wgmma_fp8` |
+| Scatter / reduce | `moe_sum` (1 kernel) | Compiled into `fused_moe_grouped_wgmma_fp8` epilogue |
 
-The Croqtile compiler fuses all these stages into **1–4 kernel launches**, eliminating inter-kernel launch overhead, Python dispatch latency, and intermediate global memory round-trips. At small batch sizes (M=128), this pipeline overhead dominates — which is exactly the regime where kernel fusion matters most.
+The speedup comes from two independent factors:
+
+**Factor 1: A faster GEMM.** Even comparing GEMM-only, Croqtile's hand-tuned WGMMA kernel outperforms vLLM's Triton-generated kernel (the tuned vLLM GEMM-only takes 0.172 ms, while Croqtile's entire end-to-end pipeline takes 0.164 ms). This is a code quality advantage from Hopper-native TMA pipelines and register-level tuning that Triton's auto-tuner does not reach.
+
+**Factor 2: Fused pipeline stages add near-zero overhead.** The scatter/reduce is compiled into the GEMM epilogue (no extra kernel), and the remaining pre-GEMM stages (route, count+build, quant+sort+gather) use `parallel.async` launches that overlap with each other and with the GEMM's memory loads. In vLLM, each of the 5 stages is a separate kernel with `cudaDeviceSynchronize` + Python dispatch + global memory write/read between every pair — at M=128, this per-kernel overhead dominates the total latency.
 
 !!! info "Fair-play note"
-    vLLM reports "Using default MoE config" for this shape (E=256 on H800). A tuned Triton autoconfig could narrow the GEMM-only gap. The pipeline overhead, however, is structural and independent of tuning. Benchmark script: [`bench_vllm_fused_moe.py`](../assets/fused-moe-fp8/bench_vllm_fused_moe.py).
+    vLLM ships no tuned config for this shape (E=256 on H800). We ran an 864-config grid search to find the best Triton config — it improves GEMM-only by ~20%, but the end-to-end gap remains 1.54× because the pipeline overhead is structural and independent of GEMM tuning. Benchmark script: [`bench_vllm_fused_moe.py`](../assets/fused-moe-fp8/bench_vllm_fused_moe.py).
 
 ### Reference: vLLM full MLP (different workload)
 
@@ -955,9 +961,9 @@ Here's the summary across all 99 iterations: **40 were kept, 59 were discarded.*
 
 ## Appendix: Reproduction Guide
 
-All `.co` milestone files are available for download from the links in the table below. The original sources are in `benchmark/performance/fused_moe_op/tuning_worklog/`.
-
 ### Milestone `.co` Files
+
+[⬇ Download all sources (ZIP)](../assets/fused-moe-fp8/fused-moe-fp8-sources.zip){ .md-button }
 
 | File | Compile Flags | Stage | TFLOPS |
 |------|--------------|-------|-------:|
@@ -987,7 +993,22 @@ CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     bash /tmp/05.cute.result --execute
 ```
 
-See `README.md` in the same directory for full details.
+### Reproducing the vLLM comparison
+
+The vLLM benchmark script is included in the ZIP above.
+
+**Prerequisites:** vLLM ≥ 0.17 with FP8 support, PyTorch, Triton.
+
+```bash
+# Default config (vLLM's built-in fallback):
+python bench_vllm_single_gemm.py --gpu 0
+
+# Tuned config (864-point grid search best result):
+python bench_vllm_single_gemm.py --gpu 0 \
+    --config '{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":64,"BLOCK_SIZE_K":128,"GROUP_SIZE_M":4,"SPLIT_K":1,"num_warps":4,"num_stages":3}'
+```
+
+The script prints GEMM-only and end-to-end latencies with TFLOPS, matching the same FLOPs formula (`2 × M × topk × N × K`) used by the Croqtile benchmark.
 
 ---
 
