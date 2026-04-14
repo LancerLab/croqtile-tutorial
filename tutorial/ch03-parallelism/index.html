@@ -2922,7 +2922,7 @@
 <p>Before we build the matmul, two features of Croqtile's type system are worth mentioning. You have already used them implicitly; now is a good time to name them.</p>
 <p><strong><code>mdspan</code></strong> — every tensor in Croqtile carries its shape as part of its type. When you write <code>s32 [128, 256] lhs</code>, the shape <code>[128, 256]</code> is not a runtime value — it is a compile-time property. The compiler uses it to verify that every <code>.at()</code>, <code>chunkat</code>, and <code>dma.copy</code> is dimensionally consistent. If you try <code>lhs.at(i, j, k)</code> on a 2D tensor, the compiler rejects it. The expression <code>output.at(px#qx, py#qy)</code> is verified to produce indices within the output's bounds.</p>
 <p>The <code>span(i)</code> syntax extracts one dimension: <code>lhs.span(0)</code> is 128, <code>rhs.span(1)</code> is 256. The shorthand <code>lhs.span</code> copies the entire shape.</p>
-<p><strong><code>ituple</code></strong> — the <code>{px, py}</code> syntax in <code>parallel {px, py} by [8, 16]</code> introduces an <code>ituple</code>, a compile-time integer tuple. The compose operator <code>px#qx</code> combines two ituple elements into a global index. The extent operator <code>#p</code> extracts the range of a parallel variable. These are all resolved at compile time — no runtime overhead.</p>
+<p><strong><code>ituple</code></strong> — the <code>{px, py}</code> syntax in <code>parallel {px, py} by [8, 16]</code> introduces an <code>ituple</code>, a compile-time integer tuple. The compose operator <code>px#qx</code> combines two ituple elements into a global index. The extent operator <code>#p</code> extracts the upper bound of a parallel variable. These are all resolved at compile time — no runtime overhead.</p>
 <p>For the full details, see the <a href="../../documentation/shape-in-choreo/">mdspan reference</a> and the <a href="../../documentation/integer-ituple/">ituple reference</a>. For now, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.</p>
 <h2 id="matrix-multiply-putting-it-together">Matrix Multiply: Putting It Together<a class="headerlink" href="#matrix-multiply-putting-it-together" title="Permanent link">&para;</a></h2>
 <p>With <code>parallel</code>, <code>foreach</code>, <code>dma.copy</code>, <code>chunkat</code>, <code>#</code>, and space specifiers, a tiled matrix multiply is within reach. This is the first program in the tutorial that does something GPUs are famous for.</p>
@@ -2932,7 +2932,7 @@
 <pre class="highlight"><code class="language-choreo">__co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
 
-  parallel p by 16, q by 64 {
+  parallel {p, q} by [16, 64] {
     foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]
       output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);
   }
@@ -2944,7 +2944,7 @@
 <p><em>The [128, 256] output divided into a 16 × 64 tile grid. Each (p, q) pair owns one tile.</em></p>
 <p>This is dense — here is what each piece does.</p>
 <p><strong>Output shape from operand dimensions.</strong> <code>s32 [lhs.span(0), rhs.span(1)] output</code> builds the output shape from the inputs: <code>lhs.span(0)</code> is 128 (rows of the left matrix) and <code>rhs.span(1)</code> is 256 (columns of the right matrix).</p>
-<p><strong>Multi-axis parallel.</strong> <code>parallel p by 16, q by 64</code> declares two parallel indices with a comma. This creates a 16 × 64 = 1024-way parallel grid. Each <code>(p, q)</code> pair owns a tile of the output.</p>
+<p><strong>Multi-axis parallel.</strong> <code>parallel {p, q} by [16, 64]</code> declares two parallel indices of one parallel level with a comma. This creates a 16 × 64 = 1024-way parallel grid. Each <code>(p, q)</code> pair owns a tile of the output.</p>
 <p><strong>Named tuple destructuring.</strong> <code>foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]</code> introduces three nested loop indices — <code>m</code>, <code>n</code>, <code>k</code> — bound to a tuple called <code>index</code>. The trip counts are:</p>
 <ul>
 <li><code>128 / #p = 128 / 16 = 8</code> rows per tile</li>
@@ -3000,8 +3000,8 @@
 <h3 id="host-code">Host Code<a class="headerlink" href="#host-code" title="Permanent link">&para;</a></h3>
 <p>The host side uses the same <code>make_spandata</code> / <code>.view()</code> pattern from earlier chapters:</p>
 <pre class="highlight"><code class="language-choreo">int main() {
-  auto lhs = choreo::make_spandata&lt;choreo::s32&gt;(128, 256);
-  auto rhs = choreo::make_spandata&lt;choreo::s32&gt;(256, 256);
+  auto lhs = croq::make_spandata&lt;croq::s32&gt;(128, 256);
+  auto rhs = croq::make_spandata&lt;croq::s32&gt;(256, 256);
   lhs.fill_random(-10, 10);
   rhs.fill_random(-10, 10);
 
@@ -3012,7 +3012,7 @@
       int ref = 0;
       for (size_t k = 0; k &lt; lhs.shape()[1]; ++k)
         ref += lhs[i][k] * rhs[k][j];
-      choreo::choreo_assert(ref == res[i][j], "values are not equal.");
+      croq::croq_assert(ref == res[i][j], "values are not equal.");
     }
 
   std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
@@ -3037,7 +3037,11 @@
 </tr>
 <tr>
 <td><code>parallel {px, py} by [M, N]</code></td>
-<td>Multi-dimensional parallel (Cartesian product)</td>
+<td>Multi-dimensional parallel level <br> (<code>p</code> and <code>q</code> correspond to one parallel level)</td>
+</tr>
+<tr>
+<td><code>parallel p by A, q by B</code></td>
+<td>Comma-separated parallel levels <br> (<code>p</code> and <code>q</code> correspond to different parallel levels)</td>
 </tr>
 <tr>
 <td><code>parallel p by N : block</code></td>
@@ -3064,15 +3068,11 @@
 <td>Named tuple destructuring in a <code>foreach</code></td>
 </tr>
 <tr>
-<td><code>parallel p by A, q by B</code></td>
-<td>Comma-separated parallel axes</td>
-</tr>
-<tr>
 <td><code>lhs.span(0)</code></td>
 <td>Extract one dimension of a tensor's shape</td>
 </tr>
 <tr>
-<td><code>p#m</code></td>
+<td><code>p # m</code></td>
 <td>Compose outer tile index <code>p</code> with inner offset <code>m</code></td>
 </tr>
 </tbody>
