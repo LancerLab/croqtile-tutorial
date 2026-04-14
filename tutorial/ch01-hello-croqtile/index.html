@@ -2600,8 +2600,8 @@
 }
 
 int main() {
-  auto lhs = choreo::make_spandata&lt;choreo::s32&gt;(4, 8);
-  auto rhs = choreo::make_spandata&lt;choreo::s32&gt;(4, 8);
+  auto lhs = croq::make_spandata&lt;croq::s32&gt;(4, 8);
+  auto rhs = croq::make_spandata&lt;croq::s32&gt;(4, 8);
   lhs.fill_random(-10, 10);
   rhs.fill_random(-10, 10);
 
@@ -2609,7 +2609,7 @@ int main() {
 
   for (int i = 0; i &lt; 4; ++i)
     for (int j = 0; j &lt; 8; ++j)
-      choreo::choreo_assert(lhs[i][j] + rhs[i][j] == res[i][j],
+      croq::croq_assert(lhs[i][j] + rhs[i][j] == res[i][j],
                           "values are not equal.");
 
   std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
@@ -2622,8 +2622,9 @@ int main() {
 <p>This is the heart of the program. Here it is piece by piece.</p>
 <p><strong>Function signature.</strong></p>
 <pre class="highlight"><code class="language-choreo">__co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {</code></pre>
-<p>The <code>__co__</code> prefix marks this as a Croqtile function. Unlike regular C++ functions, the signature carries full shape information: <code>s32 [4, 8]</code> means "a 2D tensor of shape 4 × 8 with element type <code>s32</code> (signed 32-bit integer)." Both parameters and the return type follow this convention — <code>type [shape] name</code>. The compiler uses these shapes to verify that every indexing operation is in-bounds at compile time.</p>
-<p>Croqtile supports these element types: <code>s32</code> (signed 32-bit int), <code>f16</code> (half-precision float), <code>bf16</code> (brain float), <code>f32</code> (single-precision float), and <code>f8_e4m3</code> / <code>f8_e5m2</code> (8-bit floats). For now, <code>s32</code> is the simplest to reason about.</p>
+<p>The <code>__co__</code> prefix marks this as a Croqtile function. Unlike regular C++ functions, the signature carries full shape information: <code>s32 [4, 8]</code> means "a 2D tensor of shape 4 × 8 with element type <code>s32</code> (signed 32-bit integer)". Both parameters and the return type follow this convention — <code>type [shape] name</code>. The compiler uses these shapes to verify that every indexing operation is in-bounds at compile time.</p>
+<p>// TODO: The datatype set is not complete.
+Croqtile supports these element types: <code>s32</code> (signed 32-bit int), <code>f16</code> (half-precision float), <code>bf16</code> (brain float), <code>f32</code> (single-precision float), and <code>f8_e4m3</code> / <code>f8_e5m2</code> (8-bit floats). For now, <code>s32</code> is the simplest to reason about.</p>
 <p><strong>Output buffer declaration.</strong></p>
 <pre class="highlight"><code class="language-choreo">s32 [lhs.span] output;</code></pre>
 <p>This allocates the output tensor. The expression <code>lhs.span</code> copies the full shape from <code>lhs</code>, so <code>output</code> automatically has shape <code>[4, 8]</code>. If you later change the input shape, the output adjusts — a pattern that makes Croqtile functions easier to generalize.</p>
@@ -2634,16 +2635,16 @@ int main() {
 <p>If you have written CUDA before, you might wonder: are these instances CUDA threads? Thread blocks? The short answer is that <code>parallel</code> without any annotation lets the compiler decide. Under the hood, the 32 instances here become 32 CUDA threads inside a single thread block — but Croqtile deliberately hides that mapping at this level. In <a href="../ch03-parallelism/">Chapter 3</a> you will learn to control the mapping explicitly with <strong>space specifiers</strong> like <code>: block</code> and <code>: thread</code>, nest multiple <code>parallel</code> axes to build a block-and-thread hierarchy, and map them onto warps and warpgroups. For now, treat <code>parallel</code> as "run all instances concurrently on the GPU" and move on.</p>
 <p><strong>Return.</strong></p>
 <pre class="highlight"><code class="language-choreo">return output;</code></pre>
-<p>A <code>__co__</code> function returns its result tensor. The return type in the signature (<code>s32 [4, 8]</code>) must match what you actually return. The caller on the host side receives a <code>choreo::spanned_data</code> — an owning buffer with shape metadata that you can index into with <code>[i][j]</code>.</p>
+<p>A <code>__co__</code> function returns its result tensor. The return type in the signature (<code>s32 [4, 8]</code>) must match what you actually return. The caller on the host side receives a <code>croq::spanned_data</code> — an owning buffer with shape metadata that you can index into with <code>[i][j]</code>.</p>
 <h2 id="the-host-program">The Host Program<a class="headerlink" href="#the-host-program" title="Permanent link">&para;</a></h2>
 <p>The host is plain C++ with a few Croqtile API calls:</p>
-<pre class="highlight"><code class="language-choreo">auto lhs = choreo::make_spandata&lt;choreo::s32&gt;(4, 8);
-auto rhs = choreo::make_spandata&lt;choreo::s32&gt;(4, 8);
+<pre class="highlight"><code class="language-choreo">auto lhs = croq::make_spandata&lt;croq::s32&gt;(4, 8);
+auto rhs = croq::make_spandata&lt;croq::s32&gt;(4, 8);
 lhs.fill_random(-10, 10);
 rhs.fill_random(-10, 10);</code></pre>
-<p><code>choreo::make_spandata&lt;T&gt;(dims...)</code> creates an owning tensor buffer on the host. You pass the element type as a template parameter and the dimensions as arguments. <code>fill_random</code> populates it with values in the given range.</p>
+<p><code>croq::make_spandata&lt;T&gt;(dims...)</code> creates an owning tensor buffer on the host. You pass the element type as a template parameter and the dimensions as arguments. <code>fill_random</code> populates it with values in the given range.</p>
 <pre class="highlight"><code class="language-choreo">auto res = ele_add(lhs.view(), rhs.view());</code></pre>
-<p>Calling a <code>__co__</code> function from C++ looks like a normal function call. The <code>.view()</code> method produces a non-owning <code>spanned_view</code> from an owning <code>spanned_data</code> — this is how you pass host tensors into a Croqtile function without transferring ownership. The return value <code>res</code> is a <code>choreo::spanned_data</code> that owns its buffer.</p>
+<p>Calling a <code>__co__</code> function from C++ looks like a normal function call. The <code>.view()</code> method produces a non-owning <code>spanned_view</code> from an owning <code>spanned_data</code> — this is how you pass host tensors into a Croqtile function without transferring ownership. The return value <code>res</code> is a <code>croq::spanned_data</code> that owns its buffer.</p>
 <p>The rest of <code>main</code> is ordinary verification: loop over every element and assert equality. The host program is deliberately boring — the interesting work happens in the <code>__co__</code> function.</p>
 <h2 id="build-and-compile">Build and Compile<a class="headerlink" href="#build-and-compile" title="Permanent link">&para;</a></h2>
 <p>Croqtile files use the <code>.co</code> extension. The compiler works like <code>gcc</code> or <code>clang</code>:</p>

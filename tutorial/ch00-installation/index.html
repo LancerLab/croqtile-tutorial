@@ -2608,7 +2608,7 @@ make setup-core</code></pre>
 }
 
 int main() {
-  auto input = choreo::make_spandata&lt;choreo::s32&gt;(4);
+  auto input = croq::make_spandata&lt;croq::s32&gt;(4);
   input[0] = 1; input[1] = 2; input[2] = 3; input[3] = 4;
   auto result = identity(input.view());
   for (int i = 0; i &lt; 4; ++i)
@@ -2623,7 +2623,7 @@ int main() {
 <p>The <code>croqtile</code> command works like <code>gcc</code> or <code>clang</code>:</p>
 <pre class="highlight"><code class="language-bash">croqtile program.co                     # compile and link → a.out
 croqtile program.co -o my_kernel        # specify output name
-croqtile -es -t cuda program.co -o out.cu  # emit CUDA source only
+croqtile -es -t cute program.co -o out.cu  # emit CUDA source only
 croqtile -E program.co                  # preprocess only</code></pre>
 <p>Key flags:</p>
 <table>
@@ -2640,7 +2640,7 @@ croqtile -E program.co                  # preprocess only</code></pre>
 </tr>
 <tr>
 <td><code>-t &lt;platform&gt;</code></td>
-<td>Select target platform (e.g. <code>cuda</code>)</td>
+<td>Select target platform (e.g. <code>cute</code>)</td>
 </tr>
 <tr>
 <td><code>-es</code></td>
