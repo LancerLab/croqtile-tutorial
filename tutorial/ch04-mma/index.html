@@ -2662,35 +2662,46 @@
 <h2 id="scaling-the-cooperation-scope">Scaling the cooperation scope<a class="headerlink" href="#scaling-the-cooperation-scope" title="Permanent link">&para;</a></h2>
 <p>The four-step syntax stays the same regardless of how many threads cooperate on a single contraction. What changes is the <strong>cooperation scope</strong> — one warp, one warpgroup, two warpgroups — and that progression is the story of this section.</p>
 <h3 id="one-warp-one-tile-the-simplest-mma-matmul">One warp, one tile: the simplest MMA matmul<a class="headerlink" href="#one-warp-one-tile-the-simplest-mma-matmul" title="Permanent link">&para;</a></h3>
-<p>On Ampere (SM86), tensor-core MMA is scoped to a <strong>single warp</strong> (32 threads). In Croqtile, that corresponds to <code>: group</code>. Here is a complete FP16 matmul kernel where every <code>MATMUL_*</code> constant is 16, so one block tile equals one MMA tile:</p>
-<pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_TILE_N)] : block {
-    shared f16 [MATMUL_TILE_M, MATMUL_TILE_N] output_s;
+<p>On Ampere (SM86), tensor-core MMA is scoped to a <strong>single warp</strong> (32 threads). In Croqtile, that corresponds to <code>: group</code>.</p>
+<pre class="highlight"><code class="language-choreo">#define TILE_M 16
+#define TILE_N 16
+#define TILE_K 16
+#define WARP_M 16
+#define WARP_N 16
+#define WARP_K 16
 
-    parallel {warp_m, warp_n} by [cdiv(MATMUL_TILE_M, MATMUL_MMA_M), cdiv(MATMUL_TILE_N, MATMUL_MMA_N)] : group {
+__co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, TILE_N)] : block {
+    shared f16 [TILE_M, TILE_N] output_s;
+
+    parallel {warp_m, warp_n} by [cdiv(TILE_M, MMA_M), cdiv(TILE_N, MMA_N)] : group {
       mc = mma.fill 0.0;
 
-      foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-        lhs_load_s = dma.copy lhs.subspan(MATMUL_TILE_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; shared;
-        rhs_load_s = dma.copy rhs.subspan(MATMUL_TILE_N, MATMUL_TILE_K).at(block_n, iv_k) =&gt; shared;
+      foreach {iv_k} in [cdiv(K, TILE_K)] {
+        lhs_load_s = dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) =&gt; shared;
+        rhs_load_s = dma.copy rhs.subspan(TILE_N, TILE_K).at(block_n, iv_k) =&gt; shared;
 
-        foreach iv_warp_k in [cdiv(MATMUL_TILE_K, MATMUL_MMA_K)] {
+        foreach iv_warp_k in [cdiv(TILE_K, MMA_K)] {
           ma = mma.load lhs_load_s.chunkat(warp_m, iv_warp_k);
           mb = mma.load rhs_load_s.chunkat(warp_n, iv_warp_k);
           mma.row.row mc, ma, mb;
         }
       }
 
-      mma.store mc, output_s.subspan(MATMUL_MMA_M, MATMUL_MMA_N).at(warp_m, warp_n);
+      mma.store mc, output_s.subspan(MMA_M, MMA_N).at(warp_m, warp_n);
     }
 
-    dma.copy output_s =&gt; output.subspan(MATMUL_TILE_M, MATMUL_TILE_N).at(block_m, block_n);
+    dma.copy output_s =&gt; output.subspan(TILE_M, TILE_N).at(block_m, block_n);
   }
 }</code></pre>
 <p><strong><code>__co__ void</code> and in-place output.</strong> The kernel returns nothing; results go through <code>output</code>, matching the usual GPU pattern of writing through a global pointer.</p>
-<p><strong>Block grid.</strong> <code>cdiv(M, MATMUL_TILE_M)</code> is ceiling division — how many tiles along M, including partial tiles. <code>block_m</code> and <code>block_n</code> pick which output tile this block owns.</p>
+<p><strong>Block grid.</strong> <code>cdiv(M, TILE_M)</code> is ceiling division — how many tiles along M, including partial tiles. <code>block_m</code> and <code>block_n</code> pick which output tile this block owns.</p>
 <p><strong>Warp grid and <code>mma.fill</code>.</strong> <code>parallel {warp_m, warp_n} ... : group</code> maps MMA tiles to warps. With all dimensions 16, extents are 1×1 — one warp covers the whole block tile. Wider block tiles would add warps, each with its own <code>mc</code>.</p>
 <p><strong>K loop and DMA.</strong> Each <code>iv_k</code> stage pulls A and B strips into shared memory via <code>dma.copy</code> with <code>subspan(...).at(...)</code>. Chapter 7 goes deeper on <code>subspan</code> versus <code>chunkat</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Quick <code>subspan</code> syntax reminder</p>
+<p><code>subspan(h, w)</code> declares a fixed-size rectangular view shape, and <code>.at(i, j)</code> selects which view instance you want from the parent tensor. In other words, <code>lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k)</code> means "take the <code>[TILE_M, TILE_K]</code> tile at <code>(block_m, iv_k)</code>." Use <code>subspan</code> when you want an explicit tile shape; use <code>chunkat</code> when you want to slice by equal chunks of an existing dimension.</p>
+</div>
 <p><strong>Operand loads.</strong> <code>mma.load</code> moves the warp's tile from shared memory into <code>ma</code> / <code>mb</code>. <code>chunkat(warp_m, iv_warp_k)</code> selects the M×K slice for this warp and inner-K step.</p>
 <p><strong>Store and epilogue.</strong> After K completes, <code>mma.store</code> writes <code>mc</code> into the warp's sub-rectangle of <code>output_s</code>, then <code>dma.copy</code> sends the full block tile to global memory.</p>
 <p>This kernel is simple because the cooperation scope is narrow: 32 threads, one warp, one MMA tile at a time. The four-step syntax reads linearly and the tile geometry is obvious. But what happens when the hardware offers a wider cooperation window?</p>
@@ -2699,86 +2710,92 @@
 <p><img alt="Ampere vs Hopper MMA cooperation scope" src="../../assets/images/ch04/fig4_sm86_vs_sm90_dark.png#only-dark" />
 <img alt="Ampere vs Hopper MMA cooperation scope" src="../../assets/images/ch04/fig4_sm86_vs_sm90_light.png#only-light" /></p>
 <p><em>SM86: one warp per MMA. SM90: four warps (<code>: group-4</code>) cooperate on WGMMA.</em></p>
-<pre class="highlight"><code class="language-choreo">parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
-  shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-  shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
+<pre class="highlight"><code class="language-choreo">#define TILE_M 128
+#define TILE_N 128
+#define TILE_K 128
+#define WARP_M 64
+#define WARP_N 64
+#define WARP_K 16
 
-  mc = mma.fill.f16 0.0f;
+__co__ void matmul_wgmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
 
-  foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-    dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-    dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
+    mc = mma.fill.f16 0.0f;
 
-    foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-      parallel p by 1 : group-4 {
-        ma = mma.load lhs_load_s.chunkat(_, iv_warp);
-        mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-        mma.row.row mc, ma, mb;
+    foreach {iv_k} in [cdiv(K, TILE_K)] {
+      dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+      dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
+
+      foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+        parallel p by 1 : group-4 {
+          ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+          mma.row.row mc, ma, mb;
+        }
       }
     }
-  }
 
-  shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
-  mma.store mc, output_s;
-  dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+    shared f16 [WARP_M, WARP_N] output_s;
+    mma.store mc, output_s;
+    dma.copy output_s =&gt; output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+  }
 }</code></pre>
 <p>Read it side by side with the SM86 kernel. Fill, load, multiply, store — the rhythm is identical. The differences are mechanical:</p>
-<p><strong><code>mma.fill.f16 0.0f</code>.</strong> Hopper often spells accumulator precision explicitly — <code>.f16</code>, <code>.f32</code>, etc. FP16 operands with FP32 accumulation is a common pattern for long K dimensions, avoiding numerical overflow in partial sums. SM86 commonly uses the shorter <code>mma.fill 0.0</code> and relies on inference.</p>
+<p><strong><code>mma.fill.f16 0.0f</code>.</strong> Hopper often spells accumulator precision explicitly — <code>.f16</code>, <code>.f32</code>, etc. FP16 operands with FP32 accumulation is a common pattern for long K dimensions, avoiding numerical overflow in partial sums. The <code>0.0f</code> means the initial value is of type <code>f32</code> (there is no literal <code>f16</code> in the Croqtile). Casting will be performed to <code>f16</code> in the fill operation. If <code>.f16</code> is not specified, the initial value will be inferred from the type of the <code>ma</code> and <code>mb</code> operands.</p>
 <p><strong><code>parallel p by 1 : group-4</code>.</strong> One warpgroup (four warps) executes the inner loads and MMA. The mnemonic <code>mma.row.row</code> matches Ampere, but the hardware issue is wider.</p>
 <p><strong><code>chunkat(_, iv_warp)</code>.</strong> <code>_</code> means "do not tile that dimension" — keep the full M (or N) extent already resident in shared memory; only K is subdivided per MMA slice.</p>
 <p>That is the whole point of the abstraction: the same four operations, the same layout contract, the same <code>chunkat</code> / <code>subspan</code> expressions. The compiler maps them to different hardware instructions depending on whether the target is SM86 or SM90. You think about <em>what</em> contraction to perform; the cooperation width is a deployment detail.</p>
 <h3 id="tiling-further-two-warpgroups-sharing-operands">Tiling further: two warpgroups sharing operands<a class="headerlink" href="#tiling-further-two-warpgroups-sharing-operands" title="Permanent link">&para;</a></h3>
 <p>Chapter 3 introduced <code>parallel p1 by 2 : group-4</code> — two warpgroups in one block. With MMA, both groups can share the same B tile while loading different rows of A. This is how large block tiles get split into multiple MMA tiles without duplicating the B operand in shared memory:</p>
-<pre class="highlight"><code class="language-choreo">parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_WARP_N)] : block {
-  shared f16 [MATMUL_TILE_M, MATMUL_TILE_K] lhs_load_s;
-  shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-  shared f16 [MATMUL_TILE_M, MATMUL_WARP_N] output_s;
+<pre class="highlight"><code class="language-choreo">#define TILE_M 128
+#define TILE_N 128
+#define TILE_K 128
+#define WARP_M 64
+#define WARP_N 64
+#define WARP_K 16
 
-  mc = mma.fill.f32 0.0f;
+__co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, WARP_N)] : block {
+    shared f16 [TILE_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [TILE_M, WARP_N] output_s;
 
-  foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-    dma.copy lhs.subspan(MATMUL_TILE_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-    dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
+    mc = mma.fill.f32 0.0f;
 
-    parallel p1 by 2 : group-4 {
-      foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-        ma = mma.load lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(p1, 0).chunkat(_, iv_warp);
-        mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-        mma.row.row mc, ma, mb;
+    foreach {iv_k} in [cdiv(K, TILE_K)] {
+      dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+      dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
+
+      parallel p1 by 2 : group-4 {
+        foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+          ma = mma.load lhs_load_s.subspan(WARP_M, TILE_K).at(p1, 0).chunkat(_, iv_warp);
+          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+          mma.row.row mc, ma, mb;
+        }
       }
     }
-  }
 
-  parallel p1 by 2 : group-4 {
-    mma.store mc, output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0);
+    parallel p1 by 2 : group-4 
+      mma.store mc, output_s.subspan(WARP_M, WARP_N).at(p1, 0);
+
+    dma.copy output_s =&gt; output.subspan(TILE_M, WARP_N).at(block_m, block_n);
   }
-  dma.copy output_s =&gt; output.subspan(MATMUL_TILE_M, MATMUL_WARP_N).at(block_m, block_n);
 }</code></pre>
-<p><strong>Splitting M with <code>p1</code>.</strong> With <code>MATMUL_TILE_M = 128</code> and <code>MATMUL_WARP_M = 64</code>, the block spans 128 rows; <code>p1</code> selects the upper or lower 64-row strip. <code>lhs_load_s.subspan(MATMUL_WARP_M, ...).at(p1, 0)</code> gives each warpgroup its A rows; both use the same <code>rhs_load_s</code>.</p>
-<p><strong>Mirrored store.</strong> <code>mma.store</code> targets <code>output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0)</code> so each warpgroup writes its half of the staging buffer, then one <code>dma.copy</code> emits the combined tile.</p>
+<p><strong>Splitting M with <code>p1</code>.</strong> With <code>TILE_M = 128</code> and <code>WARP_M = 64</code>, the block spans 128 rows; <code>p1</code> selects the upper or lower 64-row strip. <code>lhs_load_s.subspan(WARP_M, ...).at(p1, 0)</code> gives each warpgroup its A rows; both use the same <code>rhs_load_s</code>.</p>
+<p><strong>Mirrored store.</strong> <code>mma.store</code> targets <code>output_s.subspan(WARP_M, WARP_N).at(p1, 0)</code> so each warpgroup writes its half of the staging buffer, then one <code>dma.copy</code> emits the combined tile.</p>
 <p>The pattern scales: three warpgroups, four warpgroups, or any count that divides your block tile. The four-step syntax stays invariant; only the parallel decomposition of the tile changes.</p>
 <table>
 <thead>
 <tr>
 <th>Aspect</th>
-<th>One warp (<code>: group</code>)</th>
-<th>One warpgroup (<code>: group-4</code>)</th>
+<th>One warp(<code>group</code>)</th>
+<th>One warpgroup(<code>group-4</code>)</th>
 <th>Two warpgroups</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>Threads</td>
-<td>32</td>
-<td>128</td>
-<td>256</td>
-</tr>
-<tr>
-<td>Accumulator</td>
-<td><code>mma.fill 0.0</code></td>
-<td><code>mma.fill.f16 0.0f</code></td>
-<td><code>mma.fill.f32 0.0f</code></td>
-</tr>
 <tr>
 <td>Tile split</td>
 <td>One MMA tile per warp</td>
@@ -2790,6 +2807,18 @@
 <td>N/A</td>
 <td>N/A</td>
 <td>B tile shared, A rows split by <code>p1</code></td>
+</tr>
+<tr>
+<td>Threads</td>
+<td>32</td>
+<td>128</td>
+<td>256</td>
+</tr>
+<tr>
+<td>Accumulator</td>
+<td><code>mma.fill 0.0</code></td>
+<td><code>mma.fill.f16 0.0f</code></td>
+<td><code>mma.fill.f32 0.0f</code></td>
 </tr>
 </tbody>
 </table>
