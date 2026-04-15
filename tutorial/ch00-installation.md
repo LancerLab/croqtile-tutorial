@@ -6,11 +6,11 @@ Before writing your first kernel, you need the Croqtile compiler on your machine
 
 You need a C++17-capable compiler and two parser-generator tools:
 
-| Dependency | Minimum Version |
-|---|---|
-| GCC | 8.1+ (or Clang 6+) |
-| Bison | 3.8+ |
-| Flex | 2.6.4+ |
+| Dependency   | Minimum Version         |
+|--------------|-------------------------|
+| GCC          | 8.1+ (or Clang 6+)      |
+| Bison        | 3.8+                    |
+| Flex         | 2.6.4+                  |
 | CUDA Toolkit | 11.8+ (for GPU targets) |
 
 Most Linux distributions ship Flex and an older Bison. If your system Bison is below 3.8, the setup step below will fetch a compatible version automatically.
@@ -83,16 +83,16 @@ croqtile -E program.co                  # preprocess only
 
 Key flags:
 
-| Flag | Effect |
-|---|---|
-| `-o <file>` | Set output filename |
-| `-t <platform>` | Select target platform (e.g. `cute`) |
-| `-es` | Emit target source code without compiling it |
-| `-E` | Preprocess only (expand macros, strip `#if 0` blocks) |
-| `-c` | Compile without linking |
-| `-S` | Emit assembly |
-| `--help` | Show all options |
-| `--help-hidden` | Show advanced/internal options |
+| Flag            | Effect                                                |
+|-----------------|-------------------------------------------------------|
+| `-o <file>`     | Set output filename                                   |
+| `-t <platform>` | Select target platform (e.g. `cute`)                  |
+| `-es`           | Emit target source code without compiling it          |
+| `-E`            | Preprocess only (expand macros, strip `#if 0` blocks) |
+| `-c`            | Compile without linking                               |
+| `-S`            | Emit assembly                                         |
+| `--help`        | Show all options                                      |
+| `--help-hidden` | Show advanced/internal options                        |
 
 ## Development Utilities
 

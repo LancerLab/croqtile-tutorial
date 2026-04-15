@@ -66,13 +66,15 @@ class RegisterLoading(Scene):
         legend_title = Text("Thread ownership:", font_size=12, color=C["fg"], font="Monospace")
         legend_title.move_to(RIGHT * 2.8 + UP * 0.3)
         self.add(legend_title)
+        legend_left_x = legend_title.get_left()[0]
         for i in range(8):
             sq = Square(side_length=0.2,
                         fill_color=colors_per_thread[i], fill_opacity=0.4,
                         stroke_color=colors_per_thread[i], stroke_width=1)
             label = Text(f"T{i*4}–T{i*4+3}", font_size=12, color=C["fg2"], font="Monospace")
             row = VGroup(sq, label).arrange(RIGHT, buff=0.1)
-            row.move_to(RIGHT * 2.8 + DOWN * (0.0 + i * 0.28))
+            row_y = legend_title.get_bottom()[1] - 0.18 - i * 0.28
+            row.move_to([legend_left_x + row.width / 2 + 0.3, row_y, 0])
             self.add(row)
 
         brace_l = Text("Croqtile:", font_size=14, color=C["green"], font="Monospace")

@@ -277,18 +277,18 @@ For that thread, the K-loop runs 16 iterations. On iteration `tile_k = 0`, `dma.
 
 ## Summary of New Syntax
 
-| Syntax | Meaning |
-|--------|---------|
-| `parallel p by N` | N-way parallelism, index `p` runs 0..N-1 concurrently |
-| `parallel {px, py} by [M, N]` | Multi-dimensional parallel level <br> (`p` and `q` correspond to one parallel level) |
-| `parallel p by A, q by B` | Comma-separated parallel levels <br> (`p` and `q` correspond to different parallel levels) |
-| `parallel p by N : block` | Map to CUDA thread blocks |
-| `parallel q by N : thread` | Map to threads within a block |
-| `parallel w by N : group` | Map to warps (32 threads each) |
-| `parallel g by N : group-4` | Map to warpgroups (128 threads each) |
-| `=> shared` | DMA destination: block-scoped shared memory |
-| `foreach index = {m, n, k} in [a, b, c]` | Named tuple destructuring in a `foreach` |
-| `lhs.span(0)` | Extract one dimension of a tensor's shape |
-| `p # m` | Compose outer tile index `p` with inner offset `m` |
+| Syntax                                   | Meaning                                                                                    |
+|------------------------------------------|--------------------------------------------------------------------------------------------|
+| `parallel p by N`                        | N-way parallelism, index `p` runs 0..N-1 concurrently                                      |
+| `parallel {px, py} by [M, N]`            | Multi-dimensional parallel level <br> (`p` and `q` correspond to one parallel level)       |
+| `parallel p by A, q by B`                | Comma-separated parallel levels <br> (`p` and `q` correspond to different parallel levels) |
+| `parallel p by N : block`                | Map to CUDA thread blocks                                                                  |
+| `parallel q by N : thread`               | Map to threads within a block                                                              |
+| `parallel w by N : group`                | Map to warps (32 threads each)                                                             |
+| `parallel g by N : group-4`              | Map to warpgroups (128 threads each)                                                       |
+| `=> shared`                              | DMA destination: block-scoped shared memory                                                |
+| `foreach index = {m, n, k} in [a, b, c]` | Named tuple destructuring in a `foreach`                                                   |
+| `lhs.span(0)`                            | Extract one dimension of a tensor's shape                                                  |
+| `p # m`                                  | Compose outer tile index `p` with inner offset `m`                                         |
 
 The tiled DMA matmul you built in this chapter is the structural backbone of every high-performance GPU kernel. The next chapter replaces the scalar `.at()` arithmetic in the inner loop with **tensor-core** operations — hardware-accelerated matrix multiply that processes a 16×16×16 tile in a single instruction.

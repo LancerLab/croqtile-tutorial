@@ -266,11 +266,11 @@ The figure below shows how these three specifiers correspond to the physical GPU
 
 The choice does not change the Croqtile function's semantics — only performance. You could replace every `=> local` with `=> shared` and the program would still produce the same result, just with different speed characteristics. The rule of thumb:
 
-| Situation | Use | Why |
-|-----------|-----|-----|
-| Each tile is independent, no sharing | `local` | Fastest, no synchronization needed |
+| Situation                                     | Use      | Why                                 |
+|-----------------------------------------------|----------|-------------------------------------|
+| Each tile is independent, no sharing          | `local`  | Fastest, no synchronization needed  |
 | Multiple threads collaborate on the same tile | `shared` | Visible to all threads in the block |
-| Writing results back to the output tensor | `global` | Output must be device-visible |
+| Writing results back to the output tensor     | `global` | Output must be device-visible       |
 
 For now the examples use `local` because each tile runs independently. Chapter 3 will introduce `shared` when multiple threads need to read the same tile for a tiled matrix multiply.
 
@@ -280,15 +280,15 @@ Nothing about the math changed. Every element of `lhs` is still added to the cor
 
 The new vocabulary:
 
-| Syntax | Meaning |
-|--------|---------|
-| `dma.copy src => local` | Bulk-copy `src` into local (or `shared` / `global`) memory |
-| `tensor.chunkat(i)` | View of the `i`-th equal chunk of `tensor` |
-| `tensor.chunkat(i, j)` | View of chunk at position `(i, j)` in a 2D tiling |
-| `future.data.at(...)` | Access the copied data through a DMA future |
-| `tile # i` | Compose tile index `tile` with local offset `i` into a global index (outer # inner) |
-| `#tile` | Extent (number of tiles) along the `tile` axis |
-| `lhs.span(0)` | Size of `lhs` along its first dimension |
-| `local` / `shared` / `global` | Memory level specifiers for DMA destinations |
+| Syntax                        | Meaning                                                                             |
+|-------------------------------|-------------------------------------------------------------------------------------|
+| `dma.copy src => local`       | Bulk-copy `src` into local (or `shared` / `global`) memory                          |
+| `tensor.chunkat(i)`           | View of the `i`-th equal chunk of `tensor`                                          |
+| `tensor.chunkat(i, j)`        | View of chunk at position `(i, j)` in a 2D tiling                                   |
+| `future.data.at(...)`         | Access the copied data through a DMA future                                         |
+| `tile # i`                    | Compose tile index `tile` with local offset `i` into a global index (outer # inner) |
+| `#tile`                       | Extent (number of tiles) along the `tile` axis                                      |
+| `lhs.span(0)`                 | Size of `lhs` along its first dimension                                             |
+| `local` / `shared` / `global` | Memory level specifiers for DMA destinations                                        |
 
 All of these compose naturally with `parallel` and `.at()` from Chapter 1. The [next chapter](ch03-parallelism.md) goes deeper into `parallel` — mapping it to CUDA thread blocks, warps, and warpgroups — and uses everything from this chapter to build a tiled matrix multiply.

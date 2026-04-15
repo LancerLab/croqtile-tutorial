@@ -57,17 +57,17 @@ class MMASyntax(Scene):
                 arr = Arrow(
                     [0, y - box_h/2, 0], [0, y - y_step + box_h/2, 0],
                     buff=0.05, stroke_width=2, color=C["arrow_c"],
-                    max_tip_length_to_length_ratio=0.2,
+                    max_tip_length_to_length_ratio=0.4,
                 )
                 self.add(arr)
 
         loop_label = Text(
-            "loop 2–3 over K slices; run 4 once",
+            "loop steps 2 and 3\nover K slices",
             font_size=12, color=C["fg3"], font="Monospace",
         )
         brace = BraceBetweenPoints(
-            [box_w/2 + 0.3, y_start - y_step + box_h/2, 0],
-            [box_w/2 + 0.3, y_start - 2*y_step - box_h/2, 0],
+            [box_w/2 - 0.03, y_start - y_step + box_h/2, 0],
+            [box_w/2 - 0.03, y_start - 2*y_step - box_h/2, 0],
             direction=RIGHT,
             color=C["dim"],
         )
