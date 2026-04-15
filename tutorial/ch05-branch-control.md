@@ -50,13 +50,13 @@ parallel p1 by 2 : group-4 {
 
 The distinction from `if` is structural, not just performance:
 
-| | `if` (predicated execution) | `inthreads.async` (structured concurrency) |
-|---|---|---|
-| **Resolution** | Runtime — every thread evaluates the condition | Compile time — thread assignment is fixed |
-| **Instruction streams** | One program; divergent threads masked | Separate programs per region |
-| **Execution** | Serial within a warp if divergent | Concurrent across warpgroups |
-| **PL analogy** | `if`/`else` in any language | `async`/`spawn` in structured concurrency (Trio, Go goroutines, Cilk) |
-| **GPU analogy** | SPMD with masking | MPMD within a single kernel launch |
+|                         | `if` (predicated execution)                    | `inthreads.async` (structured concurrency)                            |
+|-------------------------|------------------------------------------------|-----------------------------------------------------------------------|
+| **Resolution**          | Runtime — every thread evaluates the condition | Compile time — thread assignment is fixed                             |
+| **Instruction streams** | One program; divergent threads masked          | Separate programs per region                                          |
+| **Execution**           | Serial within a warp if divergent              | Concurrent across warpgroups                                          |
+| **PL analogy**          | `if`/`else` in any language                    | `async`/`spawn` in structured concurrency (Trio, Go goroutines, Cilk) |
+| **GPU analogy**         | SPMD with masking                              | MPMD within a single kernel launch                                    |
 
 **Why "structured"?** The regions are lexically scoped — the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each `inthreads.async` block is a static partition. This is what makes it amenable to compile-time analysis: the compiler can allocate registers differently for each region, emit different instruction schedules, and verify that shared resources are used safely.
 
@@ -119,17 +119,17 @@ This is a **credit-based bounded buffer** protocol — the same pattern used in 
 For pipelines with multiple buffered stages, declare event arrays:
 
 ```choreo
-shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
+shared event full[STAGES], empty[STAGES];
 ```
 
-Each physical buffer slot gets its own `full`/`empty` pair. The ring index `stage = iv_k % MATMUL_STAGES` maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on `wait empty`.
+Each physical buffer slot gets its own `full`/`empty` pair. The ring index `stage = iv_k % STAGES` maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on `wait empty`.
 
 ### Bootstrap protocol
 
 The consumer must **seed** the `empty` credits before the K-loop starts:
 
 ```choreo
-foreach {s} in [MATMUL_STAGES] {
+foreach {s} in [STAGES] {
   trigger empty[s];
 }
 ```
@@ -144,38 +144,38 @@ Here is how the three primitives sit together inside a Hopper matmul. Event-base
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
-    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
 
     parallel p1 by 2 : group-4 {
 
       inthreads.async (p1 == 0) {
-        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) => lhs_load_s;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
           dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
         }
       }
 
       inthreads.async (p1 == 1) {
         mc = mma.fill.f16 0.0f;
-        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
             ma = mma.load lhs_load_s.chunkat(_, iv_warp);
             mb = mma.load rhs_load_s.chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
         }
         mma.store mc, output_s;
-        dma.copy output_s => output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
       }
     }
   }
 }
 ```
 
-**Producer `foreach`** — Walks K with `cdiv(K, MATMUL_TILE_K)` steps; warpgroup 0 issues `dma.copy` into shared memory.
+**Producer `foreach`** — Walks K with `cdiv(K, TILE_K)` steps; warpgroup 0 issues `dma.copy` into shared memory.
 
 **Consumer `mma` path** — Warpgroup 1 never touches those DMAs; it reads shared memory, accumulates in `mc`, and writes the result.
 
@@ -189,26 +189,26 @@ A **persistent kernel** fixes the launch size (often near the SM count) and lets
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  int total_tiles = cdiv(M, MATMUL_WARP_M) * cdiv(N, MATMUL_WARP_N);
+  int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
 
   parallel block_id by NUM_SMS : block {
-    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
 
     foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)] {
       tile_id = tile_iter # block_id;
 
       if (tile_id < total_tiles) {
-        block_m = tile_id / cdiv(N, MATMUL_WARP_N);
-        block_n = tile_id % cdiv(N, MATMUL_WARP_N);
+        block_m = tile_id / cdiv(N, WARP_N);
+        block_n = tile_id % cdiv(N, WARP_N);
 
         mc = mma.fill.f16 0.0f;
-        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) => lhs_load_s;
-          dma.copy rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k) => rhs_load_s;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+          dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) => rhs_load_s;
 
-          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
             parallel p by 1 : group-4 {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
@@ -217,7 +217,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           }
         }
         mma.store mc, output_s;
-        dma.copy output_s => output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
       }
     }
   }
@@ -235,53 +235,63 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 ### Data-dependent vs persistent grids
 
-| Aspect | One block per tile | Persistent (`NUM_SMS` blocks) |
-|--------|-------------------|-------------------------------|
-| Grid size | Grows with problem | Fixed |
-| Tail utilization | Last wave may leave SMs idle | All SMs stay busy |
-| Extra constructs | Minimal | `total_tiles`, `tile_iter # block_id`, `if` |
-| Complexity | Lower | Higher |
+| Aspect           | One block per tile           | Persistent (`NUM_SMS` blocks)               |
+|------------------|------------------------------|---------------------------------------------|
+| Grid size        | Grows with problem           | Fixed                                       |
+| Tail utilization | Last wave may leave SMs idle | All SMs stay busy                           |
+| Extra constructs | Minimal                      | `total_tiles`, `tile_iter # block_id`, `if` |
+| Complexity       | Lower                        | Higher                                      |
 
-## `parallel.async` and `stream s`: host-level concurrency
+## `parallel.async`: host-level concurrency
 
-Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU, or pin different grids to different CUDA streams so they can execute concurrently on the GPU.
+<!-- 
+Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU, or pin different grids to different CUDA streams so they can execute concurrently on the GPU. 
+-->
+Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU.
 
+```choreo
+parallel.async {px, py} by [grid_m, grid_n] : block {
+  // kernel body
+}
+```
+<!-- 
 ```choreo
 parallel.async {px, py} by [grid_m, grid_n] : block {
   stream s;
   // kernel body
 }
 ```
+-->
 
 **`parallel.async`** returns control to the host immediately — the kernel is enqueued but the host does not wait for completion. This is the Croqtile equivalent of `cudaLaunchKernel` with a non-default stream.
 
-**`stream s`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs.
+<!-- **`stream s`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs. -->
 
 This is **host orchestration**, orthogonal to in-kernel control flow. It does not replace `inthreads.async` for thread partitioning or `if` for runtime predicates — it decides *when* and *where* a grid runs relative to other grids.
 
 ## New syntax
 
-| Syntax | Meaning |
-|--------|---------|
-| `if (expr) { ... }` | Predicated execution — runtime conditional, divergent threads masked |
-| `inthreads.async (condition)` | Structured concurrent region — compile-time thread partitioning |
-| `shared event name` | Declare a synchronization token in shared memory |
-| `shared event name[N]` | Declare N synchronization tokens |
-| `trigger name` | Signal that a condition is met |
-| `wait name` | Block until the corresponding `trigger` fires |
-| `tile_id = tile_iter # block_id` | Compose indices for tile striping |
-| `int total_tiles = expr` | Local integer variable |
-| `parallel.async ... : block` | Non-blocking kernel launch |
-| `stream s` | Bind kernel to CUDA stream `s` |
+| Syntax                           | Meaning                                                              |
+|----------------------------------|----------------------------------------------------------------------|
+| `if (expr) { ... }`              | Predicated execution — runtime conditional, divergent threads masked |
+| `inthreads.async (condition)`    | Structured concurrent region — compile-time thread partitioning      |
+| `shared event name`              | Declare a synchronization token in shared memory                     |
+| `shared event name[N]`           | Declare N synchronization tokens                                     |
+| `trigger name`                   | Signal that a condition is met                                       |
+| `wait name`                      | Block until the corresponding `trigger` fires                        |
+| `tile_id = tile_iter # block_id` | Compose indices for tile striping                                    |
+| `int total_tiles = expr`         | Local integer variable                                               |
+| `parallel.async ... : block`     | Non-blocking kernel launch                                           |
+<!-- | `stream s`                       | Bind kernel to CUDA stream `s`                                       | -->
 
 ## Chapter summary
 
-| Concept | Primitive | When to use |
-|---------|-----------|-------------|
-| Predicated execution | `if` | Data-dependent decisions (bounds, conditions) |
-| Structured concurrency | `inthreads.async` | Compile-time thread partitioning (producer/consumer, heterogeneous roles) |
-| Inter-region signaling | `shared event` / `wait` / `trigger` | Coordination between concurrent regions |
-| Host concurrency | `parallel.async` / `stream s` | Multi-kernel overlap, non-blocking launch |
-| Persistent scheduling | `if` + `foreach` + `#` | Fixed grid size, tile striping with padding guard |
+| Concept                | Primitive                           | When to use                                                               |
+|------------------------|-------------------------------------|---------------------------------------------------------------------------|
+| Predicated execution   | `if`                                | Data-dependent decisions (bounds, conditions)                             |
+| Structured concurrency | `inthreads.async`                   | Compile-time thread partitioning (producer/consumer, heterogeneous roles) |
+| Inter-region signaling | `shared event` / `wait` / `trigger` | Coordination between concurrent regions                                   |
+| Host concurrency       | `parallel.async` / `stream s`       | Multi-kernel overlap, non-blocking launch                                 |
+| Persistent scheduling  | `if` + `foreach` + `#`              | Fixed grid size, tile striping with padding guard                         |
 
 The 1P1C skeleton above is incomplete: without `wait` / `trigger`, the consumer can read before the producer has finished writing. [Chapter 6](ch06-synchronization.md) adds the full synchronization protocols — `swap` for single-schedule double buffering, events for multi-warpgroup pipelines — so the pipeline runs safely and at full throughput.
