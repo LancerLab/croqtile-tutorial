@@ -1,6 +1,6 @@
 # Croqtile
 
-Documentation and tutorials for **Croqtile**, a C++ embedded DSL for high-performance kernel programming, featuring easy-to-use syntax with zero-cost abstractions, comprehensive compile-time safety checks, first-class dynamic shapes and symbolic dimensions, and an AI-tuning-friendly design from the ground up.
+Documentation and tutorials for **Croqtile**, a next-gen Kernel programming language for maximizing productivity, featuring easy-to-use syntax with zero-cost abstractions, comprehensive compile-time safety checks, first-class dynamic shapes and symbolic dimensions, and an AI-tuning-friendly design from the ground up.
 
 ## Documentation Structure
 
