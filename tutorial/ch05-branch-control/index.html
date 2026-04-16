@@ -747,10 +747,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parallelasync-and-stream-s-host-level-concurrency" class="md-nav__link">
+  <a href="#parallelasync-host-level-concurrency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        parallel.async and stream s: host-level concurrency
+        parallel.async: host-level concurrency
       
     </span>
   </a>
@@ -2647,10 +2647,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parallelasync-and-stream-s-host-level-concurrency" class="md-nav__link">
+  <a href="#parallelasync-host-level-concurrency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        parallel.async and stream s: host-level concurrency
+        parallel.async: host-level concurrency
       
     </span>
   </a>
@@ -2852,11 +2852,11 @@ shared event empty;</code></pre>
 <p>This is a <strong>credit-based bounded buffer</strong> protocol — the same pattern used in operating systems (semaphores), network flow control (TCP window), and hardware (warp barriers). <code>full</code> is the "data available" credit; <code>empty</code> is the "buffer free" credit.</p>
 <h3 id="event-arrays-for-multi-stage-pipelines">Event arrays for multi-stage pipelines<a class="headerlink" href="#event-arrays-for-multi-stage-pipelines" title="Permanent link">&para;</a></h3>
 <p>For pipelines with multiple buffered stages, declare event arrays:</p>
-<pre class="highlight"><code class="language-choreo">shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];</code></pre>
-<p>Each physical buffer slot gets its own <code>full</code>/<code>empty</code> pair. The ring index <code>stage = iv_k % MATMUL_STAGES</code> maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on <code>wait empty</code>.</p>
+<pre class="highlight"><code class="language-choreo">shared event full[STAGES], empty[STAGES];</code></pre>
+<p>Each physical buffer slot gets its own <code>full</code>/<code>empty</code> pair. The ring index <code>stage = iv_k % STAGES</code> maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on <code>wait empty</code>.</p>
 <h3 id="bootstrap-protocol">Bootstrap protocol<a class="headerlink" href="#bootstrap-protocol" title="Permanent link">&para;</a></h3>
 <p>The consumer must <strong>seed</strong> the <code>empty</code> credits before the K-loop starts:</p>
-<pre class="highlight"><code class="language-choreo">foreach {s} in [MATMUL_STAGES] {
+<pre class="highlight"><code class="language-choreo">foreach {s} in [STAGES] {
   trigger empty[s];
 }</code></pre>
 <p>Without this bootstrap, the producer's first <code>wait empty[0]</code> blocks forever — a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol requires initial credits.</p>
@@ -2864,62 +2864,62 @@ shared event empty;</code></pre>
 <h2 id="a-1p1c-matmul-skeleton">A 1P1C matmul skeleton<a class="headerlink" href="#a-1p1c-matmul-skeleton" title="Permanent link">&para;</a></h2>
 <p>Here is how the three primitives sit together inside a Hopper matmul. Event-based synchronization is omitted — <a href="../ch06-synchronization/">Chapter 6</a> adds the full pipeline protocol. Focus on the program structure:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
-    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
 
     parallel p1 by 2 : group-4 {
 
       inthreads.async (p1 == 0) {
-        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
           dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
         }
       }
 
       inthreads.async (p1 == 1) {
         mc = mma.fill.f16 0.0f;
-        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
             ma = mma.load lhs_load_s.chunkat(_, iv_warp);
             mb = mma.load rhs_load_s.chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
         }
         mma.store mc, output_s;
-        dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+        dma.copy output_s =&gt; output.subspan(WARP_M, WARP_N).at(block_m, block_n);
       }
     }
   }
 }</code></pre>
-<p><strong>Producer <code>foreach</code></strong> — Walks K with <code>cdiv(K, MATMUL_TILE_K)</code> steps; warpgroup 0 issues <code>dma.copy</code> into shared memory.</p>
+<p><strong>Producer <code>foreach</code></strong> — Walks K with <code>cdiv(K, TILE_K)</code> steps; warpgroup 0 issues <code>dma.copy</code> into shared memory.</p>
 <p><strong>Consumer <code>mma</code> path</strong> — Warpgroup 1 never touches those DMAs; it reads shared memory, accumulates in <code>mc</code>, and writes the result.</p>
 <p><strong>Missing coordination</strong> — Both sides loop over K independently. The consumer assumes each K-slab is ready when it reads. Making that assumption correct requires events (<a href="../ch06-synchronization/">Chapter 6</a>).</p>
 <h2 id="persistent-scheduling-and-the-if-guard">Persistent scheduling and the <code>if</code> guard<a class="headerlink" href="#persistent-scheduling-and-the-if-guard" title="Permanent link">&para;</a></h2>
 <p>In Chapters 3–4, the grid grew with the problem: roughly one block per output tile. For large matrices that means large launch counts, and the last wave of blocks often leaves SMs partially idle — <strong>tail underutilization</strong>.</p>
 <p>A <strong>persistent kernel</strong> fixes the launch size (often near the SM count) and lets each block iterate over multiple tiles:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  int total_tiles = cdiv(M, MATMUL_WARP_M) * cdiv(N, MATMUL_WARP_N);
+  int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
 
   parallel block_id by NUM_SMS : block {
-    shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-    shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-    shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
 
     foreach {tile_iter} in [cdiv(total_tiles, NUM_SMS)] {
       tile_id = tile_iter # block_id;
 
       if (tile_id &lt; total_tiles) {
-        block_m = tile_id / cdiv(N, MATMUL_WARP_N);
-        block_n = tile_id % cdiv(N, MATMUL_WARP_N);
+        block_m = tile_id / cdiv(N, WARP_N);
+        block_n = tile_id % cdiv(N, WARP_N);
 
         mc = mma.fill.f16 0.0f;
-        foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-          dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-          dma.copy rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k) =&gt; rhs_load_s;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+          dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) =&gt; rhs_load_s;
 
-          foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
             parallel p by 1 : group-4 {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
@@ -2928,7 +2928,7 @@ shared event empty;</code></pre>
           }
         }
         mma.store mc, output_s;
-        dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
+        dma.copy output_s =&gt; output.subspan(WARP_M, WARP_N).at(block_m, block_n);
       }
     }
   }
@@ -2970,14 +2970,24 @@ shared event empty;</code></pre>
 </tr>
 </tbody>
 </table>
-<h2 id="parallelasync-and-stream-s-host-level-concurrency"><code>parallel.async</code> and <code>stream s</code>: host-level concurrency<a class="headerlink" href="#parallelasync-and-stream-s-host-level-concurrency" title="Permanent link">&para;</a></h2>
-<p>Everything above runs inside a kernel. Sometimes you need concurrency at the <strong>host level</strong>: launch a grid without blocking the CPU, or pin different grids to different CUDA streams so they can execute concurrently on the GPU.</p>
+<h2 id="parallelasync-host-level-concurrency"><code>parallel.async</code>: host-level concurrency<a class="headerlink" href="#parallelasync-host-level-concurrency" title="Permanent link">&para;</a></h2>
+<!-- 
+Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU, or pin different grids to different CUDA streams so they can execute concurrently on the GPU. 
+-->
+<p>Everything above runs inside a kernel. Sometimes you need concurrency at the <strong>host level</strong>: launch a grid without blocking the CPU.</p>
+<pre class="highlight"><code class="language-choreo">parallel.async {px, py} by [grid_m, grid_n] : block {
+  // kernel body
+}</code></pre>
+<!-- 
 <pre class="highlight"><code class="language-choreo">parallel.async {px, py} by [grid_m, grid_n] : block {
   stream s;
   // kernel body
 }</code></pre>
+-->
+
 <p><strong><code>parallel.async</code></strong> returns control to the host immediately — the kernel is enqueued but the host does not wait for completion. This is the Croqtile equivalent of <code>cudaLaunchKernel</code> with a non-default stream.</p>
-<p><strong><code>stream s</code></strong> pins the kernel to CUDA stream <code>s</code>. Multiple <code>parallel.async</code> blocks with different streams can overlap on the GPU if there are enough SMs.</p>
+<!-- **`stream s`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs. -->
+
 <p>This is <strong>host orchestration</strong>, orthogonal to in-kernel control flow. It does not replace <code>inthreads.async</code> for thread partitioning or <code>if</code> for runtime predicates — it decides <em>when</em> and <em>where</em> a grid runs relative to other grids.</p>
 <h2 id="new-syntax">New syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>
 <table>
@@ -3024,12 +3034,10 @@ shared event empty;</code></pre>
 <td><code>parallel.async ... : block</code></td>
 <td>Non-blocking kernel launch</td>
 </tr>
-<tr>
-<td><code>stream s</code></td>
-<td>Bind kernel to CUDA stream <code>s</code></td>
-</tr>
 </tbody>
 </table>
+<!-- | `stream s`                       | Bind kernel to CUDA stream `s`                                       | -->
+
 <h2 id="chapter-summary">Chapter summary<a class="headerlink" href="#chapter-summary" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
