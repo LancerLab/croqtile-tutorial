@@ -758,6 +758,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#early-return-from-parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Early return from parallel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#new-syntax" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2658,6 +2669,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#early-return-from-parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Early return from parallel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#new-syntax" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2989,6 +3011,18 @@ Everything above runs inside a kernel. Sometimes you need concurrency at the **h
 <!-- **`stream s`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs. -->
 
 <p>This is <strong>host orchestration</strong>, orthogonal to in-kernel control flow. It does not replace <code>inthreads.async</code> for thread partitioning or <code>if</code> for runtime predicates — it decides <em>when</em> and <em>where</em> a grid runs relative to other grids.</p>
+<h2 id="early-return-from-parallel">Early return from <code>parallel</code><a class="headerlink" href="#early-return-from-parallel" title="Permanent link">&para;</a></h2>
+<p>Sometimes you need to early return from a <code>parallel</code> block. The <code>yield</code> keyword will simply generate a <code>return;</code> instruction to get out of device code.</p>
+<pre class="highlight"><code class="language-choreo">parallel p by BLK_CNT: block {
+  parallel q by THR_CNT : thread {
+    if (cond) yield;
+    ...
+  }
+}</code></pre>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code>yield</code> keyword currently will <strong>not</strong> do any compile-time nor runtime checks. Be careful about synchronization safety.</p>
+</div>
 <h2 id="new-syntax">New syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3033,6 +3067,10 @@ Everything above runs inside a kernel. Sometimes you need concurrency at the **h
 <tr>
 <td><code>parallel.async ... : block</code></td>
 <td>Non-blocking kernel launch</td>
+</tr>
+<tr>
+<td><code>yield</code></td>
+<td>Early return from <code>parallel</code> block</td>
 </tr>
 </tbody>
 </table>

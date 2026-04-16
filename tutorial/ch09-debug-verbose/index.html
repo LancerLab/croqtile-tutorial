@@ -2705,23 +2705,23 @@
 </thead>
 <tbody>
 <tr>
-<td>Shaped tensor (<code>s32 [M, N]</code>)</td>
-<td><code>choreo::rtti::spanned&lt;int, 2&gt;</code></td>
-<td><code>.span.data[]</code> (dimensions), <code>.stride.data[]</code> (strides), <code>.data</code> (pointer)</td>
+<td>Shaped tensor <br/> (<code>s32 [M, N]</code>)</td>
+<td><code>croq::rtti::spanned&lt;int, 2&gt;</code></td>
+<td><code>.span.data[]</code> (dimensions), <br/><code>.stride.data[]</code> (strides), <br/><code>.data</code> (pointer)</td>
 </tr>
 <tr>
 <td>Index tuple</td>
-<td><code>choreo::rtti::bounded_ituple&lt;N&gt;</code></td>
-<td><code>.data[]</code> (values), <code>.ub[]</code> (upper bounds)</td>
+<td><code>croq::rtti::bounded_ituple&lt;N&gt;</code></td>
+<td><code>.data[]</code> (values), <br/><code>.ub[]</code> (upper bounds)</td>
 </tr>
 <tr>
 <td>Integer tuple</td>
-<td><code>choreo::rtti::ituple&lt;N&gt;</code></td>
+<td><code>croq::rtti::ituple&lt;N&gt;</code></td>
 <td><code>.data[]</code> (values)</td>
 </tr>
 <tr>
 <td>Multi-dim span</td>
-<td><code>choreo::rtti::mdspan&lt;N&gt;</code></td>
+<td><code>croq::rtti::mdspan&lt;N&gt;</code></td>
 <td><code>.data[]</code> (extents)</td>
 </tr>
 </tbody>
@@ -2731,7 +2731,7 @@
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs
-type = struct choreo::rtti::spanned&lt;int, 2&gt;
+type = struct croq::rtti::spanned&lt;int, 2&gt;
 (gdb) print __dbg_lhs.span.data[0]
 $1 = 32
 (gdb) print __dbg_lhs.span.data[1]
@@ -2790,7 +2790,19 @@ croqtile kernel.co -o kernel                   # production build</code></pre>
 </tr>
 </tbody>
 </table>
-<p>You started from element-wise addition in Chapter 1, learned data movement (Chapter 2), parallelism (Chapter 3), tensor cores (Chapter 4), control flow (Chapter 5), pipelining (Chapter 6), TMA (Chapter 7), C++ interop (Chapter 8), and debugging (Chapter 9). The next step is to open a benchmark kernel from the <code>croqtile/benchmark/</code> directory, map its regions to the chapters here, change one constant, rebuild, and measure.</p>
+<p>You have learned the following concepts:</p>
+<ul>
+<li>simple element-wise addition in Croqtile (Chapter 1)</li>
+<li>data movement (Chapter 2)</li>
+<li>parallelism (Chapter 3)</li>
+<li>tensor cores (Chapter 4)</li>
+<li>control flow (Chapter 5)</li>
+<li>pipelining (Chapter 6)</li>
+<li>TMA (Chapter 7)</li>
+<li>C++ interop (Chapter 8)</li>
+<li>debugging (Chapter 9)</li>
+</ul>
+<p>The next step is to open a benchmark kernel from the <code>croqtile/benchmark/</code> directory, map its regions to the chapters here, change one constant, rebuild, and measure.</p>
 
 
 

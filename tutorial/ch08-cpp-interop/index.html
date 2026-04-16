@@ -770,17 +770,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#early-returns-and-guards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Early returns and guards
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#macros-inside-__cpp__-strings" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2591,17 +2580,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#early-returns-and-guards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Early returns and guards
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#macros-inside-__cpp__-strings" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2768,6 +2746,8 @@
 <p>So far the tutorial has built a stack of abstractions: tiles, parallelism, MMA, pipelines, events, TMA. That is the Croqtile you want to live in. This chapter is about the times you need to step outside.</p>
 <h2 id="how-co-files-compile">How <code>.co</code> files compile<a class="headerlink" href="#how-co-files-compile" title="Permanent link">&para;</a></h2>
 <p>A <code>.co</code> file mixes three kinds of code. The Croqtile compiler treats each differently — and the difference matters for understanding what you can and cannot do at each boundary. Consider this skeleton:</p>
+<!-- TODO: the code highlight is wrong -->
+
 <pre class="highlight"><code class="language-choreo">__device__ __forceinline__ float fast_rsqrt(float x) {   // ①
   return __frsqrt_rn(x);
 }
@@ -2780,7 +2760,7 @@ __co__ void my_kernel(f32 [M, N] input, f32 [M, N]&amp; output) {   // ②
 }
 
 int main() {   // ④
-  auto in = choreo::make_spandata&lt;choreo::f32&gt;(M, N);
+  auto in = croq::make_spandata&lt;croq::f32&gt;(M, N);
   auto out = my_kernel(in.view());
 }</code></pre>
 <p>The compiler splits this into a single intermediate <code>.cu</code> file, then hands it to <code>nvcc</code>:</p>
@@ -2818,7 +2798,7 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
     foreach m in [ |scores.span| / N_THREAD / N_BLOCK ] {
       shared_scores = dma.copy scores.chunkat(n#m, _) =&gt; shared;
 
-      parallel gid by [N_THREAD / 32] : group {
+      parallel gid by [N_THREAD / 32] : group
         parallel tid by 32 : thread {
           score = shared_scores.data.span_as(|shared_scores.data.span|).at(gid # tid);
 
@@ -2829,14 +2809,12 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 
           call warp_topk&lt;8&gt;(frag_val, frag_idx);
 
-          inthreads (tid == 0) {
+          inthreads (tid == 0)
             foreach k in K {
               topk_ids.at(n#m, gid#k) = frag_idx.at(k);
               topk_scores.at(n#m, gid#k) = frag_val.at(k);
             }
-          }
         }
-      }
     }
   }
 }</code></pre>
@@ -2869,10 +2847,6 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
   }
 }</code></pre>
 <p><strong>Placement</strong> — Put the hint at the top of each <code>inthreads.async</code> branch, before the heavy loop.</p>
-<h3 id="early-returns-and-guards">Early returns and guards<a class="headerlink" href="#early-returns-and-guards" title="Permanent link">&para;</a></h3>
-<p>MoE-style kernels often process variable-sized expert segments; some launches have zero width:</p>
-<pre class="highlight"><code class="language-choreo">__cpp__("if (seg_end - seg_start &lt;= 0) return;\n\n");</code></pre>
-<p>The identifiers must match what the surrounding generated code declares.</p>
 <h3 id="macros-inside-__cpp__-strings">Macros inside <code>__cpp__</code> strings<a class="headerlink" href="#macros-inside-__cpp__-strings" title="Permanent link">&para;</a></h3>
 <p>A common mistake: assuming the preprocessor expands macros inside string literals.</p>
 <pre class="highlight"><code class="language-choreo">#define PRODUCER_MAXNREG 40
