@@ -101,12 +101,12 @@ croqtile kernel.co -g -o kernel_debug
 
 The generated code includes RTTI structs for Croqtile types:
 
-| Croqtile type | GDB type | Fields |
-|--------------|----------|--------|
-| Shaped tensor (`s32 [M, N]`) | `choreo::rtti::spanned<int, 2>` | `.span.data[]` (dimensions), `.stride.data[]` (strides), `.data` (pointer) |
-| Index tuple | `choreo::rtti::bounded_ituple<N>` | `.data[]` (values), `.ub[]` (upper bounds) |
-| Integer tuple | `choreo::rtti::ituple<N>` | `.data[]` (values) |
-| Multi-dim span | `choreo::rtti::mdspan<N>` | `.data[]` (extents) |
+| Croqtile type                      | GDB type                          | Fields                                                                               |
+|------------------------------------|-----------------------------------|--------------------------------------------------------------------------------------|
+| Shaped tensor <br/> (`s32 [M, N]`) | `croq::rtti::spanned<int, 2>`   | `.span.data[]` (dimensions), <br/>`.stride.data[]` (strides), <br/>`.data` (pointer) |
+| Index tuple                        | `croq::rtti::bounded_ituple<N>` | `.data[]` (values), <br/>`.ub[]` (upper bounds)                                           |
+| Integer tuple                      | `croq::rtti::ituple<N>`         | `.data[]` (values)                                                                   |
+| Multi-dim span                     | `croq::rtti::mdspan<N>`         | `.data[]` (extents)                                                                  |
 
 **Example session:**
 
@@ -115,7 +115,7 @@ cuda-gdb -q ./kernel_debug
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs
-type = struct choreo::rtti::spanned<int, 2>
+type = struct croq::rtti::spanned<int, 2>
 (gdb) print __dbg_lhs.span.data[0]
 $1 = 32
 (gdb) print __dbg_lhs.span.data[1]
@@ -146,13 +146,25 @@ croqtile kernel.co -o kernel                   # production build
 
 ## Summary
 
-| Tool | Level | Cost |
-|------|-------|------|
-| `print!` / `println!` | Compile-time | Free — no kernel launch |
-| `assert(expr, "msg")` | Runtime | Low — aborts on violation |
-| `print` / `println` | Runtime | Medium — serialized `printf` |
-| `-rtc=high` | Runtime | Medium — bounds checks |
-| `-v` / `--verbose` | Compiler | Free — shows subprocess invocations |
-| `-g` + `cuda-gdb` + RTTI | Runtime | High — debug symbols, no optimization |
+| Tool                     | Level        | Cost                                  |
+|--------------------------|--------------|---------------------------------------|
+| `print!` / `println!`    | Compile-time | Free — no kernel launch               |
+| `assert(expr, "msg")`    | Runtime      | Low — aborts on violation             |
+| `print` / `println`      | Runtime      | Medium — serialized `printf`          |
+| `-rtc=high`              | Runtime      | Medium — bounds checks                |
+| `-v` / `--verbose`       | Compiler     | Free — shows subprocess invocations   |
+| `-g` + `cuda-gdb` + RTTI | Runtime      | High — debug symbols, no optimization |
 
-You started from element-wise addition in Chapter 1, learned data movement (Chapter 2), parallelism (Chapter 3), tensor cores (Chapter 4), control flow (Chapter 5), pipelining (Chapter 6), TMA (Chapter 7), C++ interop (Chapter 8), and debugging (Chapter 9). The next step is to open a benchmark kernel from the `croqtile/benchmark/` directory, map its regions to the chapters here, change one constant, rebuild, and measure.
+You have learned the following concepts:
+
+- simple element-wise addition in Croqtile (Chapter 1)
+- data movement (Chapter 2)
+- parallelism (Chapter 3)
+- tensor cores (Chapter 4)
+- control flow (Chapter 5)
+- pipelining (Chapter 6)
+- TMA (Chapter 7)
+- C++ interop (Chapter 8)
+- debugging (Chapter 9)
+
+The next step is to open a benchmark kernel from the `croqtile/benchmark/` directory, map its regions to the chapters here, change one constant, rebuild, and measure.

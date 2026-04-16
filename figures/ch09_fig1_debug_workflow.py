@@ -29,7 +29,7 @@ class DebugWorkflow(Scene):
             r = RoundedRectangle(
                 corner_radius=0.12,
                 width=5.6,
-                height=1.05,
+                height=1,
                 fill_color=C["fill"],
                 fill_opacity=0.9,
                 stroke_color=accent,
@@ -87,9 +87,9 @@ class DebugWorkflow(Scene):
                 top.get_bottom() + DOWN * 0.02,
                 bot.get_top() + UP * 0.02,
                 buff=0.05,
-                stroke_width=2.5,
+                stroke_width=5,
                 color=C["arrow_c"],
-                max_tip_length_to_length_ratio=0.14,
+                tip_length=0.2,
             )
             self.add(a, dl)
 
@@ -97,7 +97,7 @@ class DebugWorkflow(Scene):
             "Prefer this order: cheap compile-time checks before heavy runtime prints.",
             font_size=12,
             color=C["dim"],
-            font="Monospace",
+            font="Monospace",   
         )
-        foot.to_edge(DOWN, buff=0.32)
+        foot.move_to(DOWN*3.8)
         self.add(foot)

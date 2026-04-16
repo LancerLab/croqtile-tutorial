@@ -269,6 +269,22 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 
 This is **host orchestration**, orthogonal to in-kernel control flow. It does not replace `inthreads.async` for thread partitioning or `if` for runtime predicates — it decides *when* and *where* a grid runs relative to other grids.
 
+## Early return from `parallel`
+
+Sometimes you need to early return from a `parallel` block. The `yield` keyword will simply generate a `return;` instruction to get out of device code.
+
+```choreo
+parallel p by BLK_CNT: block {
+  parallel q by THR_CNT : thread {
+    if (cond) yield;
+    ...
+  }
+}
+```
+
+!!! warning
+    The `yield` keyword currently will **not** do any compile-time nor runtime checks. Be careful about synchronization safety.
+
 ## New syntax
 
 | Syntax                           | Meaning                                                              |
@@ -282,6 +298,7 @@ This is **host orchestration**, orthogonal to in-kernel control flow. It does no
 | `tile_id = tile_iter # block_id` | Compose indices for tile striping                                    |
 | `int total_tiles = expr`         | Local integer variable                                               |
 | `parallel.async ... : block`     | Non-blocking kernel launch                                           |
+| `yield`                          | Early return from `parallel` block                                   |
 <!-- | `stream s`                       | Bind kernel to CUDA stream `s`                                       | -->
 
 ## Chapter summary

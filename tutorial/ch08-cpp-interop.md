@@ -14,6 +14,8 @@ So far the tutorial has built a stack of abstractions: tiles, parallelism, MMA, 
 
 A `.co` file mixes three kinds of code. The Croqtile compiler treats each differently — and the difference matters for understanding what you can and cannot do at each boundary. Consider this skeleton:
 
+<!-- TODO: the code highlight is wrong -->
+
 ```choreo
 __device__ __forceinline__ float fast_rsqrt(float x) {   // ①
   return __frsqrt_rn(x);
@@ -27,7 +29,7 @@ __co__ void my_kernel(f32 [M, N] input, f32 [M, N]& output) {   // ②
 }
 
 int main() {   // ④
-  auto in = choreo::make_spandata<choreo::f32>(M, N);
+  auto in = croq::make_spandata<croq::f32>(M, N);
   auto out = my_kernel(in.view());
 }
 ```
@@ -79,7 +81,7 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
     foreach m in [ |scores.span| / N_THREAD / N_BLOCK ] {
       shared_scores = dma.copy scores.chunkat(n#m, _) => shared;
 
-      parallel gid by [N_THREAD / 32] : group {
+      parallel gid by [N_THREAD / 32] : group
         parallel tid by 32 : thread {
           score = shared_scores.data.span_as(|shared_scores.data.span|).at(gid # tid);
 
@@ -90,14 +92,12 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 
           call warp_topk<8>(frag_val, frag_idx);
 
-          inthreads (tid == 0) {
+          inthreads (tid == 0)
             foreach k in K {
               topk_ids.at(n#m, gid#k) = frag_idx.at(k);
               topk_scores.at(n#m, gid#k) = frag_val.at(k);
             }
-          }
         }
-      }
     }
   }
 }
@@ -145,15 +145,6 @@ parallel p1 by 2 : group-4 {
 
 **Placement** — Put the hint at the top of each `inthreads.async` branch, before the heavy loop.
 
-### Early returns and guards
-
-MoE-style kernels often process variable-sized expert segments; some launches have zero width:
-
-```choreo
-__cpp__("if (seg_end - seg_start <= 0) return;\n\n");
-```
-
-The identifiers must match what the surrounding generated code declares.
 
 ### Macros inside `__cpp__` strings
 
@@ -184,12 +175,12 @@ inthreads.async (p1 == 0) {
 
 Croqtile's preprocessor runs before the main compiler pass. Macros expand in both `__co__` regions and host C++ in the same `.co` file, so one definition keeps tile geometry and host-side checks aligned.
 
-| Directive | Role |
-|-----------|------|
-| `#define NAME value` | Object-like macro: textual replacement |
-| `#if` / `#elif` / `#else` / `#endif` | Conditional inclusion |
-| `#ifdef` / `#ifndef` | Shorthand for whether a macro is defined |
-| `#error message` | Force a compile-time failure with a message |
+| Directive                            | Role                                        |
+|--------------------------------------|---------------------------------------------|
+| `#define NAME value`                 | Object-like macro: textual replacement      |
+| `#if` / `#elif` / `#else` / `#endif` | Conditional inclusion                       |
+| `#ifdef` / `#ifndef`                 | Shorthand for whether a macro is defined    |
+| `#error message`                     | Force a compile-time failure with a message |
 
 Function-like macros (`#define MAX(a, b) ...`) are not supported. Use `constexpr` helpers in ordinary C++.
 
@@ -249,15 +240,15 @@ When you open a benchmark kernel, read top down:
 
 ## Chapter summary
 
-| Syntax | What it does | Runs on |
-|--------|--------------|---------|
-| `__device__ fn()` | Standard CUDA device function; passed through unchanged to `.cu` | GPU |
-| `call fn(args)` | Invoke a `__device__` function from a `__co__` body | GPU |
-| `__cpp__("...")` | Inject verbatim C++ at the splice point (ordinary string) | GPU |
-| `__cpp__(R"(...)")` | Inject verbatim C++ (raw string; use for `asm volatile`) | GPU |
-| `setmaxnreg` | Register redistribution via `__cpp__`: `dec` on producer, `inc` on consumer | GPU |
-| `#define NAME value` | Object-like macro; shared across `__co__` and host regions | Preprocessor |
-| `#if` / `#ifdef` / `#error` | Conditional compilation and compile-time assertions | Preprocessor |
-| `-DNAME=value` | Define macros from the command line for tile sweeps | Preprocessor |
+| Syntax                      | What it does                                                                | Runs on      |
+|-----------------------------|-----------------------------------------------------------------------------|--------------|
+| `__device__ fn()`           | Standard CUDA device function; passed through unchanged to `.cu`            | GPU          |
+| `call fn(args)`             | Invoke a `__device__` function from a `__co__` body                         | GPU          |
+| `__cpp__("...")`            | Inject verbatim C++ at the splice point (ordinary string)                   | GPU          |
+| `__cpp__(R"(...)")`         | Inject verbatim C++ (raw string; use for `asm volatile`)                    | GPU          |
+| `setmaxnreg`                | Register redistribution via `__cpp__`: `dec` on producer, `inc` on consumer | GPU          |
+| `#define NAME value`        | Object-like macro; shared across `__co__` and host regions                  | Preprocessor |
+| `#if` / `#ifdef` / `#error` | Conditional compilation and compile-time assertions                         | Preprocessor |
+| `-DNAME=value`              | Define macros from the command line for tile sweeps                         | Preprocessor |
 
 The [next chapter](ch09-debug-verbose.md) turns to the other side of the workflow: what to do when the kernel compiles but the output is wrong — debugging, verbose modes, and systematic narrowing.

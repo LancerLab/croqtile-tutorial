@@ -24,15 +24,16 @@ class Ch08CompilationFlow(Scene):
         self.add(title)
 
         # ═══ Left: kernel.co source ═══
-        lx = -4.2
+        lx = -4.5
         src_lbl = Text("kernel.co", font_size=18, color=C["fg"], font="Monospace")
         src_lbl.move_to(RIGHT * lx + UP * 2.3)
         self.add(src_lbl)
 
         region_specs = [
             (
-                [("__device__ float fast_rsqrt(x)", None),
-                 ("  { return __frsqrt_rn(x); }", None)],
+                [("__device__ float fast_rsqrt(x) {", None),
+                 ("  return __frsqrt_rn(x);", None),
+                 ("}", None)],
                 C["purple"], "\u2460 __device__", 0,
             ),
             (
@@ -68,15 +69,28 @@ class Ch08CompilationFlow(Scene):
             r.move_to(RIGHT * lx + UP * (y_cursor - region_h / 2))
             self.add(r)
             region_boxes.append(r)
-
-            tag_t = Text(tag, font_size=12, color=col, font="Monospace")
-            tag_t.move_to(r.get_corner(UR) + LEFT * 0.75 + DOWN * 0.10)
-            self.add(tag_t)
+            
+            if _ == 0:
+                tag_t = Text(tag, font_size=12, color=col, font="Monospace")
+                tag_t.move_to(r.get_corner(UR) + LEFT * 0.75 + DOWN * 0.70)
+                self.add(tag_t)
+            elif _ == 1:
+                tag_t = Text(tag, font_size=12, color=col, font="Monospace")
+                tag_t.move_to(r.get_corner(UR) + LEFT * 1.2 + DOWN * 1.4)
+                self.add(tag_t)
+            else:
+                tag_t = Text(tag, font_size=12, color=col, font="Monospace")
+                tag_t.move_to(r.get_corner(UR) + LEFT * 0.75 + DOWN * 1)
+                self.add(tag_t)
 
             for i, (ln, _) in enumerate(lines):
-                t = Text(ln, font_size=12, color=C["fg2"], font="Monospace")
+                lead_spaces = len(ln) - len(ln.lstrip(" "))
+                content = ln.lstrip(" ")
+                t = Text(content, font_size=12, color=C["fg2"], font="Monospace")
                 t.move_to(r.get_top() + DOWN * (0.16 + i * line_h))
-                t.align_to(r.get_left() + RIGHT * 0.12, LEFT)
+                # Geometric indent: independent of Text's whitespace behavior.
+                indent_step = 0.09
+                t.align_to(r.get_left() + RIGHT * (0.12 + lead_spaces * indent_step), LEFT)
                 self.add(t)
 
             y_cursor -= region_h
@@ -98,8 +112,8 @@ class Ch08CompilationFlow(Scene):
             fill_color=C["green"], fill_opacity=0.18,
             stroke_color=C["green"], stroke_width=2.5,
         )
-        compiler.move_to(RIGHT * mid_x + UP * 0.3)
-        comp_lbl = Text("croqtile", font_size=16, color=C["green"], font="Monospace")
+        compiler.move_to(RIGHT * mid_x * 2.2 + UP * 0.12)
+        comp_lbl = Text("Croqtile", font_size=16, color=C["green"], font="Monospace")
         comp_sub = Text("compiler", font_size=13, color=C["fg3"], font="Monospace")
         comp_lbl.move_to(compiler.get_center() + UP * 0.1)
         comp_sub.move_to(compiler.get_center() + DOWN * 0.14)
@@ -109,7 +123,7 @@ class Ch08CompilationFlow(Scene):
         arr_in = Arrow(
             region_boxes[1].get_right(), compiler.get_left(),
             buff=0.08, stroke_width=2.5, color=C["arrow"],
-            max_tip_length_to_length_ratio=0.12,
+            tip_length=0.12,
         )
         self.add(arr_in)
 
@@ -117,7 +131,7 @@ class Ch08CompilationFlow(Scene):
         rx = 3.2
 
         gen_lbl = Text("generated intermediate", font_size=16, color=C["fg"], font="Monospace")
-        gen_lbl.move_to(RIGHT * rx + UP * 2.3)
+        gen_lbl.move_to(RIGHT * rx * 0.9 + UP * 2.3)
         self.add(gen_lbl)
 
         def out_region(label, sub, y, col, h=0.55):
@@ -126,7 +140,7 @@ class Ch08CompilationFlow(Scene):
                 fill_color=col, fill_opacity=0.10,
                 stroke_width=0,
             )
-            r.move_to(RIGHT * rx + UP * y)
+            r.move_to(RIGHT * rx * 0.9 + UP * y + DOWN * 0.5)
             self.add(r)
             t = Text(label, font_size=13, color=col, font="Monospace")
             t.move_to(r.get_center() + UP * 0.08)
@@ -148,7 +162,7 @@ class Ch08CompilationFlow(Scene):
             width=3.46, height=gen_top - gen_bot + 0.06,
             stroke_color=C["dim"], stroke_width=1.2, fill_opacity=0,
         )
-        gen_outer.move_to(RIGHT * rx + UP * ((gen_top + gen_bot) / 2))
+        gen_outer.move_to(RIGHT * rx * 0.9 + UP * ((gen_top + gen_bot) / 2))
         self.add(gen_outer)
 
         # Arrows: compiler -> generated outputs
@@ -156,7 +170,7 @@ class Ch08CompilationFlow(Scene):
             a = Arrow(
                 compiler.get_right(), o.get_left(),
                 buff=0.06, stroke_width=2, color=C["arrow"],
-                max_tip_length_to_length_ratio=0.10,
+                tip_length=0.12,
             )
             self.add(a)
 
@@ -165,7 +179,7 @@ class Ch08CompilationFlow(Scene):
             a = Arrow(
                 src.get_right(), dst.get_left(),
                 buff=0.06, stroke_width=1.8, color=C["dim"],
-                max_tip_length_to_length_ratio=0.10,
+                tip_length=0.2,
             )
             self.add(a)
 
@@ -173,30 +187,30 @@ class Ch08CompilationFlow(Scene):
         frx = 5.9
 
         nvcc = RoundedRectangle(
-            width=1.8, height=0.55, corner_radius=0.1,
+            width=1, height=0.55, corner_radius=0.1,
             fill_color=C["fg3"], fill_opacity=0.15,
             stroke_color=C["fg3"], stroke_width=2,
         )
-        nvcc.move_to(RIGHT * frx + UP * 0.65)
+        nvcc.move_to(RIGHT * frx + UP * 0.4)
         nvcc_lbl = Text("nvcc", font_size=16, color=C["fg"], font="Monospace")
         nvcc_lbl.move_to(nvcc.get_center())
         self.add(nvcc, nvcc_lbl)
 
         binary = RoundedRectangle(
-            width=1.8, height=0.50, corner_radius=0.1,
+            width=1.6, height=0.50, corner_radius=0.1,
             fill_color=C["green"], fill_opacity=0.2,
             stroke_color=C["green"], stroke_width=2,
         )
-        binary.move_to(RIGHT * frx + DOWN * 0.15)
+        binary.move_to(RIGHT * frx + DOWN * 0.7)
         bin_lbl = Text("GPU binary", font_size=14, color=C["green"], font="Monospace")
         bin_lbl.move_to(binary.get_center())
         self.add(binary, bin_lbl)
 
         # Arrow: generated code -> nvcc
         arr_nvcc = Arrow(
-            gen_outer.get_right(), nvcc.get_left(),
+            gen_outer.get_right() + UP * 0.2, nvcc.get_left(),
             buff=0.06, stroke_width=2.5, color=C["arrow"],
-            max_tip_length_to_length_ratio=0.12,
+            tip_length=0.12,
         )
         self.add(arr_nvcc)
 
@@ -204,7 +218,7 @@ class Ch08CompilationFlow(Scene):
         arr_bin = Arrow(
             nvcc.get_bottom(), binary.get_top(),
             buff=0.04, stroke_width=2.5, color=C["arrow"],
-            max_tip_length_to_length_ratio=0.14,
+            tip_length=0.12,
         )
         self.add(arr_bin)
 
