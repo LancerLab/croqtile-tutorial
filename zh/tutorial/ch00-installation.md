@@ -20,7 +20,7 @@
 克隆仓库并运行自动化安装：
 
 ```bash
-git clone https://github.com/codes1gn/croqtile.git
+git clone https://github.com/LancerLab/croqtile.git
 cd croqtile
 make setup-core
 ```

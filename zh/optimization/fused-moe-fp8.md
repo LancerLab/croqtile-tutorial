@@ -5,7 +5,7 @@ description: "在 H800 PCIe 上将 fused Mixture-of-Experts 端到端 kernel 从
 
 # Fused MoE FP8：8.09 → 13.18 TFLOPS（1.63×）
 
-本教程逐步展示如何优化用 [鳄霸](https://codes1gn.github.io/croktile-tutorial/) 编写的 **fused Mixture-of-Experts（MoE）端到端 kernel**。目标 workload 来自真实推理场景 **Qwen3.5-35B-A3B**：每个 token 从 256 个 expert 中路由到 8 个。目标：在 NVIDIA H800 PCIe（SM90）上让整个流水线——路由、量化、grouped GEMM 与 scatter——尽可能快，且仅使用鳄霸 `.co` 源码。
+本教程逐步展示如何优化用 [鳄霸](https://github.com/LancerLab/croqtile) 编写的 **fused Mixture-of-Experts（MoE）端到端 kernel**。目标 workload 来自真实推理场景 **Qwen3.5-35B-A3B**：每个 token 从 256 个 expert 中路由到 8 个。目标：在 NVIDIA H800 PCIe（SM90）上让整个流水线——路由、量化、grouped GEMM 与 scatter——尽可能快，且仅使用鳄霸 `.co` 源码。
 
 ### 流水线一览
 

@@ -20,7 +20,7 @@ Most Linux distributions ship Flex and an older Bison. If your system Bison is b
 Clone the repository and run the automated setup:
 
 ```bash
-git clone https://github.com/codes1gn/croqtile.git
+git clone https://github.com/LancerLab/croqtile.git
 cd croqtile
 make setup-core
 ```

@@ -5,7 +5,7 @@ description: "Optimizing a fused Mixture-of-Experts end-to-end kernel from 8.09 
 
 # Fused MoE FP8: 8.09 → 13.18 TFLOPS (1.63×)
 
-In this tutorial, we walk through the process of optimizing a **fused Mixture-of-Experts (MoE) end-to-end kernel** written in [Croqtile](https://codes1gn.github.io/croktile-tutorial/). The target workload is real-world inference from **Qwen3.5-35B-A3B**, a model that routes each token through 8 of 256 experts. Our goal: make the full pipeline — routing, quantization, grouped GEMM, and scatter — as fast as possible on an NVIDIA H800 PCIe (SM90), using only Croqtile `.co` source code.
+In this tutorial, we walk through the process of optimizing a **fused Mixture-of-Experts (MoE) end-to-end kernel** written in [Croqtile](https://github.com/LancerLab/croqtile). The target workload is real-world inference from **Qwen3.5-35B-A3B**, a model that routes each token through 8 of 256 experts. Our goal: make the full pipeline — routing, quantization, grouped GEMM, and scatter — as fast as possible on an NVIDIA H800 PCIe (SM90), using only Croqtile `.co` source code.
 
 ### The Pipeline at a Glance
 

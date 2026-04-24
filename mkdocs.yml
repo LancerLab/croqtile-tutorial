@@ -1,9 +1,9 @@
 site_name: Croqtile
-site_url: https://codes1gn.github.io/croqtile-tutorial/
+site_url: https://LancerLab.github.io/croqtile-tutorial/
 docs_dir: docs
 
-repo_name: codes1gn/croqtile-tutorial
-repo_url: https://github.com/codes1gn/croqtile-tutorial
+repo_name: LancerLab/croqtile-tutorial
+repo_url: https://github.com/LancerLab/croqtile-tutorial
 
 theme:
   name: material
