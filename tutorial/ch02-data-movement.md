@@ -1,17 +1,20 @@
-# Data Movement: From Elements to Data Blocks
+# Data Movement: The Tile Movement Engine
 
-Chapter 1 expressed computation at the level of individual elements: pick position `(i, j)`, read the two inputs, add, write the result. That is the natural way to think about SIMD-style programming — and it is exactly the mental model that most CUDA and GPU tutorials teach. You write a per-element kernel, launch one thread per element, and each thread does its own tiny job.
+Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. GPUs fetch and stage contiguous blocks, not isolated elements. The hard part of GPU programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.
 
-The trouble is that hardware does not actually work this way. A GPU does not fetch one 32-bit integer from memory at a time. It fetches contiguous blocks — 128 bytes, 256 bytes, sometimes more — in a single transaction, and it stages those blocks through a hierarchy of caches and on-chip buffers before any arithmetic touches them. There is a fundamental mismatch between the per-element programming model and the per-block hardware reality. Bridging that gap — thinking in blocks, managing memory levels, wiring up transfers — is the single biggest reason GPU programming is hard for newcomers.
+Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:
 
-Croqtile is designed around this insight. Instead of forcing you to think element-by-element and then hope the compiler or hardware will figure out the block structure, Croqtile gives you **data-block-level primitives**: you name a rectangular chunk of a tensor with `chunkat`, move it between memory levels with `dma.copy`, and then work on it in-place. The programming model matches what the hardware actually does.
+- `dma.copy` moves a tile as-is.
+- `dma.transp<...>` permutes dimensions while moving it.
+- `dma.pad<...>` enlarges a tile and fills the border.
+- `tma.copy` uses Hopper's Tensor Memory Accelerator for the same style of transfers when the tile shape is compatible.
 
-This chapter rewrites Chapter 1's element-wise addition to use these block-level primitives. The math is identical — every element of `lhs` is still added to the corresponding element of `rhs` — but the code now explicitly describes which blocks of data move where, and the computation happens on whole tiles rather than individual scalars.
+This chapter introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.
 
 ![Per-element vs data-block programming model comparison](../assets/images/ch02/fig1_element_vs_block_dark.png#only-dark)
 ![Per-element vs data-block programming model comparison](../assets/images/ch02/fig1_element_vs_block_light.png#only-light)
 
-*Left: per-element view — each thread fetches one element individually. Right: data-block view — one DMA moves an entire tile at once.*
+*Left: element-by-element thinking. Right: tile-by-tile movement into fast memory.*
 
 <details>
 <summary>Animated version</summary>
@@ -27,53 +30,68 @@ This chapter rewrites Chapter 1's element-wise addition to use these block-level
 
 </details>
 
-## Tiled Element-Wise Addition
+## The DMA Statement Family
 
-Here is the same addition, rewritten to move data in tiles of 16 elements. The inputs are 1D vectors of length 128 so the tiling arithmetic stays simple:
+All of Croqtile's tile-movement operations use the same basic form:
 
 ```choreo
-__co__ s32 [128] tiled_add(s32 [128] lhs, s32 [128] rhs) {
+future = engine.operation.modifiers source => destination;
+```
+
+The important pieces are:
+
+| Part | Meaning |
+|------|---------|
+| `future` | Optional handle to the transfer result. Use `future.data` to access the moved tile and `future.span` to query its shape. |
+| `engine` | `dma` for software cooperative copies, `tma` for Hopper TMA copies. |
+| `operation` | `copy`, `transp<...>`, or `pad<...>`. |
+| `modifiers` | Optional flags such as `.async`, `.zfill`, or `.swiz<N>`. |
+| `source => destination` | The source view and the destination memory or destination view. |
+
+Minimal examples:
+
+```choreo
+f = dma.copy input.chunkat(block) => shared;
+g = dma.transp<1, 0> matrix => local;
+h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
+```
+
+The key shift from Chapter 1 is that these statements move shaped regions, not individual elements.
+
+## First Example: Tiled Addition Through Shared Memory
+
+Here is the same addition from Chapter 1, but staged through shared memory in tiles:
+
+```choreo
+__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
 
-  parallel tile by 8 {
-    lhs_load = dma.copy lhs.chunkat(tile) => local;
-    rhs_load = dma.copy rhs.chunkat(tile) => local;
+  parallel {tr, tc} by [4, 8] {
+    lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
+    rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
 
-    foreach i in [128 / #tile]
-      output.at(tile # i) = lhs_load.data.at(i) + rhs_load.data.at(i);
+    foreach {i, j} in lhs_load.span
+      output.at(tr # i, tc # j) =
+          lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
   }
 
   return output;
 }
-
-int main() {
-  auto lhs = croq::make_spandata<croq::s32>(128);
-  auto rhs = croq::make_spandata<croq::s32>(128);
-  lhs.fill_random(-10, 10);
-  rhs.fill_random(-10, 10);
-
-  auto res = tiled_add(lhs.view(), rhs.view());
-
-  for (int i = 0; i < 128; ++i)
-    croq::croq_assert(lhs[i] + rhs[i] == res[i], "values are not equal.");
-
-  std::cout << "Test Passed\n" << std::endl;
-}
 ```
 
-Save it as `tiled_add.co`, compile and run:
+The arithmetic is still element-wise addition. What changed is the data path:
 
-```bash
-croqtile tiled_add.co -o tiled_add
-./tiled_add
-```
+1. `chunkat(tr, tc)` selects one logical tile from each input.
+2. `dma.copy ... => shared` stages that tile into block-visible fast memory.
+3. The inner loop reads from `lhs_load.data` and `rhs_load.data`, not from global memory.
+4. `tr # i` and `tc # j` map tile-local coordinates back to global output coordinates.
 
-Same `Test Passed`. The result is identical to Chapter 1's version — the math has not changed, only how data moves through memory.
+This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.
 
 ![Tiled addition: load, compute, store flow](../assets/images/ch02/fig2_tiled_add_dark.png#only-dark)
 ![Tiled addition: load, compute, store flow](../assets/images/ch02/fig2_tiled_add_light.png#only-light)
 
-*Tiled addition for tile = 2: DMA loads both operand chunks into local memory, element-wise addition runs on the tile, and the result writes back to the output vector.*
+*Load a tile, compute on the staged data, then write results back using global coordinates.*
 
 <details>
 <summary>Animated version</summary>
@@ -89,30 +107,24 @@ Same `Test Passed`. The result is identical to Chapter 1's version — the math 
 
 </details>
 
-Here is what is new.
+## `chunkat`, `subspan`, and `view().from()`: Three Ways to Select a Tile
 
-## `chunkat`: Carving a Tensor into Tiles
+Croqtile gives you three common ways to describe the tile you want to move.
 
-```choreo
-lhs.chunkat(tile)
-```
-
-`chunkat` divides a tensor into equal, non-overlapping rectangular pieces along each dimension. Here `lhs` has shape `[128]` and the `parallel` declares 8 tiles, so each chunk is `128 / 8 = 16` elements wide. The argument `tile` is the chunk index — which of the 8 pieces you want. When `tile` is 0, you get elements 0 through 15; when `tile` is 3, you get elements 48 through 63; and so on.
-
-For a 2D tensor, `chunkat` takes one index per dimension:
+### `chunkat(...)`: equal partitioning
 
 ```choreo
-matrix.chunkat(row_tile, col_tile)
+lhs.chunkat(tr, tc)
 ```
 
-Each dimension is divided independently. If `matrix` has shape `[64, 128]` and you declare `parallel {r, c} by [4, 8]`, then `matrix.chunkat(r, c)` gives you a `[16, 16]` piece at tile position `(r, c)`. Croqtile figures out the chunk size from the tensor shape and the number of tiles along each axis.
+`chunkat` divides each dimension into equal chunks based on the surrounding parallel structure. If `lhs` has shape `[64, 128]` and the kernel uses `parallel {tr, tc} by [4, 8]`, then `lhs.chunkat(tr, tc)` selects a `[16, 16]` tile.
 
-The key thing to remember: `chunkat` does not copy data. It is a **view** — a description of which rectangle of the original tensor you mean. The actual movement happens in `dma.copy`.
+That makes `chunkat` the natural tool when your tiling follows the parallel decomposition directly.
 
 ![chunkat 2D tile selection semantics](../assets/images/ch02/fig3_chunkat_dark.png#only-dark)
 ![chunkat 2D tile selection semantics](../assets/images/ch02/fig3_chunkat_light.png#only-light)
 
-*A [64, 128] tensor divided into 4 × 8 tiles. `chunkat(1, 3)` selects the [16, 16] sub-tensor at row-tile 1, column-tile 3.*
+*`chunkat(1, 3)` selects one equal tile from a regular tiling grid.*
 
 <details>
 <summary>Animated version</summary>
@@ -128,167 +140,309 @@ The key thing to remember: `chunkat` does not copy data. It is a **view** — a 
 
 </details>
 
-## `dma.copy`: Bulk Transfer Between Memory Levels
+### `subspan(...).at(...)`: explicit tile extents on a tile grid
 
 ```choreo
-lhs_load = dma.copy lhs.chunkat(tile) => local;
+lhs.subspan(64, 64).at(block_m, iv_k)
 ```
 
-This copies the chunk selected by `chunkat(tile)` from wherever `lhs` lives (by default, global device memory) into `local` memory — fast, on-chip storage close to the compute units. The result, `lhs_load`, is a **DMA future**: a handle that represents the in-flight (or completed) transfer.
+`subspan` says what the tile shape is. `.at(...)` says which tile instance you want. This is the better fit when the tile shape is an explicit algorithmic choice, such as a GEMM tile of `[64, 64]`, rather than something you want inferred from `parallel by ...`.
 
-The `=> local` part is the **destination memory specifier**. We discuss memory specifiers in detail below, after covering the rest of the syntax.
-
-![dma.copy — bulk memory transfer](../assets/images/ch02/fig_dma_copy_dark.png#only-dark)
-![dma.copy — bulk memory transfer](../assets/images/ch02/fig_dma_copy_light.png#only-light)
-
-*`dma.copy` transfers a chunk from global memory to local memory and returns a DMA future handle.*
-
-## Futures and `.data`
-
-After `dma.copy`, the variable `lhs_load` is not a tensor — it is a **future** that tracks the transfer. To get at the actual data, you use `.data`:
+### `view(...).from(...)`: explicit tile extents with explicit element offsets
 
 ```choreo
-lhs_load.data.at(i)
+lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)
 ```
 
-`lhs_load.data` is a spanned tensor in local memory with the shape of the chunk that was copied. You index into it with `.at(i)` exactly like you indexed into `lhs` in Chapter 1 — except now you are reading from fast memory instead of global memory.
+`view(...).from(...)` is the most general selection form introduced in this chapter. `view(...)` states the shape of the region you want, and `.from(...)` gives its starting coordinate in element space.
 
-Why the indirection? Because in later chapters you will issue copies that run **asynchronously** — the hardware starts moving data while your program does other work. The future is what lets you refer to "the data that will be there when the transfer finishes" without blocking immediately. For now, the copies are synchronous and `.data` is always valid right after the `dma.copy` line, but the pattern is the same.
+This is the right tool when the tile origin is already available as element offsets rather than tile indices, or when the region is not most naturally described as an equal chunk. It is especially useful for dynamic and irregular access patterns where `chunkat(...)` would be awkward or impossible.
+
+You can think of the three forms like this:
+
+- Use `chunkat(...)` when the surrounding parallel decomposition already defines an equal tiling.
+- Use `subspan(...).at(...)` when you want an explicit tile shape and tile coordinates.
+- Use `view(...).from(...)` when you want an explicit tile shape and element-space starting offsets.
+
+## Futures, `.data`, and `.span`
+
+The result of a DMA or TMA statement is a future-like handle:
+
+```choreo
+f = dma.copy input => shared;
+```
+
+That handle gives you two important things:
+
+- `f.data`: the moved tile, as a spanned tensor.
+- `f.span`: the shape of that tile.
+
+Example:
+
+```choreo
+f = dma.copy input => shared;
+foreach idx in [f.span]
+  output.at(idx) = f.data.at(idx);
+```
+
+Even synchronous copies are worth naming when you want to pass the moved tile to later code.
 
 ![Futures and .data](../assets/images/ch02/fig_future_data_dark.png#only-dark)
 ![Futures and .data](../assets/images/ch02/fig_future_data_light.png#only-light)
 
-*A DMA future tracks the transfer. Access the copied data through `.data`, which gives you a spanned tensor in local memory.*
+*The transfer result is a handle. Read the copied tile through `.data` and its shape through `.span`.*
 
-## The `#` Compose Operator
+## Synchronous and Asynchronous Copies
 
-Look at the output indexing:
+By default, copies are synchronous:
 
 ```choreo
-output.at(tile # i)
+f = dma.copy input => shared;
+dma.copy f.data => output;
 ```
 
-The `#` operator composes a **tile index** `tile` with a **local offset** `i` to produce a **global index** into `output`. The rule is **outer # inner**: the higher-level index goes on the left, the element offset within that tile goes on the right. Since `tile` selects which chunk of 16 elements to work on, and `i` runs from 0 to 15 within that chunk, `tile # i` gives the position in the full 128-element vector: concretely `tile * 16 + i`.
+Add `.async` when you want the transfer to proceed in the background:
 
-You need `#` because `lhs_load.data.at(i)` uses a **local** index (position within the tile), but `output.at(...)` uses a **global** index (position in the full output tensor). The compose operator bridges the two coordinate systems. Read `tile # i` as "element `i` within tile `tile`."
+```choreo
+f = dma.copy.async input => shared;
+wait f;
+dma.copy f.data => output;
+```
 
-This `#` operator appears in one dimension here. In Chapter 3, when tiling a 2D matrix with parallel indices `p` and `q`, the pattern is `output.at(p#m, q#n)` — same idea, just more axes.
+The same pattern applies to TMA:
+
+```choreo
+f = tma.copy.async input => shared;
+wait f;
+tma.copy f.data => output;
+```
+
+Rule: if you read `f.data` from an async transfer, wait first.
+
+Later chapters use async copies to overlap load and compute. In this chapter, the important part is the contract: `.async` creates an in-flight transfer, and `wait` makes it safe to consume.
+
+## Other Operations: `transp` and `pad`
+
+`copy` is only the simplest member of the family.
+
+### `dma.transp<...>`
+
+```choreo
+fa = dma.transp<1, 0, 2> a => local;
+dma.copy fa.data => o;
+```
+
+This permutes dimensions during the movement itself. You do not first copy and then transpose. The transfer produces data in the transposed layout.
+
+### `dma.pad<...>`
+
+```choreo
+f = dma.pad<{2, 1}, {3, 2}, {0, 0}, V>.async input => shared;
+wait f;
+dma.copy f.data => output;
+```
+
+Padding creates a larger destination tile. The template arguments describe low padding, high padding, internal stride-style padding, and the fill value. Use `pad` when you want explicit border values, not just out-of-bounds protection.
+
+## `#`: Compose and Extent
+
+Croqtile uses `#` in two related ways.
+
+### Compose: `outer # inner`
+
+```choreo
+output.at(tr # i, tc # j)
+```
+
+This combines a tile coordinate with an in-tile coordinate to produce a coordinate in the full tensor.
+
+Read `tr # i` as "row `i` inside tile `tr`."
 
 ![The # Compose Operator](../assets/images/ch02/fig_compose_dark.png#only-dark)
 ![The # Compose Operator](../assets/images/ch02/fig_compose_light.png#only-light)
 
-*`tile # i` composes tile index 2 with local offset 3 to produce global index 35. The rule is always outer # inner.*
+*Compose a tile index with an in-tile offset to recover a global coordinate.*
 
-## The `#` Extent Operator
-
-In the inner loop:
+### Extent: `#name`
 
 ```choreo
 foreach i in [128 / #tile]
 ```
 
-`#tile` means "the **extent** of the tile axis" — how many tiles there are along that dimension. Here `#tile` is 8 (because `parallel tile by 8` declared 8 tiles), so `128 / #tile` is 16 — the number of elements in each tile. This is the trip count of the inner loop: you visit every element position within one tile.
-
-The `#` symbol does double duty in Croqtile: before a name in an expression (`#tile`) it means the **extent** of that index; between two names (`tile # i`) it means **compose**. Context tells you which is which — `#` as extent always appears as a prefix, and `#` as compose always appears as an infix between two operands.
+Here `#tile` means the extent of the `tile` axis: how many tiles exist along that dimension. If `parallel tile by 8`, then `#tile` is `8`.
 
 ![The # Extent Operator](../assets/images/ch02/fig_extent_dark.png#only-dark)
 ![The # Extent Operator](../assets/images/ch02/fig_extent_light.png#only-light)
 
-*`#tile` as a prefix gives the extent (count = 8). `tile # i` as an infix composes indices. Context disambiguates.*
+*Prefix `#` asks for an extent. Infix `#` composes coordinates.*
 
-## `span(i)`: Picking One Dimension
+## `span` and `span(i)`
 
-Chapter 1 used `lhs.span` to copy the *entire* shape of an input. Sometimes you want just one dimension. `lhs.span(0)` gives the size along the first axis, `rhs.span(1)` gives the size along the second, and so on. This matters when your output has a different rank than your inputs — for example, a matmul where the output shape `[M, N]` comes from `lhs.span(0)` and `rhs.span(1)`:
+`tensor.span` gives the full shape of a tensor. `tensor.span(i)` gives one dimension.
 
 ```choreo
 s32 [lhs.span(0), rhs.span(1)] output;
 ```
 
-`span(i)` is not needed yet in this 1D example, but it becomes important the moment you tile 2D tensors.
+This comes up constantly in data movement code because output shapes often come from different inputs, and moved tiles frequently need to preserve or recompute shape information.
 
 ![span(i) — Picking One Dimension](../assets/images/ch02/fig_span_dark.png#only-dark)
 ![span(i) — Picking One Dimension](../assets/images/ch02/fig_span_light.png#only-light)
 
-*`lhs.span` copies the full shape. `lhs.span(0)` picks just the first dimension, `lhs.span(1)` picks the second.*
+*Use `span` for the whole shape, `span(i)` for a single axis.*
 
-## 2D Tiled Addition
+## Memory Specifiers: `global`, `shared`, and `local`
 
-The same pattern works on matrices. Here is a `[64, 128]` addition tiled into `[4, 8]` chunks of size `[16, 16]`:
+The destination of a movement statement also states where the moved tile should live.
+
+- `global`: device memory. Large, slow, visible across the device.
+- `shared`: block-visible on-chip memory. This is the usual staging area for cooperative tiles.
+- `local`: thread-private storage. Good for small private tiles or non-cooperative use.
 
 ```choreo
-__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
-  s32 [lhs.span] output;
-
-  parallel {tr, tc} by [4, 8] {
-    lhs_load = dma.copy lhs.chunkat(tr, tc) => local;
-    rhs_load = dma.copy rhs.chunkat(tr, tc) => local;
-
-    foreach {i, j} in [64 / #tr, 128 / #tc]
-      output.at(tr # i, tc # j) = lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
-  }
-
-  return output;
-}
+f0 = dma.copy input => shared;
+f1 = dma.copy matrix_tile => local;
+dma.copy out_tile => output;
 ```
 
-Every construct generalizes naturally to higher dimensions: `chunkat(tr, tc)` takes two tile indices, `foreach {i, j}` introduces two inner indices, `tr # i` and `tc # j` compose along each axis (outer # inner), and `#tr` / `#tc` give the tile counts (4 and 8 respectively) so the inner loop bounds compute to `16` and `16`.
-
-The host code is the same pattern as before — `make_spandata<croq::s32>(64, 128)`, `.view()`, verify with nested loops.
-
-## Memory Specifiers: Where Data Lives
-
-`dma.copy` may end with `=> local`, `=> shared`, or `=> global`. These are **memory specifiers** — Croqtile's abstraction over the GPU's physical memory hierarchy. Understanding what they mean, and what hardware they map to, is worth a detour.
-
-### The Abstraction
-
-A modern GPU has several levels of storage, each with a different size, speed, and visibility scope. Writing raw CUDA forces you to manage these levels by hand: you `cudaMalloc` global buffers, declare `__shared__` arrays with explicit sizes, and hope that the compiler maps your local variables to registers. It is one of the steepest parts of the learning curve.
-
-Croqtile's memory specifiers are a deliberate simplification. Instead of worrying about CUDA's `__shared__` declarations, register pressure, or cache line alignment, you just tell `dma.copy` *where* to put the data. The compiler handles the rest — allocation sizes, bank-conflict avoidance, register spilling — so you can focus on the data flow.
-
-### The Three Levels
-
-- **`global`** — device-wide memory. This is HBM (High Bandwidth Memory) or GDDR on the physical chip — large (tens of gigabytes) but relatively slow to access. All threads across all thread blocks can see it. Input and output tensors start here. In CUDA terms, this is what you get from `cudaMalloc`.
-
-- **`shared`** — block-scoped on-chip SRAM. Each Streaming Multiprocessor (SM) has a pool of fast, low-latency memory (typically 100–228 KB) that is visible to all threads within the same thread block. In CUDA, this is `__shared__` memory. Use it when multiple threads need to read the same tile — the standard pattern in matmul, reductions, and stencil operations. We will use `shared` in the next chapter.
-
-- **`local`** — thread-private storage. This maps to registers and per-thread scratch space on the SM — the fastest level, but visible only to the thread that owns it. In CUDA, these are your local variables that the compiler assigns to registers. Good when there is no sharing, or when each thread works on its own independent slice.
-
-### Mapping to GPU Hardware
-
-The figure below shows how these three specifiers correspond to the physical GPU layout. Notice the hierarchy: data moves from global (large, slow) through shared (medium, fast) to local (small, fastest). Croqtile's `dma.copy` lets you express these movements directly.
+For performance-sensitive kernels, `shared` is the important level. The compiler's cooperative tiled lowering is aimed at global-to-shared and shared-to-global movement. `local` copies are still useful, but they are not the main fast path for cooperative block transfers.
 
 ![Memory Specifiers → GPU Hardware](../assets/images/ch02/fig_memory_hierarchy_dark.png#only-dark)
 ![Memory Specifiers → GPU Hardware](../assets/images/ch02/fig_memory_hierarchy_light.png#only-light)
 
-*Croqtile's `global`, `shared`, and `local` specifiers map directly to GPU hardware levels: HBM/DRAM, per-SM shared memory, and per-thread registers.*
+*Croqtile's memory specifiers map directly onto the GPU memory hierarchy.*
 
-### Choosing a Specifier
+## Partial Tiles, Guarding, and `.zfill`
 
-The choice does not change the Croqtile function's semantics — only performance. You could replace every `=> local` with `=> shared` and the program would still produce the same result, just with different speed characteristics. The rule of thumb:
+Real kernels often end with a partial tile. The important distinction is whether the **source tile shape** and **destination tile shape** are the same.
 
-| Situation                                     | Use      | Why                                 |
-|-----------------------------------------------|----------|-------------------------------------|
-| Each tile is independent, no sharing          | `local`  | Fastest, no synchronization needed  |
-| Multiple threads collaborate on the same tile | `shared` | Visible to all threads in the block |
-| Writing results back to the output tensor     | `global` | Output must be device-visible       |
+For example:
 
-For now the examples use `local` because each tile runs independently. Chapter 3 will introduce `shared` when multiple threads need to read the same tile for a tiled matrix multiply.
+```choreo
+dma.copy.swiz<32>.zfill
+  lhs.view(ROWS_M, TILE_K).from(base_m, base_k)
+    => lhs_load_s;
+```
 
-## What Changed from Chapter 1
+Here `lhs_load_s` might have shape `[WARP_M, TILE_K]`, while the source view has shape `[ROWS_M, TILE_K]` and `ROWS_M` may be smaller than `WARP_M` on the last tile. That is a real shape mismatch, so `.zfill` means: copy the valid source rows and write zero into the remaining rows of the destination tile.
 
-Nothing about the math changed. Every element of `lhs` is still added to the corresponding element of `rhs`. What changed is the **granularity** of memory access: instead of 128 individual reads and writes, we issue 8 bulk copies per input tensor, each moving 16 contiguous elements into fast memory. The compute loop then runs entirely on local data.
+That is the right use for `.zfill`.
 
-The new vocabulary:
+What happens when the shapes are the same:
 
-| Syntax                        | Meaning                                                                             |
-|-------------------------------|-------------------------------------------------------------------------------------|
-| `dma.copy src => local`       | Bulk-copy `src` into local (or `shared` / `global`) memory                          |
-| `tensor.chunkat(i)`           | View of the `i`-th equal chunk of `tensor`                                          |
-| `tensor.chunkat(i, j)`        | View of chunk at position `(i, j)` in a 2D tiling                                   |
-| `future.data.at(...)`         | Access the copied data through a DMA future                                         |
-| `tile # i`                    | Compose tile index `tile` with local offset `i` into a global index (outer # inner) |
-| `#tile`                       | Extent (number of tiles) along the `tile` axis                                      |
-| `lhs.span(0)`                 | Size of `lhs` along its first dimension                                             |
-| `local` / `shared` / `global` | Memory level specifiers for DMA destinations                                        |
+- If the source view and destination tile have the same shape, the compiler already guards runtime tails automatically.
+- In that case it generates masking so out-of-bounds elements are not read or written.
+- This is enough for cases like tiling a `[100]` tensor into `[64]` tiles: the last tile simply has 36 valid elements.
 
-All of these compose naturally with `parallel` and `.at()` from Chapter 1. The [next chapter](ch03-parallelism.md) goes deeper into `parallel` — mapping it to CUDA thread blocks, warps, and warpgroups — and uses everything from this chapter to build a tiled matrix multiply.
+So `.zfill` is **not** the general mechanism for “any partial tile.” It is specifically for cases where the destination tile is larger than the valid source region and the extra part of the destination must be filled with zeros.
+
+Why `.zfill` matters:
+
+- If the consumer reads only the valid region, the compiler's automatic masking is usually enough.
+- If the consumer reads the whole destination tile, especially an MMA fragment, the invalid region must hold a known value.
+- `.zfill` makes that extra region zero.
+
+Use `.zfill` when the valid source region is smaller than the destination tile and the consumer will treat the destination as a full dense tile. This is the common case for GEMM-style pipelines with dynamic row counts or padded edge tiles.
+
+If you add `.zfill` when the source and destination shapes are already the same, the compiler can warn that the `.zfill` is redundant. Conversely, when the shapes differ, the compiler can also warn that `.zfill` is needed to avoid using undefined values in the uncovered region.
+
+## `.swiz<N>`: Shared-Memory Layout for the Consumer
+
+Swizzle is mainly about how the tile should live in shared memory so later operations can read it efficiently.
+
+Typical GEMM staging code looks like this:
+
+```choreo
+dma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
+```
+
+The load-side and compute-side swizzles need to agree. If you stage a tile with `.swiz<128>`, the consumer should usually load it with the matching swizzle.
+
+This chapter only introduces the idea. The MMA chapters go deeper into which swizzle values pair well with which matrix layouts.
+
+## DMA vs TMA
+
+Both engines move shaped tiles. The difference is how they do it and what constraints they require.
+
+| | `dma` | `tma` |
+|---|---|---|
+| Implementation | Cooperative software copy | Hopper Tensor Memory Accelerator |
+| Hardware requirement | General GPU path | SM90+ |
+| Good fit | Dynamic or irregular tiles, portable code | Fixed-shape high-bandwidth staging |
+| Common destination | `shared` | `shared` |
+| Async support | Yes | Yes |
+
+Example TMA use:
+
+```choreo
+f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) => shared;
+wait f;
+```
+
+The practical rule is simple:
+
+- Use `dma` when tile sizes are dynamic, irregular, or you want the portable path.
+- Use `tma` on Hopper when the tile shape is fixed and you want hardware-assisted movement.
+
+### The main TMA constraint
+
+TMA tile shapes must be host-computable. Runtime tile indices are fine:
+
+```choreo
+tma.copy lhs.subspan(64, 64).at(block_m, iv_k) => shared;
+```
+
+But a kernel-runtime value cannot define the tile shape itself:
+
+```choreo
+// Not valid for TMA if TILE_M is only known inside the kernel
+tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) => shared;
+```
+
+If the tile size truly depends on kernel-runtime state, use `dma.copy` instead.
+
+## Writing DMA and TMA That Lower Well
+
+You do not need to know the whole lowering pass to write good code, but a few rules matter.
+
+### For high-throughput DMA
+
+- Prefer `global <-> shared` movement for cooperative staging.
+- Use enough participating threads. A warp-sized or larger cooperative group is the common case.
+- Keep source and destination ranks aligned.
+- Use ordinary byte-sized or larger element types.
+- Reserve `local` for private tiles, not as the default performance path.
+
+If these conditions do not hold, the compiler can still generate a correct copy, but it may fall back to a simpler path.
+
+### For TMA
+
+- Use it on SM90+.
+- Keep the tile shape fixed from the host's point of view.
+- Stage into shared memory.
+- Add `.zfill` for partial tiles that feed full-tile consumers.
+
+## Checklist
+
+By the end of this chapter, the new pieces of syntax should mean the following:
+
+| Syntax | Meaning |
+|--------|---------|
+| `dma.copy src => shared` | Move a tile into shared memory. |
+| `tma.copy src => shared` | Use Hopper TMA to move a tile into shared memory. |
+| `dma.copy.async ...` | Start a non-blocking DMA transfer. |
+| `wait f` | Wait until future `f` is ready to consume. |
+| `future.data` | Access the moved tile. |
+| `future.span` | Access the moved tile's shape. |
+| `dma.transp<...>` | Permute dimensions during transfer. |
+| `dma.pad<...>` | Pad during transfer with an explicit fill value. |
+| `.zfill` | Zero-fill out-of-bounds positions in partial tiles. |
+| `.swiz<N>` | Choose a shared-memory swizzle layout. |
+| `chunkat(...)` | Select one equal tile from a regular tiling. |
+| `subspan(...).at(...)` | Select a tile by explicit tile extents and tile coordinates. |
+| `view(...).from(...)` | Select a tile by explicit extents and explicit element offsets. |
+| `tile # i` | Compose tile and in-tile coordinates into a global coordinate. |
+| `#tile` | Ask for the extent of the `tile` axis. |
+
+The next chapter builds on this by overlapping movement with compute. Once you can think of a kernel as a loop that repeatedly stages tiles and computes on staged tiles, double buffering and pipelining become natural extensions rather than new ideas.
