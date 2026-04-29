@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-movement-from-elements-to-data-blocks" class="md-skip">
+        <a href="#data-movement-the-tile-movement-engine" class="md-skip">
           Skip to content
         </a>
       
@@ -546,10 +546,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tiled-element-wise-addition" class="md-nav__link">
+  <a href="#the-dma-statement-family" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tiled Element-Wise Addition
+        The DMA Statement Family
       
     </span>
   </a>
@@ -557,10 +557,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chunkat-carving-a-tensor-into-tiles" class="md-nav__link">
+  <a href="#first-example-tiled-addition-through-shared-memory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        chunkat: Carving a Tensor into Tiles
+        First Example: Tiled Addition Through Shared Memory
       
     </span>
   </a>
@@ -568,88 +568,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dmacopy-bulk-transfer-between-memory-levels" class="md-nav__link">
+  <a href="#chunkat-subspan-and-viewfrom-three-ways-to-select-a-tile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dma.copy: Bulk Transfer Between Memory Levels
+        chunkat, subspan, and view().from(): Three Ways to Select a Tile
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#futures-and-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Futures and .data
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-compose-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The # Compose Operator
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-extent-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The # Extent Operator
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#spani-picking-one-dimension" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        span(i): Picking One Dimension
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2d-tiled-addition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2D Tiled Addition
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#memory-specifiers-where-data-lives" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Memory Specifiers: Where Data Lives
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Memory Specifiers: Where Data Lives">
+    <nav class="md-nav" aria-label="chunkat, subspan, and view().from(): Three Ways to Select a Tile">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-abstraction" class="md-nav__link">
+  <a href="#chunkat-equal-partitioning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Abstraction
+        chunkat(...): equal partitioning
       
     </span>
   </a>
@@ -657,10 +591,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-three-levels" class="md-nav__link">
+  <a href="#subspanat-explicit-tile-extents-on-a-tile-grid" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Three Levels
+        subspan(...).at(...): explicit tile extents on a tile grid
       
     </span>
   </a>
@@ -668,21 +602,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#mapping-to-gpu-hardware" class="md-nav__link">
+  <a href="#viewfrom-explicit-tile-extents-with-explicit-element-offsets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mapping to GPU Hardware
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#choosing-a-specifier" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Choosing a Specifier
+        view(...).from(...): explicit tile extents with explicit element offsets
       
     </span>
   </a>
@@ -695,10 +618,221 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-changed-from-chapter-1" class="md-nav__link">
+  <a href="#futures-data-and-span" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Changed from Chapter 1
+        Futures, .data, and .span
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synchronous-and-asynchronous-copies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronous and Asynchronous Copies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-operations-transp-and-pad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other Operations: transp and pad
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Operations: transp and pad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dmatransp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.transp&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dmapad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.pad&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compose-and-extent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        #: Compose and Extent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="#: Compose and Extent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compose-outer-inner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compose: outer # inner
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extent-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extent: #name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#span-and-spani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        span and span(i)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-specifiers-global-shared-and-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory Specifiers: global, shared, and local
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partial-tiles-guarding-and-zfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partial Tiles, Guarding, and .zfill
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swizn-shared-memory-layout-for-the-consumer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .swiz&lt;N&gt;: Shared-Memory Layout for the Consumer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dma-vs-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA vs TMA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DMA vs TMA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-main-tma-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The main TMA constraint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-dma-and-tma-that-lower-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing DMA and TMA That Lower Well
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Writing DMA and TMA That Lower Well">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-high-throughput-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For high-throughput DMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For TMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist
       
     </span>
   </a>
@@ -2540,10 +2674,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tiled-element-wise-addition" class="md-nav__link">
+  <a href="#the-dma-statement-family" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tiled Element-Wise Addition
+        The DMA Statement Family
       
     </span>
   </a>
@@ -2551,10 +2685,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chunkat-carving-a-tensor-into-tiles" class="md-nav__link">
+  <a href="#first-example-tiled-addition-through-shared-memory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        chunkat: Carving a Tensor into Tiles
+        First Example: Tiled Addition Through Shared Memory
       
     </span>
   </a>
@@ -2562,88 +2696,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dmacopy-bulk-transfer-between-memory-levels" class="md-nav__link">
+  <a href="#chunkat-subspan-and-viewfrom-three-ways-to-select-a-tile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dma.copy: Bulk Transfer Between Memory Levels
+        chunkat, subspan, and view().from(): Three Ways to Select a Tile
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#futures-and-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Futures and .data
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-compose-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The # Compose Operator
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-extent-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The # Extent Operator
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#spani-picking-one-dimension" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        span(i): Picking One Dimension
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2d-tiled-addition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2D Tiled Addition
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#memory-specifiers-where-data-lives" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Memory Specifiers: Where Data Lives
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Memory Specifiers: Where Data Lives">
+    <nav class="md-nav" aria-label="chunkat, subspan, and view().from(): Three Ways to Select a Tile">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-abstraction" class="md-nav__link">
+  <a href="#chunkat-equal-partitioning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Abstraction
+        chunkat(...): equal partitioning
       
     </span>
   </a>
@@ -2651,10 +2719,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-three-levels" class="md-nav__link">
+  <a href="#subspanat-explicit-tile-extents-on-a-tile-grid" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Three Levels
+        subspan(...).at(...): explicit tile extents on a tile grid
       
     </span>
   </a>
@@ -2662,21 +2730,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#mapping-to-gpu-hardware" class="md-nav__link">
+  <a href="#viewfrom-explicit-tile-extents-with-explicit-element-offsets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mapping to GPU Hardware
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#choosing-a-specifier" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Choosing a Specifier
+        view(...).from(...): explicit tile extents with explicit element offsets
       
     </span>
   </a>
@@ -2689,10 +2746,221 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-changed-from-chapter-1" class="md-nav__link">
+  <a href="#futures-data-and-span" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Changed from Chapter 1
+        Futures, .data, and .span
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synchronous-and-asynchronous-copies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronous and Asynchronous Copies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-operations-transp-and-pad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other Operations: transp and pad
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Operations: transp and pad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dmatransp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.transp&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dmapad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.pad&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compose-and-extent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        #: Compose and Extent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="#: Compose and Extent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compose-outer-inner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compose: outer # inner
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extent-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extent: #name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#span-and-spani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        span and span(i)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-specifiers-global-shared-and-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory Specifiers: global, shared, and local
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partial-tiles-guarding-and-zfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partial Tiles, Guarding, and .zfill
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swizn-shared-memory-layout-for-the-consumer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .swiz&lt;N&gt;: Shared-Memory Layout for the Consumer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dma-vs-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA vs TMA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DMA vs TMA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-main-tma-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The main TMA constraint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-dma-and-tma-that-lower-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing DMA and TMA That Lower Well
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Writing DMA and TMA That Lower Well">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-high-throughput-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For high-throughput DMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For TMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist
       
     </span>
   </a>
@@ -2767,14 +3035,19 @@
   
 
 
-<h1 id="data-movement-from-elements-to-data-blocks">Data Movement: From Elements to Data Blocks<a class="headerlink" href="#data-movement-from-elements-to-data-blocks" title="Permanent link">&para;</a></h1>
-<p>Chapter 1 expressed computation at the level of individual elements: pick position <code>(i, j)</code>, read the two inputs, add, write the result. That is the natural way to think about SIMD-style programming — and it is exactly the mental model that most CUDA and GPU tutorials teach. You write a per-element kernel, launch one thread per element, and each thread does its own tiny job.</p>
-<p>The trouble is that hardware does not actually work this way. A GPU does not fetch one 32-bit integer from memory at a time. It fetches contiguous blocks — 128 bytes, 256 bytes, sometimes more — in a single transaction, and it stages those blocks through a hierarchy of caches and on-chip buffers before any arithmetic touches them. There is a fundamental mismatch between the per-element programming model and the per-block hardware reality. Bridging that gap — thinking in blocks, managing memory levels, wiring up transfers — is the single biggest reason GPU programming is hard for newcomers.</p>
-<p>Croqtile is designed around this insight. Instead of forcing you to think element-by-element and then hope the compiler or hardware will figure out the block structure, Croqtile gives you <strong>data-block-level primitives</strong>: you name a rectangular chunk of a tensor with <code>chunkat</code>, move it between memory levels with <code>dma.copy</code>, and then work on it in-place. The programming model matches what the hardware actually does.</p>
-<p>This chapter rewrites Chapter 1's element-wise addition to use these block-level primitives. The math is identical — every element of <code>lhs</code> is still added to the corresponding element of <code>rhs</code> — but the code now explicitly describes which blocks of data move where, and the computation happens on whole tiles rather than individual scalars.</p>
+<h1 id="data-movement-the-tile-movement-engine">Data Movement: The Tile Movement Engine<a class="headerlink" href="#data-movement-the-tile-movement-engine" title="Permanent link">&para;</a></h1>
+<p>Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. GPUs fetch and stage contiguous blocks, not isolated elements. The hard part of GPU programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.</p>
+<p>Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:</p>
+<ul>
+<li><code>dma.copy</code> moves a tile as-is.</li>
+<li><code>dma.transp&lt;...&gt;</code> permutes dimensions while moving it.</li>
+<li><code>dma.pad&lt;...&gt;</code> enlarges a tile and fills the border.</li>
+<li><code>tma.copy</code> uses Hopper's Tensor Memory Accelerator for the same style of transfers when the tile shape is compatible.</li>
+</ul>
+<p>This chapter introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.</p>
 <p><img alt="Per-element vs data-block programming model comparison" src="../../assets/images/ch02/fig1_element_vs_block_dark.png#only-dark" />
 <img alt="Per-element vs data-block programming model comparison" src="../../assets/images/ch02/fig1_element_vs_block_light.png#only-light" /></p>
-<p><em>Left: per-element view — each thread fetches one element individually. Right: data-block view — one DMA moves an entire tile at once.</em></p>
+<p><em>Left: element-by-element thinking. Right: tile-by-tile movement into fast memory.</em></p>
 <details>
 <summary>Animated version</summary>
 
@@ -2789,42 +3062,72 @@
 
 </details>
 
-<h2 id="tiled-element-wise-addition">Tiled Element-Wise Addition<a class="headerlink" href="#tiled-element-wise-addition" title="Permanent link">&para;</a></h2>
-<p>Here is the same addition, rewritten to move data in tiles of 16 elements. The inputs are 1D vectors of length 128 so the tiling arithmetic stays simple:</p>
-<pre class="highlight"><code class="language-choreo">__co__ s32 [128] tiled_add(s32 [128] lhs, s32 [128] rhs) {
+<h2 id="the-dma-statement-family">The DMA Statement Family<a class="headerlink" href="#the-dma-statement-family" title="Permanent link">&para;</a></h2>
+<p>All of Croqtile's tile-movement operations use the same basic form:</p>
+<pre class="highlight"><code class="language-choreo">future = engine.operation.modifiers source =&gt; destination;</code></pre>
+<p>The important pieces are:</p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>future</code></td>
+<td>Optional handle to the transfer result. Use <code>future.data</code> to access the moved tile and <code>future.span</code> to query its shape.</td>
+</tr>
+<tr>
+<td><code>engine</code></td>
+<td><code>dma</code> for software cooperative copies, <code>tma</code> for Hopper TMA copies.</td>
+</tr>
+<tr>
+<td><code>operation</code></td>
+<td><code>copy</code>, <code>transp&lt;...&gt;</code>, or <code>pad&lt;...&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>modifiers</code></td>
+<td>Optional flags such as <code>.async</code>, <code>.zfill</code>, or <code>.swiz&lt;N&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>source =&gt; destination</code></td>
+<td>The source view and the destination memory or destination view.</td>
+</tr>
+</tbody>
+</table>
+<p>Minimal examples:</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input.chunkat(block) =&gt; shared;
+g = dma.transp&lt;1, 0&gt; matrix =&gt; local;
+h = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; shared;</code></pre>
+<p>The key shift from Chapter 1 is that these statements move shaped regions, not individual elements.</p>
+<h2 id="first-example-tiled-addition-through-shared-memory">First Example: Tiled Addition Through Shared Memory<a class="headerlink" href="#first-example-tiled-addition-through-shared-memory" title="Permanent link">&para;</a></h2>
+<p>Here is the same addition from Chapter 1, but staged through shared memory in tiles:</p>
+<pre class="highlight"><code class="language-choreo">__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
 
-  parallel tile by 8 {
-    lhs_load = dma.copy lhs.chunkat(tile) =&gt; local;
-    rhs_load = dma.copy rhs.chunkat(tile) =&gt; local;
+  parallel {tr, tc} by [4, 8] {
+    lhs_load = dma.copy lhs.chunkat(tr, tc) =&gt; shared;
+    rhs_load = dma.copy rhs.chunkat(tr, tc) =&gt; shared;
 
-    foreach i in [128 / #tile]
-      output.at(tile # i) = lhs_load.data.at(i) + rhs_load.data.at(i);
+    foreach {i, j} in lhs_load.span
+      output.at(tr # i, tc # j) =
+          lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
   }
 
   return output;
-}
-
-int main() {
-  auto lhs = croq::make_spandata&lt;croq::s32&gt;(128);
-  auto rhs = croq::make_spandata&lt;croq::s32&gt;(128);
-  lhs.fill_random(-10, 10);
-  rhs.fill_random(-10, 10);
-
-  auto res = tiled_add(lhs.view(), rhs.view());
-
-  for (int i = 0; i &lt; 128; ++i)
-    croq::croq_assert(lhs[i] + rhs[i] == res[i], "values are not equal.");
-
-  std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
 }</code></pre>
-<p>Save it as <code>tiled_add.co</code>, compile and run:</p>
-<pre class="highlight"><code class="language-bash">croqtile tiled_add.co -o tiled_add
-./tiled_add</code></pre>
-<p>Same <code>Test Passed</code>. The result is identical to Chapter 1's version — the math has not changed, only how data moves through memory.</p>
+<p>The arithmetic is still element-wise addition. What changed is the data path:</p>
+<ol>
+<li><code>chunkat(tr, tc)</code> selects one logical tile from each input.</li>
+<li><code>dma.copy ... =&gt; shared</code> stages that tile into block-visible fast memory.</li>
+<li>The inner loop reads from <code>lhs_load.data</code> and <code>rhs_load.data</code>, not from global memory.</li>
+<li><code>tr # i</code> and <code>tc # j</code> map tile-local coordinates back to global output coordinates.</li>
+</ol>
+<p>This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.</p>
 <p><img alt="Tiled addition: load, compute, store flow" src="../../assets/images/ch02/fig2_tiled_add_dark.png#only-dark" />
 <img alt="Tiled addition: load, compute, store flow" src="../../assets/images/ch02/fig2_tiled_add_light.png#only-light" /></p>
-<p><em>Tiled addition for tile = 2: DMA loads both operand chunks into local memory, element-wise addition runs on the tile, and the result writes back to the output vector.</em></p>
+<p><em>Load a tile, compute on the staged data, then write results back using global coordinates.</em></p>
 <details>
 <summary>Animated version</summary>
 
@@ -2839,17 +3142,15 @@ int main() {
 
 </details>
 
-<p>Here is what is new.</p>
-<h2 id="chunkat-carving-a-tensor-into-tiles"><code>chunkat</code>: Carving a Tensor into Tiles<a class="headerlink" href="#chunkat-carving-a-tensor-into-tiles" title="Permanent link">&para;</a></h2>
-<pre class="highlight"><code class="language-choreo">lhs.chunkat(tile)</code></pre>
-<p><code>chunkat</code> divides a tensor into equal, non-overlapping rectangular pieces along each dimension. Here <code>lhs</code> has shape <code>[128]</code> and the <code>parallel</code> declares 8 tiles, so each chunk is <code>128 / 8 = 16</code> elements wide. The argument <code>tile</code> is the chunk index — which of the 8 pieces you want. When <code>tile</code> is 0, you get elements 0 through 15; when <code>tile</code> is 3, you get elements 48 through 63; and so on.</p>
-<p>For a 2D tensor, <code>chunkat</code> takes one index per dimension:</p>
-<pre class="highlight"><code class="language-choreo">matrix.chunkat(row_tile, col_tile)</code></pre>
-<p>Each dimension is divided independently. If <code>matrix</code> has shape <code>[64, 128]</code> and you declare <code>parallel {r, c} by [4, 8]</code>, then <code>matrix.chunkat(r, c)</code> gives you a <code>[16, 16]</code> piece at tile position <code>(r, c)</code>. Croqtile figures out the chunk size from the tensor shape and the number of tiles along each axis.</p>
-<p>The key thing to remember: <code>chunkat</code> does not copy data. It is a <strong>view</strong> — a description of which rectangle of the original tensor you mean. The actual movement happens in <code>dma.copy</code>.</p>
+<h2 id="chunkat-subspan-and-viewfrom-three-ways-to-select-a-tile"><code>chunkat</code>, <code>subspan</code>, and <code>view().from()</code>: Three Ways to Select a Tile<a class="headerlink" href="#chunkat-subspan-and-viewfrom-three-ways-to-select-a-tile" title="Permanent link">&para;</a></h2>
+<p>Croqtile gives you three common ways to describe the tile you want to move.</p>
+<h3 id="chunkat-equal-partitioning"><code>chunkat(...)</code>: equal partitioning<a class="headerlink" href="#chunkat-equal-partitioning" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">lhs.chunkat(tr, tc)</code></pre>
+<p><code>chunkat</code> divides each dimension into equal chunks based on the surrounding parallel structure. If <code>lhs</code> has shape <code>[64, 128]</code> and the kernel uses <code>parallel {tr, tc} by [4, 8]</code>, then <code>lhs.chunkat(tr, tc)</code> selects a <code>[16, 16]</code> tile.</p>
+<p>That makes <code>chunkat</code> the natural tool when your tiling follows the parallel decomposition directly.</p>
 <p><img alt="chunkat 2D tile selection semantics" src="../../assets/images/ch02/fig3_chunkat_dark.png#only-dark" />
 <img alt="chunkat 2D tile selection semantics" src="../../assets/images/ch02/fig3_chunkat_light.png#only-light" /></p>
-<p><em>A [64, 128] tensor divided into 4 × 8 tiles. <code>chunkat(1, 3)</code> selects the [16, 16] sub-tensor at row-tile 1, column-tile 3.</em></p>
+<p><em><code>chunkat(1, 3)</code> selects one equal tile from a regular tiling grid.</em></p>
 <details>
 <summary>Animated version</summary>
 
@@ -2864,116 +3165,199 @@ int main() {
 
 </details>
 
-<h2 id="dmacopy-bulk-transfer-between-memory-levels"><code>dma.copy</code>: Bulk Transfer Between Memory Levels<a class="headerlink" href="#dmacopy-bulk-transfer-between-memory-levels" title="Permanent link">&para;</a></h2>
-<pre class="highlight"><code class="language-choreo">lhs_load = dma.copy lhs.chunkat(tile) =&gt; local;</code></pre>
-<p>This copies the chunk selected by <code>chunkat(tile)</code> from wherever <code>lhs</code> lives (by default, global device memory) into <code>local</code> memory — fast, on-chip storage close to the compute units. The result, <code>lhs_load</code>, is a <strong>DMA future</strong>: a handle that represents the in-flight (or completed) transfer.</p>
-<p>The <code>=&gt; local</code> part is the <strong>destination memory specifier</strong>. We discuss memory specifiers in detail below, after covering the rest of the syntax.</p>
-<p><img alt="dma.copy — bulk memory transfer" src="../../assets/images/ch02/fig_dma_copy_dark.png#only-dark" />
-<img alt="dma.copy — bulk memory transfer" src="../../assets/images/ch02/fig_dma_copy_light.png#only-light" /></p>
-<p><em><code>dma.copy</code> transfers a chunk from global memory to local memory and returns a DMA future handle.</em></p>
-<h2 id="futures-and-data">Futures and <code>.data</code><a class="headerlink" href="#futures-and-data" title="Permanent link">&para;</a></h2>
-<p>After <code>dma.copy</code>, the variable <code>lhs_load</code> is not a tensor — it is a <strong>future</strong> that tracks the transfer. To get at the actual data, you use <code>.data</code>:</p>
-<pre class="highlight"><code class="language-choreo">lhs_load.data.at(i)</code></pre>
-<p><code>lhs_load.data</code> is a spanned tensor in local memory with the shape of the chunk that was copied. You index into it with <code>.at(i)</code> exactly like you indexed into <code>lhs</code> in Chapter 1 — except now you are reading from fast memory instead of global memory.</p>
-<p>Why the indirection? Because in later chapters you will issue copies that run <strong>asynchronously</strong> — the hardware starts moving data while your program does other work. The future is what lets you refer to "the data that will be there when the transfer finishes" without blocking immediately. For now, the copies are synchronous and <code>.data</code> is always valid right after the <code>dma.copy</code> line, but the pattern is the same.</p>
+<h3 id="subspanat-explicit-tile-extents-on-a-tile-grid"><code>subspan(...).at(...)</code>: explicit tile extents on a tile grid<a class="headerlink" href="#subspanat-explicit-tile-extents-on-a-tile-grid" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">lhs.subspan(64, 64).at(block_m, iv_k)</code></pre>
+<p><code>subspan</code> says what the tile shape is. <code>.at(...)</code> says which tile instance you want. This is the better fit when the tile shape is an explicit algorithmic choice, such as a GEMM tile of <code>[64, 64]</code>, rather than something you want inferred from <code>parallel by ...</code>.</p>
+<h3 id="viewfrom-explicit-tile-extents-with-explicit-element-offsets"><code>view(...).from(...)</code>: explicit tile extents with explicit element offsets<a class="headerlink" href="#viewfrom-explicit-tile-extents-with-explicit-element-offsets" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)</code></pre>
+<p><code>view(...).from(...)</code> is the most general selection form introduced in this chapter. <code>view(...)</code> states the shape of the region you want, and <code>.from(...)</code> gives its starting coordinate in element space.</p>
+<p>This is the right tool when the tile origin is already available as element offsets rather than tile indices, or when the region is not most naturally described as an equal chunk. It is especially useful for dynamic and irregular access patterns where <code>chunkat(...)</code> would be awkward or impossible.</p>
+<p>You can think of the three forms like this:</p>
+<ul>
+<li>Use <code>chunkat(...)</code> when the surrounding parallel decomposition already defines an equal tiling.</li>
+<li>Use <code>subspan(...).at(...)</code> when you want an explicit tile shape and tile coordinates.</li>
+<li>Use <code>view(...).from(...)</code> when you want an explicit tile shape and element-space starting offsets.</li>
+</ul>
+<h2 id="futures-data-and-span">Futures, <code>.data</code>, and <code>.span</code><a class="headerlink" href="#futures-data-and-span" title="Permanent link">&para;</a></h2>
+<p>The result of a DMA or TMA statement is a future-like handle:</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;</code></pre>
+<p>That handle gives you two important things:</p>
+<ul>
+<li><code>f.data</code>: the moved tile, as a spanned tensor.</li>
+<li><code>f.span</code>: the shape of that tile.</li>
+</ul>
+<p>Example:</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;
+foreach idx in [f.span]
+  output.at(idx) = f.data.at(idx);</code></pre>
+<p>Even synchronous copies are worth naming when you want to pass the moved tile to later code.</p>
 <p><img alt="Futures and .data" src="../../assets/images/ch02/fig_future_data_dark.png#only-dark" />
 <img alt="Futures and .data" src="../../assets/images/ch02/fig_future_data_light.png#only-light" /></p>
-<p><em>A DMA future tracks the transfer. Access the copied data through <code>.data</code>, which gives you a spanned tensor in local memory.</em></p>
-<h2 id="the-compose-operator">The <code>#</code> Compose Operator<a class="headerlink" href="#the-compose-operator" title="Permanent link">&para;</a></h2>
-<p>Look at the output indexing:</p>
-<pre class="highlight"><code class="language-choreo">output.at(tile # i)</code></pre>
-<p>The <code>#</code> operator composes a <strong>tile index</strong> <code>tile</code> with a <strong>local offset</strong> <code>i</code> to produce a <strong>global index</strong> into <code>output</code>. The rule is <strong>outer # inner</strong>: the higher-level index goes on the left, the element offset within that tile goes on the right. Since <code>tile</code> selects which chunk of 16 elements to work on, and <code>i</code> runs from 0 to 15 within that chunk, <code>tile # i</code> gives the position in the full 128-element vector: concretely <code>tile * 16 + i</code>.</p>
-<p>You need <code>#</code> because <code>lhs_load.data.at(i)</code> uses a <strong>local</strong> index (position within the tile), but <code>output.at(...)</code> uses a <strong>global</strong> index (position in the full output tensor). The compose operator bridges the two coordinate systems. Read <code>tile # i</code> as "element <code>i</code> within tile <code>tile</code>."</p>
-<p>This <code>#</code> operator appears in one dimension here. In Chapter 3, when tiling a 2D matrix with parallel indices <code>p</code> and <code>q</code>, the pattern is <code>output.at(p#m, q#n)</code> — same idea, just more axes.</p>
+<p><em>The transfer result is a handle. Read the copied tile through <code>.data</code> and its shape through <code>.span</code>.</em></p>
+<h2 id="synchronous-and-asynchronous-copies">Synchronous and Asynchronous Copies<a class="headerlink" href="#synchronous-and-asynchronous-copies" title="Permanent link">&para;</a></h2>
+<p>By default, copies are synchronous:</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;
+dma.copy f.data =&gt; output;</code></pre>
+<p>Add <code>.async</code> when you want the transfer to proceed in the background:</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy.async input =&gt; shared;
+wait f;
+dma.copy f.data =&gt; output;</code></pre>
+<p>The same pattern applies to TMA:</p>
+<pre class="highlight"><code class="language-choreo">f = tma.copy.async input =&gt; shared;
+wait f;
+tma.copy f.data =&gt; output;</code></pre>
+<p>Rule: if you read <code>f.data</code> from an async transfer, wait first.</p>
+<p>Later chapters use async copies to overlap load and compute. In this chapter, the important part is the contract: <code>.async</code> creates an in-flight transfer, and <code>wait</code> makes it safe to consume.</p>
+<h2 id="other-operations-transp-and-pad">Other Operations: <code>transp</code> and <code>pad</code><a class="headerlink" href="#other-operations-transp-and-pad" title="Permanent link">&para;</a></h2>
+<p><code>copy</code> is only the simplest member of the family.</p>
+<h3 id="dmatransp"><code>dma.transp&lt;...&gt;</code><a class="headerlink" href="#dmatransp" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">fa = dma.transp&lt;1, 0, 2&gt; a =&gt; local;
+dma.copy fa.data =&gt; o;</code></pre>
+<p>This permutes dimensions during the movement itself. You do not first copy and then transpose. The transfer produces data in the transposed layout.</p>
+<h3 id="dmapad"><code>dma.pad&lt;...&gt;</code><a class="headerlink" href="#dmapad" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">f = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, V&gt;.async input =&gt; shared;
+wait f;
+dma.copy f.data =&gt; output;</code></pre>
+<p>Padding creates a larger destination tile. The template arguments describe low padding, high padding, internal stride-style padding, and the fill value. Use <code>pad</code> when you want explicit border values, not just out-of-bounds protection.</p>
+<h2 id="compose-and-extent"><code>#</code>: Compose and Extent<a class="headerlink" href="#compose-and-extent" title="Permanent link">&para;</a></h2>
+<p>Croqtile uses <code>#</code> in two related ways.</p>
+<h3 id="compose-outer-inner">Compose: <code>outer # inner</code><a class="headerlink" href="#compose-outer-inner" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">output.at(tr # i, tc # j)</code></pre>
+<p>This combines a tile coordinate with an in-tile coordinate to produce a coordinate in the full tensor.</p>
+<p>Read <code>tr # i</code> as "row <code>i</code> inside tile <code>tr</code>."</p>
 <p><img alt="The # Compose Operator" src="../../assets/images/ch02/fig_compose_dark.png#only-dark" />
 <img alt="The # Compose Operator" src="../../assets/images/ch02/fig_compose_light.png#only-light" /></p>
-<p><em><code>tile # i</code> composes tile index 2 with local offset 3 to produce global index 35. The rule is always outer # inner.</em></p>
-<h2 id="the-extent-operator">The <code>#</code> Extent Operator<a class="headerlink" href="#the-extent-operator" title="Permanent link">&para;</a></h2>
-<p>In the inner loop:</p>
+<p><em>Compose a tile index with an in-tile offset to recover a global coordinate.</em></p>
+<h3 id="extent-name">Extent: <code>#name</code><a class="headerlink" href="#extent-name" title="Permanent link">&para;</a></h3>
 <pre class="highlight"><code class="language-choreo">foreach i in [128 / #tile]</code></pre>
-<p><code>#tile</code> means "the <strong>extent</strong> of the tile axis" — how many tiles there are along that dimension. Here <code>#tile</code> is 8 (because <code>parallel tile by 8</code> declared 8 tiles), so <code>128 / #tile</code> is 16 — the number of elements in each tile. This is the trip count of the inner loop: you visit every element position within one tile.</p>
-<p>The <code>#</code> symbol does double duty in Croqtile: before a name in an expression (<code>#tile</code>) it means the <strong>extent</strong> of that index; between two names (<code>tile # i</code>) it means <strong>compose</strong>. Context tells you which is which — <code>#</code> as extent always appears as a prefix, and <code>#</code> as compose always appears as an infix between two operands.</p>
+<p>Here <code>#tile</code> means the extent of the <code>tile</code> axis: how many tiles exist along that dimension. If <code>parallel tile by 8</code>, then <code>#tile</code> is <code>8</code>.</p>
 <p><img alt="The # Extent Operator" src="../../assets/images/ch02/fig_extent_dark.png#only-dark" />
 <img alt="The # Extent Operator" src="../../assets/images/ch02/fig_extent_light.png#only-light" /></p>
-<p><em><code>#tile</code> as a prefix gives the extent (count = 8). <code>tile # i</code> as an infix composes indices. Context disambiguates.</em></p>
-<h2 id="spani-picking-one-dimension"><code>span(i)</code>: Picking One Dimension<a class="headerlink" href="#spani-picking-one-dimension" title="Permanent link">&para;</a></h2>
-<p>Chapter 1 used <code>lhs.span</code> to copy the <em>entire</em> shape of an input. Sometimes you want just one dimension. <code>lhs.span(0)</code> gives the size along the first axis, <code>rhs.span(1)</code> gives the size along the second, and so on. This matters when your output has a different rank than your inputs — for example, a matmul where the output shape <code>[M, N]</code> comes from <code>lhs.span(0)</code> and <code>rhs.span(1)</code>:</p>
+<p><em>Prefix <code>#</code> asks for an extent. Infix <code>#</code> composes coordinates.</em></p>
+<h2 id="span-and-spani"><code>span</code> and <code>span(i)</code><a class="headerlink" href="#span-and-spani" title="Permanent link">&para;</a></h2>
+<p><code>tensor.span</code> gives the full shape of a tensor. <code>tensor.span(i)</code> gives one dimension.</p>
 <pre class="highlight"><code class="language-choreo">s32 [lhs.span(0), rhs.span(1)] output;</code></pre>
-<p><code>span(i)</code> is not needed yet in this 1D example, but it becomes important the moment you tile 2D tensors.</p>
+<p>This comes up constantly in data movement code because output shapes often come from different inputs, and moved tiles frequently need to preserve or recompute shape information.</p>
 <p><img alt="span(i) — Picking One Dimension" src="../../assets/images/ch02/fig_span_dark.png#only-dark" />
 <img alt="span(i) — Picking One Dimension" src="../../assets/images/ch02/fig_span_light.png#only-light" /></p>
-<p><em><code>lhs.span</code> copies the full shape. <code>lhs.span(0)</code> picks just the first dimension, <code>lhs.span(1)</code> picks the second.</em></p>
-<h2 id="2d-tiled-addition">2D Tiled Addition<a class="headerlink" href="#2d-tiled-addition" title="Permanent link">&para;</a></h2>
-<p>The same pattern works on matrices. Here is a <code>[64, 128]</code> addition tiled into <code>[4, 8]</code> chunks of size <code>[16, 16]</code>:</p>
-<pre class="highlight"><code class="language-choreo">__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
-  s32 [lhs.span] output;
-
-  parallel {tr, tc} by [4, 8] {
-    lhs_load = dma.copy lhs.chunkat(tr, tc) =&gt; local;
-    rhs_load = dma.copy rhs.chunkat(tr, tc) =&gt; local;
-
-    foreach {i, j} in [64 / #tr, 128 / #tc]
-      output.at(tr # i, tc # j) = lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
-  }
-
-  return output;
-}</code></pre>
-<p>Every construct generalizes naturally to higher dimensions: <code>chunkat(tr, tc)</code> takes two tile indices, <code>foreach {i, j}</code> introduces two inner indices, <code>tr # i</code> and <code>tc # j</code> compose along each axis (outer # inner), and <code>#tr</code> / <code>#tc</code> give the tile counts (4 and 8 respectively) so the inner loop bounds compute to <code>16</code> and <code>16</code>.</p>
-<p>The host code is the same pattern as before — <code>make_spandata&lt;croq::s32&gt;(64, 128)</code>, <code>.view()</code>, verify with nested loops.</p>
-<h2 id="memory-specifiers-where-data-lives">Memory Specifiers: Where Data Lives<a class="headerlink" href="#memory-specifiers-where-data-lives" title="Permanent link">&para;</a></h2>
-<p><code>dma.copy</code> may end with <code>=&gt; local</code>, <code>=&gt; shared</code>, or <code>=&gt; global</code>. These are <strong>memory specifiers</strong> — Croqtile's abstraction over the GPU's physical memory hierarchy. Understanding what they mean, and what hardware they map to, is worth a detour.</p>
-<h3 id="the-abstraction">The Abstraction<a class="headerlink" href="#the-abstraction" title="Permanent link">&para;</a></h3>
-<p>A modern GPU has several levels of storage, each with a different size, speed, and visibility scope. Writing raw CUDA forces you to manage these levels by hand: you <code>cudaMalloc</code> global buffers, declare <code>__shared__</code> arrays with explicit sizes, and hope that the compiler maps your local variables to registers. It is one of the steepest parts of the learning curve.</p>
-<p>Croqtile's memory specifiers are a deliberate simplification. Instead of worrying about CUDA's <code>__shared__</code> declarations, register pressure, or cache line alignment, you just tell <code>dma.copy</code> <em>where</em> to put the data. The compiler handles the rest — allocation sizes, bank-conflict avoidance, register spilling — so you can focus on the data flow.</p>
-<h3 id="the-three-levels">The Three Levels<a class="headerlink" href="#the-three-levels" title="Permanent link">&para;</a></h3>
+<p><em>Use <code>span</code> for the whole shape, <code>span(i)</code> for a single axis.</em></p>
+<h2 id="memory-specifiers-global-shared-and-local">Memory Specifiers: <code>global</code>, <code>shared</code>, and <code>local</code><a class="headerlink" href="#memory-specifiers-global-shared-and-local" title="Permanent link">&para;</a></h2>
+<p>The destination of a movement statement also states where the moved tile should live.</p>
 <ul>
-<li>
-<p><strong><code>global</code></strong> — device-wide memory. This is HBM (High Bandwidth Memory) or GDDR on the physical chip — large (tens of gigabytes) but relatively slow to access. All threads across all thread blocks can see it. Input and output tensors start here. In CUDA terms, this is what you get from <code>cudaMalloc</code>.</p>
-</li>
-<li>
-<p><strong><code>shared</code></strong> — block-scoped on-chip SRAM. Each Streaming Multiprocessor (SM) has a pool of fast, low-latency memory (typically 100–228 KB) that is visible to all threads within the same thread block. In CUDA, this is <code>__shared__</code> memory. Use it when multiple threads need to read the same tile — the standard pattern in matmul, reductions, and stencil operations. We will use <code>shared</code> in the next chapter.</p>
-</li>
-<li>
-<p><strong><code>local</code></strong> — thread-private storage. This maps to registers and per-thread scratch space on the SM — the fastest level, but visible only to the thread that owns it. In CUDA, these are your local variables that the compiler assigns to registers. Good when there is no sharing, or when each thread works on its own independent slice.</p>
-</li>
+<li><code>global</code>: device memory. Large, slow, visible across the device.</li>
+<li><code>shared</code>: block-visible on-chip memory. This is the usual staging area for cooperative tiles.</li>
+<li><code>local</code>: thread-private storage. Good for small private tiles or non-cooperative use.</li>
 </ul>
-<h3 id="mapping-to-gpu-hardware">Mapping to GPU Hardware<a class="headerlink" href="#mapping-to-gpu-hardware" title="Permanent link">&para;</a></h3>
-<p>The figure below shows how these three specifiers correspond to the physical GPU layout. Notice the hierarchy: data moves from global (large, slow) through shared (medium, fast) to local (small, fastest). Croqtile's <code>dma.copy</code> lets you express these movements directly.</p>
+<pre class="highlight"><code class="language-choreo">f0 = dma.copy input =&gt; shared;
+f1 = dma.copy matrix_tile =&gt; local;
+dma.copy out_tile =&gt; output;</code></pre>
+<p>For performance-sensitive kernels, <code>shared</code> is the important level. The compiler's cooperative tiled lowering is aimed at global-to-shared and shared-to-global movement. <code>local</code> copies are still useful, but they are not the main fast path for cooperative block transfers.</p>
 <p><img alt="Memory Specifiers → GPU Hardware" src="../../assets/images/ch02/fig_memory_hierarchy_dark.png#only-dark" />
 <img alt="Memory Specifiers → GPU Hardware" src="../../assets/images/ch02/fig_memory_hierarchy_light.png#only-light" /></p>
-<p><em>Croqtile's <code>global</code>, <code>shared</code>, and <code>local</code> specifiers map directly to GPU hardware levels: HBM/DRAM, per-SM shared memory, and per-thread registers.</em></p>
-<h3 id="choosing-a-specifier">Choosing a Specifier<a class="headerlink" href="#choosing-a-specifier" title="Permanent link">&para;</a></h3>
-<p>The choice does not change the Croqtile function's semantics — only performance. You could replace every <code>=&gt; local</code> with <code>=&gt; shared</code> and the program would still produce the same result, just with different speed characteristics. The rule of thumb:</p>
+<p><em>Croqtile's memory specifiers map directly onto the GPU memory hierarchy.</em></p>
+<h2 id="partial-tiles-guarding-and-zfill">Partial Tiles, Guarding, and <code>.zfill</code><a class="headerlink" href="#partial-tiles-guarding-and-zfill" title="Permanent link">&para;</a></h2>
+<p>Real kernels often end with a partial tile. The important distinction is whether the <strong>source tile shape</strong> and <strong>destination tile shape</strong> are the same.</p>
+<p>For example:</p>
+<pre class="highlight"><code class="language-choreo">dma.copy.swiz&lt;32&gt;.zfill
+  lhs.view(ROWS_M, TILE_K).from(base_m, base_k)
+    =&gt; lhs_load_s;</code></pre>
+<p>Here <code>lhs_load_s</code> might have shape <code>[WARP_M, TILE_K]</code>, while the source view has shape <code>[ROWS_M, TILE_K]</code> and <code>ROWS_M</code> may be smaller than <code>WARP_M</code> on the last tile. That is a real shape mismatch, so <code>.zfill</code> means: copy the valid source rows and write zero into the remaining rows of the destination tile.</p>
+<p>That is the right use for <code>.zfill</code>.</p>
+<p>What happens when the shapes are the same:</p>
+<ul>
+<li>If the source view and destination tile have the same shape, the compiler already guards runtime tails automatically.</li>
+<li>In that case it generates masking so out-of-bounds elements are not read or written.</li>
+<li>This is enough for cases like tiling a <code>[100]</code> tensor into <code>[64]</code> tiles: the last tile simply has 36 valid elements.</li>
+</ul>
+<p>So <code>.zfill</code> is <strong>not</strong> the general mechanism for “any partial tile.” It is specifically for cases where the destination tile is larger than the valid source region and the extra part of the destination must be filled with zeros.</p>
+<p>Why <code>.zfill</code> matters:</p>
+<ul>
+<li>If the consumer reads only the valid region, the compiler's automatic masking is usually enough.</li>
+<li>If the consumer reads the whole destination tile, especially an MMA fragment, the invalid region must hold a known value.</li>
+<li><code>.zfill</code> makes that extra region zero.</li>
+</ul>
+<p>Use <code>.zfill</code> when the valid source region is smaller than the destination tile and the consumer will treat the destination as a full dense tile. This is the common case for GEMM-style pipelines with dynamic row counts or padded edge tiles.</p>
+<p>If you add <code>.zfill</code> when the source and destination shapes are already the same, the compiler can warn that the <code>.zfill</code> is redundant. Conversely, when the shapes differ, the compiler can also warn that <code>.zfill</code> is needed to avoid using undefined values in the uncovered region.</p>
+<h2 id="swizn-shared-memory-layout-for-the-consumer"><code>.swiz&lt;N&gt;</code>: Shared-Memory Layout for the Consumer<a class="headerlink" href="#swizn-shared-memory-layout-for-the-consumer" title="Permanent link">&para;</a></h2>
+<p>Swizzle is mainly about how the tile should live in shared memory so later operations can read it efficiently.</p>
+<p>Typical GEMM staging code looks like this:</p>
+<pre class="highlight"><code class="language-choreo">dma.copy.swiz&lt;128&gt; lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+ma = mma.load.swiz&lt;128&gt; lhs_load_s.chunkat(_, iv_warp);</code></pre>
+<p>The load-side and compute-side swizzles need to agree. If you stage a tile with <code>.swiz&lt;128&gt;</code>, the consumer should usually load it with the matching swizzle.</p>
+<p>This chapter only introduces the idea. The MMA chapters go deeper into which swizzle values pair well with which matrix layouts.</p>
+<h2 id="dma-vs-tma">DMA vs TMA<a class="headerlink" href="#dma-vs-tma" title="Permanent link">&para;</a></h2>
+<p>Both engines move shaped tiles. The difference is how they do it and what constraints they require.</p>
 <table>
 <thead>
 <tr>
-<th>Situation</th>
-<th>Use</th>
-<th>Why</th>
+<th></th>
+<th><code>dma</code></th>
+<th><code>tma</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Each tile is independent, no sharing</td>
-<td><code>local</code></td>
-<td>Fastest, no synchronization needed</td>
+<td>Implementation</td>
+<td>Cooperative software copy</td>
+<td>Hopper Tensor Memory Accelerator</td>
 </tr>
 <tr>
-<td>Multiple threads collaborate on the same tile</td>
+<td>Hardware requirement</td>
+<td>General GPU path</td>
+<td>SM90+</td>
+</tr>
+<tr>
+<td>Good fit</td>
+<td>Dynamic or irregular tiles, portable code</td>
+<td>Fixed-shape high-bandwidth staging</td>
+</tr>
+<tr>
+<td>Common destination</td>
 <td><code>shared</code></td>
-<td>Visible to all threads in the block</td>
+<td><code>shared</code></td>
 </tr>
 <tr>
-<td>Writing results back to the output tensor</td>
-<td><code>global</code></td>
-<td>Output must be device-visible</td>
+<td>Async support</td>
+<td>Yes</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
-<p>For now the examples use <code>local</code> because each tile runs independently. Chapter 3 will introduce <code>shared</code> when multiple threads need to read the same tile for a tiled matrix multiply.</p>
-<h2 id="what-changed-from-chapter-1">What Changed from Chapter 1<a class="headerlink" href="#what-changed-from-chapter-1" title="Permanent link">&para;</a></h2>
-<p>Nothing about the math changed. Every element of <code>lhs</code> is still added to the corresponding element of <code>rhs</code>. What changed is the <strong>granularity</strong> of memory access: instead of 128 individual reads and writes, we issue 8 bulk copies per input tensor, each moving 16 contiguous elements into fast memory. The compute loop then runs entirely on local data.</p>
-<p>The new vocabulary:</p>
+<p>Example TMA use:</p>
+<pre class="highlight"><code class="language-choreo">f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) =&gt; shared;
+wait f;</code></pre>
+<p>The practical rule is simple:</p>
+<ul>
+<li>Use <code>dma</code> when tile sizes are dynamic, irregular, or you want the portable path.</li>
+<li>Use <code>tma</code> on Hopper when the tile shape is fixed and you want hardware-assisted movement.</li>
+</ul>
+<h3 id="the-main-tma-constraint">The main TMA constraint<a class="headerlink" href="#the-main-tma-constraint" title="Permanent link">&para;</a></h3>
+<p>TMA tile shapes must be host-computable. Runtime tile indices are fine:</p>
+<pre class="highlight"><code class="language-choreo">tma.copy lhs.subspan(64, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
+<p>But a kernel-runtime value cannot define the tile shape itself:</p>
+<pre class="highlight"><code class="language-choreo">// Not valid for TMA if TILE_M is only known inside the kernel
+tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
+<p>If the tile size truly depends on kernel-runtime state, use <code>dma.copy</code> instead.</p>
+<h2 id="writing-dma-and-tma-that-lower-well">Writing DMA and TMA That Lower Well<a class="headerlink" href="#writing-dma-and-tma-that-lower-well" title="Permanent link">&para;</a></h2>
+<p>You do not need to know the whole lowering pass to write good code, but a few rules matter.</p>
+<h3 id="for-high-throughput-dma">For high-throughput DMA<a class="headerlink" href="#for-high-throughput-dma" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Prefer <code>global &lt;-&gt; shared</code> movement for cooperative staging.</li>
+<li>Use enough participating threads. A warp-sized or larger cooperative group is the common case.</li>
+<li>Keep source and destination ranks aligned.</li>
+<li>Use ordinary byte-sized or larger element types.</li>
+<li>Reserve <code>local</code> for private tiles, not as the default performance path.</li>
+</ul>
+<p>If these conditions do not hold, the compiler can still generate a correct copy, but it may fall back to a simpler path.</p>
+<h3 id="for-tma">For TMA<a class="headerlink" href="#for-tma" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Use it on SM90+.</li>
+<li>Keep the tile shape fixed from the host's point of view.</li>
+<li>Stage into shared memory.</li>
+<li>Add <code>.zfill</code> for partial tiles that feed full-tile consumers.</li>
+</ul>
+<h2 id="checklist">Checklist<a class="headerlink" href="#checklist" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter, the new pieces of syntax should mean the following:</p>
 <table>
 <thead>
 <tr>
@@ -2983,40 +3367,68 @@ int main() {
 </thead>
 <tbody>
 <tr>
-<td><code>dma.copy src =&gt; local</code></td>
-<td>Bulk-copy <code>src</code> into local (or <code>shared</code> / <code>global</code>) memory</td>
+<td><code>dma.copy src =&gt; shared</code></td>
+<td>Move a tile into shared memory.</td>
 </tr>
 <tr>
-<td><code>tensor.chunkat(i)</code></td>
-<td>View of the <code>i</code>-th equal chunk of <code>tensor</code></td>
+<td><code>tma.copy src =&gt; shared</code></td>
+<td>Use Hopper TMA to move a tile into shared memory.</td>
 </tr>
 <tr>
-<td><code>tensor.chunkat(i, j)</code></td>
-<td>View of chunk at position <code>(i, j)</code> in a 2D tiling</td>
+<td><code>dma.copy.async ...</code></td>
+<td>Start a non-blocking DMA transfer.</td>
 </tr>
 <tr>
-<td><code>future.data.at(...)</code></td>
-<td>Access the copied data through a DMA future</td>
+<td><code>wait f</code></td>
+<td>Wait until future <code>f</code> is ready to consume.</td>
+</tr>
+<tr>
+<td><code>future.data</code></td>
+<td>Access the moved tile.</td>
+</tr>
+<tr>
+<td><code>future.span</code></td>
+<td>Access the moved tile's shape.</td>
+</tr>
+<tr>
+<td><code>dma.transp&lt;...&gt;</code></td>
+<td>Permute dimensions during transfer.</td>
+</tr>
+<tr>
+<td><code>dma.pad&lt;...&gt;</code></td>
+<td>Pad during transfer with an explicit fill value.</td>
+</tr>
+<tr>
+<td><code>.zfill</code></td>
+<td>Zero-fill out-of-bounds positions in partial tiles.</td>
+</tr>
+<tr>
+<td><code>.swiz&lt;N&gt;</code></td>
+<td>Choose a shared-memory swizzle layout.</td>
+</tr>
+<tr>
+<td><code>chunkat(...)</code></td>
+<td>Select one equal tile from a regular tiling.</td>
+</tr>
+<tr>
+<td><code>subspan(...).at(...)</code></td>
+<td>Select a tile by explicit tile extents and tile coordinates.</td>
+</tr>
+<tr>
+<td><code>view(...).from(...)</code></td>
+<td>Select a tile by explicit extents and explicit element offsets.</td>
 </tr>
 <tr>
 <td><code>tile # i</code></td>
-<td>Compose tile index <code>tile</code> with local offset <code>i</code> into a global index (outer # inner)</td>
+<td>Compose tile and in-tile coordinates into a global coordinate.</td>
 </tr>
 <tr>
 <td><code>#tile</code></td>
-<td>Extent (number of tiles) along the <code>tile</code> axis</td>
-</tr>
-<tr>
-<td><code>lhs.span(0)</code></td>
-<td>Size of <code>lhs</code> along its first dimension</td>
-</tr>
-<tr>
-<td><code>local</code> / <code>shared</code> / <code>global</code></td>
-<td>Memory level specifiers for DMA destinations</td>
+<td>Ask for the extent of the <code>tile</code> axis.</td>
 </tr>
 </tbody>
 </table>
-<p>All of these compose naturally with <code>parallel</code> and <code>.at()</code> from Chapter 1. The <a href="../ch03-parallelism/">next chapter</a> goes deeper into <code>parallel</code> — mapping it to CUDA thread blocks, warps, and warpgroups — and uses everything from this chapter to build a tiled matrix multiply.</p>
+<p>The next chapter builds on this by overlapping movement with compute. Once you can think of a kernel as a loop that repeatedly stages tiles and computes on staged tiles, double buffering and pipelining become natural extensions rather than new ideas.</p>
 
 
 

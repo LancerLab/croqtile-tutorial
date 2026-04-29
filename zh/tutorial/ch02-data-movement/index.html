@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#tile" class="md-skip">
           跳转至
         </a>
       
@@ -546,10 +546,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#dma" class="md-nav__link">
     <span class="md-ellipsis">
       
-        分块逐元素加法
+        DMA 语句家族
       
     </span>
   </a>
@@ -557,10 +557,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chunkat" class="md-nav__link">
+  <a href="#shared-memory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        chunkat：将张量切分为分块
+        第一个例子：通过 Shared Memory 做分块加法
       
     </span>
   </a>
@@ -568,88 +568,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dmacopy" class="md-nav__link">
+  <a href="#chunkatsubspan-viewfrom-tile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dma.copy：内存层级间的批量传输
+        chunkat、subspan 与 view().from()：三种选 Tile 的方式
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future 与 .data
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        # 组合运算符
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        # 范围运算符
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#spani" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        span(i)：选取单个维度
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        二维分块加法
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        内存限定符：数据存放在哪里
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="内存限定符：数据存放在哪里">
+    <nav class="md-nav" aria-label="chunkat、subspan 与 view().from()：三种选 Tile 的方式">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#chunkat" class="md-nav__link">
     <span class="md-ellipsis">
       
-        抽象
+        chunkat(...)：等分切块
       
     </span>
   </a>
@@ -657,10 +591,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#subspanat-tile-tile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        三个层级
+        subspan(...).at(...)：在 tile 网格上显式给出 tile 形状
       
     </span>
   </a>
@@ -668,21 +602,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#gpu" class="md-nav__link">
+  <a href="#viewfrom" class="md-nav__link">
     <span class="md-ellipsis">
       
-        映射到 GPU 硬件
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        如何选择限定符
+        view(...).from(...)：显式形状，加上显式元素偏移
       
     </span>
   </a>
@@ -695,10 +618,221 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1" class="md-nav__link">
+  <a href="#futuredata-span" class="md-nav__link">
     <span class="md-ellipsis">
       
-        与第 1 章相比有何变化
+        Future、.data 与 .span
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        同步复制与异步复制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transp-pad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        其他操作：transp 与 pad
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="其他操作：transp 与 pad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dmatransp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.transp&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dmapad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.pad&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        #：组合与范围
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="#：组合与范围">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#outer-inner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        组合：outer # inner
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        范围：#name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#span-spani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        span 与 span(i)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#globalshared-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        内存限定符：global、shared 与 local
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile-zfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        部分 Tile、边界保护与 .zfill
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swizn-shared-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .swiz&lt;N&gt;：为消费者选择 Shared Memory 布局
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dma-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA 与 TMA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DMA 与 TMA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TMA 最重要的约束
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lower-dma-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何写出更容易 Lower 到好路径的 DMA / TMA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何写出更容易 Lower 到好路径的 DMA / TMA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dma_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对高吞吐 DMA 来说
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tma_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对 TMA 来说
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结清单
       
     </span>
   </a>
@@ -2540,10 +2674,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#dma" class="md-nav__link">
     <span class="md-ellipsis">
       
-        分块逐元素加法
+        DMA 语句家族
       
     </span>
   </a>
@@ -2551,10 +2685,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chunkat" class="md-nav__link">
+  <a href="#shared-memory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        chunkat：将张量切分为分块
+        第一个例子：通过 Shared Memory 做分块加法
       
     </span>
   </a>
@@ -2562,88 +2696,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dmacopy" class="md-nav__link">
+  <a href="#chunkatsubspan-viewfrom-tile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dma.copy：内存层级间的批量传输
+        chunkat、subspan 与 view().from()：三种选 Tile 的方式
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future 与 .data
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        # 组合运算符
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        # 范围运算符
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#spani" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        span(i)：选取单个维度
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        二维分块加法
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        内存限定符：数据存放在哪里
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="内存限定符：数据存放在哪里">
+    <nav class="md-nav" aria-label="chunkat、subspan 与 view().from()：三种选 Tile 的方式">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#chunkat" class="md-nav__link">
     <span class="md-ellipsis">
       
-        抽象
+        chunkat(...)：等分切块
       
     </span>
   </a>
@@ -2651,10 +2719,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#subspanat-tile-tile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        三个层级
+        subspan(...).at(...)：在 tile 网格上显式给出 tile 形状
       
     </span>
   </a>
@@ -2662,21 +2730,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#gpu" class="md-nav__link">
+  <a href="#viewfrom" class="md-nav__link">
     <span class="md-ellipsis">
       
-        映射到 GPU 硬件
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        如何选择限定符
+        view(...).from(...)：显式形状，加上显式元素偏移
       
     </span>
   </a>
@@ -2689,10 +2746,221 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1" class="md-nav__link">
+  <a href="#futuredata-span" class="md-nav__link">
     <span class="md-ellipsis">
       
-        与第 1 章相比有何变化
+        Future、.data 与 .span
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        同步复制与异步复制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transp-pad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        其他操作：transp 与 pad
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="其他操作：transp 与 pad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dmatransp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.transp&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dmapad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma.pad&lt;...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        #：组合与范围
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="#：组合与范围">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#outer-inner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        组合：outer # inner
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        范围：#name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#span-spani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        span 与 span(i)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#globalshared-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        内存限定符：global、shared 与 local
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile-zfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        部分 Tile、边界保护与 .zfill
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swizn-shared-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .swiz&lt;N&gt;：为消费者选择 Shared Memory 布局
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dma-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA 与 TMA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DMA 与 TMA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TMA 最重要的约束
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lower-dma-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        如何写出更容易 Lower 到好路径的 DMA / TMA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="如何写出更容易 Lower 到好路径的 DMA / TMA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dma_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对高吞吐 DMA 来说
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tma_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对 TMA 来说
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结清单
       
     </span>
   </a>
@@ -2767,14 +3035,19 @@
   
 
 
-<h1 id="_1">数据搬运：从逐元素到数据块<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>第 1 章以单个元素的粒度表达计算：选取位置 <code>(i, j)</code>，读取两个输入，相加，写入结果。这是思考 SIMD 风格编程的自然方式——也正是大多数 CUDA 和 GPU 教程所教授的思维模型。你编写一个逐元素内核，每个元素启动一个线程，每个线程完成自己的微小任务。</p>
-<p>问题在于，硬件实际上并不是这样工作的。GPU 不会一次从内存中取出一个 32 位整数。它一次取出连续的数据块——128 字节、256 字节，有时更多——在单次事务中完成，并在任何算术运算触及之前，将这些数据块通过多级缓存和片上缓冲的层次结构进行流转。逐元素编程模型与逐块硬件现实之间存在根本性的不匹配。弥合这一鸿沟——以数据块为单位思考、管理内存层级、建立传输通路——是 GPU 编程对新手而言困难的最大原因。</p>
-<p>鳄霸正是围绕这一洞察而设计的。它不强迫你逐元素思考然后寄希望于编译器或硬件自行推算出块结构，而是直接提供<strong>数据块级原语</strong>：用 <code>chunkat</code> 命名张量的一个矩形分块，用 <code>dma.copy</code> 在内存层级之间搬运它，然后在原地对其进行操作。编程模型与硬件的实际行为相匹配。</p>
-<p>本章将第 1 章的逐元素加法改写为使用这些块级原语。数学完全相同——<code>lhs</code> 的每个元素仍然与 <code>rhs</code> 对应元素相加——但代码现在显式描述了哪些数据块搬运到哪里，计算作用于整个分块而非单个标量。</p>
+<h1 id="tile">数据搬运：Tile 搬运引擎<a class="headerlink" href="#tile" title="Permanent link">&para;</a></h1>
+<p>第 1 章使用的是标量索引：选一个位置，读取输入，计算，再写回结果。这种方式很适合解释正确性，但并不是硬件真正想要的数据访问方式。GPU 获取和暂存的是连续的数据块，而不是彼此孤立的单个元素。GPU 编程真正困难的部分，通常并不是算术本身，而是如何组织这些块级传输，让计算单元在正确的时间、从正确的内存层级、以正确的形状拿到数据。</p>
+<p>Croqtile 把这件事显式化了。它不把数据搬运当作索引背后的隐式副作用，而是提供一组明确的 tile 搬运语句：</p>
+<ul>
+<li><code>dma.copy</code> 按原样搬运一个 tile。</li>
+<li><code>dma.transp&lt;...&gt;</code> 在搬运过程中做维度置换。</li>
+<li><code>dma.pad&lt;...&gt;</code> 在搬运过程中扩展 tile 并填充边界。</li>
+<li><code>tma.copy</code> 在 tile 形状满足条件时，使用 Hopper 的 Tensor Memory Accelerator 完成同类搬运。</li>
+</ul>
+<p>本章介绍这个模型，说明核心语法，并给出用户真正需要知道的规则，帮助你写出既正确又更容易 lower 到高性能路径的 DMA / TMA 代码。</p>
 <p><img alt="逐元素 vs 数据块编程模型对比" src="../../../assets/images/ch02/fig1_element_vs_block_dark.png#only-dark" />
 <img alt="逐元素 vs 数据块编程模型对比" src="../../../assets/images/ch02/fig1_element_vs_block_light.png#only-light" /></p>
-<p><em>左：逐元素视角——每个线程独立取出一个元素。右：数据块视角——一次 DMA 搬运整个分块。</em></p>
+<p><em>左：逐元素思维。右：按 tile 搬运到快速内存。</em></p>
 <details>
 <summary>动画版</summary>
 
@@ -2789,42 +3062,72 @@
 
 </details>
 
-<h2 id="_2">分块逐元素加法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>以下是同一个加法，改写为以 16 个元素为一个分块进行数据搬运。输入是长度为 128 的一维向量，这样分块算术保持简单：</p>
-<pre class="highlight"><code class="language-choreo">__co__ s32 [128] tiled_add(s32 [128] lhs, s32 [128] rhs) {
+<h2 id="dma">DMA 语句家族<a class="headerlink" href="#dma" title="Permanent link">&para;</a></h2>
+<p>Croqtile 的 tile 搬运操作都遵循同一个基本形式：</p>
+<pre class="highlight"><code class="language-choreo">future = engine.operation.modifiers source =&gt; destination;</code></pre>
+<p>关键组成部分如下：</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>future</code></td>
+<td>可选的传输结果句柄。用 <code>future.data</code> 访问搬运后的 tile，用 <code>future.span</code> 查询它的形状。</td>
+</tr>
+<tr>
+<td><code>engine</code></td>
+<td><code>dma</code> 表示软件协作复制，<code>tma</code> 表示 Hopper TMA 复制。</td>
+</tr>
+<tr>
+<td><code>operation</code></td>
+<td><code>copy</code>、<code>transp&lt;...&gt;</code> 或 <code>pad&lt;...&gt;</code>。</td>
+</tr>
+<tr>
+<td><code>modifiers</code></td>
+<td>可选修饰符，例如 <code>.async</code>、<code>.zfill</code> 或 <code>.swiz&lt;N&gt;</code>。</td>
+</tr>
+<tr>
+<td><code>source =&gt; destination</code></td>
+<td>源视图，以及目标内存或目标视图。</td>
+</tr>
+</tbody>
+</table>
+<p>最小示例：</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input.chunkat(block) =&gt; shared;
+g = dma.transp&lt;1, 0&gt; matrix =&gt; local;
+h = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; shared;</code></pre>
+<p>与第 1 章相比，最关键的变化是：这些语句搬运的是有形状的区域，而不是单个元素。</p>
+<h2 id="shared-memory">第一个例子：通过 Shared Memory 做分块加法<a class="headerlink" href="#shared-memory" title="Permanent link">&para;</a></h2>
+<p>下面把第 1 章的加法改写成通过 shared memory 暂存 tile：</p>
+<pre class="highlight"><code class="language-choreo">__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
 
-  parallel tile by 8 {
-    lhs_load = dma.copy lhs.chunkat(tile) =&gt; local;
-    rhs_load = dma.copy rhs.chunkat(tile) =&gt; local;
+  parallel {tr, tc} by [4, 8] {
+    lhs_load = dma.copy lhs.chunkat(tr, tc) =&gt; shared;
+    rhs_load = dma.copy rhs.chunkat(tr, tc) =&gt; shared;
 
-    foreach i in [128 / #tile]
-      output.at(tile # i) = lhs_load.data.at(i) + rhs_load.data.at(i);
+    foreach {i, j} in lhs_load.span
+      output.at(tr # i, tc # j) =
+          lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
   }
 
   return output;
-}
-
-int main() {
-  auto lhs = choreo::make_spandata&lt;choreo::s32&gt;(128);
-  auto rhs = choreo::make_spandata&lt;choreo::s32&gt;(128);
-  lhs.fill_random(-10, 10);
-  rhs.fill_random(-10, 10);
-
-  auto res = tiled_add(lhs.view(), rhs.view());
-
-  for (int i = 0; i &lt; 128; ++i)
-    choreo::choreo_assert(lhs[i] + rhs[i] == res[i], "values are not equal.");
-
-  std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
 }</code></pre>
-<p>保存为 <code>tiled_add.co</code>，编译并运行：</p>
-<pre class="highlight"><code class="language-bash">croqtile tiled_add.co -o tiled_add
-./tiled_add</code></pre>
-<p>同样输出 <code>Test Passed</code>。结果与第 1 章的版本完全相同——数学没有变化，只是数据在内存中搬运的方式变了。</p>
+<p>算术本身仍然是逐元素加法。变化的是数据路径：</p>
+<ol>
+<li><code>chunkat(tr, tc)</code> 从每个输入里选出一个逻辑 tile。</li>
+<li><code>dma.copy ... =&gt; shared</code> 把这个 tile 暂存到线程块可见的快速内存里。</li>
+<li>内层循环读取的是 <code>lhs_load.data</code> 和 <code>rhs_load.data</code>，而不是全局内存。</li>
+<li><code>tr # i</code> 和 <code>tc # j</code> 把 tile 内坐标映射回全局输出坐标。</li>
+</ol>
+<p>这就是 Croqtile 的核心模式：选出一个 tile，搬运它，在搬运后的 tile 上计算。</p>
 <p><img alt="分块加法：加载、计算、存储流程" src="../../../assets/images/ch02/fig2_tiled_add_dark.png#only-dark" />
 <img alt="分块加法：加载、计算、存储流程" src="../../../assets/images/ch02/fig2_tiled_add_light.png#only-light" /></p>
-<p><em>tile = 2 的分块加法：DMA 将两个操作数的分块加载到本地内存，逐元素加法在分块上运行，结果写回输出向量。</em></p>
+<p><em>先加载一个 tile，在暂存后的数据上计算，再用全局坐标写回结果。</em></p>
 <details>
 <summary>动画版</summary>
 
@@ -2839,17 +3142,15 @@ int main() {
 
 </details>
 
-<p>以下是新引入的内容。</p>
-<h2 id="chunkat"><code>chunkat</code>：将张量切分为分块<a class="headerlink" href="#chunkat" title="Permanent link">&para;</a></h2>
-<pre class="highlight"><code class="language-choreo">lhs.chunkat(tile)</code></pre>
-<p><code>chunkat</code> 沿每个维度将张量等分为不重叠的矩形块。这里 <code>lhs</code> 的形状为 <code>[128]</code>，<code>parallel</code> 声明了 8 个分块，因此每个块宽 <code>128 / 8 = 16</code> 个元素。参数 <code>tile</code> 是块索引——你想要 8 块中的第几块。当 <code>tile</code> 为 0 时，得到元素 0 到 15；当 <code>tile</code> 为 3 时，得到元素 48 到 63；以此类推。</p>
-<p>对于二维张量，<code>chunkat</code> 每个维度接受一个索引：</p>
-<pre class="highlight"><code class="language-choreo">matrix.chunkat(row_tile, col_tile)</code></pre>
-<p>各维度独立划分。如果 <code>matrix</code> 形状为 <code>[64, 128]</code>，并且你声明 <code>parallel {r, c} by [4, 8]</code>，那么 <code>matrix.chunkat(r, c)</code> 给你一个在分块位置 <code>(r, c)</code> 的 <code>[16, 16]</code> 子块。鳄霸根据张量形状和各轴的分块数自动计算块大小。</p>
-<p>关键要记住的是：<code>chunkat</code> 不复制数据。它是一个<strong>视图</strong>——描述你所指的原始张量中哪个矩形区域。实际的数据搬运发生在 <code>dma.copy</code> 中。</p>
+<h2 id="chunkatsubspan-viewfrom-tile"><code>chunkat</code>、<code>subspan</code> 与 <code>view().from()</code>：三种选 Tile 的方式<a class="headerlink" href="#chunkatsubspan-viewfrom-tile" title="Permanent link">&para;</a></h2>
+<p>Croqtile 中常见的 tile 选择方式有三种。</p>
+<h3 id="chunkat"><code>chunkat(...)</code>：等分切块<a class="headerlink" href="#chunkat" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">lhs.chunkat(tr, tc)</code></pre>
+<p><code>chunkat</code> 会根据周围的并行结构，把每个维度均匀切成若干块。如果 <code>lhs</code> 的形状是 <code>[64, 128]</code>，kernel 使用 <code>parallel {tr, tc} by [4, 8]</code>，那么 <code>lhs.chunkat(tr, tc)</code> 选中的就是一个 <code>[16, 16]</code> tile。</p>
+<p>当你的 tiling 正好由并行划分自然决定时，<code>chunkat</code> 是最合适的工具。</p>
 <p><img alt="chunkat 二维分块选择语义" src="../../../assets/images/ch02/fig3_chunkat_dark.png#only-dark" />
 <img alt="chunkat 二维分块选择语义" src="../../../assets/images/ch02/fig3_chunkat_light.png#only-light" /></p>
-<p><em>一个 [64, 128] 张量被分为 4 × 8 个分块。<code>chunkat(1, 3)</code> 选中行分块 1、列分块 3 处的 [16, 16] 子张量。</em></p>
+<p><em><code>chunkat(1, 3)</code> 从规则 tiling 网格中选出一个等分 tile。</em></p>
 <details>
 <summary>动画版</summary>
 
@@ -2864,116 +3165,199 @@ int main() {
 
 </details>
 
-<h2 id="dmacopy"><code>dma.copy</code>：内存层级间的批量传输<a class="headerlink" href="#dmacopy" title="Permanent link">&para;</a></h2>
-<pre class="highlight"><code class="language-choreo">lhs_load = dma.copy lhs.chunkat(tile) =&gt; local;</code></pre>
-<p>这会将 <code>chunkat(tile)</code> 选中的分块从 <code>lhs</code> 所在的位置（默认为全局设备内存）复制到 <code>local</code> 内存——靠近计算单元的快速片上存储。结果 <code>lhs_load</code> 是一个 <strong>DMA future</strong>：代表正在进行（或已完成）传输的句柄。</p>
-<p><code>=&gt; local</code> 部分是<strong>目标内存限定符</strong>。我们在介绍完其余语法后，将在下文详细讨论内存限定符。</p>
-<p><img alt="dma.copy——批量内存传输" src="../../../assets/images/ch02/fig_dma_copy_dark.png#only-dark" />
-<img alt="dma.copy——批量内存传输" src="../../../assets/images/ch02/fig_dma_copy_light.png#only-light" /></p>
-<p><em><code>dma.copy</code> 将一个分块从全局内存传输到本地内存，并返回一个 DMA future 句柄。</em></p>
-<h2 id="future-data">Future 与 <code>.data</code><a class="headerlink" href="#future-data" title="Permanent link">&para;</a></h2>
-<p><code>dma.copy</code> 之后，变量 <code>lhs_load</code> 不是张量——而是追踪传输过程的 <strong>future</strong>。要获取实际数据，使用 <code>.data</code>：</p>
-<pre class="highlight"><code class="language-choreo">lhs_load.data.at(i)</code></pre>
-<p><code>lhs_load.data</code> 是本地内存中一个带形状的张量，其形状与被复制的分块相同。你用 <code>.at(i)</code> 索引它，和第 1 章中索引 <code>lhs</code> 的方式完全一样——只是现在你从快速内存而非全局内存读取。</p>
-<p>为什么要这层间接？因为在后续章节中，你将发出<strong>异步</strong>执行的复制——硬件在你的程序执行其他工作的同时开始搬运数据。future 让你可以引用"传输完成时将在那里的数据"而无需立即阻塞。目前，复制是同步的，<code>.data</code> 在 <code>dma.copy</code> 那行之后立即有效，但模式是相同的。</p>
+<h3 id="subspanat-tile-tile"><code>subspan(...).at(...)</code>：在 tile 网格上显式给出 tile 形状<a class="headerlink" href="#subspanat-tile-tile" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">lhs.subspan(64, 64).at(block_m, iv_k)</code></pre>
+<p><code>subspan</code> 指定 tile 的形状，<code>.at(...)</code> 指定你要的是哪个 tile 实例。当 tile 形状本身是算法显式选出来的，例如 GEMM 中的 <code>[64, 64]</code> tile，而不是想从 <code>parallel by ...</code> 中隐式推导时，它更合适。</p>
+<h3 id="viewfrom"><code>view(...).from(...)</code>：显式形状，加上显式元素偏移<a class="headerlink" href="#viewfrom" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)</code></pre>
+<p><code>view(...).from(...)</code> 是本章里最通用的选择形式。<code>view(...)</code> 表示你要一个怎样形状的区域，<code>.from(...)</code> 给出这个区域在元素坐标空间中的起点。</p>
+<p>当 tile 起点天然就是元素偏移，而不是 tile 索引，或者这个区域本来就不适合描述成均匀分块时，它就是正确工具。对于动态、非规则的访问模式，<code>view(...).from(...)</code> 往往比 <code>chunkat(...)</code> 更自然，甚至是唯一合理的写法。</p>
+<p>可以这样记这三种形式：</p>
+<ul>
+<li>当周围并行结构已经定义了规则等分 tiling 时，用 <code>chunkat(...)</code>。</li>
+<li>当你想显式指定 tile 形状和 tile 坐标时，用 <code>subspan(...).at(...)</code>。</li>
+<li>当你想显式指定 tile 形状和元素级起始偏移时，用 <code>view(...).from(...)</code>。</li>
+</ul>
+<h2 id="futuredata-span">Future、<code>.data</code> 与 <code>.span</code><a class="headerlink" href="#futuredata-span" title="Permanent link">&para;</a></h2>
+<p>DMA 或 TMA 语句的结果是一个 future 风格的句柄：</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;</code></pre>
+<p>这个句柄提供两个重要能力：</p>
+<ul>
+<li><code>f.data</code>：搬运后的 tile，本质上是一个带 shape 的张量视图。</li>
+<li><code>f.span</code>：这个 tile 的形状。</li>
+</ul>
+<p>示例：</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;
+foreach idx in [f.span]
+  output.at(idx) = f.data.at(idx);</code></pre>
+<p>即便是同步复制，只要你希望在后续代码中继续传递这个 tile，给它起名字也是值得的。</p>
 <p><img alt="Future 与 .data" src="../../../assets/images/ch02/fig_future_data_dark.png#only-dark" />
 <img alt="Future 与 .data" src="../../../assets/images/ch02/fig_future_data_light.png#only-light" /></p>
-<p><em>DMA future 追踪传输过程。通过 <code>.data</code> 访问已复制的数据，它给你一个位于本地内存中的带形状张量。</em></p>
-<h2 id="_3"><code>#</code> 组合运算符<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>观察输出的索引方式：</p>
-<pre class="highlight"><code class="language-choreo">output.at(tile # i)</code></pre>
-<p><code>#</code> 运算符将<strong>分块索引</strong> <code>tile</code> 与<strong>局部偏移</strong> <code>i</code> 组合，生成 <code>output</code> 中的<strong>全局索引</strong>。规则是<strong>外层 # 内层</strong>：高层索引在左，分块内的元素偏移在右。由于 <code>tile</code> 选择的是 16 个元素中的哪一块，<code>i</code> 在该块内从 0 到 15，因此 <code>tile # i</code> 给出在完整 128 元素向量中的位置：具体为 <code>tile * 16 + i</code>。</p>
-<p>你需要 <code>#</code> 是因为 <code>lhs_load.data.at(i)</code> 使用的是<strong>局部</strong>索引（分块内的位置），而 <code>output.at(...)</code> 使用的是<strong>全局</strong>索引（完整输出张量中的位置）。组合运算符桥接了两个坐标系。将 <code>tile # i</code> 读作"分块 <code>tile</code> 中的第 <code>i</code> 个元素"。</p>
-<p>这里 <code>#</code> 运算符出现在一个维度上。在第 3 章中，当用并行索引 <code>p</code> 和 <code>q</code> 对二维矩阵分块时，模式是 <code>output.at(p#m, q#n)</code>——相同的思路，只是更多轴。</p>
+<p><em>传输结果是一个句柄。通过 <code>.data</code> 读取搬运后的 tile，通过 <code>.span</code> 读取它的形状。</em></p>
+<h2 id="_1">同步复制与异步复制<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>默认情况下，复制是同步的：</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;
+dma.copy f.data =&gt; output;</code></pre>
+<p>如果你希望传输在后台进行，可以加上 <code>.async</code>：</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy.async input =&gt; shared;
+wait f;
+dma.copy f.data =&gt; output;</code></pre>
+<p>TMA 也一样：</p>
+<pre class="highlight"><code class="language-choreo">f = tma.copy.async input =&gt; shared;
+wait f;
+tma.copy f.data =&gt; output;</code></pre>
+<p>规则很简单：如果你要读取异步传输得到的 <code>f.data</code>，就必须先 <code>wait</code>。</p>
+<p>后面的章节会利用异步复制去重叠加载与计算。本章只需要把契约记住：<code>.async</code> 会创建一个进行中的传输，<code>wait</code> 让它变成可安全消费的数据。</p>
+<h2 id="transp-pad">其他操作：<code>transp</code> 与 <code>pad</code><a class="headerlink" href="#transp-pad" title="Permanent link">&para;</a></h2>
+<p><code>copy</code> 只是这个家族里最简单的成员。</p>
+<h3 id="dmatransp"><code>dma.transp&lt;...&gt;</code><a class="headerlink" href="#dmatransp" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">fa = dma.transp&lt;1, 0, 2&gt; a =&gt; local;
+dma.copy fa.data =&gt; o;</code></pre>
+<p>它在搬运过程中就完成维度置换。不是先复制，再转置，而是直接得到转置布局的数据。</p>
+<h3 id="dmapad"><code>dma.pad&lt;...&gt;</code><a class="headerlink" href="#dmapad" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">f = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, V&gt;.async input =&gt; shared;
+wait f;
+dma.copy f.data =&gt; output;</code></pre>
+<p><code>pad</code> 会生成一个更大的目标 tile。模板参数描述低端 padding、高端 padding、内部步长式 padding，以及填充值。需要显式边界值时，用 <code>pad</code>；它不是单纯的越界保护。</p>
+<h2 id="_2"><code>#</code>：组合与范围<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Croqtile 里 <code>#</code> 有两种相关但不同的用法。</p>
+<h3 id="outer-inner">组合：<code>outer # inner</code><a class="headerlink" href="#outer-inner" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">output.at(tr # i, tc # j)</code></pre>
+<p>它把一个 tile 坐标与 tile 内坐标组合成完整张量中的坐标。</p>
+<p>可以把 <code>tr # i</code> 读成“第 <code>tr</code> 个 tile 里的第 <code>i</code> 行”。</p>
 <p><img alt="# 组合运算符" src="../../../assets/images/ch02/fig_compose_dark.png#only-dark" />
 <img alt="# 组合运算符" src="../../../assets/images/ch02/fig_compose_light.png#only-light" /></p>
-<p><em><code>tile # i</code> 将分块索引 2 与局部偏移 3 组合，生成全局索引 35。规则始终是外层 # 内层。</em></p>
-<h2 id="_4"><code>#</code> 范围运算符<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>在内层循环中：</p>
+<p><em>把 tile 索引与 tile 内偏移组合成全局坐标。</em></p>
+<h3 id="name">范围：<code>#name</code><a class="headerlink" href="#name" title="Permanent link">&para;</a></h3>
 <pre class="highlight"><code class="language-choreo">foreach i in [128 / #tile]</code></pre>
-<p><code>#tile</code> 表示"tile 轴的<strong>范围</strong>"——该维度有多少个分块。这里 <code>#tile</code> 是 8（因为 <code>parallel tile by 8</code> 声明了 8 个分块），所以 <code>128 / #tile</code> 是 16——每个分块中的元素数。这就是内层循环的迭代次数：访问一个分块内的每个元素位置。</p>
-<p><code>#</code> 符号在鳄霸中有双重用途：在表达式中作为名称前缀（<code>#tile</code>）表示该索引的<strong>范围</strong>；在两个名称之间（<code>tile # i</code>）表示<strong>组合</strong>。上下文可以区分——作为范围的 <code>#</code> 总是出现为前缀，作为组合的 <code>#</code> 总是出现为两个操作数之间的中缀运算符。</p>
+<p>这里 <code>#tile</code> 表示 <code>tile</code> 这个轴的范围，也就是该维度上有多少个 tile。如果 <code>parallel tile by 8</code>，那么 <code>#tile</code> 就是 <code>8</code>。</p>
 <p><img alt="# 范围运算符" src="../../../assets/images/ch02/fig_extent_dark.png#only-dark" />
 <img alt="# 范围运算符" src="../../../assets/images/ch02/fig_extent_light.png#only-light" /></p>
-<p><em>前缀 <code>#tile</code> 给出范围（计数 = 8）。中缀 <code>tile # i</code> 组合索引。上下文消除歧义。</em></p>
-<h2 id="spani"><code>span(i)</code>：选取单个维度<a class="headerlink" href="#spani" title="Permanent link">&para;</a></h2>
-<p>第 1 章用 <code>lhs.span</code> 复制输入的<em>完整</em>形状。有时你只需要其中一个维度。<code>lhs.span(0)</code> 给出第一个轴的大小，<code>rhs.span(1)</code> 给出第二个轴的大小，以此类推。当你的输出与输入具有不同的秩时这很重要——例如，矩阵乘法中输出形状 <code>[M, N]</code> 来自 <code>lhs.span(0)</code> 和 <code>rhs.span(1)</code>：</p>
+<p><em>前缀 <code>#</code> 表示查询范围，中缀 <code>#</code> 表示组合坐标。</em></p>
+<h2 id="span-spani"><code>span</code> 与 <code>span(i)</code><a class="headerlink" href="#span-spani" title="Permanent link">&para;</a></h2>
+<p><code>tensor.span</code> 给出整个张量的完整形状，<code>tensor.span(i)</code> 给出单独某个维度。</p>
 <pre class="highlight"><code class="language-choreo">s32 [lhs.span(0), rhs.span(1)] output;</code></pre>
-<p>在这个一维示例中还不需要 <code>span(i)</code>，但当你开始对二维张量分块时它就变得重要了。</p>
+<p>这在数据搬运代码里非常常见，因为输出形状往往由不同输入组合而来，而搬运出的 tile 也经常需要保留或重新计算 shape 信息。</p>
 <p><img alt="span(i)——选取单个维度" src="../../../assets/images/ch02/fig_span_dark.png#only-dark" />
 <img alt="span(i)——选取单个维度" src="../../../assets/images/ch02/fig_span_light.png#only-light" /></p>
-<p><em><code>lhs.span</code> 复制完整形状。<code>lhs.span(0)</code> 只选取第一个维度，<code>lhs.span(1)</code> 选取第二个。</em></p>
-<h2 id="_5">二维分块加法<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>同样的模式适用于矩阵。以下是一个 <code>[64, 128]</code> 的加法，分为 <code>[4, 8]</code> 块，每块大小 <code>[16, 16]</code>：</p>
-<pre class="highlight"><code class="language-choreo">__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
-  s32 [lhs.span] output;
-
-  parallel {tr, tc} by [4, 8] {
-    lhs_load = dma.copy lhs.chunkat(tr, tc) =&gt; local;
-    rhs_load = dma.copy rhs.chunkat(tr, tc) =&gt; local;
-
-    foreach {i, j} in [64 / #tr, 128 / #tc]
-      output.at(tr # i, tc # j) = lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
-  }
-
-  return output;
-}</code></pre>
-<p>每个构造都自然地推广到更高维度：<code>chunkat(tr, tc)</code> 接受两个分块索引，<code>foreach {i, j}</code> 引入两个内层索引，<code>tr # i</code> 和 <code>tc # j</code> 沿各轴组合（外层 # 内层），而 <code>#tr</code> / <code>#tc</code> 给出分块计数（分别为 4 和 8），因此内层循环边界计算为 <code>16</code> 和 <code>16</code>。</p>
-<p>宿主代码与之前的模式相同——<code>make_spandata&lt;choreo::s32&gt;(64, 128)</code>、<code>.view()</code>、用嵌套循环验证。</p>
-<h2 id="_6">内存限定符：数据存放在哪里<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<p>每个 <code>dma.copy</code> 以 <code>=&gt; local</code>、<code>=&gt; shared</code> 或 <code>=&gt; global</code> 结尾。这些是<strong>内存限定符</strong>——鳄霸对 GPU 物理内存层次的抽象。理解它们的含义以及对应的硬件，值得作一番说明。</p>
-<h3 id="_7">抽象<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
-<p>现代 GPU 拥有多个存储层级，每个层级在大小、速度和可见范围上各不相同。编写原生 CUDA 迫使你手动管理这些层级：用 <code>cudaMalloc</code> 分配全局缓冲区，用显式大小声明 <code>__shared__</code> 数组，并寄希望于编译器将局部变量映射到寄存器。这是学习曲线中最陡峭的部分之一。</p>
-<p>鳄霸的内存限定符是一种有意的简化。你无需担心 CUDA 的 <code>__shared__</code> 声明、寄存器压力或缓存行对齐，只需告诉 <code>dma.copy</code> <em>将数据放在哪里</em>。编译器处理其余一切——分配大小、bank conflict 避免、寄存器溢出——让你专注于数据流。</p>
-<h3 id="_8">三个层级<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<p><em><code>span</code> 表示完整形状，<code>span(i)</code> 表示单独一个轴。</em></p>
+<h2 id="globalshared-local">内存限定符：<code>global</code>、<code>shared</code> 与 <code>local</code><a class="headerlink" href="#globalshared-local" title="Permanent link">&para;</a></h2>
+<p>搬运语句的目标位置，也决定了这个 tile 最终放在哪一层内存中。</p>
 <ul>
-<li>
-<p><strong><code>global</code></strong> ——全设备内存。在物理芯片上这是 HBM（高带宽内存）或 GDDR——容量大（数十 GB）但访问相对较慢。所有线程块的所有线程都能看到它。输入和输出张量最初位于此处。在 CUDA 中，对应 <code>cudaMalloc</code> 分配的内存。</p>
-</li>
-<li>
-<p><strong><code>shared</code></strong> ——线程块范围的片上 SRAM。每个流式多处理器（SM）有一块快速、低延迟的内存池（通常 100–228 KB），同一线程块内的所有线程可见。在 CUDA 中，对应 <code>__shared__</code> 内存。当多个线程需要读取同一分块时使用——矩阵乘法、规约和模板计算中的标准模式。我们将在下一章使用 <code>shared</code>。</p>
-</li>
-<li>
-<p><strong><code>local</code></strong> ——线程私有存储。映射到 SM 上的寄存器和每线程暂存空间——最快的层级，但仅对拥有它的线程可见。在 CUDA 中，这是编译器分配到寄存器的局部变量。适用于没有共享需求的情况，或每个线程处理自己独立切片的场景。</p>
-</li>
+<li><code>global</code>：设备内存。大、慢，但整个设备都可见。</li>
+<li><code>shared</code>：线程块可见的片上内存。协作式 tile staging 的典型落点。</li>
+<li><code>local</code>：线程私有存储。适合小型私有 tile 或非协作式使用。</li>
 </ul>
-<h3 id="gpu">映射到 GPU 硬件<a class="headerlink" href="#gpu" title="Permanent link">&para;</a></h3>
-<p>下图展示了这三个限定符如何对应物理 GPU 布局。注意其层次结构：数据从 global（大、慢）经 shared（中、快）到 local（小、最快）。鳄霸的 <code>dma.copy</code> 让你直接表达这些搬运。</p>
+<pre class="highlight"><code class="language-choreo">f0 = dma.copy input =&gt; shared;
+f1 = dma.copy matrix_tile =&gt; local;
+dma.copy out_tile =&gt; output;</code></pre>
+<p>对于性能敏感的 kernel，<code>shared</code> 是最关键的一层。编译器的协作式 tiled lowering 主要针对 global-to-shared 与 shared-to-global 搬运。<code>local</code> 复制仍然有用，但它不是协作式块搬运的主要高性能路径。</p>
 <p><img alt="内存限定符 → GPU 硬件" src="../../../assets/images/ch02/fig_memory_hierarchy_dark.png#only-dark" />
 <img alt="内存限定符 → GPU 硬件" src="../../../assets/images/ch02/fig_memory_hierarchy_light.png#only-light" /></p>
-<p><em>鳄霸的 <code>global</code>、<code>shared</code> 和 <code>local</code> 限定符直接映射到 GPU 硬件层级：HBM/DRAM、每 SM 共享内存和每线程寄存器。</em></p>
-<h3 id="_9">如何选择限定符<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
-<p>选择不会改变鳄霸函数的语义——只影响性能。你可以将每个 <code>=&gt; local</code> 替换为 <code>=&gt; shared</code>，程序仍然会产生相同的结果，只是速度特征不同。经验法则：</p>
+<p><em>Croqtile 的内存限定符直接映射到 GPU 的内存层级。</em></p>
+<h2 id="tile-zfill">部分 Tile、边界保护与 <code>.zfill</code><a class="headerlink" href="#tile-zfill" title="Permanent link">&para;</a></h2>
+<p>真实 kernel 经常会遇到尾块。这里最重要的区别不是“最后一个 tile 是否不完整”，而是<strong>源 tile 的形状</strong>与<strong>目标 tile 的形状</strong>是否相同。</p>
+<p>例如：</p>
+<pre class="highlight"><code class="language-choreo">dma.copy.swiz&lt;32&gt;.zfill
+  lhs.view(ROWS_M, TILE_K).from(base_m, base_k)
+    =&gt; lhs_load_s;</code></pre>
+<p>这里 <code>lhs_load_s</code> 的形状可能是 <code>[WARP_M, TILE_K]</code>，而源视图的形状是 <code>[ROWS_M, TILE_K]</code>，并且在最后一个 tile 上 <code>ROWS_M</code> 可能小于 <code>WARP_M</code>。这时就存在真正的形状不匹配，所以 <code>.zfill</code> 的含义是：把有效的源行复制进去，再把目标 tile 剩余的那些行写成 0。</p>
+<p>这才是 <code>.zfill</code> 正确的使用方式。</p>
+<p>如果形状本来就相同，会发生什么：</p>
+<ul>
+<li>如果源视图和目标 tile 形状相同，编译器会自动为运行时尾块生成边界保护。</li>
+<li>这种情况下它会生成掩码，避免读写越界元素。</li>
+<li>对于把一个 <code>[100]</code> 张量切成若干个 <code>[64]</code> tile 这样的例子，这已经足够了：最后一个 tile 自然只有 36 个有效元素。</li>
+</ul>
+<p>因此，<code>.zfill</code> <strong>不是</strong>“任何部分 tile 都要用”的通用机制。它只适用于这样一种情况：目标 tile 比有效源区域更大，而且目标中多出来的那部分必须被明确写成 0。</p>
+<p>为什么 <code>.zfill</code> 重要：</p>
+<ul>
+<li>如果消费者只读取有效区域，编译器自动生成的掩码通常已经足够。</li>
+<li>如果消费者会读取整个目标 tile，尤其是 MMA fragment，那么无效区域必须具有确定的值。</li>
+<li><code>.zfill</code> 会把这部分额外区域写成 0。</li>
+</ul>
+<p>当有效源区域小于目标 tile，并且后续消费者会把整个目标 tile 当成完整稠密 tile 读取时，就应该使用 <code>.zfill</code>。这在带动态行数或边缘 padding 的 GEMM 流水线里非常常见。</p>
+<p>如果源和目标形状已经相同，却仍然手动写 <code>.zfill</code>，编译器可能会警告这个 <code>.zfill</code> 是冗余的。反过来，如果形状不匹配，编译器也可能提示你需要 <code>.zfill</code>，否则未覆盖区域会留下未定义值。</p>
+<h2 id="swizn-shared-memory"><code>.swiz&lt;N&gt;</code>：为消费者选择 Shared Memory 布局<a class="headerlink" href="#swizn-shared-memory" title="Permanent link">&para;</a></h2>
+<p>Swizzle 主要决定 tile 在 shared memory 中应该以什么布局存放，以便后续操作高效读取。</p>
+<p>典型的 GEMM staging 代码如下：</p>
+<pre class="highlight"><code class="language-choreo">dma.copy.swiz&lt;128&gt; lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
+ma = mma.load.swiz&lt;128&gt; lhs_load_s.chunkat(_, iv_warp);</code></pre>
+<p>加载时使用的 swizzle 与计算侧使用的 swizzle 通常应该保持一致。如果你用 <code>.swiz&lt;128&gt;</code> 把 tile 暂存到 shared，那么消费者一般也应该用匹配的 swizzle 去读取它。</p>
+<p>本章只介绍这个概念。MMA 相关章节会更深入地说明不同矩阵布局该如何搭配不同的 swizzle 值。</p>
+<h2 id="dma-tma">DMA 与 TMA<a class="headerlink" href="#dma-tma" title="Permanent link">&para;</a></h2>
+<p>二者都搬运有形状的 tile。区别在于它们怎么做，以及各自的约束是什么。</p>
 <table>
 <thead>
 <tr>
-<th>场景</th>
-<th>使用</th>
-<th>原因</th>
+<th></th>
+<th><code>dma</code></th>
+<th><code>tma</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>每个分块独立，无需共享</td>
-<td><code>local</code></td>
-<td>最快，无需同步</td>
+<td>实现方式</td>
+<td>软件协作复制</td>
+<td>Hopper Tensor Memory Accelerator</td>
 </tr>
 <tr>
-<td>多个线程协作处理同一分块</td>
+<td>硬件要求</td>
+<td>通用 GPU 路径</td>
+<td>SM90+</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>动态或不规则 tile，可移植代码</td>
+<td>固定形状、高带宽 staging</td>
+</tr>
+<tr>
+<td>常见目标位置</td>
 <td><code>shared</code></td>
-<td>对线程块内所有线程可见</td>
+<td><code>shared</code></td>
 </tr>
 <tr>
-<td>将结果写回输出张量</td>
-<td><code>global</code></td>
-<td>输出必须全设备可见</td>
+<td>是否支持异步</td>
+<td>是</td>
+<td>是</td>
 </tr>
 </tbody>
 </table>
-<p>目前示例使用 <code>local</code>，因为每个分块独立运行。第 3 章在多个线程需要读取同一分块进行分块矩阵乘法时，将引入 <code>shared</code>。</p>
-<h2 id="1">与第 1 章相比有何变化<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
-<p>数学上没有任何变化。<code>lhs</code> 的每个元素仍然与 <code>rhs</code> 的对应元素相加。变化的是内存访问的<strong>粒度</strong>：不再是 128 次单独的读写，而是对每个输入张量发出 8 次批量复制，每次搬运 16 个连续元素到快速内存。计算循环随后完全在本地数据上运行。</p>
-<p>新增词汇表：</p>
+<p>TMA 示例：</p>
+<pre class="highlight"><code class="language-choreo">f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) =&gt; shared;
+wait f;</code></pre>
+<p>实践上的规则很简单：</p>
+<ul>
+<li>当 tile 尺寸是动态的、不规则的，或者你要可移植路径时，用 <code>dma</code>。</li>
+<li>当你在 Hopper 上、tile 形状固定、并希望用硬件加速搬运时，用 <code>tma</code>。</li>
+</ul>
+<h3 id="tma">TMA 最重要的约束<a class="headerlink" href="#tma" title="Permanent link">&para;</a></h3>
+<p>TMA 的 tile 形状必须是 host 可计算的。运行时 tile 索引本身没有问题：</p>
+<pre class="highlight"><code class="language-choreo">tma.copy lhs.subspan(64, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
+<p>但如果 tile 形状本身依赖 kernel 运行时值，就不行：</p>
+<pre class="highlight"><code class="language-choreo">// 如果 TILE_M 只有在 kernel 内才知道，这种写法不适用于 TMA
+tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
+<p>如果 tile 尺寸真的依赖 kernel 运行时状态，请改用 <code>dma.copy</code>。</p>
+<h2 id="lower-dma-tma">如何写出更容易 Lower 到好路径的 DMA / TMA<a class="headerlink" href="#lower-dma-tma" title="Permanent link">&para;</a></h2>
+<p>你不需要理解完整 lowering pass 才能写出好代码，但有几条规则很重要。</p>
+<h3 id="dma_1">对高吞吐 DMA 来说<a class="headerlink" href="#dma_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>优先使用 <code>global &lt;-&gt; shared</code> 搬运来做协作式 staging。</li>
+<li>使用足够多的参与线程。常见的协作组大小通常至少是一个 warp。</li>
+<li>保持源和目标的秩一致。</li>
+<li>使用普通的按字节寻址元素类型，至少 1 字节以上。</li>
+<li><code>local</code> 更适合私有 tile，不应该默认当成主要性能路径。</li>
+</ul>
+<p>如果这些条件不满足，编译器仍然能生成正确的复制，但可能会退化到更简单的路径。</p>
+<h3 id="tma_1">对 TMA 来说<a class="headerlink" href="#tma_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>在 SM90+ 上使用它。</li>
+<li>保持 tile 形状从 host 的角度看是固定的。</li>
+<li>把 tile 暂存到 shared memory。</li>
+<li>当部分 tile 会被完整 tile 消费者读取时，添加 <code>.zfill</code>。</li>
+</ul>
+<h2 id="_3">小结清单<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>读完这一章后，下面这些语法应该分别表示：</p>
 <table>
 <thead>
 <tr>
@@ -2983,40 +3367,68 @@ int main() {
 </thead>
 <tbody>
 <tr>
-<td><code>dma.copy src =&gt; local</code></td>
-<td>将 <code>src</code> 批量复制到 local（或 <code>shared</code> / <code>global</code>）内存</td>
+<td><code>dma.copy src =&gt; shared</code></td>
+<td>把一个 tile 搬运到 shared memory。</td>
 </tr>
 <tr>
-<td><code>tensor.chunkat(i)</code></td>
-<td><code>tensor</code> 第 <code>i</code> 个等分块的视图</td>
+<td><code>tma.copy src =&gt; shared</code></td>
+<td>用 Hopper TMA 把一个 tile 搬运到 shared memory。</td>
 </tr>
 <tr>
-<td><code>tensor.chunkat(i, j)</code></td>
-<td>二维分块中位置 <code>(i, j)</code> 的块视图</td>
+<td><code>dma.copy.async ...</code></td>
+<td>启动一个非阻塞 DMA 传输。</td>
 </tr>
 <tr>
-<td><code>future.data.at(...)</code></td>
-<td>通过 DMA future 访问已复制的数据</td>
+<td><code>wait f</code></td>
+<td>等待 future <code>f</code> 可安全消费。</td>
+</tr>
+<tr>
+<td><code>future.data</code></td>
+<td>访问搬运后的 tile。</td>
+</tr>
+<tr>
+<td><code>future.span</code></td>
+<td>访问搬运后 tile 的形状。</td>
+</tr>
+<tr>
+<td><code>dma.transp&lt;...&gt;</code></td>
+<td>在传输过程中做维度置换。</td>
+</tr>
+<tr>
+<td><code>dma.pad&lt;...&gt;</code></td>
+<td>在传输过程中按显式填充值做 padding。</td>
+</tr>
+<tr>
+<td><code>.zfill</code></td>
+<td>当有效源区域小于目标 tile 时，将未覆盖部分写成 0。</td>
+</tr>
+<tr>
+<td><code>.swiz&lt;N&gt;</code></td>
+<td>为 shared memory 选择 swizzle 布局。</td>
+</tr>
+<tr>
+<td><code>chunkat(...)</code></td>
+<td>从规则 tiling 中选出一个等分 tile。</td>
+</tr>
+<tr>
+<td><code>subspan(...).at(...)</code></td>
+<td>用显式 tile 形状和 tile 坐标选出一个 tile。</td>
+</tr>
+<tr>
+<td><code>view(...).from(...)</code></td>
+<td>用显式形状和显式元素偏移选出一个 tile。</td>
 </tr>
 <tr>
 <td><code>tile # i</code></td>
-<td>将分块索引 <code>tile</code> 与局部偏移 <code>i</code> 组合为全局索引（外层 # 内层）</td>
+<td>把 tile 坐标和 tile 内坐标组合成全局坐标。</td>
 </tr>
 <tr>
 <td><code>#tile</code></td>
-<td>tile 轴的范围（分块数）</td>
-</tr>
-<tr>
-<td><code>lhs.span(0)</code></td>
-<td><code>lhs</code> 沿第一个维度的大小</td>
-</tr>
-<tr>
-<td><code>local</code> / <code>shared</code> / <code>global</code></td>
-<td>DMA 目标的内存层级限定符</td>
+<td>查询 <code>tile</code> 这个轴的范围。</td>
 </tr>
 </tbody>
 </table>
-<p>所有这些都与第 1 章的 <code>parallel</code> 和 <code>.at()</code> 自然组合。<a href="../ch03-parallelism/">下一章</a>将深入 <code>parallel</code>——将其映射到 CUDA 线程块、warp 和 warpgroup——并利用本章的一切来构建分块矩阵乘法。</p>
+<p>下一章会在这个基础上引入加载与计算的重叠。一旦你开始把 kernel 看成“反复 staging tile，再在 staged tile 上计算”的循环，双缓冲与流水线就会成为很自然的延伸，而不是全新的概念。</p>
 
 
 
