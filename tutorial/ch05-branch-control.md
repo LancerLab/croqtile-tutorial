@@ -254,18 +254,10 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
   // kernel body
 }
 ```
-<!-- 
-```choreo
-parallel.async {px, py} by [grid_m, grid_n] : block {
-  stream s;
-  // kernel body
-}
-```
--->
 
 **`parallel.async`** returns control to the host immediately — the kernel is enqueued but the host does not wait for completion. This is the Croqtile equivalent of `cudaLaunchKernel` with a non-default stream.
 
-<!-- **`stream s`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs. -->
+**`parallel.async<s>`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs.
 
 This is **host orchestration**, orthogonal to in-kernel control flow. It does not replace `inthreads.async` for thread partitioning or `if` for runtime predicates — it decides *when* and *where* a grid runs relative to other grids.
 
@@ -299,7 +291,7 @@ parallel p by BLK_CNT: block {
 | `int total_tiles = expr`         | Local integer variable                                               |
 | `parallel.async ... : block`     | Non-blocking kernel launch                                           |
 | `yield`                          | Early return from `parallel` block                                   |
-<!-- | `stream s`                       | Bind kernel to CUDA stream `s`                                       | -->
+| `stream s`                       | Bind kernel to CUDA stream `s`                                       |
 
 ## Chapter summary
 

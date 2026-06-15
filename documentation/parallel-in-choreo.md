@@ -117,6 +117,21 @@ For example, for *CUDA/Cute* targets, a *spanned* buffer must be annotated with 
 
 Additionally, *shared* and *local* memory types have a lifetime limited to the duration of the kernel launch. Therefore, referencing them outside the *parallel execution block* is not possible. This constraint ensures proper lifetime management of these memory types.
 
+### Asynchronous Kernel Launch and Stream Binding
+
+By default, the host waits for a `parallel-by` kernel to complete before continuing. To launch kernels asynchronously, use `parallel.async`. To bind a kernel to a specific CUDA stream, use angle-bracket syntax:
+
+```choreo
+__co__ void foo(stream s, f32[M] a) {
+  parallel.async<s> p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host continues immediately (no synchronization)
+}
+```
+
+This is covered in detail in the [Asynchronous parallel-by](general-async.md) section.
+
 ### Quick Summary
 
 In this section, we explored Choreo's approach to parallelism in heterogeneous computing environments, focusing on the `parallel-by` block syntax and the management of multiple and sub-level parallelism. We also discussed how Choreo abstracts kernel launches and imposes memory management constraints, enabling us to leverage parallel hardware effectively.
