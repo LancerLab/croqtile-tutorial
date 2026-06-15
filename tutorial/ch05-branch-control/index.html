@@ -3000,16 +3000,8 @@ Everything above runs inside a kernel. Sometimes you need concurrency at the **h
 <pre class="highlight"><code class="language-choreo">parallel.async {px, py} by [grid_m, grid_n] : block {
   // kernel body
 }</code></pre>
-<!-- 
-<pre class="highlight"><code class="language-choreo">parallel.async {px, py} by [grid_m, grid_n] : block {
-  stream s;
-  // kernel body
-}</code></pre>
--->
-
 <p><strong><code>parallel.async</code></strong> returns control to the host immediately — the kernel is enqueued but the host does not wait for completion. This is the Croqtile equivalent of <code>cudaLaunchKernel</code> with a non-default stream.</p>
-<!-- **`stream s`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs. -->
-
+<p><strong><code>parallel.async&lt;s&gt;</code></strong> pins the kernel to CUDA stream <code>s</code>. Multiple <code>parallel.async</code> blocks with different streams can overlap on the GPU if there are enough SMs.</p>
 <p>This is <strong>host orchestration</strong>, orthogonal to in-kernel control flow. It does not replace <code>inthreads.async</code> for thread partitioning or <code>if</code> for runtime predicates — it decides <em>when</em> and <em>where</em> a grid runs relative to other grids.</p>
 <h2 id="early-return-from-parallel">Early return from <code>parallel</code><a class="headerlink" href="#early-return-from-parallel" title="Permanent link">&para;</a></h2>
 <p>Sometimes you need to early return from a <code>parallel</code> block. The <code>yield</code> keyword will simply generate a <code>return;</code> instruction to get out of device code.</p>
@@ -3072,10 +3064,12 @@ Everything above runs inside a kernel. Sometimes you need concurrency at the **h
 <td><code>yield</code></td>
 <td>Early return from <code>parallel</code> block</td>
 </tr>
+<tr>
+<td><code>stream s</code></td>
+<td>Bind kernel to CUDA stream <code>s</code></td>
+</tr>
 </tbody>
 </table>
-<!-- | `stream s`                       | Bind kernel to CUDA stream `s`                                       | -->
-
 <h2 id="chapter-summary">Chapter summary<a class="headerlink" href="#chapter-summary" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

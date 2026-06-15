@@ -1529,6 +1529,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#asynchronous-kernel-launch-and-stream-binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Kernel Launch and Stream Binding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#quick-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2604,6 +2615,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#asynchronous-kernel-launch-and-stream-binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Kernel Launch and Stream Binding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#quick-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2782,6 +2804,15 @@ In this example:</p>
 <p>Since the <code>parallel-by</code> construct in Choreo is related to hardware, including heterogeneity and memory hierarchy, it is subject to the constraints of the target platform.</p>
 <p>For example, for <em>CUDA/Cute</em> targets, a <em>spanned</em> buffer must be annotated with the appropriate storage specifier within the <em>parallel execution block</em>. This is because the target platform allows only <em>scratchpad memory</em>, such as <em>shared</em> and <em>local</em> memory, to be allocated by device code. Conversely, code outside the <em>parallel execution block</em> can only declare <em>global</em> or default host memory, which the target platform allows the host code to manage.</p>
 <p>Additionally, <em>shared</em> and <em>local</em> memory types have a lifetime limited to the duration of the kernel launch. Therefore, referencing them outside the <em>parallel execution block</em> is not possible. This constraint ensures proper lifetime management of these memory types.</p>
+<h3 id="asynchronous-kernel-launch-and-stream-binding">Asynchronous Kernel Launch and Stream Binding<a class="headerlink" href="#asynchronous-kernel-launch-and-stream-binding" title="Permanent link">&para;</a></h3>
+<p>By default, the host waits for a <code>parallel-by</code> kernel to complete before continuing. To launch kernels asynchronously, use <code>parallel.async</code>. To bind a kernel to a specific CUDA stream, use angle-bracket syntax:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void foo(stream s, f32[M] a) {
+  parallel.async&lt;s&gt; p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host continues immediately (no synchronization)
+}</code></pre>
+<p>This is covered in detail in the <a href="../general-async/">Asynchronous parallel-by</a> section.</p>
 <h3 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h3>
 <p>In this section, we explored Choreo's approach to parallelism in heterogeneous computing environments, focusing on the <code>parallel-by</code> block syntax and the management of multiple and sub-level parallelism. We also discussed how Choreo abstracts kernel launches and imposes memory management constraints, enabling us to leverage parallel hardware effectively.</p>
 <p>However, while parallelism enhances efficiency, loops remain essential. In the next section, we will introduce how to build loops in Choreo.</p>

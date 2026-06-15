@@ -1872,6 +1872,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#stream-binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Binding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stream-binding-without-async" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Binding without .async
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2397,6 +2430,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#stream-binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Binding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stream-binding-without-async" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Binding without .async
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2486,7 +2552,55 @@
   <h1>More on Async Execution</h1>
 
 <h3 id="synchronization-and-asynchronous-parallel-by">Synchronization and Asynchronous <code>parallel-by</code><a class="headerlink" href="#synchronization-and-asynchronous-parallel-by" title="Permanent link">&para;</a></h3>
-<p>Similar to <code>inthreads</code>, <code>parallel-by</code> can also be made asynchronous.</p>
+<p>Similar to <code>inthreads</code>, <code>parallel-by</code> can also be made asynchronous by appending <code>.async</code>:</p>
+<pre class="highlight"><code class="language-choreo">parallel.async p by 6 : block {
+  // asynchronous kernel launch (no host-side synchronization)
+}</code></pre>
+<p>Without <code>.async</code>, the host waits for the kernel to finish before continuing:</p>
+<pre class="highlight"><code class="language-choreo">parallel p by 6 : block {
+  // synchronous kernel launch (host blocks until completion)
+}
+// host continues only after the kernel finishes</code></pre>
+<p>With <code>.async</code>, the host code continues immediately after launching the kernel.
+This is essential for overlapping computation with data transfers or launching
+independent kernels concurrently.</p>
+<h3 id="stream-binding">Stream Binding<a class="headerlink" href="#stream-binding" title="Permanent link">&para;</a></h3>
+<p>CUDA streams allow multiple kernels and memory transfers to execute concurrently
+on the GPU. In Choreo, you can bind a <code>parallel-by</code> block to a specific stream
+using angle-bracket syntax:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
+  parallel.async&lt;s0&gt; p by M : block {
+    a.at(p) = 1.0f;
+  }
+  parallel.async&lt;s1&gt; q by N : block {
+    b.at(q) = 2.0f;
+  }
+}</code></pre>
+<p>In this example:</p>
+<ul>
+<li><strong><code>stream s0, stream s1</code></strong>: Stream parameters passed from the host.</li>
+<li><strong><code>parallel.async&lt;s0&gt;</code></strong>: Launches the kernel asynchronously on stream <code>s0</code>.</li>
+<li><strong><code>parallel.async&lt;s1&gt;</code></strong>: Launches a second kernel on stream <code>s1</code>.</li>
+</ul>
+<p>Since both kernels are launched on different streams with <code>.async</code>, they can
+execute concurrently on the GPU.</p>
+<h3 id="stream-binding-without-async">Stream Binding without <code>.async</code><a class="headerlink" href="#stream-binding-without-async" title="Permanent link">&para;</a></h3>
+<p>Stream binding also works with synchronous <code>parallel-by</code>. In this case, the host
+launches the kernel on the specified stream and then waits for that stream to
+complete:</p>
+<pre class="highlight"><code class="language-choreo">__co__ void bar(stream _s, f32[M] a) {
+  parallel&lt;_s&gt; p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host synchronizes on stream _s before continuing
+}</code></pre>
+<h3 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Stream binding is only allowed on <strong>block-level</strong> parallel (<code>: block</code>).</li>
+<li>The identifier inside <code>&lt;...&gt;</code> must be a <code>stream</code>-typed variable.</li>
+<li>Without stream binding, synchronous <code>parallel-by</code> uses device-wide
+  synchronization, and asynchronous <code>parallel-by</code> uses the default stream.</li>
+</ul>
 
 
 
