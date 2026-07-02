@@ -16,6 +16,10 @@ Structured 2:4 sparse GEMM at 4096 × 8192 × 8192. FP16: **368 → 655 TFLOPS**
 
 FP8 E4M3 with per-block scaling: **397 → 621 TFLOPS** (+56%). TMA overlap with scale accumulation, N256 tiles, L2 promotion, and scale prefetch.
 
+## [Flash Attention: Causal Prefill D=128](flash-attention-causal-prefill.md)
+
+Three-stage tutorial: sequential DMA+WGMMA -> warp-specialized 1p2c with TMA pipeline -> FA3-style intra-warpgroup QK/PV overlap. Reaches **374 TFLOPS** at SEQ=16384 (89% of FlashAttention-3), compared against FA3, Triton, Triton+WS, and TileLang. Shows how Croqtile expresses the full FA3 loop structure in ~80 lines.
+
 ## [Fused MoE FP8](fused-moe-fp8.md)
 
 Fused Mixture-of-Experts end-to-end kernel for Qwen3.5-35B-A3B inference: **7.11 → 13.14 TFLOPS** (+85%). Kernel fusion (7→4 kernels), `parallel.async`, CUDA Graphs, L2 persistence, QSG load pipelining, and the `__cpp__` escape hatch.
