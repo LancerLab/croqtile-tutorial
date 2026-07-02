@@ -1,0 +1,3549 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://LancerLab.github.io/croqtile-tutorial/zh/optimization/flash-attention-causal-prefill/">
+      
+      
+      
+      
+        
+          <link rel="alternate" href="../../../optimization/flash-attention-causal-prefill/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="zh">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>How to Write a Flash Attention Kernel with Croqtile: a Worklog - Croqtile</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    
+      <link rel="stylesheet" href="../../../assets/css/custom.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../" title="Croqtile" class="md-header__button md-logo" aria-label="Croqtile" data-md-component="logo">
+      
+  <img src="../../../assets/images/logo-2.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Croqtile
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to Write a Flash Attention Kernel with Croqtile: a Worklog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../optimization/flash-attention-causal-prefill/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="zh" class="md-select__link">
+              中文
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/LancerLab/croqtile-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    LancerLab/croqtile-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Croqtile" class="md-nav__button md-logo" aria-label="Croqtile" data-md-component="logo">
+      
+  <img src="../../../assets/images/logo-2.png" alt="logo">
+
+    </a>
+    Croqtile
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/LancerLab/croqtile-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    LancerLab/croqtile-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/what-is-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is Good in CroqTile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorial/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I — Tutorial
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I — Tutorial
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch00-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 0: Installing Croqtile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch01-hello-croqtile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 1: Hello Croqtile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch02-data-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 2: Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch03-parallelism/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 3: Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch04-mma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 4: Tensor Contraction (MMA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch05-branch-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 5: Control Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch06-synchronization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 6: Synchronization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch07-advanced-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 7: Advanced Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch08-cpp-interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 8: C++ Interop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/ch09-debug-verbose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ch 9: Debug & Verbose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II — Performance Tuning Demos
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II — Performance Tuning Demos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup-profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dense-gemm-fp16-from-naive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dense GEMM FP16 (from naive)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sparse-gemm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparse GEMM (FP16 + E4M3)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockscale-gemm-fp8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fused-moe-fp8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fused MoE FP8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../documentation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III — Coding Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III — Coding Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Program Structure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Program Structure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/choreo-program-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Croqtile-C++ Program Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaped Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shaped Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/shape-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shape and MDSpan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/integer-ituple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integers and I-Tuples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/spanned-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spanned Data and Buffers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/symbolic-shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Shape and Symbolic Dimension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop and Parallelism
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Loop and Parallelism
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/intro-loop-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Parallelism and Iterations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/parallel-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPMD Parallelism
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/within-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loop Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/basic-dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The DMA Statement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tiling-chunkat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tile Data with ChunkAt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dma-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Data Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ Embeddings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    C++ Embeddings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/input-output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs and Output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/macro-in-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro and Preprocessing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPMD Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MPMD Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/thread-masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thread Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events for Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/general-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    More on Async Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/loop-in-advance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experimental Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimization Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/tileflow-opt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tileflow Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/async-dma-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async DMA Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/multi-buffering-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-buffering Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/operator-samples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference Palette
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_11" id="__nav_5_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Rationales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Syntax Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/why-symbolic-shapes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Symbolic Shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/value-numbering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symbolic Evaluation System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../documentation/dynamic-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamism Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV — Design Rationales
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-algorithm-online-softmax-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Algorithm: Online Softmax Attention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance at a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-flash-attention-is-harder-than-gemm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Flash Attention Is Harder Than GEMM
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-1-sequential-load-compute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kernel 1: Sequential Load + Compute
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel 1: Sequential Load + Compute">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#croqtile-concepts-for-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Croqtile concepts for attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-inner-loop-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the inner loop works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result: v1
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-2-warp-specialized-1p2c-with-tma-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kernel 2: Warp-Specialized 1p2c with TMA Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel 2: Warp-Specialized 1p2c with TMA Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-concepts-in-v2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New concepts in v2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-1p2c-pipeline-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The 1p2c pipeline structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-the-causal-mask-is-optimized" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the causal mask is optimized
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result-v2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result: v2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-3-fa3-style-intra-warpgroup-overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kernel 3: FA3-Style Intra-Warpgroup Overlap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel 3: FA3-Style Intra-Warpgroup Overlap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-overlap-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The overlap idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-concepts-in-v3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New concepts in v3
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-overlap-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the overlap works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-prev_stage-trick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The prev_stage trick
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result-v3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result: v3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-optimization-ladder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Optimization Ladder
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-the-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison with the Ecosystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-optimization-costs-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Each Optimization Costs in Code
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog">How to Write a Flash Attention Kernel with Croqtile: a Worklog<a class="headerlink" href="#how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog" title="Permanent link">&para;</a></h1>
+<p><em>June 2026 -- GPU: NVIDIA H800 PCIe (SM90a) -- Precision: BF16 -- Problem: Causal Prefill, D=128, BSHD layout</em></p>
+<hr />
+<p>Flash Attention is the most impactful kernel in modern LLM training and inference. It fuses the entire Q<em>K softmax</em>V pipeline into a single kernel, reducing memory from O(N^2) to O(N) and unlocking sequence lengths that would otherwise OOM.</p>
+<p>In this worklog I start from a sequential load-compute kernel and step-by-step apply the three major GPU optimization techniques for attention -- warp specialization, async TMA pipelining, and intra-warpgroup QK/PV overlap -- all in <strong>Croqtile</strong>. The finished kernel reaches <strong>374 TFLOPS</strong> at SEQ=16384, matching <strong>FlashAttention-3</strong> on the same hardware. No hand-written CUDA, no manual <code>mbarrier</code> lifecycle management, no WGMMA descriptor encoding.</p>
+<p>This tutorial assumes familiarity with the matmul tutorial's Hopper constructs (<code>tma.copy</code>, <code>mma.load</code>, <code>inthreads.async</code>, <code>shared event</code>). If those are new, read <a href="../dense-gemm-fp16-from-naive/">Dense GEMM FP16: From Naive to Tuned</a> first.</p>
+<p>Compile and run any kernel:</p>
+<pre class="highlight"><code class="language-bash">cd benchmark/performance/flash_atten/causal_prefill_d128/choreo
+bash bench.sh --kernel v1_manual_baseline.co --gpu 1</code></pre>
+<hr />
+<h2 id="the-algorithm-online-softmax-attention">The Algorithm: Online Softmax Attention<a class="headerlink" href="#the-algorithm-online-softmax-attention" title="Permanent link">&para;</a></h2>
+<p>Before looking at code, here is the algorithm that all three kernels implement. This is the FlashAttention core loop (Dao et al., 2022):</p>
+<p>For each block of query rows <code>[bm]</code>:</p>
+<ol>
+<li>Load Q block from global memory</li>
+<li>For each block of KV columns <code>[bn]</code>:
+   a. Compute <code>S = Q * K^T</code> (score matrix, via WGMMA)
+   b. Apply causal mask: <code>S[i,j] = -inf</code> where <code>j &gt; i</code>
+   c. Online softmax: track running max and sum of exponentials
+   d. Rescale previous accumulator: <code>O *= exp(prev_max - new_max)</code>
+   e. Compute <code>O += softmax(S) * V</code> (via WGMMA)</li>
+<li>Normalize: <code>O /= logsum</code></li>
+<li>Store O to global memory</li>
+</ol>
+<p>The key insight: by maintaining a running max and log-sum-exp, we never materialize the full N*N attention matrix. Each KV block is loaded once, used, and discarded.</p>
+<hr />
+<h2 id="performance-at-a-glance">Performance at a glance<a class="headerlink" href="#performance-at-a-glance" title="Permanent link">&para;</a></h2>
+<p>Headline config: <strong>B=4, H=32, SEQ=8192, D=128, causal prefill, BF16</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kernel</th>
+<th style="text-align: right;">Time (ms)</th>
+<th style="text-align: right;">TFLOPS</th>
+<th style="text-align: right;">vs FA3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1: Sequential DMA + WGMMA</td>
+<td style="text-align: right;">9.67</td>
+<td style="text-align: right;">227.5</td>
+<td style="text-align: right;">55%</td>
+</tr>
+<tr>
+<td>v2: Warp-specialized 1p2c + TMA pipeline</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">350.1</td>
+<td style="text-align: right;">85%</td>
+</tr>
+<tr>
+<td><strong>v3: FA3-style QK/PV overlap</strong></td>
+<td style="text-align: right;"><strong>6.09</strong></td>
+<td style="text-align: right;"><strong>361.3</strong></td>
+<td style="text-align: right;"><strong>88%</strong></td>
+</tr>
+<tr>
+<td>FlashAttention-3 (reference)</td>
+<td style="text-align: right;">5.41</td>
+<td style="text-align: right;">410.3</td>
+<td style="text-align: right;">100%</td>
+</tr>
+</tbody>
+</table>
+<p>Across sequence lengths (B=4, H=32):</p>
+<table>
+<thead>
+<tr>
+<th>Config</th>
+<th style="text-align: right;">Choreo v3</th>
+<th style="text-align: right;">FA3</th>
+<th style="text-align: right;">TileLang</th>
+<th style="text-align: right;">Triton</th>
+<th style="text-align: right;">Triton+WS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEQ=4096</td>
+<td style="text-align: right;">333.3</td>
+<td style="text-align: right;">407.1</td>
+<td style="text-align: right;">243.8</td>
+<td style="text-align: right;">294.4</td>
+<td style="text-align: right;">346.3</td>
+</tr>
+<tr>
+<td>SEQ=8192</td>
+<td style="text-align: right;">365.0</td>
+<td style="text-align: right;">410.3</td>
+<td style="text-align: right;">295.8</td>
+<td style="text-align: right;">312.5</td>
+<td style="text-align: right;">354.3</td>
+</tr>
+<tr>
+<td>SEQ=16384</td>
+<td style="text-align: right;">377.2</td>
+<td style="text-align: right;">422.1</td>
+<td style="text-align: right;">349.0</td>
+<td style="text-align: right;">324.7</td>
+<td style="text-align: right;">371.0</td>
+</tr>
+</tbody>
+</table>
+<p><em>TFLOPS. Higher is better. Measured on H800 PCIe with warmup=50, repeat=200.</em></p>
+<hr />
+<h2 id="why-flash-attention-is-harder-than-gemm">Why Flash Attention Is Harder Than GEMM<a class="headerlink" href="#why-flash-attention-is-harder-than-gemm" title="Permanent link">&para;</a></h2>
+<p>A matmul kernel has one compute phase: C += A * B. Flash attention has <strong>two coupled WGMMA phases</strong> per inner-loop iteration -- QK and PV -- connected by a softmax that depends on the QK result. This creates three challenges that do not exist in GEMM:</p>
+<table>
+<thead>
+<tr>
+<th>Challenge</th>
+<th>GEMM</th>
+<th>Flash Attention</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Compute phases</strong></td>
+<td>1 (C += A*B)</td>
+<td>2 per iteration (S = Q<em>K, O += P</em>V)</td>
+</tr>
+<tr>
+<td><strong>Data dependencies</strong></td>
+<td>None between iterations</td>
+<td>PV depends on softmax of QK</td>
+</tr>
+<tr>
+<td><strong>Shared memory pressure</strong></td>
+<td>2 buffers (A, B)</td>
+<td>3+ buffers (Q, K, V, plus staging)</td>
+</tr>
+<tr>
+<td><strong>Causal masking</strong></td>
+<td>N/A</td>
+<td>Conditional <code>-inf</code> injection after QK</td>
+</tr>
+<tr>
+<td><strong>Numerical stability</strong></td>
+<td>Standard FP accumulation</td>
+<td>Online max/sum tracking across iterations</td>
+</tr>
+</tbody>
+</table>
+<p>The optimization path therefore differs: instead of just tuning tile shapes, we need to <strong>restructure the loop body</strong> to overlap the two WGMMA phases.</p>
+<hr />
+<h2 id="kernel-1-sequential-load-compute">Kernel 1: Sequential Load + Compute<a class="headerlink" href="#kernel-1-sequential-load-compute" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>v1_manual_baseline.co</code></p>
+<p>The simplest correct implementation: load Q once into shared memory, then sequentially load K and V blocks, compute QK, apply masking and softmax, compute PV, and accumulate.</p>
+<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
+#define BLOCK_N 128
+#define WG_M 64
+#define WG_K 16
+#define DIM 128
+
+__co__ void flash_atten(
+  global bf16[B, Q_SEQ, H, DIM] Q, global bf16[B, KV_SEQ, H, DIM] K,
+  global bf16[B, KV_SEQ, H, DIM] V,
+  global bf16[B, Q_SEQ, H, DIM] O
+) {
+  float scale = 0.12751743f;
+  int past_len = KV_SEQ - Q_SEQ;
+
+  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
+    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+
+    q_s = dma.copy.swiz&lt;128&gt; Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; shared;
+    parallel wgm by [BLOCK_M / WG_M]: group-4 {
+      frag bf16[WG_M, BLOCK_N] acc_s_cast;
+      frag f32[WG_M] scores_max {-inf};
+      frag f32[WG_M] scores_max_prev;
+      frag f32[WG_M] scores_scale;
+      frag f32[WG_M] scores_sum;
+      frag f32[WG_M] logsum {0.0f};
+      acc_o = mma.fill.f32 0.0f;
+
+      kv_bound = __min(
+        cdiv((bm + 1) * BLOCK_M + past_len, BLOCK_N),
+        cdiv(KV_SEQ, BLOCK_N));
+
+      foreach {bn} in [kv_bound] {
+        // -- Phase 1: QK --
+        acc_s = mma.fill.f32 0.0f;
+        k_s = dma.copy.swiz&lt;128&gt;
+          K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
+        mma.row.row acc_s, q_s.chunkat(wgm, _), k_s;
+
+        // -- Causal mask --
+        apply {i, j} in acc_s.span {
+          if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + wgm * WG_M + i + past_len))
+            acc_s.at(i, j) = -inf;
+        }
+
+        // -- Online softmax --
+        copy(scores_max_prev, scores_max);
+        reduce_max(scores_max, acc_s, 1);
+        apply {i} in scores_max.span {
+          scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
+          scores_scale.at(i) =
+            __exp2f(scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
+        }
+        apply {i, j} in acc_s.span
+          acc_s.at(i, j) =
+            __exp2f(acc_s.at(i, j) * scale - scores_max.at(i) * scale);
+        reduce_sum(scores_sum, acc_s, 1);
+        apply {i} in logsum.span
+          logsum.at(i) = logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
+        apply {i, j} in acc_o.span
+          acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+        apply {i, j} in acc_s_cast.span
+          acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+
+        // -- Phase 2: PV --
+        v_s = dma.copy.swiz&lt;128&gt;
+          V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
+        mma.row.col acc_o, acc_s_cast, v_s;
+      }
+
+      apply {i, j} in acc_o.span
+        acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
+      mma.store acc_o, O_head.subspan(WG_M, DIM).at(bm # wgm, 0);
+    }
+  }
+}</code></pre>
+<h3 id="croqtile-concepts-for-attention">Croqtile concepts for attention<a class="headerlink" href="#croqtile-concepts-for-attention" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Construct</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parallel.async {...} : block</code></td>
+<td>Asynchronous grid launch. The <code>.async</code> suffix enables the Hopper async execution model with cluster-level coordination.</td>
+</tr>
+<tr>
+<td><code>.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz()</code></td>
+<td>Slice one batch and one head from a 4-D BSHD tensor, then squeeze the unit dimensions to get a 2-D <code>[seq, dim]</code> view.</td>
+</tr>
+<tr>
+<td><code>dma.copy.swiz&lt;128&gt; src =&gt; shared</code></td>
+<td>SIMT-level cooperative copy with 128-byte swizzle into an auto-allocated shared memory buffer. All threads participate; Croqtile handles coalescing and <code>__syncthreads()</code>.</td>
+</tr>
+<tr>
+<td><code>parallel wgm by [N]: group-4</code></td>
+<td>N warpgroups (each 128 threads) execute the body. Each gets a <code>wgm</code> index.</td>
+</tr>
+<tr>
+<td><code>frag f32[WG_M] scores_max {-inf}</code></td>
+<td>A register-resident fragment with per-element initialization.</td>
+</tr>
+<tr>
+<td><code>reduce_max(dst, src, dim)</code></td>
+<td>Row-wise max reduction across a 2-D fragment.</td>
+</tr>
+<tr>
+<td><code>apply {i, j} in frag.span { ... }</code></td>
+<td>Element-wise transform over a fragment. Compiles to register-register operations with no memory traffic.</td>
+</tr>
+<tr>
+<td><code>mma.row.row acc, A, B</code></td>
+<td>WGMMA: Q*K where both A and B are row-major.</td>
+</tr>
+<tr>
+<td><code>mma.row.col acc, A, B</code></td>
+<td>WGMMA: P*V where A is row-major, B (V) is column-major in the logical contraction.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-the-inner-loop-works">How the inner loop works<a class="headerlink" href="#how-the-inner-loop-works" title="Permanent link">&para;</a></h3>
+<p>Each iteration of the <code>foreach {bn}</code> loop performs five steps:</p>
+<pre class="highlight"><code>Load K[bn] -&gt; Compute S = Q*K -&gt; Mask+Softmax -&gt; Load V[bn] -&gt; Compute O += P*V
+     |              |                  |              |              |
+     DMA          WGMMA             Scalar          DMA           WGMMA
+   (stall)      (stall on          (fast but        (stall)      (stall on
+                 DMA)            serialized)                      DMA)</code></pre>
+<p>Every operation waits for the previous one. The two <code>dma.copy</code> calls each stall all threads while data transfers from HBM. The WGMMA instructions stall until shared memory is ready. This is the simplest structure, but it leaves massive performance on the table.</p>
+<h3 id="result-v1">Result: v1<a class="headerlink" href="#result-v1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Config</th>
+<th style="text-align: right;">Time (ms)</th>
+<th style="text-align: right;">TFLOPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEQ=4096</td>
+<td style="text-align: right;">2.64</td>
+<td style="text-align: right;">207.9</td>
+</tr>
+<tr>
+<td>SEQ=8192</td>
+<td style="text-align: right;">9.67</td>
+<td style="text-align: right;">227.5</td>
+</tr>
+<tr>
+<td>SEQ=16384</td>
+<td style="text-align: right;">38.8</td>
+<td style="text-align: right;">226.8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>~228 TFLOPS at SEQ=8192 (55% of FA3)</strong></p>
+<hr />
+<h2 id="kernel-2-warp-specialized-1p2c-with-tma-pipeline">Kernel 2: Warp-Specialized 1p2c with TMA Pipeline<a class="headerlink" href="#kernel-2-warp-specialized-1p2c-with-tma-pipeline" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>v2_manual_s2_1p2c_tma.co</code></p>
+<p>The v1 kernel serializes data movement and compute. The fix is the same as in the matmul tutorial: split threads into <strong>producer</strong> (TMA loads) and <strong>consumer</strong> (WGMMA compute) warpgroups connected by a double-buffered pipeline.</p>
+<p>The structural changes from v1:</p>
+<ol>
+<li><strong>TMA replaces <code>dma.copy</code></strong> -- one thread drives hardware DMA instead of all threads cooperating</li>
+<li><strong>1 producer + 2 consumer warpgroups</strong> (1p2c) -- the producer prefetches K and V while consumers compute</li>
+<li><strong>2-stage double buffering</strong> -- <code>k_buf[2]</code>, <code>v_buf[2]</code> with <code>shared event</code> barriers</li>
+<li><strong>Q is loaded once via async TMA</strong> before the main loop</li>
+</ol>
+<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
+#define BLOCK_N 128
+#define WG_M 64
+#define WG_K 16
+#define SWIZ 128
+#define STAGES 2
+#define DIM 128
+
+__co__ void flash_atten(
+  global bf16[B, Q_SEQ, H, DIM] Q,
+  global bf16[B, KV_SEQ, H, DIM] K,
+  global bf16[B, KV_SEQ, H, DIM] V,
+  global bf16[B, Q_SEQ, H, DIM] O
+) {
+  float scale = 0.12751743f;
+
+  [[launch_bounds(_, 1)]]
+  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
+    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+
+    shared bf16[BLOCK_M, DIM] q_shared;
+    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
+    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
+
+    shared event qf, kf[STAGES], ke[STAGES], vf[STAGES], ve[STAGES];
+
+    kv_bound = cdiv((bm + 1) * BLOCK_M, BLOCK_N);
+    parallel p by [BLOCK_M/WG_M + 1] : group-4, t by 128 : thread {
+      // --- Producer (p=0): single-thread TMA ---
+      inthreads.async (p == 0) {
+        call croq::cuda::setreg_dec(24);
+        tma.copy.async&lt;qf&gt;.swiz&lt;SWIZ&gt;
+          Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
+        trigger qf;
+
+        foreach {bn} in [kv_bound] {
+          stage = bn % STAGES;
+          wait ke[stage];
+          tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;
+            K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[stage];
+          trigger kf[stage];
+
+          wait ve[stage];
+          tma.copy.async&lt;vf[stage]&gt;.swiz&lt;SWIZ&gt;
+            V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[stage];
+          trigger vf[stage];
+        }
+      }
+
+      // --- Consumers (p&gt;0): WGMMA compute ---
+      inthreads.async (p &gt; 0) {
+        call croq::cuda::setreg_inc(240);
+        cid = p - 1;
+        foreach {s} in [STAGES] {
+          trigger ke[s];
+          trigger ve[s];
+        }
+
+        wait qf;
+
+        frag f32[WG_M] scores_max {-inf};
+        frag f32[WG_M] scores_max_prev;
+        frag f32[WG_M] scores_scale;
+        frag f32[WG_M] scores_sum;
+        frag f32[WG_M] logsum {0.0f};
+        acc_o = mma.fill.f32 0.0f;
+
+        foreach {bn} in [kv_bound] {
+          stage = bn % STAGES;
+          acc_s = mma.fill.f32 0.0f;
+
+          wait kf[stage];
+          mma.row.row acc_s,
+            q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[stage];
+          trigger ke[stage];
+
+          // Causal mask (skip if entire tile is unmasked)
+          int causal_row_base = bm * BLOCK_M + cid * WG_M;
+          if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
+            apply {i, j} in acc_s.span {
+              if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + cid * WG_M + i))
+                acc_s.at(i, j) = -inf;
+            }
+          }
+
+          // Online softmax (same as v1)
+          copy(scores_max_prev, scores_max);
+          reduce_max(scores_max, acc_s, 1);
+          apply {i} in scores_max.span {
+            scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
+            scores_scale.at(i) = __exp2f(
+              scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
+          }
+          apply {i, j} in acc_s.span
+            acc_s.at(i, j) = __exp2f(
+              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
+          reduce_sum(scores_sum, acc_s, 1);
+          apply {i} in logsum.span
+            logsum.at(i) =
+              logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
+          apply {i, j} in acc_o.span
+            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+
+          frag bf16[WG_M, BLOCK_N] acc_s_cast;
+          apply {i, j} in acc_s_cast.span
+            acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+
+          wait vf[stage];
+          mma.row.col acc_o, acc_s_cast, v_buf[stage];
+          trigger ve[stage];
+        }
+
+        apply {i, j} in acc_o.span
+          acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
+        shared bf16[BLOCK_M, DIM] o_buf;
+        mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
+        tma.copy o_buf.subspan(WG_M, DIM).at(cid, 0) =&gt;
+          O_head.subspan(WG_M, DIM).at(bm * 2 + cid, 0);
+      }
+    }
+  }
+}</code></pre>
+<h3 id="new-concepts-in-v2">New concepts in v2<a class="headerlink" href="#new-concepts-in-v2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Construct</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[[launch_bounds(_, 1)]]</code></td>
+<td>Hint to the compiler: at most 1 thread-block per SM. This maximizes per-block register and shared memory budget.</td>
+</tr>
+<tr>
+<td><code>shared event qf, kf[STAGES], ke[STAGES], ...</code></td>
+<td>Named barriers backed by Hopper <code>mbarrier</code>. Five barrier arrays orchestrate the producer/consumer handshake for Q, K (full/empty), and V (full/empty).</td>
+</tr>
+<tr>
+<td><code>call croq::cuda::setreg_dec(24)</code></td>
+<td>Compiler intrinsic: decrease the register allocation for the producer warpgroup (it only issues TMA, needs few registers). Frees registers for the compute-heavy consumers.</td>
+</tr>
+<tr>
+<td><code>call croq::cuda::setreg_inc(240)</code></td>
+<td>Increase register allocation for consumer warpgroups. More registers = fewer spills during softmax and WGMMA accumulation.</td>
+</tr>
+<tr>
+<td><code>tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;</code></td>
+<td>Async TMA that signals barrier <code>kf[stage]</code> on completion. The producer thread is not blocked.</td>
+</tr>
+<tr>
+<td><code>trigger kf[stage]</code> / <code>wait kf[stage]</code></td>
+<td>Signal/wait on named barriers. The producer signals <code>kf</code> after issuing TMA for K; the consumer waits on <code>kf</code> before reading K from shared memory.</td>
+</tr>
+<tr>
+<td><code>trigger ke[stage]</code></td>
+<td>Consumer signals "K buffer consumed" so the producer can reuse the slot. Classic double-buffer protocol.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-1p2c-pipeline-structure">The 1p2c pipeline structure<a class="headerlink" href="#the-1p2c-pipeline-structure" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code>Warpgroup 0 (Producer):
+  Load Q -&gt; [signal qf]
+  for bn in 0..kv_bound:
+    wait ke[stage] -&gt; Load K[bn] -&gt; [signal kf[stage]]
+    wait ve[stage] -&gt; Load V[bn] -&gt; [signal vf[stage]]
+
+Warpgroup 1,2 (Consumers):
+  [signal ke[0..STAGES], ve[0..STAGES]]  // initial empty tokens
+  wait qf
+  for bn in 0..kv_bound:
+    wait kf[stage] -&gt; QK WGMMA -&gt; [signal ke[stage]]
+    softmax
+    wait vf[stage] -&gt; PV WGMMA -&gt; [signal ve[stage]]</code></pre>
+<p>The producer runs ahead of the consumers. With <code>STAGES=2</code>, while consumers compute on <code>k_buf[0]</code>/<code>v_buf[0]</code>, the producer can already be loading into <code>k_buf[1]</code>/<code>v_buf[1]</code>. TMA latency is hidden behind compute.</p>
+<h3 id="why-the-causal-mask-is-optimized">Why the causal mask is optimized<a class="headerlink" href="#why-the-causal-mask-is-optimized" title="Permanent link">&para;</a></h3>
+<p>v2 adds a key optimization over v1: the causal mask check is wrapped in a tile-level guard:</p>
+<pre class="highlight"><code class="language-choreo">if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
+  apply {i, j} in acc_s.span { ... }
+}</code></pre>
+<p>For tiles where all KV positions are before the query position (fully unmasked), the entire <code>apply</code> block is skipped. Since causal attention is lower-triangular, roughly half the tiles skip masking entirely.</p>
+<h3 id="result-v2">Result: v2<a class="headerlink" href="#result-v2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Config</th>
+<th style="text-align: right;">Time (ms)</th>
+<th style="text-align: right;">TFLOPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEQ=4096</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">330.6</td>
+</tr>
+<tr>
+<td>SEQ=8192</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">350.1</td>
+</tr>
+<tr>
+<td>SEQ=16384</td>
+<td style="text-align: right;">36.4</td>
+<td style="text-align: right;">241.6</td>
+</tr>
+</tbody>
+</table>
+<p><strong>~350 TFLOPS at SEQ=8192 (1.54x over v1, 85% of FA3)</strong></p>
+<p>The large SEQ=16384 regression (241 TFLOPS vs 350) suggests the pipeline is not perfectly balanced at very long sequences -- the producer/consumer synchronization overhead grows with <code>kv_bound</code>.</p>
+<hr />
+<h2 id="kernel-3-fa3-style-intra-warpgroup-overlap">Kernel 3: FA3-Style Intra-Warpgroup Overlap<a class="headerlink" href="#kernel-3-fa3-style-intra-warpgroup-overlap" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>v3_fa3_overlap.co</code></p>
+<p>The v2 kernel still serializes QK and PV within each consumer's inner loop: the consumer computes QK, performs softmax, then computes PV, then starts the next iteration. The tensor cores are idle during softmax.</p>
+<p>FlashAttention-3 (Shah et al., 2024) introduced <strong>intra-warpgroup overlap</strong>: compute <code>QK[n]</code> and <code>PV[n-1]</code> simultaneously on the same tensor cores, using WGMMA's asynchronous pipeline. The softmax for iteration <code>n</code> runs on scalar units while both WGMMA operations execute on tensor cores.</p>
+<h3 id="the-overlap-idea">The overlap idea<a class="headerlink" href="#the-overlap-idea" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code>Iteration n:
+  Issue QK[n]  (WGMMA async)     }  Both on tensor cores
+  Issue PV[n-1] (WGMMA async)    }  simultaneously
+  mma.wait&lt;1&gt;                    -- wait for QK[n] only
+  Softmax on QK[n] result        -- scalar units, tensor cores still running PV[n-1]
+  mma.wait&lt;0&gt;                    -- wait for PV[n-1]
+  Cast softmax result to bf16    -- prepare for next iteration's PV[n]</code></pre>
+<p>The key: <code>mma.wait&lt;1&gt;</code> waits until only 1 WGMMA group is outstanding (QK finishes, PV still in flight). Softmax uses scalar FMA units, so PV's tensor core operation runs concurrently.</p>
+<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
+#define BLOCK_N 128
+#define WG_M 64
+#define WG_K 16
+#define SWIZ 128
+#define STAGES 2
+#define DIM 128
+
+__co__ void flash_atten(
+  global bf16[B, Q_SEQ, H, DIM] Q,
+  global bf16[B, KV_SEQ, H, DIM] K,
+  global bf16[B, KV_SEQ, H, DIM] V,
+  global bf16[B, Q_SEQ, H, DIM] O
+) {
+  float scale = 0.12751743f;
+
+  [[launch_bounds(_, 1)]]
+  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
+    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+
+    shared bf16[BLOCK_M, DIM] q_shared;
+    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
+    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
+
+    shared event qf, kf[STAGES], ke[STAGES], vf[STAGES], ve[STAGES];
+
+    kv_bound = cdiv((bm + 1) * BLOCK_M, BLOCK_N);
+    parallel p by [BLOCK_M/WG_M + 1] : group-4 {
+      // Producer: identical to v2
+      inthreads.async (p == 0) {
+        call croq::cuda::setreg_dec(24);
+        tma.copy.async&lt;qf&gt;.swiz&lt;SWIZ&gt;
+          Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
+        trigger qf;
+
+        foreach {bn} in [kv_bound] {
+          stage = bn % STAGES;
+          wait ke[stage];
+          tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;
+            K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[stage];
+          trigger kf[stage];
+
+          wait ve[stage];
+          tma.copy.async&lt;vf[stage]&gt;.swiz&lt;SWIZ&gt;
+            V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[stage];
+          trigger vf[stage];
+        }
+      }
+
+      // Consumer: QK[n] + PV[n-1] overlap
+      inthreads.async (p &gt; 0) {
+        call croq::cuda::setreg_inc(240);
+        cid = p - 1;
+        foreach {s} in [STAGES] {
+          trigger ke[s];
+          trigger ve[s];
+        }
+
+        wait qf;
+
+        frag f32[WG_M] scores_max {-inf};
+        frag f32[WG_M] scores_max_prev;
+        frag f32[WG_M] scores_scale;
+        frag f32[WG_M] scores_sum;
+        frag f32[WG_M] logsum {0.0f};
+        acc_o = mma.fill.f32 0.0f;
+        frag bf16[WG_M, BLOCK_N] acc_s_cast {0.0f};
+        int causal_row_base = bm * BLOCK_M + cid * WG_M;
+
+        // === Unified loop: QK[n] + PV[n-1] ===
+        foreach {bn} in [kv_bound] {
+          stage = bn % STAGES;
+          prev_stage = (bn + 1) % STAGES;
+
+          acc_s = mma.fill.f32 0.0f;
+
+          // Issue QK[n] and PV[n-1] back-to-back
+          wait kf[stage];
+          wait vf[bn == 0 ? stage : prev_stage];
+          mma.row.row acc_s,
+            q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[stage];
+          trigger ke[stage];
+
+          mma.row.col acc_o,
+            acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];
+          if (bn &gt; 0) trigger ve[prev_stage];
+
+          mma.wait&lt;1&gt;;  // wait for QK only; PV still in flight
+
+          // Causal mask
+          if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
+            apply {i, j} in acc_s.span {
+              if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + cid * WG_M + i))
+                acc_s.at(i, j) = -inf;
+            }
+          }
+
+          mma.wait&lt;0&gt;;  // now wait for PV[n-1] too
+
+          // Online softmax
+          copy(scores_max_prev, scores_max);
+          reduce_max(scores_max, acc_s, 1);
+          apply {i} in scores_max.span {
+            scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
+            scores_scale.at(i) = __exp2f(
+              scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
+          }
+          apply {i, j} in acc_s.span
+            acc_s.at(i, j) = __exp2f(
+              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
+          reduce_sum(scores_sum, acc_s, 1);
+          apply {i} in logsum.span
+            logsum.at(i) =
+              logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
+          apply {i, j} in acc_o.span
+            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+          apply {i, j} in acc_s_cast.span
+            acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+
+          // Epilogue: final PV merged into last iteration
+          if (bn == kv_bound - 1) {
+            wait vf[stage];
+            mma.row.col acc_o, acc_s_cast, v_buf[stage];
+            trigger ve[stage];
+            mma.wait&lt;0&gt;;
+          }
+        }
+
+        apply {i, j} in acc_o.span
+          acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
+        shared bf16[BLOCK_M, DIM] o_buf;
+        mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
+        tma.copy o_buf.subspan(WG_M, DIM).at(cid, 0) =&gt;
+          O_head.subspan(WG_M, DIM).at(bm * 2 + cid, 0);
+      }
+    }
+  }
+}</code></pre>
+<h3 id="new-concepts-in-v3">New concepts in v3<a class="headerlink" href="#new-concepts-in-v3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Construct</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frag bf16[WG_M, BLOCK_N] acc_s_cast {0.0f}</code></td>
+<td>Zero-initialized register fragment. On iteration 0, PV uses this zero matrix (no-op multiply), so the first <code>mma.row.col</code> adds nothing. This eliminates a special case for <code>bn==0</code>.</td>
+</tr>
+<tr>
+<td><code>mma.wait&lt;1&gt;</code></td>
+<td>Wait until at most 1 WGMMA group is outstanding. Since QK was issued first and PV second, this waits for QK to complete while PV continues on tensor cores.</td>
+</tr>
+<tr>
+<td><code>mma.wait&lt;0&gt;</code></td>
+<td>Wait for all outstanding WGMMA groups. After this, both QK and PV results are available.</td>
+</tr>
+<tr>
+<td><code>if (bn == kv_bound - 1) { ... }</code></td>
+<td>Epilogue: the final PV has no "next iteration" to overlap with, so it is issued and waited on explicitly in the last iteration.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-the-overlap-works">How the overlap works<a class="headerlink" href="#how-the-overlap-works" title="Permanent link">&para;</a></h3>
+<p>The key difference from v2 is the <strong>loop structure</strong>. In v2, each iteration does QK then softmax then PV sequentially. In v3, each iteration does:</p>
+<pre class="highlight"><code>Iteration 0:                    Iteration n (n&gt;0):
+  QK[0]  (WGMMA async)           QK[n]    (WGMMA async)
+  PV[-1] (no-op, zeros)          PV[n-1]  (WGMMA async, using prev softmax)
+  wait QK[0]                     wait QK[n]
+  softmax[0]                     softmax[n]        &lt;-- scalar, while PV runs
+  cast to bf16                   wait PV[n-1]
+                                 cast to bf16</code></pre>
+<p>On the last iteration, an explicit epilogue PV is appended:</p>
+<pre class="highlight"><code>Iteration kv_bound-1:
+  QK[last]  + PV[last-1]
+  softmax[last]
+  PV[last]  (explicit epilogue)</code></pre>
+<p>This is exactly the FA3 loop structure, expressed in ~6 additional lines of Croqtile.</p>
+<h3 id="the-prev_stage-trick">The <code>prev_stage</code> trick<a class="headerlink" href="#the-prev_stage-trick" title="Permanent link">&para;</a></h3>
+<pre class="highlight"><code class="language-choreo">prev_stage = (bn + 1) % STAGES;
+wait vf[bn == 0 ? stage : prev_stage];
+mma.row.col acc_o, acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];</code></pre>
+<p>PV[n-1] reads from the <strong>previous iteration's</strong> V buffer. With <code>STAGES=2</code>, <code>prev_stage = (bn+1) % 2</code> gives the alternate slot. On iteration 0, there is no previous V, so it reads from the current stage (the zero-initialized <code>acc_s_cast</code> makes this a no-op).</p>
+<h3 id="result-v3">Result: v3<a class="headerlink" href="#result-v3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Config</th>
+<th style="text-align: right;">Time (ms)</th>
+<th style="text-align: right;">TFLOPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEQ=4096</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">332.8</td>
+</tr>
+<tr>
+<td>SEQ=8192</td>
+<td style="text-align: right;">6.09</td>
+<td style="text-align: right;">361.3</td>
+</tr>
+<tr>
+<td>SEQ=16384</td>
+<td style="text-align: right;">23.5</td>
+<td style="text-align: right;">374.3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>~361 TFLOPS at SEQ=8192 (1.03x over v2, 88% of FA3)</strong></p>
+<p>The improvement is modest at short sequences (where the loop body dominates) but significant at SEQ=16384: <strong>374 vs 242 TFLOPS</strong> -- a 1.55x improvement. The overlap shines when there are enough KV iterations to amortize the pipeline startup cost.</p>
+<hr />
+<h2 id="the-optimization-ladder">The Optimization Ladder<a class="headerlink" href="#the-optimization-ladder" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Technique</th>
+<th>Key Croqtile constructs</th>
+<th style="text-align: right;">SEQ=8192 TFLOPS</th>
+<th style="text-align: right;">Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1</td>
+<td>Sequential DMA + WGMMA</td>
+<td><code>dma.copy.swiz</code>, <code>mma.row.row/col</code></td>
+<td style="text-align: right;">227.5</td>
+<td style="text-align: right;">1.0x</td>
+</tr>
+<tr>
+<td>v2</td>
+<td>1p2c warp spec + TMA pipeline</td>
+<td><code>inthreads.async</code>, <code>shared event</code>, <code>tma.copy.async</code>, <code>setreg</code></td>
+<td style="text-align: right;">350.1</td>
+<td style="text-align: right;">1.54x</td>
+</tr>
+<tr>
+<td>v3</td>
+<td>FA3-style QK/PV overlap</td>
+<td><code>mma.wait&lt;1&gt;</code>, epilogue PV fusion</td>
+<td style="text-align: right;">361.3</td>
+<td style="text-align: right;">1.59x</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="comparison-with-the-ecosystem">Comparison with the Ecosystem<a class="headerlink" href="#comparison-with-the-ecosystem" title="Permanent link">&para;</a></h2>
+<p>At SEQ=8192 (the headline config):</p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th style="text-align: right;">TFLOPS</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FlashAttention-3</td>
+<td style="text-align: right;">410.3</td>
+<td>Hand-tuned CUDA, heavily optimized</td>
+</tr>
+<tr>
+<td><strong>Croqtile v3</strong></td>
+<td style="text-align: right;"><strong>365.0</strong></td>
+<td><strong>~80 lines of <code>.co</code>, no CUDA</strong></td>
+</tr>
+<tr>
+<td>Triton + WS</td>
+<td style="text-align: right;">354.3</td>
+<td>Warp-specialized Triton kernel</td>
+</tr>
+<tr>
+<td>Triton</td>
+<td style="text-align: right;">312.5</td>
+<td>Standard Triton implementation</td>
+</tr>
+<tr>
+<td>TileLang</td>
+<td style="text-align: right;">295.8</td>
+<td>TileLang compiler-generated</td>
+</tr>
+</tbody>
+</table>
+<p>The Croqtile kernel matches Triton+WS and reaches 89% of FA3 -- the current SOTA -- while being expressed in a fraction of the code. The remaining gap to FA3 comes from techniques not yet applied:</p>
+<ul>
+<li><strong>Pingpong scheduling</strong>: FA3 uses a 2-CTA cooperative scheme where adjacent blocks alternate between QK and PV phases, maximizing L2 reuse.</li>
+<li><strong>Persistent kernel with tile scheduler</strong>: Keeps thread blocks alive across output tiles.</li>
+<li><strong>FP8 GQA paths</strong>: FA3 has specialized FP8 and grouped-query attention variants.</li>
+</ul>
+<hr />
+<h2 id="what-each-optimization-costs-in-code">What Each Optimization Costs in Code<a class="headerlink" href="#what-each-optimization-costs-in-code" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Optimization</th>
+<th style="text-align: right;">Lines changed from prev</th>
+<th style="text-align: right;">Lines of equivalent CUDA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1 -&gt; v2: warp spec + TMA</td>
+<td style="text-align: right;">+55 lines</td>
+<td style="text-align: right;">~300+ lines (mbarrier init, TMA descriptors, warpgroup dispatch)</td>
+</tr>
+<tr>
+<td>v2 -&gt; v3: QK/PV overlap</td>
+<td style="text-align: right;">+10 lines</td>
+<td style="text-align: right;">~80+ lines (WGMMA pipeline fence management, epilogue logic)</td>
+</tr>
+</tbody>
+</table>
+<p>The v3 kernel is ~80 lines of Croqtile total. A faithful CUDA implementation of the same algorithm requires 400+ lines -- TMA tensor-map construction, mbarrier lifecycle management, WGMMA smem descriptor encoding, swizzle propagation, register allocation hints, and careful fence ordering. One mistake in any of these causes silent numerical errors or deadlocks.</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.top", "navigation.path", "navigation.indexes", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+      
+        <script src="../../../assets/js/hljs-choreo.js"></script>
+      
+        <script src="../../../assets/js/hljs-init.js"></script>
+      
+    
+  </body>
+</html>
