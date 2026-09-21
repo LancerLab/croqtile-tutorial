@@ -1,0 +1,19 @@
+Choreo Flash Attention v3 persistent LPT (D=128 bf16 causal) (DIM=128, BSHD host and device)
+Layout: [batch, seqlen, heads, dim] (matches FA3 baseline)
+Warmup=50 Repeat=200
+--------------------------------------------
+B=4 H=32 SEQ=4096 causal prefill
+Timing avg ms: 1.39186309814
+TFLOPS: 394.978367212
+HW efficiency: 52.211284496%
+--------------------------------------------
+B=4 H=32 SEQ=8192 causal prefill
+Timing avg ms: 5.29708068848
+TFLOPS: 415.138712222
+HW efficiency: 54.876234266%
+--------------------------------------------
+B=4 H=32 SEQ=16384 causal prefill
+Timing avg ms: 20.7590039063
+TFLOPS: 423.724233683
+HW efficiency: 56.0111346574%
+Test Passed (verify skipped)

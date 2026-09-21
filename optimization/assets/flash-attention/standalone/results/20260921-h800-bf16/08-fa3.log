@@ -1,0 +1,16 @@
+Preparing fa3, S=4096
+VERIFY {"sequence": 4096, "passed": true, "checked": 261760, "max_abs_err": 0.0025254487991333008, "reference": "FP32 selected rows, all output dimensions"}
+S=4096 round=0 ms=1.322658844
+S=4096 round=1 ms=1.397989502
+S=4096 round=2 ms=1.503390503
+Preparing fa3, S=8192
+VERIFY {"sequence": 8192, "passed": true, "checked": 262016, "max_abs_err": 0.0028841495513916016, "reference": "FP32 selected rows, all output dimensions"}
+S=8192 round=0 ms=5.347284546
+S=8192 round=1 ms=5.379610596
+S=8192 round=2 ms=5.387033081
+Preparing fa3, S=16384
+VERIFY {"sequence": 16384, "passed": true, "checked": 262016, "max_abs_err": 0.0029709935188293457, "reference": "FP32 selected rows, all output dimensions"}
+S=16384 round=0 ms=20.818491211
+S=16384 round=1 ms=20.859060059
+S=16384 round=2 ms=20.909155273
+RESULT_JSON={"versions": {"torch": "2.11.0+cu130", "cuda": "13.0", "triton": "3.6.0", "tilelang": "0.1.9", "flash_attn_3": "3.0.0"}, "verification": [{"sequence": 4096, "passed": true, "checked": 261760, "max_abs_err": 0.0025254487991333008, "reference": "FP32 selected rows, all output dimensions"}, {"sequence": 8192, "passed": true, "checked": 262016, "max_abs_err": 0.0028841495513916016, "reference": "FP32 selected rows, all output dimensions"}, {"sequence": 16384, "passed": true, "checked": 262016, "max_abs_err": 0.0029709935188293457, "reference": "FP32 selected rows, all output dimensions"}], "measurements": [{"sequence": 4096, "round": 0, "ms": 1.3226588439941407}, {"sequence": 4096, "round": 1, "ms": 1.397989501953125}, {"sequence": 4096, "round": 2, "ms": 1.5033905029296875}, {"sequence": 8192, "round": 0, "ms": 5.347284545898438}, {"sequence": 8192, "round": 1, "ms": 5.379610595703125}, {"sequence": 8192, "round": 2, "ms": 5.387033081054687}, {"sequence": 16384, "round": 0, "ms": 20.8184912109375}, {"sequence": 16384, "round": 1, "ms": 20.85906005859375}, {"sequence": 16384, "round": 2, "ms": 20.9091552734375}]}

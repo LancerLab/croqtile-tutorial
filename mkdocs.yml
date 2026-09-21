@@ -60,6 +60,8 @@ plugins:
         - locale: zh
           name: 中文
           build: true
+          nav_translations:
+            "Flash Attention: Causal Prefill D=128": "Flash Attention：因果预填充 D=128"
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -102,6 +104,7 @@ nav:
     - "Dense GEMM FP16 (from naive)": optimization/dense-gemm-fp16-from-naive.md
     - "Sparse GEMM (FP16 + E4M3)": optimization/sparse-gemm.md
     - "Block-Scaled GEMM FP8": optimization/blockscale-gemm-fp8.md
+    - "Flash Attention: Causal Prefill D=128": optimization/flash-attention-causal-prefill.md
     - "Fused MoE FP8": optimization/fused-moe-fp8.md
 
   - "Part III — Coding Reference":

@@ -1,0 +1,19 @@
+Choreo Flash Attention v1 Manual Baseline (D=128 bf16 causal) (DIM=128, BSHD host and device)
+Layout: [batch, seqlen, heads, dim] (matches FA3 baseline)
+Warmup=50 Repeat=200
+--------------------------------------------
+B=4 H=32 SEQ=4096 causal prefill
+Timing avg ms: 2.58051757812
+TFLOPS: 213.0409103
+HW efficiency: 28.1613893324%
+--------------------------------------------
+B=4 H=32 SEQ=8192 causal prefill
+Timing avg ms: 9.30924865723
+TFLOPS: 236.219198404
+HW efficiency: 31.2252740785%
+--------------------------------------------
+B=4 H=32 SEQ=16384 causal prefill
+Timing avg ms: 35.3770800781
+TFLOPS: 248.638186158
+HW efficiency: 32.8669115874%
+Test Passed (verify skipped)

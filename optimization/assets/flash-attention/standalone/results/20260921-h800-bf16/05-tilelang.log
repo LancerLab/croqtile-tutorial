@@ -1,0 +1,22 @@
+2026-09-21 18:13:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:133): TileLang begins to compile kernel `main` with `out_idx=[3]`
+2026-09-21 18:13:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:141): TileLang completes to compile kernel `main`
+Preparing tilelang, S=4096
+VERIFY {"sequence": 4096, "passed": true, "checked": 261760, "max_abs_err": 0.0025254487991333008, "reference": "FP32 selected rows, all output dimensions"}
+S=4096 round=0 ms=1.648444061
+S=4096 round=1 ms=1.651058807
+S=4096 round=2 ms=1.725278625
+2026-09-21 18:13:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:133): TileLang begins to compile kernel `main` with `out_idx=[3]`
+2026-09-21 18:13:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:141): TileLang completes to compile kernel `main`
+Preparing tilelang, S=8192
+VERIFY {"sequence": 8192, "passed": true, "checked": 262016, "max_abs_err": 0.0028841495513916016, "reference": "FP32 selected rows, all output dimensions"}
+S=8192 round=0 ms=6.211298828
+S=8192 round=1 ms=6.307000122
+S=8192 round=2 ms=6.254555664
+2026-09-21 18:13:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:133): TileLang begins to compile kernel `main` with `out_idx=[3]`
+2026-09-21 18:13:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:141): TileLang completes to compile kernel `main`
+Preparing tilelang, S=16384
+VERIFY {"sequence": 16384, "passed": true, "checked": 262016, "max_abs_err": 0.0029709935188293457, "reference": "FP32 selected rows, all output dimensions"}
+S=16384 round=0 ms=23.955976562
+S=16384 round=1 ms=24.203779297
+S=16384 round=2 ms=24.265983887
+RESULT_JSON={"versions": {"torch": "2.11.0+cu130", "cuda": "13.0", "triton": "3.6.0", "tilelang": "0.1.9", "flash_attn_3": "3.0.0"}, "verification": [{"sequence": 4096, "passed": true, "checked": 261760, "max_abs_err": 0.0025254487991333008, "reference": "FP32 selected rows, all output dimensions"}, {"sequence": 8192, "passed": true, "checked": 262016, "max_abs_err": 0.0028841495513916016, "reference": "FP32 selected rows, all output dimensions"}, {"sequence": 16384, "passed": true, "checked": 262016, "max_abs_err": 0.0029709935188293457, "reference": "FP32 selected rows, all output dimensions"}], "measurements": [{"sequence": 4096, "round": 0, "ms": 1.6484440612792968}, {"sequence": 4096, "round": 1, "ms": 1.6510588073730468}, {"sequence": 4096, "round": 2, "ms": 1.7252786254882813}, {"sequence": 8192, "round": 0, "ms": 6.211298828125}, {"sequence": 8192, "round": 1, "ms": 6.3070001220703125}, {"sequence": 8192, "round": 2, "ms": 6.2545556640625}, {"sequence": 16384, "round": 0, "ms": 23.9559765625}, {"sequence": 16384, "round": 1, "ms": 24.203779296875}, {"sequence": 16384, "round": 2, "ms": 24.26598388671875}]}

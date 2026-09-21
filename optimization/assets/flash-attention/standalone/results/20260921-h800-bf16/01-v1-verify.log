@@ -1,0 +1,12 @@
+Choreo Flash Attention v1 Manual Baseline (D=128 bf16 causal) (DIM=128, BSHD host and device)
+Layout: [batch, seqlen, heads, dim] (matches FA3 baseline)
+--------------------------------------------
+B=4 H=32 SEQ=4096 causal prefill
+[VERIFY B=4 H=32 SEQ=4096 causal prefill] max_abs_err=0.00194889307022 avg_abs_err=6.03082735324e-05 fail_rate=0 (0/4096) PASS
+--------------------------------------------
+B=4 H=32 SEQ=8192 causal prefill
+[VERIFY B=4 H=32 SEQ=8192 causal prefill] max_abs_err=0.00202107429504 avg_abs_err=4.70525301353e-05 fail_rate=0 (0/4096) PASS
+--------------------------------------------
+B=4 H=32 SEQ=16384 causal prefill
+[VERIFY B=4 H=32 SEQ=16384 causal prefill] max_abs_err=0.0019359588623 avg_abs_err=3.56962045771e-05 fail_rate=0 (0/4096) PASS
+Test Passed

@@ -1,6 +1,6 @@
 # Performance Tuning Demos
 
-In this part, we iteratively optimize three Croqtile GEMM kernels on H800 PCIe (SM90a, 114 SMs). Each is written as a continuous worklog: start from a correct baseline, measure against hardware limits, change one thing, re-measure, and tell the story of why each optimization works.
+In this part, we iteratively optimize Croqtile GEMM, attention, and fused MoE kernels on H800 PCIe (SM90a, 114 SMs). Each is written as a continuous worklog: start from a correct baseline, measure against hardware limits, change one thing, re-measure, and tell the story of why each optimization works.
 
 Before diving in, skim [Setting Up: TimerOption, TFLOPS, and HW Efficiency](setup-profiling.md) for how timing and efficiency are computed — every story uses the same harness.
 
@@ -18,7 +18,7 @@ FP8 E4M3 with per-block scaling: **397 → 621 TFLOPS** (+56%). TMA overlap with
 
 ## [Flash Attention: Causal Prefill D=128](flash-attention-causal-prefill.md)
 
-Three-stage tutorial: sequential DMA+WGMMA -> warp-specialized 1p2c with TMA pipeline -> FA3-style intra-warpgroup QK/PV overlap. Reaches **374 TFLOPS** at SEQ=16384 (89% of FlashAttention-3), compared against FA3, Triton, Triton+WS, and TileLang. Shows how Croqtile expresses the full FA3 loop structure in ~80 lines.
+Updated for operation futures and generation-aware events: sequential DMA -> 1p2c TMA -> QK/PV overlap -> persistent task scheduling. Uses the current non-persistent v4 as the teaching example and explains persistent v3, reverse causal traversal, and deferred row-sum reduction. Includes freshly remeasured BF16 results for all three shapes, raw logs and source hashes, and standalone kernel/script downloads with matching CUDA and runtime headers.
 
 ## [Fused MoE FP8](fused-moe-fp8.md)
 
