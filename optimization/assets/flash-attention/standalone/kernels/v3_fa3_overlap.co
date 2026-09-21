@@ -1,0 +1,394 @@
+#include <algorithm>
+#include <cstdlib>
+#include <vector>
+
+__device__ __forceinline__ void fa3_row_sum_local_64x128(
+    float* dst, const float* src) {
+  #pragma unroll
+  for (int row = 0; row < 2; ++row) {
+    float sum = 0.0f;
+    #pragma unroll
+    for (int value = 0; value < 32; ++value)
+      sum += src[(value / 2) * 4 + row * 2 + value % 2];
+    dst[row] = sum;
+  }
+}
+
+__device__ __forceinline__ void fa3_row_sum_finalize_64x128(float* sum) {
+  #pragma unroll
+  for (int row = 0; row < 2; ++row) {
+    float value = sum[row];
+    value += __shfl_xor_sync(0xffffffffu, value, 2);
+    value += __shfl_xor_sync(0xffffffffu, value, 1);
+    sum[row] = value;
+  }
+}
+
+// Persistent form of the c459 pipeline. The task list is built on the host
+// with longest-processing-time assignment using the causal cost bm + 1.
+
+#define BLOCK_M 128
+#define BLOCK_N 128
+#define WG_M 64
+#define SWIZ 128
+#define STAGES 2
+#define PERSISTENT_CTAS 114
+
+#define DIM 128
+
+__co__ void flash_atten_persistent(
+  global bf16[B, Q_SEQ, H, DIM] Q,
+  global bf16[B, KV_SEQ, H, DIM] K,
+  global bf16[B, KV_SEQ, H, DIM] V,
+  global bf16[B, Q_SEQ, H, DIM] O,
+  global u32[TASKS] task_ids,
+  global u32[OFFSETS] task_offsets
+) {
+  float scale = 0.12751743f;
+
+  [[launch_bounds(_, 1)]]
+  parallel.async block_id by PERSISTENT_CTAS : block {
+    shared bf16[BLOCK_M, DIM] q_shared;
+    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
+    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
+    shared bf16[BLOCK_M, DIM] o_buf;
+
+    shared event qf;
+    shared event qe = ready;
+    shared event kf[STAGES], vf[STAGES];
+    shared event ke[STAGES] = ready, ve[STAGES] = ready;
+
+    parallel p by [BLOCK_M/WG_M + 1] : group-4, t by 128 : thread {
+      inthreads.async (p == 0) {
+        call croq::cuda::setreg_dec(40);
+      }
+
+      // Only two producer warps carry task and address state. Warp 0 issues
+      // K/Q TMA and warp 1 issues V TMA.
+      inthreads.async (p == 0 && t < 64) {
+        mutable u32 k_pipe_order = 0;
+        mutable u32 v_pipe_order = 0;
+        mutable u32 task_pos = task_offsets.at(block_id);
+        mutable u32 task_end = task_offsets.at(block_id + 1);
+
+        while (task_pos < task_end) {
+          packed = task_ids.at(task_pos);
+          task_pos = task_pos + 1;
+          logical_bm = packed & 255;
+          work_head = (packed >> 8) & 63;
+          work_batch = packed >> 14;
+          kv_bound = logical_bm + 1;
+
+          Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(work_batch, 0, work_head, 0).sqz();
+          K_head = K.subspan(1, KV_SEQ, 1, DIM).at(work_batch, 0, work_head, 0).sqz();
+          V_head = V.subspan(1, KV_SEQ, 1, DIM).at(work_batch, 0, work_head, 0).sqz();
+
+          // Wait for reusable Q storage before publishing the next task's Q.
+          wait qe;
+          q_load = tma.load.async.evict_first.swiz<SWIZ>
+            Q_head.subspan(BLOCK_M, DIM).at(logical_bm, 0) => q_shared;
+          trigger qf after q_load;
+
+          inthreads (t == 0) {
+            first_k_slot = k_pipe_order % STAGES;
+            wait ke.at(k_pipe_order);
+            first_k_load = tma.load.async.evict_last.swiz<SWIZ>
+              K_head.subspan(BLOCK_N, DIM).at(logical_bm, 0)
+                => k_buf[first_k_slot];
+            trigger kf.at(k_pipe_order++) after first_k_load;
+
+            foreach {step} in [kv_bound - 1] {
+              issue = step + 1;
+              bn = logical_bm - issue;
+              k_slot = k_pipe_order % STAGES;
+              wait ke.at(k_pipe_order);
+              k_load = tma.load.async.evict_last.swiz<SWIZ>
+                K_head.subspan(BLOCK_N, DIM).at(bn, 0) => k_buf[k_slot];
+              trigger kf.at(k_pipe_order++) after k_load;
+            }
+          }
+
+          inthreads (t == 32) {
+            foreach {issue} in [kv_bound] {
+              bn = logical_bm - issue;
+              v_slot = v_pipe_order % STAGES;
+              wait ve.at(v_pipe_order);
+              v_load = tma.load.async.evict_last.swiz<SWIZ>
+                V_head.subspan(BLOCK_N, DIM).at(bn, 0) => v_buf[v_slot];
+              trigger vf.at(v_pipe_order++) after v_load;
+            }
+          }
+        }
+      }
+
+      inthreads.async (p > 0) {
+        call croq::cuda::setreg_inc(232);
+        cid = p - 1;
+
+        mutable u32 k_pipe_order = 0;
+        mutable u32 v_pipe_order = 0;
+        mutable u32 task_pos = task_offsets.at(block_id);
+        mutable u32 task_end = task_offsets.at(block_id + 1);
+
+        while (task_pos < task_end) {
+          packed = task_ids.at(task_pos);
+          task_pos = task_pos + 1;
+          logical_bm = packed & 255;
+          work_head = (packed >> 8) & 63;
+          work_batch = packed >> 14;
+          kv_bound = logical_bm + 1;
+
+          O_head = O.subspan(1, Q_SEQ, 1, DIM)
+              .at(work_batch, 0, work_head, 0).sqz();
+
+          frag f32[WG_M] scores_max {-inf};
+          frag f32[WG_M] scores_max_prev;
+          frag f32[WG_M] scores_scale;
+          frag f32[WG_M] scores_sum;
+          frag f32[WG_M] logsum {0.0f};
+          frag bf16[WG_M, BLOCK_N] acc_s_cast;
+
+          acc_s = mma.fill.f32 0.0f;
+          wait qf;
+          wait kf.at(k_pipe_order);
+          first_k_slot = k_pipe_order % STAGES;
+          mma.row.row acc_s, q_shared.subspan(WG_M, DIM).at(cid, 0),
+            k_buf[first_k_slot];
+          trigger ke.at(k_pipe_order++);
+
+          apply {i, j} in acc_s.span {
+            if (j > cid * WG_M + i)
+              acc_s.at(i, j) = -inf;
+          }
+
+          reduce_max(scores_max, acc_s, 1);
+          apply {i, j} in acc_s.span
+            acc_s.at(i, j) = __exp2f(
+              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
+          call fa3_row_sum_local_64x128(scores_sum, acc_s);
+          apply {i} in logsum.span
+            logsum.at(i) = scores_sum.at(i);
+          apply {i, j} in acc_s_cast.span
+            acc_s_cast.at(i, j) = __to<bf16>(acc_s.at(i, j));
+
+          acc_o = mma.fill.f32 0.0f;
+          foreach {step} in [kv_bound - 1] {
+            k_slot = k_pipe_order % STAGES;
+            prev_v_slot = v_pipe_order % STAGES;
+
+            acc_s = mma.fill.f32 0.0f;
+            wait kf.at(k_pipe_order);
+            qk = mma.row.row.async acc_s,
+              q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[k_slot];
+            wait vf.at(v_pipe_order);
+            pv = mma.row.col.async acc_o, acc_s_cast, v_buf[prev_v_slot];
+
+            wait qk;
+            copy(scores_max_prev, scores_max);
+            reduce_max(scores_max, acc_s, 1);
+            apply {i, j} in acc_s.span {
+              scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
+              scores_scale.at(i) = __exp2f(
+                scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
+              acc_s.at(i, j) = __exp2f(
+                acc_s.at(i, j) * scale - scores_max.at(i) * scale);
+             }
+
+            call fa3_row_sum_local_64x128(scores_sum, acc_s);
+            apply {i} in logsum.span
+              logsum.at(i) = logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
+
+            wait pv;
+            trigger ke.at(k_pipe_order++);
+            trigger ve.at(v_pipe_order++);
+
+            apply {i, j} in acc_o.span {
+              acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+              acc_s_cast.at(i, j) = __to<bf16>(acc_s.at(i, j));
+            }
+          }
+
+          // Q is dead after the final QK softmax update. Publish the empty
+          // generation so the producer can overlap the next task's Q load
+          // with final PV and output work.
+          trigger qe;
+
+          final_v_slot = v_pipe_order % STAGES;
+          wait vf.at(v_pipe_order);
+          final_pv = mma.row.col.async acc_o, acc_s_cast, v_buf[final_v_slot];
+          call fa3_row_sum_finalize_64x128(logsum);
+          apply {i} in scores_scale.span
+            scores_scale.at(i) = 1.0f / logsum.at(i);
+          wait final_pv;
+          trigger ve.at(v_pipe_order++);
+
+          apply {i, j} in acc_o.span
+            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+          mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
+          tma.copy o_buf => O_head.subspan(BLOCK_M, DIM).at(logical_bm, 0);
+        }
+      }
+    }
+  }
+}
+
+#define MHA_DIM DIM
+#define MHA_DTYPE choreo::bf16
+#include "../fa_helper.hpp"
+
+namespace {
+
+struct PersistentSchedule {
+  int batch = -1;
+  int heads = -1;
+  int q_seq = -1;
+  choreo::u32* tasks_d = nullptr;
+  choreo::u32* offsets_d = nullptr;
+  size_t task_count = 0;
+};
+
+PersistentSchedule& get_schedule(const mha_helper::BenchConfig& cfg) {
+  static PersistentSchedule cache;
+  if (cache.batch == cfg.batch && cache.heads == cfg.heads &&
+      cache.q_seq == cfg.q_seq) {
+    return cache;
+  }
+
+  if (cache.tasks_d) choreo::abend_true(cudaFree(cache.tasks_d));
+  if (cache.offsets_d) choreo::abend_true(cudaFree(cache.offsets_d));
+  cache.tasks_d = nullptr;
+  cache.offsets_d = nullptr;
+
+  const unsigned q_blocks =
+      (static_cast<unsigned>(cfg.q_seq) + BLOCK_M - 1) / BLOCK_M;
+  const unsigned head_batches =
+      static_cast<unsigned>(cfg.batch * cfg.heads);
+  std::vector<std::vector<choreo::u32>> bins(PERSISTENT_CTAS);
+  std::vector<unsigned> costs(PERSISTENT_CTAS, 0);
+  unsigned fixed_cost = 4;
+  if (const char* env = std::getenv("CHOREO_SCHED_FIXED_COST")) {
+    fixed_cost = static_cast<unsigned>(std::strtoul(env, nullptr, 10));
+  }
+
+  auto assign = [&](unsigned bm, unsigned hb) {
+    unsigned best = 0;
+    for (unsigned cta = 1; cta < PERSISTENT_CTAS; ++cta) {
+      if (costs[cta] < costs[best]) best = cta;
+    }
+    const unsigned head = hb % static_cast<unsigned>(cfg.heads);
+    const unsigned batch = hb / static_cast<unsigned>(cfg.heads);
+    bins[best].push_back(bm | (head << 8) | (batch << 14));
+    costs[best] += 2 * (bm + 1) + fixed_cost;
+  };
+
+  auto unpack_hb = [&](choreo::u32 packed) {
+    const unsigned head = (packed >> 8) & 63;
+    const unsigned batch = packed >> 14;
+    return batch * static_cast<unsigned>(cfg.heads) + head;
+  };
+
+  for (unsigned pair = 0; pair < (head_batches + 1) / 2; ++pair) {
+    for (int bm = static_cast<int>(q_blocks) - 1; bm >= 0; --bm) {
+      for (unsigned lane = 0; lane < 2; ++lane) {
+        const unsigned hb = pair * 2 + lane;
+        if (hb < head_batches) assign(static_cast<unsigned>(bm), hb);
+      }
+    }
+  }
+
+  // Match c459's pair-preserving tail rebalance. The greedy LPT assignment
+  // is close, but exchanging K-loop lengths within a head pair reduces the
+  // final persistent-CTA completion gap without changing L2 execution waves.
+  for (unsigned iter = 0; iter < 1024; ++iter) {
+    unsigned heavy = 0;
+    unsigned light = 0;
+    for (unsigned cta = 1; cta < PERSISTENT_CTAS; ++cta) {
+      if (costs[cta] > costs[heavy]) heavy = cta;
+      if (costs[cta] < costs[light]) light = cta;
+    }
+
+    const int old_gap =
+        static_cast<int>(costs[heavy]) - static_cast<int>(costs[light]);
+    unsigned best_hi = 0;
+    unsigned best_lo = 0;
+    int best_gap = old_gap;
+    for (unsigned hi = 0; hi < bins[heavy].size(); ++hi) {
+      const int hi_k = static_cast<int>((bins[heavy][hi] & 255) + 1);
+      for (unsigned lo = 0; lo < bins[light].size(); ++lo) {
+        if ((unpack_hb(bins[heavy][hi]) >> 1) !=
+            (unpack_hb(bins[light][lo]) >> 1)) {
+          continue;
+        }
+        const int lo_k = static_cast<int>((bins[light][lo] & 255) + 1);
+        const int new_gap = std::abs(old_gap - 4 * (hi_k - lo_k));
+        if (new_gap < best_gap) {
+          best_gap = new_gap;
+          best_hi = hi;
+          best_lo = lo;
+        }
+      }
+    }
+    if (best_gap >= old_gap) break;
+
+    const unsigned hi_k = (bins[heavy][best_hi] & 255) + 1;
+    const unsigned lo_k = (bins[light][best_lo] & 255) + 1;
+    std::swap(bins[heavy][best_hi], bins[light][best_lo]);
+    const int delta =
+        2 * (static_cast<int>(hi_k) - static_cast<int>(lo_k));
+    costs[heavy] =
+        static_cast<unsigned>(static_cast<int>(costs[heavy]) - delta);
+    costs[light] =
+        static_cast<unsigned>(static_cast<int>(costs[light]) + delta);
+  }
+
+  for (auto& bin : bins) {
+    std::stable_sort(bin.begin(), bin.end(), [&](choreo::u32 lhs,
+                                                 choreo::u32 rhs) {
+      return unpack_hb(lhs) < unpack_hb(rhs);
+    });
+  }
+
+  std::vector<choreo::u32> offsets(PERSISTENT_CTAS + 1, 0);
+  std::vector<choreo::u32> tasks;
+  tasks.reserve(static_cast<size_t>(q_blocks) * head_batches);
+  for (unsigned cta = 0; cta < PERSISTENT_CTAS; ++cta) {
+    tasks.insert(tasks.end(), bins[cta].begin(), bins[cta].end());
+    offsets[cta + 1] = static_cast<choreo::u32>(tasks.size());
+  }
+
+  choreo::abend_true(
+      cudaMalloc(&cache.tasks_d, tasks.size() * sizeof(choreo::u32)));
+  choreo::abend_true(cudaMalloc(
+      &cache.offsets_d, offsets.size() * sizeof(choreo::u32)));
+  choreo::abend_true(cudaMemcpy(cache.tasks_d, tasks.data(),
+                                tasks.size() * sizeof(choreo::u32),
+                                cudaMemcpyHostToDevice));
+  choreo::abend_true(cudaMemcpy(cache.offsets_d, offsets.data(),
+                                offsets.size() * sizeof(choreo::u32),
+                                cudaMemcpyHostToDevice));
+
+  cache.batch = cfg.batch;
+  cache.heads = cfg.heads;
+  cache.q_seq = cfg.q_seq;
+  cache.task_count = tasks.size();
+  return cache;
+}
+
+} // namespace
+
+int main() {
+  #include "../bench_configs.inc"
+  return mha_helper::RunBenchmarks(
+      "Choreo Flash Attention v3 persistent LPT (D=128 bf16 causal)",
+      kBenchConfigs, kBenchConfigCount,
+      [&](const mha_helper::BenchConfig& cfg,
+          const mha_helper::TensorViews& views) {
+        auto& schedule = get_schedule(cfg);
+        auto task_view = choreo::make_spanview<choreo::u32, 1>(
+            schedule.tasks_d, {schedule.task_count});
+        auto offset_view = choreo::make_spanview<choreo::u32, 1>(
+            schedule.offsets_d, {PERSISTENT_CTAS + 1});
+        flash_atten_persistent(views.Q, views.K, views.V, views.O,
+                               task_view, offset_view);
+      });
+}

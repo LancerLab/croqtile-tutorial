@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://LancerLab.github.io/croqtile-tutorial/zh/optimization/flash-attention-causal-prefill/">
       
       
+        <link rel="prev" href="../blockscale-gemm-fp8/">
+      
+      
+        <link rel="next" href="../fused-moe-fp8/">
       
       
         
@@ -21,15 +25,15 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>How to Write a Flash Attention Kernel with Croqtile: a Worklog - Croqtile</title>
+        <title>Flash Attention：因果预填充 D=128 - Croqtile</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -80,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog" class="md-skip">
+        <a href="#flash-attention-d128" class="md-skip">
           跳转至
         </a>
       
@@ -115,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to Write a Flash Attention Kernel with Croqtile: a Worklog
+              Flash Attention：因果预填充 D=128
             
           </span>
         </div>
@@ -708,6 +712,8 @@
       
   
   
+    
+  
   
   
     
@@ -727,15 +733,17 @@
       
         
       
+        
+      
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -763,7 +771,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -883,6 +891,275 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flash Attention：因果预填充 D=128
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flash Attention：因果预填充 D=128
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        测试负载与源码导览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#online-softmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Online softmax：必须保持的不变量
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 1 步：建立顺序执行基线
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-tma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 2 步：让 TMA 加载与消费者计算重叠
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-future-softmax-pv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 3 步：通过操作 future 让 softmax 与 PV 重叠
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第 3 步：通过操作 future 让 softmax 与 PV 重叠">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        逆序遍历把因果掩码集中到序言
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        消费者的稳态循环
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        推迟分母的跨 lane 归约
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 4 步：持久化调度与跨任务生命周期
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第 4 步：持久化调度与跨任务生命周期">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q buffer 需要独立的交接协议
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        资源分配也是调度的一部分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        性能测量
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="性能测量">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        计时范围与比较限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        正确性检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下载与复现
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        迁移旧版 attention 代码
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2327,10 +2604,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-algorithm-online-softmax-attention" class="md-nav__link">
+  <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Algorithm: Online Softmax Attention
+        测试负载与源码导览
       
     </span>
   </a>
@@ -2338,10 +2615,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-at-a-glance" class="md-nav__link">
+  <a href="#online-softmax" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Performance at a glance
+        Online softmax：必须保持的不变量
       
     </span>
   </a>
@@ -2349,10 +2626,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-flash-attention-is-harder-than-gemm" class="md-nav__link">
+  <a href="#1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Flash Attention Is Harder Than GEMM
+        第 1 步：建立顺序执行基线
       
     </span>
   </a>
@@ -2360,22 +2637,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-1-sequential-load-compute" class="md-nav__link">
+  <a href="#2-tma" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel 1: Sequential Load + Compute
+        第 2 步：让 TMA 加载与消费者计算重叠
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Kernel 1: Sequential Load + Compute">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-future-softmax-pv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 3 步：通过操作 future 让 softmax 与 PV 重叠
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第 3 步：通过操作 future 让 softmax 与 PV 重叠">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#croqtile-concepts-for-attention" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Croqtile concepts for attention
+        逆序遍历把因果掩码集中到序言
       
     </span>
   </a>
@@ -2383,10 +2671,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#how-the-inner-loop-works" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How the inner loop works
+        消费者的稳态循环
       
     </span>
   </a>
@@ -2394,10 +2682,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#result-v1" class="md-nav__link">
+  <a href="#lane" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result: v1
+        推迟分母的跨 lane 归约
       
     </span>
   </a>
@@ -2410,22 +2698,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-2-warp-specialized-1p2c-with-tma-pipeline" class="md-nav__link">
+  <a href="#4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel 2: Warp-Specialized 1p2c with TMA Pipeline
+        第 4 步：持久化调度与跨任务生命周期
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Kernel 2: Warp-Specialized 1p2c with TMA Pipeline">
+    <nav class="md-nav" aria-label="第 4 步：持久化调度与跨任务生命周期">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#new-concepts-in-v2" class="md-nav__link">
+  <a href="#q-buffer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New concepts in v2
+        Q buffer 需要独立的交接协议
       
     </span>
   </a>
@@ -2433,32 +2721,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-1p2c-pipeline-structure" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The 1p2c pipeline structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-the-causal-mask-is-optimized" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why the causal mask is optimized
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#result-v2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Result: v2
+        资源分配也是调度的一部分
       
     </span>
   </a>
@@ -2471,22 +2737,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-3-fa3-style-intra-warpgroup-overlap" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel 3: FA3-Style Intra-Warpgroup Overlap
+        性能测量
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Kernel 3: FA3-Style Intra-Warpgroup Overlap">
+    <nav class="md-nav" aria-label="性能测量">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-overlap-idea" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The overlap idea
+        计时范围与比较限制
       
     </span>
   </a>
@@ -2494,43 +2760,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#new-concepts-in-v3" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New concepts in v3
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-the-overlap-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How the overlap works
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-prev_stage-trick" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The prev_stage trick
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#result-v3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Result: v3
+        正确性检查
       
     </span>
   </a>
@@ -2543,10 +2776,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-optimization-ladder" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Optimization Ladder
+        下载与复现
       
     </span>
   </a>
@@ -2554,21 +2787,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-the-ecosystem" class="md-nav__link">
+  <a href="#attention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparison with the Ecosystem
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-each-optimization-costs-in-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Each Optimization Costs in Code
+        迁移旧版 attention 代码
       
     </span>
   </a>
@@ -2593,6 +2815,46 @@
   
 
 
+  <nav class="md-path" aria-label="导航栏" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../" class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Part II — Performance Tuning Demos
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
@@ -2603,877 +2865,552 @@
   
 
 
-<h1 id="how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog">How to Write a Flash Attention Kernel with Croqtile: a Worklog<a class="headerlink" href="#how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog" title="Permanent link">&para;</a></h1>
-<p><em>June 2026 -- GPU: NVIDIA H800 PCIe (SM90a) -- Precision: BF16 -- Problem: Causal Prefill, D=128, BSHD layout</em></p>
-<hr />
-<p>Flash Attention is the most impactful kernel in modern LLM training and inference. It fuses the entire Q<em>K softmax</em>V pipeline into a single kernel, reducing memory from O(N^2) to O(N) and unlocking sequence lengths that would otherwise OOM.</p>
-<p>In this worklog I start from a sequential load-compute kernel and step-by-step apply the three major GPU optimization techniques for attention -- warp specialization, async TMA pipelining, and intra-warpgroup QK/PV overlap -- all in <strong>Croqtile</strong>. The finished kernel reaches <strong>374 TFLOPS</strong> at SEQ=16384, matching <strong>FlashAttention-3</strong> on the same hardware. No hand-written CUDA, no manual <code>mbarrier</code> lifecycle management, no WGMMA descriptor encoding.</p>
-<p>This tutorial assumes familiarity with the matmul tutorial's Hopper constructs (<code>tma.copy</code>, <code>mma.load</code>, <code>inthreads.async</code>, <code>shared event</code>). If those are new, read <a href="../dense-gemm-fp16-from-naive/">Dense GEMM FP16: From Naive to Tuned</a> first.</p>
-<p>Compile and run any kernel:</p>
-<pre class="highlight"><code class="language-bash">cd benchmark/performance/flash_atten/causal_prefill_d128/choreo
-bash bench.sh --kernel v1_manual_baseline.co --gpu 1</code></pre>
-<hr />
-<h2 id="the-algorithm-online-softmax-attention">The Algorithm: Online Softmax Attention<a class="headerlink" href="#the-algorithm-online-softmax-attention" title="Permanent link">&para;</a></h2>
-<p>Before looking at code, here is the algorithm that all three kernels implement. This is the FlashAttention core loop (Dao et al., 2022):</p>
-<p>For each block of query rows <code>[bm]</code>:</p>
-<ol>
-<li>Load Q block from global memory</li>
-<li>For each block of KV columns <code>[bn]</code>:
-   a. Compute <code>S = Q * K^T</code> (score matrix, via WGMMA)
-   b. Apply causal mask: <code>S[i,j] = -inf</code> where <code>j &gt; i</code>
-   c. Online softmax: track running max and sum of exponentials
-   d. Rescale previous accumulator: <code>O *= exp(prev_max - new_max)</code>
-   e. Compute <code>O += softmax(S) * V</code> (via WGMMA)</li>
-<li>Normalize: <code>O /= logsum</code></li>
-<li>Store O to global memory</li>
-</ol>
-<p>The key insight: by maintaining a running max and log-sum-exp, we never materialize the full N*N attention matrix. Each KV block is loaded once, used, and discarded.</p>
-<hr />
-<h2 id="performance-at-a-glance">Performance at a glance<a class="headerlink" href="#performance-at-a-glance" title="Permanent link">&para;</a></h2>
-<p>Headline config: <strong>B=4, H=32, SEQ=8192, D=128, causal prefill, BF16</strong></p>
+<h1 id="flash-attention-d128">Flash Attention：因果预填充 D=128<a class="headerlink" href="#flash-attention-d128" title="Permanent link">&para;</a></h1>
+<p><em>更新于 2026 年 9 月。目标硬件：NVIDIA H800 PCIe，SM90a，114 个 SM。
+输入和输出为 BF16，使用 FP32 累加，采用 BSHD 布局。</em></p>
+<p>本篇通过 <a href="https://github.com/LancerLab/croqtile">Croqtile</a> 逐步实现和优化因果预填充 attention 内核。
+当前实现已不止于最初的三步演示：它使用操作 future、带代际的事件、独立的 QK 序言和 PV 收尾，
+并加入持久化调度实验。较新的非持久化版本保留了同样的计算流水线，更适合学习其核心结构。</p>
+<p>本页的内核和性能对照统一打包为可独立运行的
+<a href="../../../optimization/assets/flash-attention/flash-attention-standalone.zip">ZIP</a> 和
+<a href="../../../optimization/assets/flash-attention/flash-attention-standalone.tar.gz">tar.gz</a>。
+包内包含生成的 CUDA 和 runtime 头文件，因此运行示例需要 CUDA 和 CUTLASS，但不需要编译器仓库。
+各对照实现所需的 Python 依赖见<a href="../../../optimization/assets/flash-attention/standalone/README.txt">包内 README</a>。</p>
+<h2 id="_1">测试负载与源码导览<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p><a href="../../../optimization/assets/flash-attention/standalone/bench_configs.inc">可下载的负载配置</a>
+定义了本次测量的三个尺寸：</p>
 <table>
 <thead>
 <tr>
-<th>Kernel</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-<th style="text-align: right;">vs FA3</th>
+<th>参数</th>
+<th>取值</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>v1: Sequential DMA + WGMMA</td>
-<td style="text-align: right;">9.67</td>
-<td style="text-align: right;">227.5</td>
-<td style="text-align: right;">55%</td>
+<td>Batch、query 头数、KV 头数</td>
+<td>4、32、32</td>
 </tr>
 <tr>
-<td>v2: Warp-specialized 1p2c + TMA pipeline</td>
-<td style="text-align: right;">6.28</td>
-<td style="text-align: right;">350.1</td>
-<td style="text-align: right;">85%</td>
+<td>Query 和 KV 序列长度</td>
+<td>二者均为 4096、8192 或 16384</td>
 </tr>
 <tr>
-<td><strong>v3: FA3-style QK/PV overlap</strong></td>
-<td style="text-align: right;"><strong>6.09</strong></td>
-<td style="text-align: right;"><strong>361.3</strong></td>
-<td style="text-align: right;"><strong>88%</strong></td>
+<td>Head dimension</td>
+<td>128</td>
 </tr>
 <tr>
-<td>FlashAttention-3 (reference)</td>
-<td style="text-align: right;">5.41</td>
-<td style="text-align: right;">410.3</td>
-<td style="text-align: right;">100%</td>
+<td>模式</td>
+<td>因果全序列前向计算，不含 dropout</td>
+</tr>
+<tr>
+<td>布局与精度</td>
+<td><code>[batch, sequence, head, dim]</code>，BF16</td>
+</tr>
+<tr>
+<td>默认计时配置</td>
+<td>50 次预热，200 次重复执行</td>
 </tr>
 </tbody>
 </table>
-<p>Across sequence lengths (B=4, H=32):</p>
+<p>主要讨论的尺寸是 <code>B=4, H=32, S=8192, D=128</code>。这些 prefill 负载的 Q/KV 长度相同，
+且序列长度能被 128 整除。下文的优化内核并不意味着已支持任意尾块、GQA、不同的 Q/KV 长度或反向计算。</p>
+<p>下表中的源码文件均位于下载包的 <code>kernels/</code> 目录。版本编号标识实验，不代表必然的性能排序。</p>
 <table>
 <thead>
 <tr>
-<th>Config</th>
-<th style="text-align: right;">Choreo v3</th>
-<th style="text-align: right;">FA3</th>
-<th style="text-align: right;">TileLang</th>
-<th style="text-align: right;">Triton</th>
-<th style="text-align: right;">Triton+WS</th>
+<th>源码</th>
+<th>在教程中的作用</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">333.3</td>
-<td style="text-align: right;">407.1</td>
-<td style="text-align: right;">243.8</td>
-<td style="text-align: right;">294.4</td>
-<td style="text-align: right;">346.3</td>
+<td><a href="../../../optimization/assets/flash-attention/standalone/kernels/v1_manual_baseline.co">v1_manual_baseline.co</a></td>
+<td>顺序执行协作式 DMA、QK、softmax 和 PV</td>
 </tr>
 <tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">365.0</td>
-<td style="text-align: right;">410.3</td>
-<td style="text-align: right;">295.8</td>
-<td style="text-align: right;">312.5</td>
-<td style="text-align: right;">354.3</td>
+<td><a href="../../../optimization/assets/flash-attention/standalone/kernels/v2_manual_s2_1p2c_tma.co">v2_manual_s2_1p2c_tma.co</a></td>
+<td>一个生产者、两个消费者，双缓冲 TMA 流水线</td>
 </tr>
 <tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">377.2</td>
-<td style="text-align: right;">422.1</td>
-<td style="text-align: right;">349.0</td>
-<td style="text-align: right;">324.7</td>
-<td style="text-align: right;">371.0</td>
+<td><a href="../../../optimization/assets/flash-attention/standalone/kernels/v4_nonpersistent_fa.co">v4_nonpersistent_fa.co</a></td>
+<td>当前的教学实现：逆序遍历、基于 future 的 QK/PV 重叠和 fragment 归约</td>
+</tr>
+<tr>
+<td><a href="../../../optimization/assets/flash-attention/standalone/kernels/v3_fa3_overlap.co">v3_fa3_overlap.co</a></td>
+<td>当前的持久化实现：主机构建任务列表，跨任务复用 Q 存储</td>
 </tr>
 </tbody>
 </table>
-<p><em>TFLOPS. Higher is better. Measured on H800 PCIe with warmup=50, repeat=200.</em></p>
-<hr />
-<h2 id="why-flash-attention-is-harder-than-gemm">Why Flash Attention Is Harder Than GEMM<a class="headerlink" href="#why-flash-attention-is-harder-than-gemm" title="Permanent link">&para;</a></h2>
-<p>A matmul kernel has one compute phase: C += A * B. Flash attention has <strong>two coupled WGMMA phases</strong> per inner-loop iteration -- QK and PV -- connected by a softmax that depends on the QK result. This creates three challenges that do not exist in GEMM:</p>
-<table>
-<thead>
-<tr>
-<th>Challenge</th>
-<th>GEMM</th>
-<th>Flash Attention</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Compute phases</strong></td>
-<td>1 (C += A*B)</td>
-<td>2 per iteration (S = Q<em>K, O += P</em>V)</td>
-</tr>
-<tr>
-<td><strong>Data dependencies</strong></td>
-<td>None between iterations</td>
-<td>PV depends on softmax of QK</td>
-</tr>
-<tr>
-<td><strong>Shared memory pressure</strong></td>
-<td>2 buffers (A, B)</td>
-<td>3+ buffers (Q, K, V, plus staging)</td>
-</tr>
-<tr>
-<td><strong>Causal masking</strong></td>
-<td>N/A</td>
-<td>Conditional <code>-inf</code> injection after QK</td>
-</tr>
-<tr>
-<td><strong>Numerical stability</strong></td>
-<td>Standard FP accumulation</td>
-<td>Online max/sum tracking across iterations</td>
-</tr>
-</tbody>
-</table>
-<p>The optimization path therefore differs: instead of just tuning tile shapes, we need to <strong>restructure the loop body</strong> to overlap the two WGMMA phases.</p>
-<hr />
-<h2 id="kernel-1-sequential-load-compute">Kernel 1: Sequential Load + Compute<a class="headerlink" href="#kernel-1-sequential-load-compute" title="Permanent link">&para;</a></h2>
-<p><strong>File:</strong> <code>v1_manual_baseline.co</code></p>
-<p>The simplest correct implementation: load Q once into shared memory, then sequentially load K and V blocks, compute QK, apply masking and softmax, compute PV, and accumulate.</p>
-<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
-#define BLOCK_N 128
-#define WG_M 64
-#define WG_K 16
-#define DIM 128
+<p>建议先通过 v4 理解现代计算循环，再研究 v3 的任务调度。下载包包含四份 <code>.co</code> 源码、
+对应的 CUDA、测试框架与配置，以及可执行的构建和测量脚本。下文的源码讲解均对应包内版本。
+也可单独下载<a href="../../../optimization/assets/flash-attention/standalone/run.py">构建和测量脚本</a>、
+<a href="../../../optimization/assets/flash-attention/standalone/baseline.py">Python 对照测试框架</a>及
+<a href="../../../optimization/assets/flash-attention/standalone/generated/v4_nonpersistent_fa.cu">v4 生成的 CUDA</a>。</p>
+<h2 id="online-softmax">Online softmax：必须保持的不变量<a class="headerlink" href="#online-softmax" title="Permanent link">&para;</a></h2>
+<p>对每个 query tile，维护当前的逐行最大值 <code>m</code>、分母 <code>l</code> 和未归一化的输出累加器 <code>O</code>。
+处理每个 KV tile 时执行：</p>
+<pre class="highlight"><code class="language-text">S = Q @ K^T
+S[i,j] = -inf for masked positions
+m_new = max(m, row_max(S))
+alpha = exp2((m - m_new) * scale)
+P = exp2(S * scale - m_new * scale)
+l = alpha * l + row_sum(P)
+O = alpha * O + P @ V
+m = m_new
 
-__co__ void flash_atten(
-  global bf16[B, Q_SEQ, H, DIM] Q, global bf16[B, KV_SEQ, H, DIM] K,
-  global bf16[B, KV_SEQ, H, DIM] V,
-  global bf16[B, Q_SEQ, H, DIM] O
-) {
-  float scale = 0.12751743f;
-  int past_len = KV_SEQ - Q_SEQ;
+After all KV tiles: output = O / l
+scale = log2(e) / sqrt(128) = approximately 0.12751743</code></pre>
+<p>源码中的 <code>logsum</code> 保存的是 <code>l</code>，即指数值之和，而不是该和的对数。
+QK 和 PV 使用 FP32 累加；在 PV 的 tensor core 运算前，<code>P</code> 会转换为 BF16。</p>
+<p>每个 CTA 只保留自己的 tile 和逐行状态，避免在全局内存中生成 <code>S x S</code> 的分数或概率矩阵。
+不同 query CTA 仍会加载重叠的 K/V tile，因此缓存复用和任务顺序依然重要。
+Online softmax 也允许逆序遍历 KV，但浮点舍入结果可能随运算顺序略有变化。</p>
+<h2 id="1">第 1 步：建立顺序执行基线<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>在 v1 中，一个 CTA 负责 128 个 query 行，两个各含 128 个线程的 warpgroup 分别计算 64 行。
+Q 只复制一次；每次内层迭代先复制 K、计算 QK 和 softmax，再复制 V、计算 PV。
+以下片段使用内核中已声明的视图和累加器：</p>
+<pre class="highlight"><code class="language-choreo">q_s = dma.copy.swiz&lt;128&gt;
+  Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; shared;
 
-  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
-    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+// Inside the consumer's KV loop:
+acc_s = mma.fill.f32 0.0f;
+k_s = dma.copy.swiz&lt;128&gt;
+  K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
+mma.row.row acc_s, q_s.chunkat(wgm, _), k_s;
 
-    q_s = dma.copy.swiz&lt;128&gt; Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; shared;
-    parallel wgm by [BLOCK_M / WG_M]: group-4 {
-      frag bf16[WG_M, BLOCK_N] acc_s_cast;
-      frag f32[WG_M] scores_max {-inf};
-      frag f32[WG_M] scores_max_prev;
-      frag f32[WG_M] scores_scale;
-      frag f32[WG_M] scores_sum;
-      frag f32[WG_M] logsum {0.0f};
-      acc_o = mma.fill.f32 0.0f;
+// Apply the causal mask and online-softmax update here.
 
-      kv_bound = __min(
-        cdiv((bm + 1) * BLOCK_M + past_len, BLOCK_N),
-        cdiv(KV_SEQ, BLOCK_N));
+v_s = dma.copy.swiz&lt;128&gt;
+  V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
+mma.row.col acc_o, acc_s_cast, v_s;</code></pre>
+<p><code>mma.row.row</code> 直接从 shared memory 读取 Q 和 K 完成 QK。
+PV 则通过 <code>mma.row.col</code> 使用 BF16 寄存器 fragment（<code>acc_s_cast</code>）和 shared memory 中的 V。
+QK 的两个输入都在 shared memory 中，无需先用 <code>mma.load</code> 人工构造寄存器操作数。</p>
+<p>数据流是串行的：<code>load K -&gt; QK -&gt; softmax -&gt; load V -&gt; PV</code>。下一步为数据搬运安排独立的执行路径。</p>
+<h2 id="2-tma">第 2 步：让 TMA 加载与消费者计算重叠<a class="headerlink" href="#2-tma" title="Permanent link">&para;</a></h2>
+<p>v2 使用 128 x 128 的 tile，K 和 V 各有两个缓冲阶段，并设置三个 warpgroup：
+一个生产者和两个消费者（1p2c）。每个消费者内部仍顺序执行 QK、softmax 和 PV，
+而生产者提前填充后续 tile。</p>
+<p>当前写法应使用 <code>tma.load</code> 表达 global-to-shared 搬运，并把完成信号绑定到事件。
+下面的生产者片段采用 v4 的变量名和逻辑，从对角线向第零块逆序遍历 K/V：</p>
+<pre class="highlight"><code class="language-choreo">shared event qf;
+shared event kf[K_STAGES], vf[V_STAGES];
+shared event ke[K_STAGES] = ready, ve[V_STAGES] = ready;
 
-      foreach {bn} in [kv_bound] {
-        // -- Phase 1: QK --
-        acc_s = mma.fill.f32 0.0f;
-        k_s = dma.copy.swiz&lt;128&gt;
-          K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
-        mma.row.row acc_s, q_s.chunkat(wgm, _), k_s;
+// Inside inthreads.async (p == 0):
+q_load = tma.load.async.evict_first.swiz&lt;SWIZ&gt;
+  Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
+trigger qf after q_load;
 
-        // -- Causal mask --
-        apply {i, j} in acc_s.span {
-          if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + wgm * WG_M + i + past_len))
-            acc_s.at(i, j) = -inf;
-        }
+mutable u32 k_pipe_order = 0;
+mutable u32 v_pipe_order = 0;
+foreach {issue} in [kv_bound] {
+  bn = bm - issue;
+  k_slot = k_pipe_order % K_STAGES;
+  v_slot = v_pipe_order % V_STAGES;
 
-        // -- Online softmax --
-        copy(scores_max_prev, scores_max);
-        reduce_max(scores_max, acc_s, 1);
-        apply {i} in scores_max.span {
-          scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
-          scores_scale.at(i) =
-            __exp2f(scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
-        }
-        apply {i, j} in acc_s.span
-          acc_s.at(i, j) =
-            __exp2f(acc_s.at(i, j) * scale - scores_max.at(i) * scale);
-        reduce_sum(scores_sum, acc_s, 1);
-        apply {i} in logsum.span
-          logsum.at(i) = logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
-        apply {i, j} in acc_o.span
-          acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
-        apply {i, j} in acc_s_cast.span
-          acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+  wait ke.at(k_pipe_order);
+  k_load = tma.load.async.evict_last.swiz&lt;SWIZ&gt;
+    K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[k_slot];
+  trigger kf.at(k_pipe_order++) after k_load;
 
-        // -- Phase 2: PV --
-        v_s = dma.copy.swiz&lt;128&gt;
-          V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
-        mma.row.col acc_o, acc_s_cast, v_s;
-      }
+  wait ve.at(v_pipe_order);
+  v_load = tma.load.async.evict_last.swiz&lt;SWIZ&gt;
+    V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[v_slot];
+  trigger vf.at(v_pipe_order++) after v_load;
+}</code></pre>
+<p>两个消费者等待 <code>kf</code>/<code>vf</code> 就绪后读取 shared buffer，并在对应计算完成后释放 <code>ke</code>/<code>ve</code>。
+<code>= ready</code> 提供初始的空槽令牌，不要再手动触发一次初始代际。</p>
+<p>这里有三个关键点：</p>
+<ul>
+<li><code>trigger kf.at(order) after k_load</code> 绑定 TMA 完成事件，不会阻塞生产者。
+  如果发出加载后立即使用普通 <code>trigger</code>，就会过早发布就绪信号。</li>
+<li><code>kf.at(order)</code> 选择槽位 <code>order % K_STAGES</code> 和代际 <code>order / K_STAGES</code>。
+  只有数据索引才使用 <code>k_buf[slot]</code>；把 <code>order % K_STAGES</code> 传给事件会丢失代际信息。</li>
+<li>事件表达就绪条件和参与者，硬件 barrier 及 TMA 事务计数由编译器选择。
+  事件不是源码层面的 named-barrier ID。</li>
+</ul>
+<p>包内 v2 已使用 future 和 <code>.at(bn)</code>，但保留了 <code>tma.copy.async</code> 的加载写法及手动初始化空槽令牌。
+新代码应优先采用上面带方向、使用 <code>ready</code> 初始化的形式；shared-to-global 输出仍使用 <code>tma.copy</code>。</p>
+<p>包内 v2 先把两个消费者的输出 fragment 写入同一个 shared output tile，再使用
+<code>tma.copy o_buf =&gt; O_head.subspan(BLOCK_M, DIM).at(bm, 0)</code> 写回完整 tile。
+旧的逐消费者 TMA 输出形式会产生重叠写入，未通过当前正确性检查；本次测量的 v2 已包含此修复。</p>
+<h2 id="3-future-softmax-pv">第 3 步：通过操作 future 让 softmax 与 PV 重叠<a class="headerlink" href="#3-future-softmax-pv" title="Permanent link">&para;</a></h2>
+<p>当前 v4 循环显式表达了依赖关系：先执行仅含 QK 的序言，在稳态循环中发出当前 tile 的 QK
+和前一个 tile 的 PV，最后用一次 PV 收尾。第零次迭代不再执行概率全为零的占位 PV。</p>
+<h3 id="_2">逆序遍历把因果掩码集中到序言<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>非持久化网格在每个 head 内逆序排列 query tile：</p>
+<pre class="highlight"><code class="language-choreo">parallel.async {tile, head, batch}
+    by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
+  bm = cdiv(Q_SEQ, BLOCK_M) - 1 - tile;
+  // The complete kernel declares views, buffers, and thread scopes here.
+}</code></pre>
+<p>对于 query tile <code>bm</code>，KV 的处理顺序是 <code>bm, bm-1, ..., 0</code>。
+当 Q/KV 长度相同且 <code>BLOCK_M = BLOCK_N = 128</code> 时，只有第一个 tile 与因果对角线相交。
+其局部掩码为：</p>
+<pre class="highlight"><code class="language-choreo">apply {i, j} in acc_s.span {
+  if (j &gt; cid * WG_M + i)
+    acc_s.at(i, j) = -inf;
+}</code></pre>
+<p>剩余的 <code>bm</code> 次迭代无需逐元素检查因果条件。先提交工作量较大的 query tile，
+也会改变网格最后一波 CTA 的工作量：较短的 CTA 被安排在后面。
+这是一种需要实测的调度选择，并不保证 CUDA block 的实际执行顺序。</p>
+<p>序言等待 Q 和第一个 K tile，计算 QK 并应用掩码，然后初始化逐行最大值、分母和 BF16 概率。
+此后才初始化 <code>acc_o</code>，以缩短输出累加器的活跃区间。</p>
+<h3 id="_3">消费者的稳态循环<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>下面是 v4 的稳态循环。K 和 V 使用独立的逻辑序号，因为 QK 读取当前 K tile，
+而 PV 仍在使用前一个 V tile：</p>
+<pre class="highlight"><code class="language-choreo">foreach {step} in [kv_bound - 1] {
+  k_slot = k_pipe_order % K_STAGES;
+  prev_v_slot = v_pipe_order % V_STAGES;
 
-      apply {i, j} in acc_o.span
-        acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
-      mma.store acc_o, O_head.subspan(WG_M, DIM).at(bm # wgm, 0);
-    }
+  acc_s = mma.fill.f32 0.0f;
+  wait kf.at(k_pipe_order);
+  qk = mma.row.row.async acc_s,
+    q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[k_slot];
+
+  wait vf.at(v_pipe_order);
+  pv = mma.row.col.async acc_o, acc_s_cast, v_buf[prev_v_slot];
+
+  wait qk;
+  trigger ke.at(k_pipe_order++);
+
+  copy(scores_max_prev, scores_max);
+  reduce_max(scores_max, acc_s, 1);
+  apply {i} in scores_max.span {
+    scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
+    scores_scale.at(i) = __exp2f(
+      scores_max_prev.at(i) * 0.12751743f -
+      scores_max.at(i) * 0.12751743f);
   }
+  apply {i} in logsum.span
+    logsum.at(i) = logsum.at(i) * scores_scale.at(i);
+  apply {i, j} in acc_s.span
+    acc_s.at(i, j) = __exp2f(
+      acc_s.at(i, j) * 0.12751743f - scores_max.at(i) * 0.12751743f);
+  apply {i} in scores_sum.span
+    scores_sum.at(i) = 0.0f;
+  apply {i, j} in acc_s.span
+    scores_sum.at(i) = scores_sum.at(i) + acc_s.at(i, j);
+  apply {i} in logsum.span
+    logsum.at(i) = logsum.at(i) + scores_sum.at(i);
+
+  wait pv;
+  trigger ve.at(v_pipe_order++);
+
+  apply {i, j} in acc_s_cast.span
+    acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+  apply {i, j} in acc_o.span
+    acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
 }</code></pre>
-<h3 id="croqtile-concepts-for-attention">Croqtile concepts for attention<a class="headerlink" href="#croqtile-concepts-for-attention" title="Permanent link">&para;</a></h3>
+<p><code>wait qk</code> 使 <code>acc_s</code> 可用，此时独立的 PV 操作仍可能尚未完成，中间的 softmax 工作使用标量指令。
+必须在 <code>wait pv</code> 之后，才能重新缩放 <code>acc_o</code> 或覆盖 PV 正在读取的概率 fragment。
+编译器根据这些 future 依赖推导 WGMMA commit group 和等待深度。</p>
+<pre class="highlight"><code class="language-text">Prologue:  QK[0] -&gt; mask + softmax[0] -&gt; P[0]
+
+Steady:    issue QK[n] -&gt; issue PV[n-1] -&gt; wait qk
+                                           |
+                              softmax[n] while PV may run
+                                           |
+                              wait pv -&gt; rescale O, write P[n]
+
+Epilogue:  issue PV[last] -&gt; finalize denominator -&gt; wait final_pv -&gt; store</code></pre>
+<p>QK 和 PV 是排队执行的 tensor core 操作；这个调度不要求二者在不同 tensor core 上同时执行。
+真正有用的重叠是：PV 尚未完成时执行标量 softmax 工作。
+实际能获得多少重叠，需要结合生成代码和 profiling 判断。</p>
+<h3 id="lane">推迟分母的跨 lane 归约<a class="headerlink" href="#lane" title="Permanent link">&para;</a></h3>
+<p>在 v4 中，<code>apply {i, j}</code> 把各 lane 持有的分数元素累加到该 lane 的局部行和。
+分母在整个 KV 循环中保留这些部分和。由于同一行的各 lane 使用相同的缩放因子，
+跨 lane 求和可以推迟到循环结束：</p>
+<pre class="highlight"><code class="language-choreo">final_v_slot = v_pipe_order % V_STAGES;
+wait vf.at(v_pipe_order);
+final_pv = mma.row.col.async acc_o, acc_s_cast, v_buf[final_v_slot];
+all_reduce_sum(logsum);
+apply {i} in scores_scale.span
+  scores_scale.at(i) = 1.0f / logsum.at(i);
+wait final_pv;
+trigger ve.at(v_pipe_order++);
+
+apply {i, j} in acc_o.span
+  acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
+tma.copy o_buf =&gt; O_head.subspan(BLOCK_M, DIM).at(bm, 0);</code></pre>
+<p>最终 PV 尚未完成时，<code>all_reduce_sum</code> 完成并广播逐行分母。
+逐行最大值仍需在每个 tile 上归约；若把局部求和替换成 <code>reduce_sum</code>，就会改变这一调度。</p>
+<p>持久化 v3 使用两个与数据布局相关的 CUDA device helper 实现局部行和与最终归约；
+v4 则通过 fragment 操作表达。因此，不能说当前完整 v3 不需要手写 device code，
+也不能说连同调度在内只有 80 行。</p>
+<h2 id="4">第 4 步：持久化调度与跨任务生命周期<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<p>当前 v3 启动 <code>PERSISTENT_CTAS = 114</code> 个 CTA，并为每个 CTA 分配一份 query tile 任务列表。
+一个 tile 的因果计算量随 <code>bm + 1</code> 增加，所以让各 CTA 处理相同数量的 tile 并不能平衡工作量。</p>
+<p>主机调度器采用以下成本估计：</p>
+<pre class="highlight"><code class="language-text">estimated_cost(bm) = 2 * (bm + 1) + fixed_cost
+fixed_cost = 4 by default, configurable with CHOREO_SCHED_FIXED_COST</code></pre>
+<p>系数二对应 QK/PV 这一对运算。调度器以成对的 batch/head 条目为单位，按 query tile 的降序考虑任务，
+分配给当前估计负载最小的分桶；之后在保持配对关系的前提下重新平衡，缩小最重与最轻分桶的估计差距，
+再在每个分桶内按 batch/head 稳定排序，以保留 K/V 局部性。
+这是基于成本估计的静态分配，不是设备侧的 work-stealing 队列。</p>
+<p>任务数组按负载尺寸缓存在主机上，并复制到设备。预热后的内核计时不包含首次构建和上传任务列表的开销；
+如果应用会频繁改变请求尺寸，应单独报告这部分初始化成本。</p>
+<h3 id="q-buffer">Q buffer 需要独立的交接协议<a class="headerlink" href="#q-buffer" title="Permanent link">&para;</a></h3>
+<p>K 和 V 已有 empty/full 环形缓冲，但 Q 只有一个跨任务复用的 shared 槽位。
+当前 v3 用标量事件表达其生命周期：</p>
+<pre class="highlight"><code class="language-choreo">shared event qf;
+shared event qe = ready;
+
+// Producer, once per task:
+wait qe;
+q_load = tma.load.async.evict_first.swiz&lt;SWIZ&gt;
+  Q_head.subspan(BLOCK_M, DIM).at(logical_bm, 0) =&gt; q_shared;
+trigger qf after q_load;
+
+// Consumers, before the task's first QK:
+wait qf;
+
+// Consumers, after the last QK has finished using Q:
+trigger qe;</code></pre>
+<p>消费者完成当前任务的最终 PV 和输出时，生产者就可以加载下一个任务的 Q。
+K/V 的逻辑序号在任务循环外初始化，并跨任务持续递增；重置它们会破坏环形缓冲的代际关系。
+softmax 状态和累加器则要为每个 query tile 重新初始化。</p>
+<p>生产者的 Q-empty 等待由两个参与的 warp（<code>p == 0 &amp;&amp; t &lt; 64</code>）共同执行；
+在该范围内，warp 0 发出 K 加载，warp 1 发出 V 加载。
+不能因为 TMA 由单个 lane 发出，就把 Q 的交接缩小到单个 lane：
+编译器依据实际参与 wait/trigger 的线程选择 barrier lowering。
+满足条件的单槽 ready 事件可以降为 named barrier，而 TMA 完成和多阶段环使用相应的 mbarrier 路径。</p>
+<p>当前源码把任务编码为 <code>bm | (head &lt;&lt; 8) | (batch &lt;&lt; 14)</code>，因此 <code>bm</code> 限于 8 位，<code>head</code> 限于 6 位。
+再加上固定的 114-CTA 网格及 Q/KV 等长的因果假设，v3 是针对这组负载调优的特化实现。
+移植到其他负载时必须重新检查这些限制。</p>
+<h3 id="_4">资源分配也是调度的一部分<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>对于 128 x 128 的 BF16 tile，Q 和 O 各占 32 KiB，两个 K tile 和两个 V tile 共占 128 KiB，
+每个 CTA 的数据缓冲合计 192 KiB。因此增加缓冲阶段数会显著改变资源需求。
+当前 v3/v4 的生产者通过 <code>setreg_dec</code> 请求每线程 40 个寄存器，消费者通过 <code>setreg_inc</code> 请求 232 个；
+v2 使用 24/240。这些是寄存器分配控制值，不是实测的寄存器占用数。</p>
+<p><code>[[launch_bounds(_, 1)]]</code> 提供编译器做寄存器预算时使用的最少常驻 block 数目标，
+并不强制每个 SM 最多只能常驻一个 CTA。实际常驻数量由线程、寄存器和 shared memory 资源共同决定。
+同样，<code>parallel.async</code> 表达异步发起，并不表示请求 cluster 协作或 multicast。</p>
+<h2 id="_5">性能测量<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>以下数据均于 2026 年 9 月 21 日使用下载包中的对应源码重新测量，已替换旧性能表，不混用历史样本。</p>
+<p>测试环境：NVIDIA H800 PCIe（114 个 SM），驱动 590.48.01，CUDA Toolkit 13.0.88。
+主 Python 环境为 PyTorch 2.11.0+cu130、FA3 3.0.0、TileLang 0.1.9 和 Triton 3.6.0。
+WS 对照使用 PyTorch 2.10.0+cu128 及 Triton 3.8.0+gita59d32fd。
+准确的依赖版本和代码生成选项见<a href="../../../optimization/assets/flash-attention/standalone/provenance.json">可下载的版本清单</a>。</p>
+<p>每个单元格为<strong>延迟中位数（毫秒）/ TFLOPS</strong>。每个实现、每个尺寸独立预热并测量三轮，
+每轮预热 50 次、使用 CUDA event 计时 200 次执行。FA3 在整个测试序列的首尾各测三轮，
+因此表中的 FA3 中位数来自六个样本。</p>
 <table>
 <thead>
 <tr>
-<th>Construct</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>parallel.async {...} : block</code></td>
-<td>Asynchronous grid launch. The <code>.async</code> suffix enables the Hopper async execution model with cluster-level coordination.</td>
-</tr>
-<tr>
-<td><code>.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz()</code></td>
-<td>Slice one batch and one head from a 4-D BSHD tensor, then squeeze the unit dimensions to get a 2-D <code>[seq, dim]</code> view.</td>
-</tr>
-<tr>
-<td><code>dma.copy.swiz&lt;128&gt; src =&gt; shared</code></td>
-<td>SIMT-level cooperative copy with 128-byte swizzle into an auto-allocated shared memory buffer. All threads participate; Croqtile handles coalescing and <code>__syncthreads()</code>.</td>
-</tr>
-<tr>
-<td><code>parallel wgm by [N]: group-4</code></td>
-<td>N warpgroups (each 128 threads) execute the body. Each gets a <code>wgm</code> index.</td>
-</tr>
-<tr>
-<td><code>frag f32[WG_M] scores_max {-inf}</code></td>
-<td>A register-resident fragment with per-element initialization.</td>
-</tr>
-<tr>
-<td><code>reduce_max(dst, src, dim)</code></td>
-<td>Row-wise max reduction across a 2-D fragment.</td>
-</tr>
-<tr>
-<td><code>apply {i, j} in frag.span { ... }</code></td>
-<td>Element-wise transform over a fragment. Compiles to register-register operations with no memory traffic.</td>
-</tr>
-<tr>
-<td><code>mma.row.row acc, A, B</code></td>
-<td>WGMMA: Q*K where both A and B are row-major.</td>
-</tr>
-<tr>
-<td><code>mma.row.col acc, A, B</code></td>
-<td>WGMMA: P*V where A is row-major, B (V) is column-major in the logical contraction.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="how-the-inner-loop-works">How the inner loop works<a class="headerlink" href="#how-the-inner-loop-works" title="Permanent link">&para;</a></h3>
-<p>Each iteration of the <code>foreach {bn}</code> loop performs five steps:</p>
-<pre class="highlight"><code>Load K[bn] -&gt; Compute S = Q*K -&gt; Mask+Softmax -&gt; Load V[bn] -&gt; Compute O += P*V
-     |              |                  |              |              |
-     DMA          WGMMA             Scalar          DMA           WGMMA
-   (stall)      (stall on          (fast but        (stall)      (stall on
-                 DMA)            serialized)                      DMA)</code></pre>
-<p>Every operation waits for the previous one. The two <code>dma.copy</code> calls each stall all threads while data transfers from HBM. The WGMMA instructions stall until shared memory is ready. This is the simplest structure, but it leaves massive performance on the table.</p>
-<h3 id="result-v1">Result: v1<a class="headerlink" href="#result-v1" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Config</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">2.64</td>
-<td style="text-align: right;">207.9</td>
-</tr>
-<tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">9.67</td>
-<td style="text-align: right;">227.5</td>
-</tr>
-<tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">38.8</td>
-<td style="text-align: right;">226.8</td>
-</tr>
-</tbody>
-</table>
-<p><strong>~228 TFLOPS at SEQ=8192 (55% of FA3)</strong></p>
-<hr />
-<h2 id="kernel-2-warp-specialized-1p2c-with-tma-pipeline">Kernel 2: Warp-Specialized 1p2c with TMA Pipeline<a class="headerlink" href="#kernel-2-warp-specialized-1p2c-with-tma-pipeline" title="Permanent link">&para;</a></h2>
-<p><strong>File:</strong> <code>v2_manual_s2_1p2c_tma.co</code></p>
-<p>The v1 kernel serializes data movement and compute. The fix is the same as in the matmul tutorial: split threads into <strong>producer</strong> (TMA loads) and <strong>consumer</strong> (WGMMA compute) warpgroups connected by a double-buffered pipeline.</p>
-<p>The structural changes from v1:</p>
-<ol>
-<li><strong>TMA replaces <code>dma.copy</code></strong> -- one thread drives hardware DMA instead of all threads cooperating</li>
-<li><strong>1 producer + 2 consumer warpgroups</strong> (1p2c) -- the producer prefetches K and V while consumers compute</li>
-<li><strong>2-stage double buffering</strong> -- <code>k_buf[2]</code>, <code>v_buf[2]</code> with <code>shared event</code> barriers</li>
-<li><strong>Q is loaded once via async TMA</strong> before the main loop</li>
-</ol>
-<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
-#define BLOCK_N 128
-#define WG_M 64
-#define WG_K 16
-#define SWIZ 128
-#define STAGES 2
-#define DIM 128
-
-__co__ void flash_atten(
-  global bf16[B, Q_SEQ, H, DIM] Q,
-  global bf16[B, KV_SEQ, H, DIM] K,
-  global bf16[B, KV_SEQ, H, DIM] V,
-  global bf16[B, Q_SEQ, H, DIM] O
-) {
-  float scale = 0.12751743f;
-
-  [[launch_bounds(_, 1)]]
-  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
-    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-
-    shared bf16[BLOCK_M, DIM] q_shared;
-    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
-    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
-
-    shared event qf, kf[STAGES], ke[STAGES], vf[STAGES], ve[STAGES];
-
-    kv_bound = cdiv((bm + 1) * BLOCK_M, BLOCK_N);
-    parallel p by [BLOCK_M/WG_M + 1] : group-4, t by 128 : thread {
-      // --- Producer (p=0): single-thread TMA ---
-      inthreads.async (p == 0) {
-        call croq::cuda::setreg_dec(24);
-        tma.copy.async&lt;qf&gt;.swiz&lt;SWIZ&gt;
-          Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
-        trigger qf;
-
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          wait ke[stage];
-          tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;
-            K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[stage];
-          trigger kf[stage];
-
-          wait ve[stage];
-          tma.copy.async&lt;vf[stage]&gt;.swiz&lt;SWIZ&gt;
-            V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[stage];
-          trigger vf[stage];
-        }
-      }
-
-      // --- Consumers (p&gt;0): WGMMA compute ---
-      inthreads.async (p &gt; 0) {
-        call croq::cuda::setreg_inc(240);
-        cid = p - 1;
-        foreach {s} in [STAGES] {
-          trigger ke[s];
-          trigger ve[s];
-        }
-
-        wait qf;
-
-        frag f32[WG_M] scores_max {-inf};
-        frag f32[WG_M] scores_max_prev;
-        frag f32[WG_M] scores_scale;
-        frag f32[WG_M] scores_sum;
-        frag f32[WG_M] logsum {0.0f};
-        acc_o = mma.fill.f32 0.0f;
-
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          acc_s = mma.fill.f32 0.0f;
-
-          wait kf[stage];
-          mma.row.row acc_s,
-            q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[stage];
-          trigger ke[stage];
-
-          // Causal mask (skip if entire tile is unmasked)
-          int causal_row_base = bm * BLOCK_M + cid * WG_M;
-          if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
-            apply {i, j} in acc_s.span {
-              if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + cid * WG_M + i))
-                acc_s.at(i, j) = -inf;
-            }
-          }
-
-          // Online softmax (same as v1)
-          copy(scores_max_prev, scores_max);
-          reduce_max(scores_max, acc_s, 1);
-          apply {i} in scores_max.span {
-            scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
-            scores_scale.at(i) = __exp2f(
-              scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
-          }
-          apply {i, j} in acc_s.span
-            acc_s.at(i, j) = __exp2f(
-              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
-          reduce_sum(scores_sum, acc_s, 1);
-          apply {i} in logsum.span
-            logsum.at(i) =
-              logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
-          apply {i, j} in acc_o.span
-            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
-
-          frag bf16[WG_M, BLOCK_N] acc_s_cast;
-          apply {i, j} in acc_s_cast.span
-            acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
-
-          wait vf[stage];
-          mma.row.col acc_o, acc_s_cast, v_buf[stage];
-          trigger ve[stage];
-        }
-
-        apply {i, j} in acc_o.span
-          acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
-        shared bf16[BLOCK_M, DIM] o_buf;
-        mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
-        tma.copy o_buf.subspan(WG_M, DIM).at(cid, 0) =&gt;
-          O_head.subspan(WG_M, DIM).at(bm * 2 + cid, 0);
-      }
-    }
-  }
-}</code></pre>
-<h3 id="new-concepts-in-v2">New concepts in v2<a class="headerlink" href="#new-concepts-in-v2" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Construct</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>[[launch_bounds(_, 1)]]</code></td>
-<td>Hint to the compiler: at most 1 thread-block per SM. This maximizes per-block register and shared memory budget.</td>
-</tr>
-<tr>
-<td><code>shared event qf, kf[STAGES], ke[STAGES], ...</code></td>
-<td>Named barriers backed by Hopper <code>mbarrier</code>. Five barrier arrays orchestrate the producer/consumer handshake for Q, K (full/empty), and V (full/empty).</td>
-</tr>
-<tr>
-<td><code>call croq::cuda::setreg_dec(24)</code></td>
-<td>Compiler intrinsic: decrease the register allocation for the producer warpgroup (it only issues TMA, needs few registers). Frees registers for the compute-heavy consumers.</td>
-</tr>
-<tr>
-<td><code>call croq::cuda::setreg_inc(240)</code></td>
-<td>Increase register allocation for consumer warpgroups. More registers = fewer spills during softmax and WGMMA accumulation.</td>
-</tr>
-<tr>
-<td><code>tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;</code></td>
-<td>Async TMA that signals barrier <code>kf[stage]</code> on completion. The producer thread is not blocked.</td>
-</tr>
-<tr>
-<td><code>trigger kf[stage]</code> / <code>wait kf[stage]</code></td>
-<td>Signal/wait on named barriers. The producer signals <code>kf</code> after issuing TMA for K; the consumer waits on <code>kf</code> before reading K from shared memory.</td>
-</tr>
-<tr>
-<td><code>trigger ke[stage]</code></td>
-<td>Consumer signals "K buffer consumed" so the producer can reuse the slot. Classic double-buffer protocol.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="the-1p2c-pipeline-structure">The 1p2c pipeline structure<a class="headerlink" href="#the-1p2c-pipeline-structure" title="Permanent link">&para;</a></h3>
-<pre class="highlight"><code>Warpgroup 0 (Producer):
-  Load Q -&gt; [signal qf]
-  for bn in 0..kv_bound:
-    wait ke[stage] -&gt; Load K[bn] -&gt; [signal kf[stage]]
-    wait ve[stage] -&gt; Load V[bn] -&gt; [signal vf[stage]]
-
-Warpgroup 1,2 (Consumers):
-  [signal ke[0..STAGES], ve[0..STAGES]]  // initial empty tokens
-  wait qf
-  for bn in 0..kv_bound:
-    wait kf[stage] -&gt; QK WGMMA -&gt; [signal ke[stage]]
-    softmax
-    wait vf[stage] -&gt; PV WGMMA -&gt; [signal ve[stage]]</code></pre>
-<p>The producer runs ahead of the consumers. With <code>STAGES=2</code>, while consumers compute on <code>k_buf[0]</code>/<code>v_buf[0]</code>, the producer can already be loading into <code>k_buf[1]</code>/<code>v_buf[1]</code>. TMA latency is hidden behind compute.</p>
-<h3 id="why-the-causal-mask-is-optimized">Why the causal mask is optimized<a class="headerlink" href="#why-the-causal-mask-is-optimized" title="Permanent link">&para;</a></h3>
-<p>v2 adds a key optimization over v1: the causal mask check is wrapped in a tile-level guard:</p>
-<pre class="highlight"><code class="language-choreo">if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
-  apply {i, j} in acc_s.span { ... }
-}</code></pre>
-<p>For tiles where all KV positions are before the query position (fully unmasked), the entire <code>apply</code> block is skipped. Since causal attention is lower-triangular, roughly half the tiles skip masking entirely.</p>
-<h3 id="result-v2">Result: v2<a class="headerlink" href="#result-v2" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Config</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">1.66</td>
-<td style="text-align: right;">330.6</td>
-</tr>
-<tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">6.28</td>
-<td style="text-align: right;">350.1</td>
-</tr>
-<tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">36.4</td>
-<td style="text-align: right;">241.6</td>
-</tr>
-</tbody>
-</table>
-<p><strong>~350 TFLOPS at SEQ=8192 (1.54x over v1, 85% of FA3)</strong></p>
-<p>The large SEQ=16384 regression (241 TFLOPS vs 350) suggests the pipeline is not perfectly balanced at very long sequences -- the producer/consumer synchronization overhead grows with <code>kv_bound</code>.</p>
-<hr />
-<h2 id="kernel-3-fa3-style-intra-warpgroup-overlap">Kernel 3: FA3-Style Intra-Warpgroup Overlap<a class="headerlink" href="#kernel-3-fa3-style-intra-warpgroup-overlap" title="Permanent link">&para;</a></h2>
-<p><strong>File:</strong> <code>v3_fa3_overlap.co</code></p>
-<p>The v2 kernel still serializes QK and PV within each consumer's inner loop: the consumer computes QK, performs softmax, then computes PV, then starts the next iteration. The tensor cores are idle during softmax.</p>
-<p>FlashAttention-3 (Shah et al., 2024) introduced <strong>intra-warpgroup overlap</strong>: compute <code>QK[n]</code> and <code>PV[n-1]</code> simultaneously on the same tensor cores, using WGMMA's asynchronous pipeline. The softmax for iteration <code>n</code> runs on scalar units while both WGMMA operations execute on tensor cores.</p>
-<h3 id="the-overlap-idea">The overlap idea<a class="headerlink" href="#the-overlap-idea" title="Permanent link">&para;</a></h3>
-<pre class="highlight"><code>Iteration n:
-  Issue QK[n]  (WGMMA async)     }  Both on tensor cores
-  Issue PV[n-1] (WGMMA async)    }  simultaneously
-  mma.wait&lt;1&gt;                    -- wait for QK[n] only
-  Softmax on QK[n] result        -- scalar units, tensor cores still running PV[n-1]
-  mma.wait&lt;0&gt;                    -- wait for PV[n-1]
-  Cast softmax result to bf16    -- prepare for next iteration's PV[n]</code></pre>
-<p>The key: <code>mma.wait&lt;1&gt;</code> waits until only 1 WGMMA group is outstanding (QK finishes, PV still in flight). Softmax uses scalar FMA units, so PV's tensor core operation runs concurrently.</p>
-<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
-#define BLOCK_N 128
-#define WG_M 64
-#define WG_K 16
-#define SWIZ 128
-#define STAGES 2
-#define DIM 128
-
-__co__ void flash_atten(
-  global bf16[B, Q_SEQ, H, DIM] Q,
-  global bf16[B, KV_SEQ, H, DIM] K,
-  global bf16[B, KV_SEQ, H, DIM] V,
-  global bf16[B, Q_SEQ, H, DIM] O
-) {
-  float scale = 0.12751743f;
-
-  [[launch_bounds(_, 1)]]
-  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
-    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-
-    shared bf16[BLOCK_M, DIM] q_shared;
-    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
-    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
-
-    shared event qf, kf[STAGES], ke[STAGES], vf[STAGES], ve[STAGES];
-
-    kv_bound = cdiv((bm + 1) * BLOCK_M, BLOCK_N);
-    parallel p by [BLOCK_M/WG_M + 1] : group-4 {
-      // Producer: identical to v2
-      inthreads.async (p == 0) {
-        call croq::cuda::setreg_dec(24);
-        tma.copy.async&lt;qf&gt;.swiz&lt;SWIZ&gt;
-          Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
-        trigger qf;
-
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          wait ke[stage];
-          tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;
-            K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[stage];
-          trigger kf[stage];
-
-          wait ve[stage];
-          tma.copy.async&lt;vf[stage]&gt;.swiz&lt;SWIZ&gt;
-            V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[stage];
-          trigger vf[stage];
-        }
-      }
-
-      // Consumer: QK[n] + PV[n-1] overlap
-      inthreads.async (p &gt; 0) {
-        call croq::cuda::setreg_inc(240);
-        cid = p - 1;
-        foreach {s} in [STAGES] {
-          trigger ke[s];
-          trigger ve[s];
-        }
-
-        wait qf;
-
-        frag f32[WG_M] scores_max {-inf};
-        frag f32[WG_M] scores_max_prev;
-        frag f32[WG_M] scores_scale;
-        frag f32[WG_M] scores_sum;
-        frag f32[WG_M] logsum {0.0f};
-        acc_o = mma.fill.f32 0.0f;
-        frag bf16[WG_M, BLOCK_N] acc_s_cast {0.0f};
-        int causal_row_base = bm * BLOCK_M + cid * WG_M;
-
-        // === Unified loop: QK[n] + PV[n-1] ===
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          prev_stage = (bn + 1) % STAGES;
-
-          acc_s = mma.fill.f32 0.0f;
-
-          // Issue QK[n] and PV[n-1] back-to-back
-          wait kf[stage];
-          wait vf[bn == 0 ? stage : prev_stage];
-          mma.row.row acc_s,
-            q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[stage];
-          trigger ke[stage];
-
-          mma.row.col acc_o,
-            acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];
-          if (bn &gt; 0) trigger ve[prev_stage];
-
-          mma.wait&lt;1&gt;;  // wait for QK only; PV still in flight
-
-          // Causal mask
-          if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
-            apply {i, j} in acc_s.span {
-              if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + cid * WG_M + i))
-                acc_s.at(i, j) = -inf;
-            }
-          }
-
-          mma.wait&lt;0&gt;;  // now wait for PV[n-1] too
-
-          // Online softmax
-          copy(scores_max_prev, scores_max);
-          reduce_max(scores_max, acc_s, 1);
-          apply {i} in scores_max.span {
-            scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
-            scores_scale.at(i) = __exp2f(
-              scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
-          }
-          apply {i, j} in acc_s.span
-            acc_s.at(i, j) = __exp2f(
-              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
-          reduce_sum(scores_sum, acc_s, 1);
-          apply {i} in logsum.span
-            logsum.at(i) =
-              logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
-          apply {i, j} in acc_o.span
-            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
-          apply {i, j} in acc_s_cast.span
-            acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
-
-          // Epilogue: final PV merged into last iteration
-          if (bn == kv_bound - 1) {
-            wait vf[stage];
-            mma.row.col acc_o, acc_s_cast, v_buf[stage];
-            trigger ve[stage];
-            mma.wait&lt;0&gt;;
-          }
-        }
-
-        apply {i, j} in acc_o.span
-          acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
-        shared bf16[BLOCK_M, DIM] o_buf;
-        mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
-        tma.copy o_buf.subspan(WG_M, DIM).at(cid, 0) =&gt;
-          O_head.subspan(WG_M, DIM).at(bm * 2 + cid, 0);
-      }
-    }
-  }
-}</code></pre>
-<h3 id="new-concepts-in-v3">New concepts in v3<a class="headerlink" href="#new-concepts-in-v3" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Construct</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>frag bf16[WG_M, BLOCK_N] acc_s_cast {0.0f}</code></td>
-<td>Zero-initialized register fragment. On iteration 0, PV uses this zero matrix (no-op multiply), so the first <code>mma.row.col</code> adds nothing. This eliminates a special case for <code>bn==0</code>.</td>
-</tr>
-<tr>
-<td><code>mma.wait&lt;1&gt;</code></td>
-<td>Wait until at most 1 WGMMA group is outstanding. Since QK was issued first and PV second, this waits for QK to complete while PV continues on tensor cores.</td>
-</tr>
-<tr>
-<td><code>mma.wait&lt;0&gt;</code></td>
-<td>Wait for all outstanding WGMMA groups. After this, both QK and PV results are available.</td>
-</tr>
-<tr>
-<td><code>if (bn == kv_bound - 1) { ... }</code></td>
-<td>Epilogue: the final PV has no "next iteration" to overlap with, so it is issued and waited on explicitly in the last iteration.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="how-the-overlap-works">How the overlap works<a class="headerlink" href="#how-the-overlap-works" title="Permanent link">&para;</a></h3>
-<p>The key difference from v2 is the <strong>loop structure</strong>. In v2, each iteration does QK then softmax then PV sequentially. In v3, each iteration does:</p>
-<pre class="highlight"><code>Iteration 0:                    Iteration n (n&gt;0):
-  QK[0]  (WGMMA async)           QK[n]    (WGMMA async)
-  PV[-1] (no-op, zeros)          PV[n-1]  (WGMMA async, using prev softmax)
-  wait QK[0]                     wait QK[n]
-  softmax[0]                     softmax[n]        &lt;-- scalar, while PV runs
-  cast to bf16                   wait PV[n-1]
-                                 cast to bf16</code></pre>
-<p>On the last iteration, an explicit epilogue PV is appended:</p>
-<pre class="highlight"><code>Iteration kv_bound-1:
-  QK[last]  + PV[last-1]
-  softmax[last]
-  PV[last]  (explicit epilogue)</code></pre>
-<p>This is exactly the FA3 loop structure, expressed in ~6 additional lines of Croqtile.</p>
-<h3 id="the-prev_stage-trick">The <code>prev_stage</code> trick<a class="headerlink" href="#the-prev_stage-trick" title="Permanent link">&para;</a></h3>
-<pre class="highlight"><code class="language-choreo">prev_stage = (bn + 1) % STAGES;
-wait vf[bn == 0 ? stage : prev_stage];
-mma.row.col acc_o, acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];</code></pre>
-<p>PV[n-1] reads from the <strong>previous iteration's</strong> V buffer. With <code>STAGES=2</code>, <code>prev_stage = (bn+1) % 2</code> gives the alternate slot. On iteration 0, there is no previous V, so it reads from the current stage (the zero-initialized <code>acc_s_cast</code> makes this a no-op).</p>
-<h3 id="result-v3">Result: v3<a class="headerlink" href="#result-v3" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Config</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">1.65</td>
-<td style="text-align: right;">332.8</td>
-</tr>
-<tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">6.09</td>
-<td style="text-align: right;">361.3</td>
-</tr>
-<tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">23.5</td>
-<td style="text-align: right;">374.3</td>
-</tr>
-</tbody>
-</table>
-<p><strong>~361 TFLOPS at SEQ=8192 (1.03x over v2, 88% of FA3)</strong></p>
-<p>The improvement is modest at short sequences (where the loop body dominates) but significant at SEQ=16384: <strong>374 vs 242 TFLOPS</strong> -- a 1.55x improvement. The overlap shines when there are enough KV iterations to amortize the pipeline startup cost.</p>
-<hr />
-<h2 id="the-optimization-ladder">The Optimization Ladder<a class="headerlink" href="#the-optimization-ladder" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Step</th>
-<th>Technique</th>
-<th>Key Croqtile constructs</th>
-<th style="text-align: right;">SEQ=8192 TFLOPS</th>
-<th style="text-align: right;">Speedup</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>v1</td>
-<td>Sequential DMA + WGMMA</td>
-<td><code>dma.copy.swiz</code>, <code>mma.row.row/col</code></td>
-<td style="text-align: right;">227.5</td>
-<td style="text-align: right;">1.0x</td>
-</tr>
-<tr>
-<td>v2</td>
-<td>1p2c warp spec + TMA pipeline</td>
-<td><code>inthreads.async</code>, <code>shared event</code>, <code>tma.copy.async</code>, <code>setreg</code></td>
-<td style="text-align: right;">350.1</td>
-<td style="text-align: right;">1.54x</td>
-</tr>
-<tr>
-<td>v3</td>
-<td>FA3-style QK/PV overlap</td>
-<td><code>mma.wait&lt;1&gt;</code>, epilogue PV fusion</td>
-<td style="text-align: right;">361.3</td>
-<td style="text-align: right;">1.59x</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="comparison-with-the-ecosystem">Comparison with the Ecosystem<a class="headerlink" href="#comparison-with-the-ecosystem" title="Permanent link">&para;</a></h2>
-<p>At SEQ=8192 (the headline config):</p>
-<table>
-<thead>
-<tr>
-<th>Implementation</th>
-<th style="text-align: right;">TFLOPS</th>
-<th>Notes</th>
+<th>实现</th>
+<th style="text-align: right;">S=4096 ms / TFLOPS</th>
+<th style="text-align: right;">S=8192 ms / TFLOPS</th>
+<th style="text-align: right;">S=16384 ms / TFLOPS</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>FlashAttention-3</td>
-<td style="text-align: right;">410.3</td>
-<td>Hand-tuned CUDA, heavily optimized</td>
+<td style="text-align: right;">1.3944 / 394.3</td>
+<td style="text-align: right;">5.3025 / 414.7</td>
+<td style="text-align: right;">20.7054 / 424.8</td>
 </tr>
 <tr>
-<td><strong>Croqtile v3</strong></td>
-<td style="text-align: right;"><strong>365.0</strong></td>
-<td><strong>~80 lines of <code>.co</code>, no CUDA</strong></td>
+<td>Croqtile v1：顺序执行</td>
+<td style="text-align: right;">2.5813 / 213.0</td>
+<td style="text-align: right;">9.2858 / 236.8</td>
+<td style="text-align: right;">35.3457 / 248.9</td>
 </tr>
 <tr>
-<td>Triton + WS</td>
-<td style="text-align: right;">354.3</td>
-<td>Warp-specialized Triton kernel</td>
+<td>Croqtile v2：1p2c TMA（已修复输出）</td>
+<td style="text-align: right;">1.6600 / 331.2</td>
+<td style="text-align: right;">6.1387 / 358.2</td>
+<td style="text-align: right;">23.7090 / 371.0</td>
 </tr>
 <tr>
-<td>Triton</td>
-<td style="text-align: right;">312.5</td>
-<td>Standard Triton implementation</td>
+<td>Croqtile v4：非持久化重叠流水线</td>
+<td style="text-align: right;">1.4642 / 375.5</td>
+<td style="text-align: right;">5.4563 / 403.0</td>
+<td style="text-align: right;">21.1821 / 415.3</td>
 </tr>
 <tr>
-<td>TileLang</td>
-<td style="text-align: right;">295.8</td>
-<td>TileLang compiler-generated</td>
+<td>Croqtile v3：持久化重叠流水线</td>
+<td style="text-align: right;">1.3967 / 393.6</td>
+<td style="text-align: right;">5.2971 / 415.1</td>
+<td style="text-align: right;">20.7939 / 423.0</td>
+</tr>
+<tr>
+<td>TileLang：128 x 128，2 个阶段</td>
+<td style="text-align: right;">1.6511 / 333.0</td>
+<td style="text-align: right;">6.2546 / 351.6</td>
+<td style="text-align: right;">24.2038 / 363.4</td>
+</tr>
+<tr>
+<td>Triton 3.6：自动调优，无 WS</td>
+<td style="text-align: right;">1.7542 / 313.4</td>
+<td style="text-align: right;">6.6744 / 329.5</td>
+<td style="text-align: right;">25.9039 / 339.6</td>
+</tr>
+<tr>
+<td>Triton main：Hopper WS，带掩码循环</td>
+<td style="text-align: right;">1.9217 / 286.1</td>
+<td style="text-align: right;">6.9654 / 315.7</td>
+<td style="text-align: right;">26.6264 / 330.4</td>
 </tr>
 </tbody>
 </table>
-<p>The Croqtile kernel matches Triton+WS and reaches 89% of FA3 -- the current SOTA -- while being expressed in a fraction of the code. The remaining gap to FA3 comes from techniques not yet applied:</p>
-<ul>
-<li><strong>Pingpong scheduling</strong>: FA3 uses a 2-CTA cooperative scheme where adjacent blocks alternate between QK and PV phases, maximizing L2 reuse.</li>
-<li><strong>Persistent kernel with tile scheduler</strong>: Keeps thread blocks alive across output tiles.</li>
-<li><strong>FP8 GQA paths</strong>: FA3 has specialized FP8 and grouped-query attention variants.</li>
-</ul>
-<hr />
-<h2 id="what-each-optimization-costs-in-code">What Each Optimization Costs in Code<a class="headerlink" href="#what-each-optimization-costs-in-code" title="Permanent link">&para;</a></h2>
+<p><img alt="三种序列长度下八个实现的实测吞吐量及波动范围。" src="../../../optimization/assets/flash-attention/performance-zh-light.svg#only-light" />
+<img alt="三种序列长度下八个实现的实测吞吐量及波动范围。" src="../../../optimization/assets/flash-attention/performance-zh-dark.svg#only-dark" /></p>
+<p>柱长表示由延迟中位数换算的吞吐量，须线表示完整实测范围，而不是置信区间。
+三栏使用相同且从零起算的坐标尺度。图表由<a href="../../../optimization/assets/flash-attention/standalone/results/20260921-h800-bf16/summary.csv">实测 CSV</a>
+通过可下载的<a href="../../../optimization/assets/flash-attention/plot_performance.py">绘图脚本</a>直接生成，中文标注使用 <code>--language zh</code>。</p>
+<p>本次 S=8192 测量中，v4 和 v3 相对顺序执行的 v1 分别达到 1.70 倍和 1.75 倍性能。
+此尺寸下 v3 与 FA3 的中位数基本持平，差距小于下文记录的 FA3 漂移。
+这里比较的是包内这些实现和配置，不代表各库能达到的最佳性能。</p>
+<h3 id="_6">计时范围与比较限制<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>所有实现的输入和输出均为 BF16，使用 FP32 累加和因果掩码。
+旧 Triton 脚本使用 FP16；包内版本已统一为 BF16，并单独通过正确性检查。
+Triton 使用连续的 BHSD 张量，一次性的 BSHD/BHSD 转换不计入耗时；其他实现直接使用 BSHD。
+因此该对比不包含布局转换成本。</p>
+<p>计时不使用 CUDA Graphs。编译、自动调优、输入准备、正确性检查及 v3 的首次调度器初始化不计入耗时。
+Python 的输出分配及包装层发起工作仍在重复调用内，主机发起间隙可能影响 CUDA event 测得的时间。
+这些是预热后的调用耗时，不是应用端到端延迟。</p>
+<p>更新后的 Triton+WS 使用设备端 tensor descriptor 和 <code>tl.range(warp_specialize=True)</code>。
+本次使用的编译器已不接受旧 aref 启动选项。单个带掩码的因果循环避开了该版本编译器处理旧分段循环时的错误；
+包装层要求生成 12 个 warp（384 个线程），以防悄悄退化为非 WS 实现。
+这一行<strong>不是</strong>旧 aref 实现的重测结果。</p>
+<p>测试未锁定 GPU 时钟，各实现串行运行。脚本在每个实现开始前等待温度降至不高于 65 摄氏度，
+但这不保证测量期间温度恒定。FA3 首尾各组三个样本的中位数如下：</p>
 <table>
 <thead>
 <tr>
-<th>Optimization</th>
-<th style="text-align: right;">Lines changed from prev</th>
-<th style="text-align: right;">Lines of equivalent CUDA</th>
+<th>序列长度</th>
+<th style="text-align: right;">测试前 FA3（ms）</th>
+<th style="text-align: right;">测试后 FA3（ms）</th>
+<th style="text-align: right;">变化</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>v1 -&gt; v2: warp spec + TMA</td>
-<td style="text-align: right;">+55 lines</td>
-<td style="text-align: right;">~300+ lines (mbarrier init, TMA descriptors, warpgroup dispatch)</td>
+<td>4096</td>
+<td style="text-align: right;">1.3908</td>
+<td style="text-align: right;">1.3980</td>
+<td style="text-align: right;">+0.52%</td>
 </tr>
 <tr>
-<td>v2 -&gt; v3: QK/PV overlap</td>
-<td style="text-align: right;">+10 lines</td>
-<td style="text-align: right;">~80+ lines (WGMMA pipeline fence management, epilogue logic)</td>
+<td>8192</td>
+<td style="text-align: right;">5.2543</td>
+<td style="text-align: right;">5.3796</td>
+<td style="text-align: right;">+2.39%</td>
+</tr>
+<tr>
+<td>16384</td>
+<td style="text-align: right;">20.5006</td>
+<td style="text-align: right;">20.8591</td>
+<td style="text-align: right;">+1.75%</td>
 </tr>
 </tbody>
 </table>
-<p>The v3 kernel is ~80 lines of Croqtile total. A faithful CUDA implementation of the same algorithm requires 400+ lines -- TMA tensor-map construction, mbarrier lifecycle management, WGMMA smem descriptor encoding, swizzle propagation, register allocation hints, and careful fence ordering. One mistake in any of these causes silent numerical errors or deadlocks.</p>
-<hr />
+<p>S=4096 时，FA3 的六个样本分布在 1.3180–1.5034 ms；较短序列尤其容易受调用波动影响。
+不要把很小的百分比差距解读为确定的性能优势。
+所有样本、最小/最大值、GPU 状态和源码 SHA-256 均保存在
+<a href="../../../optimization/assets/flash-attention/standalone/results/20260921-h800-bf16/results.json">results.json</a> 和
+<a href="../../../optimization/assets/flash-attention/standalone/results/20260921-h800-bf16/summary.csv">summary.csv</a> 中，
+压缩包还保留全部原始验证和计时日志。</p>
+<p>吞吐量按近似的有效因果 QK 与 PV 运算量计算：
+<code>TFLOPS = 2 * B * H * S * S * D / (milliseconds * 1e9)</code>。
+该公式不包含标量 softmax 运算及对角 tile 内额外执行的运算。</p>
+<h3 id="_7">正确性检查<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>所有八个实现在全部三个尺寸上通过正确性检查后，才接受其计时结果。
+每次 Choreo 检查抽样验证 4096 个输出元素，包含有针对性的尾部 query 行。
+Python 对照实现对每个尺寸检查 261760–262016 个输出元素：
+在每个 batch/head 中选取包含 tile 边界和序列尾部的若干行，与显式 FP32 attention 参考结果比较。
+该参考计算禁用 TF32。</p>
+<p>两个测试框架都使用 <code>abs(error) &lt;= 0.05 + 0.1 * abs(reference)</code>。
+观察到的最大绝对误差：Choreo 不超过 0.00203，Python 对照不超过 0.00298。
+这是抽样验证，而非逐元素全量检查。
+两个框架均采用随机种子 42，Q/K 在 [-2,2] 上均匀分布，V 在 [-1,1] 上均匀分布；
+C++ 与 PyTorch 的随机数生成器不同，因此输入不保证逐位相同。</p>
+<h2 id="_8">下载与复现<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p>下载 <a href="../../../optimization/assets/flash-attention/flash-attention-standalone.zip">standalone ZIP</a> 或
+<a href="../../../optimization/assets/flash-attention/flash-attention-standalone.tar.gz">tar.gz</a>。
+两者包含相同的源码、脚本、runtime 头文件和测量结果。
+可用 <a href="../../../optimization/assets/flash-attention/SHA256SUMS.txt">SHA-256 校验和</a>核对压缩包；
+依赖、许可证和测量约定见<a href="../../../optimization/assets/flash-attention/standalone/README.txt">包内 README</a>。</p>
+<pre class="highlight"><code class="language-bash">tar -xzf flash-attention-standalone.tar.gz
+cd flash-attention-standalone
+export CUDA_HOME=/usr/local/cuda
+export CUTE_HOME=/path/to/cutlass
+
+# Builds the included CUDA and verifies/times all four Choreo kernels.
+bash run.sh --gpu 0 --backends v1,v2,v4,v3
+
+# Full comparison, including the separate Triton+WS environment.
+bash run.sh --gpu 0 \
+  --python /path/to/main-environment/bin/python \
+  --ws-python /path/to/triton-ws-environment/bin/python</code></pre>
+<p>默认构建不需要 Choreo 编译器。如果修改了 <code>.co</code> 内核，需要使用兼容的编译器重新生成 CUDA：</p>
+<pre class="highlight"><code class="language-bash">bash run.sh --build-only --regenerate --backends v4 \
+  --choreo /path/to/choreo
+bash run.sh --skip-build --gpu 0 --backends v4</code></pre>
+<p>默认每个尺寸测量三轮，每轮预热 50 次、重复执行 200 次，可通过 <code>--warmup</code>、<code>--repeat</code> 和 <code>--rounds</code> 调整。
+每次运行会新建 <code>results/&lt;UTC timestamp&gt;/</code> 目录，保存原始日志、<code>results.json</code>、<code>summary.csv</code> 和 <code>summary.md</code>。
+若正确性检查失败或指定实现不可用，脚本会终止测试，并把已有的部分结果标记为未完成；
+不会悄悄替换成其他实现。</p>
+<p>可检查 <code>generated/</code> 中的 CUDA，确认 TMA 完成绑定、WGMMA 发起和等待位置、K/V 释放时机、
+最终分母归约及输出写回。构建生成的资源报告位于 <code>build/*-nvcc.log</code>。
+构建后，可用下面的命令分析独立版 v4：</p>
+<pre class="highlight"><code class="language-bash">CUDA_VISIBLE_DEVICES=0 MHA_SEQ=8192 CHOREO_DISABLE_TIMING=1 \
+  ncu --set full --launch-count 1 \
+  -o build/v4-s8192 build/v4</code></pre>
+<p>这里通过 <code>MHA_SEQ</code> 显式选择负载；可执行文件先启动 attention 内核，再执行 CPU 参考检查。
+始终核对 profiler 捕获的内核名称和尺寸。</p>
+<p>继续调优时，每次只改变一个方面，例如 tile 形状、缓冲阶段数、释放位置、缓存提示或任务顺序。
+保留改动前，应检查生成代码并重新测量全部三个尺寸。
+寄存器更少、阶段更多或改用持久化网格，只有在满足正确性的前提下改善实测耗时才有意义。</p>
+<h2 id="attention">迁移旧版 attention 代码<a class="headerlink" href="#attention" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>旧写法或旧假设</th>
+<th>当前写法或解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在 <code>tma.copy.async&lt;event&gt;</code> 中内联事件</td>
+<td><code>load = tma.load.async ...; trigger event after load;</code></td>
+</tr>
+<tr>
+<td>源码中显式使用 <code>mma.wait&lt;N&gt;</code></td>
+<td><code>op = mma.row.row.async ...; wait op;</code></td>
+</tr>
+<tr>
+<td>用物理数据槽位索引事件</td>
+<td>事件使用 <code>event.at(logical_order)</code>；数据仍使用 <code>[logical_order % stages]</code></td>
+</tr>
+<tr>
+<td>手动初始化空槽环</td>
+<td>优先使用 <code>shared event empty[N] = ready</code>，不要重复初始化</td>
+</tr>
+<tr>
+<td>首次迭代执行占位 PV</td>
+<td>分离 QK 序言、QK/PV 稳态循环及最终 PV</td>
+</tr>
+<tr>
+<td>每个事件都对应 named barrier</td>
+<td>后端依据参与者推导同步原语</td>
+</tr>
+<tr>
+<td>持久化调度仍是未来工作</td>
+<td>当前 v3 已包含由主机构建的持久化任务列表</td>
+</tr>
+</tbody>
+</table>
+<p>本例使用的 <a href="../../../optimization/assets/flash-attention/standalone/references/futures-and-async.txt">future 语义</a>
+和<a href="../../../optimization/assets/flash-attention/standalone/references/events.txt">事件语义</a>均提供可下载的参考快照。
+<a href="../../../optimization/assets/flash-attention/standalone/provenance.json">源码清单</a>记录代码生成选项和版本，
+测量记录保存实际内核、生成 CUDA 及 runtime 头文件的 SHA-256。
+编译器开发和安装说明见 <a href="https://github.com/LancerLab/croqtile">Croqtile 开源仓库</a>。</p>
 
 
 
@@ -3532,7 +3469,7 @@ mma.row.col acc_o, acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];</code></pre>
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.top", "navigation.path", "navigation.indexes", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
       

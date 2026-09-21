@@ -1,0 +1,19 @@
+Choreo Flash Attention v2 Manual S2 1p2c TMA (D=128 bf16 causal) (DIM=128, BSHD host and device)
+Layout: [batch, seqlen, heads, dim] (matches FA3 baseline)
+Warmup=50 Repeat=200
+--------------------------------------------
+B=4 H=32 SEQ=4096 causal prefill
+Timing avg ms: 1.66002334595
+TFLOPS: 331.173543571
+HW efficiency: 43.7770711925%
+--------------------------------------------
+B=4 H=32 SEQ=8192 causal prefill
+Timing avg ms: 6.10557373047
+TFLOPS: 360.166522038
+HW efficiency: 47.6095865219%
+--------------------------------------------
+B=4 H=32 SEQ=16384 causal prefill
+Timing avg ms: 23.7090405273
+TFLOPS: 371.001644375
+HW efficiency: 49.0418564938%
+Test Passed (verify skipped)

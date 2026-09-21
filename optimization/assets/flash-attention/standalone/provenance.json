@@ -1,0 +1,21 @@
+{
+  "compiler_repository_revision": "4581f53edd51c55b3faf9edb4575e4b2e1de9cfe",
+  "public_compiler_repository": "https://github.com/LancerLab/croqtile",
+  "benchmark_snapshot": "Packaged causal prefill D=128 sources in kernels/ and baselines/",
+  "cutlass_revision": "b50d8fd7196e1c5801c1bd8edf1d64e4bf9add6c",
+  "flash_attention_checkout_revision": "c18420006570a1f6f7abbe0544817e467b22ed88",
+  "triton_ws_revision": "a59d32fd4fcd9a50d8361356d415402d753fe0e3",
+  "triton_ws_branch": "main",
+  "cuda_toolkit": "13.0.88",
+  "codegen_flags": ["-es", "-t", "cute", "-arch=sm_90a", "--use-fast-math", "--stmatrix", "--disable-runtime-check=true", "--zero-cost=true"],
+  "packaging_changes": [
+    "Kernel host includes made relative to the package",
+    "v2 output TMA changed to a full 128-row tile to fix sliced-store correctness on the measured compiler",
+    "Host helper timing precision increased and optional MHA_SEQ filter added",
+    "Repository-dependent baseline imports and old entrypoints removed",
+    "Triton and Triton+WS probability/output paths changed from FP16 to BF16",
+    "Triton+WS migrated from removed aref options/block pointers to tl.range warp_specialize and device tensor descriptors, with a four-warp compiler input",
+    "Triton+WS uses one masked causal loop to avoid a compiler failure on split loops and checks the emitted 12-warp launch",
+    "Unified runner, FP32 reference-row validation, and structured result export added"
+  ]
+}

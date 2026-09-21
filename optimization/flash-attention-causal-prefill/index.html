@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://LancerLab.github.io/croqtile-tutorial/optimization/flash-attention-causal-prefill/">
       
       
+        <link rel="prev" href="../blockscale-gemm-fp8/">
+      
+      
+        <link rel="next" href="../fused-moe-fp8/">
       
       
         
@@ -21,15 +25,15 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>How to Write a Flash Attention Kernel with Croqtile: a Worklog - Croqtile</title>
+        <title>Flash Attention: Causal Prefill D=128 - Croqtile</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -80,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog" class="md-skip">
+        <a href="#flash-attention-causal-prefill-d128" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to Write a Flash Attention Kernel with Croqtile: a Worklog
+              Flash Attention: Causal Prefill D=128
             
           </span>
         </div>
@@ -708,6 +712,8 @@
       
   
   
+    
+  
   
   
     
@@ -727,15 +733,17 @@
       
         
       
+        
+      
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -763,7 +771,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -883,6 +891,275 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flash Attention: Causal Prefill D=128
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flash Attention: Causal Prefill D=128
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#workload-and-source-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workload and source map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#online-softmax-what-must-remain-invariant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Online softmax: what must remain invariant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-establish-the-sequential-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: establish the sequential baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-overlap-tma-loads-with-consumers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: overlap TMA loads with consumers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-overlap-softmax-with-pv-using-operation-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: overlap softmax with PV using operation futures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: overlap softmax with PV using operation futures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reverse-traversal-isolates-the-causal-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverse traversal isolates the causal mask
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-steady-state-consumer-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The steady-state consumer loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defer-the-denominators-cross-lane-reduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defer the denominator's cross-lane reduction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-persistent-scheduling-and-cross-task-lifetimes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: persistent scheduling and cross-task lifetimes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: persistent scheduling and cross-task lifetimes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-q-buffer-needs-its-own-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Q buffer needs its own handoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resources-are-part-of-the-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources are part of the schedule
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-measurements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance measurements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance measurements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timing-scope-and-comparison-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timing scope and comparison limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#correctness-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correctness gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-and-reproduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download and reproduce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-older-attention-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating older attention code
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2327,10 +2604,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-algorithm-online-softmax-attention" class="md-nav__link">
+  <a href="#workload-and-source-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Algorithm: Online Softmax Attention
+        Workload and source map
       
     </span>
   </a>
@@ -2338,10 +2615,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#performance-at-a-glance" class="md-nav__link">
+  <a href="#online-softmax-what-must-remain-invariant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Performance at a glance
+        Online softmax: what must remain invariant
       
     </span>
   </a>
@@ -2349,10 +2626,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-flash-attention-is-harder-than-gemm" class="md-nav__link">
+  <a href="#step-1-establish-the-sequential-baseline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Flash Attention Is Harder Than GEMM
+        Step 1: establish the sequential baseline
       
     </span>
   </a>
@@ -2360,22 +2637,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-1-sequential-load-compute" class="md-nav__link">
+  <a href="#step-2-overlap-tma-loads-with-consumers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel 1: Sequential Load + Compute
+        Step 2: overlap TMA loads with consumers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Kernel 1: Sequential Load + Compute">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-overlap-softmax-with-pv-using-operation-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: overlap softmax with PV using operation futures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: overlap softmax with PV using operation futures">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#croqtile-concepts-for-attention" class="md-nav__link">
+  <a href="#reverse-traversal-isolates-the-causal-mask" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Croqtile concepts for attention
+        Reverse traversal isolates the causal mask
       
     </span>
   </a>
@@ -2383,10 +2671,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#how-the-inner-loop-works" class="md-nav__link">
+  <a href="#the-steady-state-consumer-loop" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How the inner loop works
+        The steady-state consumer loop
       
     </span>
   </a>
@@ -2394,10 +2682,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#result-v1" class="md-nav__link">
+  <a href="#defer-the-denominators-cross-lane-reduction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result: v1
+        Defer the denominator's cross-lane reduction
       
     </span>
   </a>
@@ -2410,22 +2698,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-2-warp-specialized-1p2c-with-tma-pipeline" class="md-nav__link">
+  <a href="#step-4-persistent-scheduling-and-cross-task-lifetimes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel 2: Warp-Specialized 1p2c with TMA Pipeline
+        Step 4: persistent scheduling and cross-task lifetimes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Kernel 2: Warp-Specialized 1p2c with TMA Pipeline">
+    <nav class="md-nav" aria-label="Step 4: persistent scheduling and cross-task lifetimes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#new-concepts-in-v2" class="md-nav__link">
+  <a href="#the-q-buffer-needs-its-own-handoff" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New concepts in v2
+        The Q buffer needs its own handoff
       
     </span>
   </a>
@@ -2433,32 +2721,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-1p2c-pipeline-structure" class="md-nav__link">
+  <a href="#resources-are-part-of-the-schedule" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The 1p2c pipeline structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-the-causal-mask-is-optimized" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why the causal mask is optimized
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#result-v2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Result: v2
+        Resources are part of the schedule
       
     </span>
   </a>
@@ -2471,22 +2737,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-3-fa3-style-intra-warpgroup-overlap" class="md-nav__link">
+  <a href="#performance-measurements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel 3: FA3-Style Intra-Warpgroup Overlap
+        Performance measurements
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Kernel 3: FA3-Style Intra-Warpgroup Overlap">
+    <nav class="md-nav" aria-label="Performance measurements">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-overlap-idea" class="md-nav__link">
+  <a href="#timing-scope-and-comparison-limits" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The overlap idea
+        Timing scope and comparison limits
       
     </span>
   </a>
@@ -2494,43 +2760,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#new-concepts-in-v3" class="md-nav__link">
+  <a href="#correctness-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        New concepts in v3
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-the-overlap-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How the overlap works
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-prev_stage-trick" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The prev_stage trick
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#result-v3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Result: v3
+        Correctness gate
       
     </span>
   </a>
@@ -2543,10 +2776,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-optimization-ladder" class="md-nav__link">
+  <a href="#download-and-reproduce" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Optimization Ladder
+        Download and reproduce
       
     </span>
   </a>
@@ -2554,21 +2787,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#comparison-with-the-ecosystem" class="md-nav__link">
+  <a href="#updating-older-attention-code" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparison with the Ecosystem
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-each-optimization-costs-in-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Each Optimization Costs in Code
+        Updating older attention code
       
     </span>
   </a>
@@ -2593,6 +2815,46 @@
   
 
 
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Part II — Performance Tuning Demos
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
@@ -2603,877 +2865,625 @@
   
 
 
-<h1 id="how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog">How to Write a Flash Attention Kernel with Croqtile: a Worklog<a class="headerlink" href="#how-to-write-a-flash-attention-kernel-with-croqtile-a-worklog" title="Permanent link">&para;</a></h1>
-<p><em>June 2026 -- GPU: NVIDIA H800 PCIe (SM90a) -- Precision: BF16 -- Problem: Causal Prefill, D=128, BSHD layout</em></p>
-<hr />
-<p>Flash Attention is the most impactful kernel in modern LLM training and inference. It fuses the entire Q<em>K softmax</em>V pipeline into a single kernel, reducing memory from O(N^2) to O(N) and unlocking sequence lengths that would otherwise OOM.</p>
-<p>In this worklog I start from a sequential load-compute kernel and step-by-step apply the three major GPU optimization techniques for attention -- warp specialization, async TMA pipelining, and intra-warpgroup QK/PV overlap -- all in <strong>Croqtile</strong>. The finished kernel reaches <strong>374 TFLOPS</strong> at SEQ=16384, matching <strong>FlashAttention-3</strong> on the same hardware. No hand-written CUDA, no manual <code>mbarrier</code> lifecycle management, no WGMMA descriptor encoding.</p>
-<p>This tutorial assumes familiarity with the matmul tutorial's Hopper constructs (<code>tma.copy</code>, <code>mma.load</code>, <code>inthreads.async</code>, <code>shared event</code>). If those are new, read <a href="../dense-gemm-fp16-from-naive/">Dense GEMM FP16: From Naive to Tuned</a> first.</p>
-<p>Compile and run any kernel:</p>
-<pre class="highlight"><code class="language-bash">cd benchmark/performance/flash_atten/causal_prefill_d128/choreo
-bash bench.sh --kernel v1_manual_baseline.co --gpu 1</code></pre>
-<hr />
-<h2 id="the-algorithm-online-softmax-attention">The Algorithm: Online Softmax Attention<a class="headerlink" href="#the-algorithm-online-softmax-attention" title="Permanent link">&para;</a></h2>
-<p>Before looking at code, here is the algorithm that all three kernels implement. This is the FlashAttention core loop (Dao et al., 2022):</p>
-<p>For each block of query rows <code>[bm]</code>:</p>
-<ol>
-<li>Load Q block from global memory</li>
-<li>For each block of KV columns <code>[bn]</code>:
-   a. Compute <code>S = Q * K^T</code> (score matrix, via WGMMA)
-   b. Apply causal mask: <code>S[i,j] = -inf</code> where <code>j &gt; i</code>
-   c. Online softmax: track running max and sum of exponentials
-   d. Rescale previous accumulator: <code>O *= exp(prev_max - new_max)</code>
-   e. Compute <code>O += softmax(S) * V</code> (via WGMMA)</li>
-<li>Normalize: <code>O /= logsum</code></li>
-<li>Store O to global memory</li>
-</ol>
-<p>The key insight: by maintaining a running max and log-sum-exp, we never materialize the full N*N attention matrix. Each KV block is loaded once, used, and discarded.</p>
-<hr />
-<h2 id="performance-at-a-glance">Performance at a glance<a class="headerlink" href="#performance-at-a-glance" title="Permanent link">&para;</a></h2>
-<p>Headline config: <strong>B=4, H=32, SEQ=8192, D=128, causal prefill, BF16</strong></p>
+<h1 id="flash-attention-causal-prefill-d128">Flash Attention: Causal Prefill D=128<a class="headerlink" href="#flash-attention-causal-prefill-d128" title="Permanent link">&para;</a></h1>
+<p><em>Updated September 2026. Target: NVIDIA H800 PCIe, SM90a, 114 SMs.
+BF16 inputs/output, FP32 accumulation, BSHD layout.</em></p>
+<p>This worklog develops a causal prefill attention kernel with
+<a href="https://github.com/LancerLab/croqtile">Croqtile</a>. The current implementation goes beyond the original three-step
+demo: it uses operation futures, generation-aware events, a separate QK
+prologue and PV epilogue, and a persistent scheduling experiment. A newer
+non-persistent implementation makes the same compute pipeline easier to study.</p>
+<p>The kernels and performance comparison on this page are distributed together as
+<a href="../assets/flash-attention/flash-attention-standalone.zip">standalone ZIP</a> and
+<a href="../assets/flash-attention/flash-attention-standalone.tar.gz">tar.gz</a> downloads.
+The package includes generated CUDA and runtime headers, so running the demo
+requires CUDA and CUTLASS but does not require a compiler repository checkout.
+The comparison backends have their own Python dependencies, listed in the
+<a href="../assets/flash-attention/standalone/README.txt">package README</a>.</p>
+<h2 id="workload-and-source-map">Workload and source map<a class="headerlink" href="#workload-and-source-map" title="Permanent link">&para;</a></h2>
+<p>The <a href="../assets/flash-attention/standalone/bench_configs.inc">downloadable workload configuration</a>
+defines the three measured shapes:</p>
 <table>
 <thead>
 <tr>
-<th>Kernel</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-<th style="text-align: right;">vs FA3</th>
+<th>Parameter</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>v1: Sequential DMA + WGMMA</td>
-<td style="text-align: right;">9.67</td>
-<td style="text-align: right;">227.5</td>
-<td style="text-align: right;">55%</td>
+<td>Batch, query heads, KV heads</td>
+<td>4, 32, 32</td>
 </tr>
 <tr>
-<td>v2: Warp-specialized 1p2c + TMA pipeline</td>
-<td style="text-align: right;">6.28</td>
-<td style="text-align: right;">350.1</td>
-<td style="text-align: right;">85%</td>
+<td>Query and KV sequence lengths</td>
+<td>Both 4096, 8192, or 16384</td>
 </tr>
 <tr>
-<td><strong>v3: FA3-style QK/PV overlap</strong></td>
-<td style="text-align: right;"><strong>6.09</strong></td>
-<td style="text-align: right;"><strong>361.3</strong></td>
-<td style="text-align: right;"><strong>88%</strong></td>
+<td>Head dimension</td>
+<td>128</td>
 </tr>
 <tr>
-<td>FlashAttention-3 (reference)</td>
-<td style="text-align: right;">5.41</td>
-<td style="text-align: right;">410.3</td>
-<td style="text-align: right;">100%</td>
+<td>Mode</td>
+<td>Causal full-sequence forward, without dropout</td>
+</tr>
+<tr>
+<td>Layout and precision</td>
+<td><code>[batch, sequence, head, dim]</code>, BF16</td>
+</tr>
+<tr>
+<td>Default timing</td>
+<td>50 warmups, 200 repeats</td>
 </tr>
 </tbody>
 </table>
-<p>Across sequence lengths (B=4, H=32):</p>
+<p>The headline shape is <code>B=4, H=32, S=8192, D=128</code>. These are aligned prefill
+cases, with equal Q/KV lengths and sequence lengths divisible by 128. The
+optimized kernels below do not establish support for arbitrary tails, GQA,
+unequal Q/KV lengths, or backward attention.</p>
+<p>All kernel paths in this table are relative to the package's <code>kernels/</code>
+directory. File numbers identify experiments, not a guaranteed speed ranking.</p>
 <table>
 <thead>
 <tr>
-<th>Config</th>
-<th style="text-align: right;">Choreo v3</th>
-<th style="text-align: right;">FA3</th>
-<th style="text-align: right;">TileLang</th>
-<th style="text-align: right;">Triton</th>
-<th style="text-align: right;">Triton+WS</th>
+<th>Source</th>
+<th>Role in the walkthrough</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">333.3</td>
-<td style="text-align: right;">407.1</td>
-<td style="text-align: right;">243.8</td>
-<td style="text-align: right;">294.4</td>
-<td style="text-align: right;">346.3</td>
+<td><a href="../assets/flash-attention/standalone/kernels/v1_manual_baseline.co">v1_manual_baseline.co</a></td>
+<td>Sequential cooperative DMA, QK, softmax, PV</td>
 </tr>
 <tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">365.0</td>
-<td style="text-align: right;">410.3</td>
-<td style="text-align: right;">295.8</td>
-<td style="text-align: right;">312.5</td>
-<td style="text-align: right;">354.3</td>
+<td><a href="../assets/flash-attention/standalone/kernels/v2_manual_s2_1p2c_tma.co">v2_manual_s2_1p2c_tma.co</a></td>
+<td>One producer and two consumers, two-stage TMA pipeline</td>
 </tr>
 <tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">377.2</td>
-<td style="text-align: right;">422.1</td>
-<td style="text-align: right;">349.0</td>
-<td style="text-align: right;">324.7</td>
-<td style="text-align: right;">371.0</td>
+<td><a href="../assets/flash-attention/standalone/kernels/v4_nonpersistent_fa.co">v4_nonpersistent_fa.co</a></td>
+<td>Current teaching implementation: reverse traversal, future-based QK/PV overlap, fragment reductions</td>
+</tr>
+<tr>
+<td><a href="../assets/flash-attention/standalone/kernels/v3_fa3_overlap.co">v3_fa3_overlap.co</a></td>
+<td>Current persistent implementation with host-built task lists and reusable Q storage</td>
 </tr>
 </tbody>
 </table>
-<p><em>TFLOPS. Higher is better. Measured on H800 PCIe with warmup=50, repeat=200.</em></p>
-<hr />
-<h2 id="why-flash-attention-is-harder-than-gemm">Why Flash Attention Is Harder Than GEMM<a class="headerlink" href="#why-flash-attention-is-harder-than-gemm" title="Permanent link">&para;</a></h2>
-<p>A matmul kernel has one compute phase: C += A * B. Flash attention has <strong>two coupled WGMMA phases</strong> per inner-loop iteration -- QK and PV -- connected by a softmax that depends on the QK result. This creates three challenges that do not exist in GEMM:</p>
-<table>
-<thead>
-<tr>
-<th>Challenge</th>
-<th>GEMM</th>
-<th>Flash Attention</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Compute phases</strong></td>
-<td>1 (C += A*B)</td>
-<td>2 per iteration (S = Q<em>K, O += P</em>V)</td>
-</tr>
-<tr>
-<td><strong>Data dependencies</strong></td>
-<td>None between iterations</td>
-<td>PV depends on softmax of QK</td>
-</tr>
-<tr>
-<td><strong>Shared memory pressure</strong></td>
-<td>2 buffers (A, B)</td>
-<td>3+ buffers (Q, K, V, plus staging)</td>
-</tr>
-<tr>
-<td><strong>Causal masking</strong></td>
-<td>N/A</td>
-<td>Conditional <code>-inf</code> injection after QK</td>
-</tr>
-<tr>
-<td><strong>Numerical stability</strong></td>
-<td>Standard FP accumulation</td>
-<td>Online max/sum tracking across iterations</td>
-</tr>
-</tbody>
-</table>
-<p>The optimization path therefore differs: instead of just tuning tile shapes, we need to <strong>restructure the loop body</strong> to overlap the two WGMMA phases.</p>
-<hr />
-<h2 id="kernel-1-sequential-load-compute">Kernel 1: Sequential Load + Compute<a class="headerlink" href="#kernel-1-sequential-load-compute" title="Permanent link">&para;</a></h2>
-<p><strong>File:</strong> <code>v1_manual_baseline.co</code></p>
-<p>The simplest correct implementation: load Q once into shared memory, then sequentially load K and V blocks, compute QK, apply masking and softmax, compute PV, and accumulate.</p>
-<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
-#define BLOCK_N 128
-#define WG_M 64
-#define WG_K 16
-#define DIM 128
+<p>Start with v4 to understand the modern compute loop, then study v3 for task
+scheduling. The archive includes all four <code>.co</code> sources, matching generated
+CUDA, local harness/configuration files, and executable build/measurement
+scripts. The source walkthrough below uses those packaged kernels.
+Individual downloads are also available for the
+<a href="../assets/flash-attention/standalone/run.py">build/measurement runner</a>,
+<a href="../assets/flash-attention/standalone/baseline.py">Python baseline harness</a>, and
+<a href="../assets/flash-attention/standalone/generated/v4_nonpersistent_fa.cu">generated v4 CUDA</a>.</p>
+<h2 id="online-softmax-what-must-remain-invariant">Online softmax: what must remain invariant<a class="headerlink" href="#online-softmax-what-must-remain-invariant" title="Permanent link">&para;</a></h2>
+<p>For one query tile, keep a running row maximum <code>m</code>, denominator <code>l</code>, and
+unnormalized output accumulator <code>O</code>. For each selected KV tile:</p>
+<pre class="highlight"><code class="language-text">S = Q @ K^T
+S[i,j] = -inf for masked positions
+m_new = max(m, row_max(S))
+alpha = exp2((m - m_new) * scale)
+P = exp2(S * scale - m_new * scale)
+l = alpha * l + row_sum(P)
+O = alpha * O + P @ V
+m = m_new
 
-__co__ void flash_atten(
-  global bf16[B, Q_SEQ, H, DIM] Q, global bf16[B, KV_SEQ, H, DIM] K,
-  global bf16[B, KV_SEQ, H, DIM] V,
-  global bf16[B, Q_SEQ, H, DIM] O
-) {
-  float scale = 0.12751743f;
-  int past_len = KV_SEQ - Q_SEQ;
+After all KV tiles: output = O / l
+scale = log2(e) / sqrt(128) = approximately 0.12751743</code></pre>
+<p>The source variable <code>logsum</code> holds <code>l</code>, the sum of exponentials; it is not the
+logarithm of that sum. QK and PV accumulate in FP32. <code>P</code> is converted to BF16
+for the PV tensor-core operation.</p>
+<p>Each CTA retains only its tiles and row state, avoiding a global <code>S x S</code>
+score/probability matrix. Different query CTAs still load overlapping K/V
+tiles, so cache reuse and task order matter. Online softmax also permits
+reverse KV traversal, with the usual floating-point rounding differences.</p>
+<h2 id="step-1-establish-the-sequential-baseline">Step 1: establish the sequential baseline<a class="headerlink" href="#step-1-establish-the-sequential-baseline" title="Permanent link">&para;</a></h2>
+<p>In v1, a CTA owns 128 query rows. Two 128-thread warpgroups each compute 64
+rows. Q is copied once; every inner iteration copies K, computes QK and
+softmax, then copies V and computes PV. These extracts use the surrounding
+views and accumulators declared in the benchmark kernel:</p>
+<pre class="highlight"><code class="language-choreo">q_s = dma.copy.swiz&lt;128&gt;
+  Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; shared;
 
-  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
-    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+// Inside the consumer's KV loop:
+acc_s = mma.fill.f32 0.0f;
+k_s = dma.copy.swiz&lt;128&gt;
+  K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
+mma.row.row acc_s, q_s.chunkat(wgm, _), k_s;
 
-    q_s = dma.copy.swiz&lt;128&gt; Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; shared;
-    parallel wgm by [BLOCK_M / WG_M]: group-4 {
-      frag bf16[WG_M, BLOCK_N] acc_s_cast;
-      frag f32[WG_M] scores_max {-inf};
-      frag f32[WG_M] scores_max_prev;
-      frag f32[WG_M] scores_scale;
-      frag f32[WG_M] scores_sum;
-      frag f32[WG_M] logsum {0.0f};
-      acc_o = mma.fill.f32 0.0f;
+// Apply the causal mask and online-softmax update here.
 
-      kv_bound = __min(
-        cdiv((bm + 1) * BLOCK_M + past_len, BLOCK_N),
-        cdiv(KV_SEQ, BLOCK_N));
+v_s = dma.copy.swiz&lt;128&gt;
+  V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
+mma.row.col acc_o, acc_s_cast, v_s;</code></pre>
+<p><code>mma.row.row</code> consumes Q and K directly from shared memory for QK. PV uses a
+BF16 register fragment (<code>acc_s_cast</code>) and shared V with <code>mma.row.col</code>. There
+is no need to manufacture register operands with <code>mma.load</code> for the QK
+shared/shared operation.</p>
+<p>The dataflow is serial: <code>load K -&gt; QK -&gt; softmax -&gt; load V -&gt; PV</code>. The next
+step gives data movement its own execution path.</p>
+<h2 id="step-2-overlap-tma-loads-with-consumers">Step 2: overlap TMA loads with consumers<a class="headerlink" href="#step-2-overlap-tma-loads-with-consumers" title="Permanent link">&para;</a></h2>
+<p>The v2 experiment uses a 128 x 128 tile, two K stages, two V stages, and three
+warpgroups: one producer plus two consumers (1p2c). Each consumer still runs
+QK, softmax, and PV sequentially, while the producer fills future tiles.</p>
+<p>Current source should express global-to-shared transfers with <code>tma.load</code> and
+bind their completion to an event. This producer extract follows v4 and uses
+its names; K/V are traversed from the diagonal toward zero:</p>
+<pre class="highlight"><code class="language-choreo">shared event qf;
+shared event kf[K_STAGES], vf[V_STAGES];
+shared event ke[K_STAGES] = ready, ve[V_STAGES] = ready;
 
-      foreach {bn} in [kv_bound] {
-        // -- Phase 1: QK --
-        acc_s = mma.fill.f32 0.0f;
-        k_s = dma.copy.swiz&lt;128&gt;
-          K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
-        mma.row.row acc_s, q_s.chunkat(wgm, _), k_s;
+// Inside inthreads.async (p == 0):
+q_load = tma.load.async.evict_first.swiz&lt;SWIZ&gt;
+  Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
+trigger qf after q_load;
 
-        // -- Causal mask --
-        apply {i, j} in acc_s.span {
-          if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + wgm * WG_M + i + past_len))
-            acc_s.at(i, j) = -inf;
-        }
+mutable u32 k_pipe_order = 0;
+mutable u32 v_pipe_order = 0;
+foreach {issue} in [kv_bound] {
+  bn = bm - issue;
+  k_slot = k_pipe_order % K_STAGES;
+  v_slot = v_pipe_order % V_STAGES;
 
-        // -- Online softmax --
-        copy(scores_max_prev, scores_max);
-        reduce_max(scores_max, acc_s, 1);
-        apply {i} in scores_max.span {
-          scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
-          scores_scale.at(i) =
-            __exp2f(scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
-        }
-        apply {i, j} in acc_s.span
-          acc_s.at(i, j) =
-            __exp2f(acc_s.at(i, j) * scale - scores_max.at(i) * scale);
-        reduce_sum(scores_sum, acc_s, 1);
-        apply {i} in logsum.span
-          logsum.at(i) = logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
-        apply {i, j} in acc_o.span
-          acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
-        apply {i, j} in acc_s_cast.span
-          acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+  wait ke.at(k_pipe_order);
+  k_load = tma.load.async.evict_last.swiz&lt;SWIZ&gt;
+    K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[k_slot];
+  trigger kf.at(k_pipe_order++) after k_load;
 
-        // -- Phase 2: PV --
-        v_s = dma.copy.swiz&lt;128&gt;
-          V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; shared;
-        mma.row.col acc_o, acc_s_cast, v_s;
-      }
+  wait ve.at(v_pipe_order);
+  v_load = tma.load.async.evict_last.swiz&lt;SWIZ&gt;
+    V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[v_slot];
+  trigger vf.at(v_pipe_order++) after v_load;
+}</code></pre>
+<p>The two consumers wait for <code>kf</code>/<code>vf</code>, read the shared buffers, and release
+<code>ke</code>/<code>ve</code> after the corresponding compute completes. <code>= ready</code> supplies the
+initial empty slots. Do not also manually trigger their initial generation.</p>
+<p>Three details are essential:</p>
+<ul>
+<li><code>trigger kf.at(order) after k_load</code> binds TMA completion without blocking
+  the producer. A plain <code>trigger</code> immediately after issuing a load would
+  publish readiness too early.</li>
+<li><code>kf.at(order)</code> selects slot <code>order % K_STAGES</code> and generation
+  <code>order / K_STAGES</code>. Only data indexing uses <code>k_buf[slot]</code>. Passing
+  <code>order % K_STAGES</code> to the event loses its generation.</li>
+<li>Events express readiness and participation. The compiler selects the
+  hardware barrier and TMA transaction accounting; an event is not a
+  source-level named-barrier ID.</li>
+</ul>
+<p>The packaged v2 uses futures and <code>.at(bn)</code>, but retains the
+<code>tma.copy.async</code> load spelling and explicit initial empty-token triggers.
+The ready-initialized, directional form above is the pattern to use in new
+code. Shared-to-global output still uses <code>tma.copy</code>.</p>
+<p>The packaged v2 stores both consumers' output fragments into a shared output
+tile and publishes the complete tile with
+<code>tma.copy o_buf =&gt; O_head.subspan(BLOCK_M, DIM).at(bm, 0)</code>.
+This avoids overlapping writes from the older per-consumer TMA output form,
+which failed the current correctness check. The measured v2 includes this fix.</p>
+<h2 id="step-3-overlap-softmax-with-pv-using-operation-futures">Step 3: overlap softmax with PV using operation futures<a class="headerlink" href="#step-3-overlap-softmax-with-pv-using-operation-futures" title="Permanent link">&para;</a></h2>
+<p>The current v4 loop makes the dependencies explicit. It has a QK-only
+prologue, a steady loop that issues QK for the current tile and PV for the
+previous tile, and a final PV epilogue. There is no dummy zero-probability PV
+in iteration zero.</p>
+<h3 id="reverse-traversal-isolates-the-causal-mask">Reverse traversal isolates the causal mask<a class="headerlink" href="#reverse-traversal-isolates-the-causal-mask" title="Permanent link">&para;</a></h3>
+<p>The non-persistent grid launches query tiles in reverse order within each
+head:</p>
+<pre class="highlight"><code class="language-choreo">parallel.async {tile, head, batch}
+    by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
+  bm = cdiv(Q_SEQ, BLOCK_M) - 1 - tile;
+  // The complete kernel declares views, buffers, and thread scopes here.
+}</code></pre>
+<p>For query tile <code>bm</code>, process KV tiles <code>bm, bm-1, ..., 0</code>. With equal sequence
+lengths and <code>BLOCK_M = BLOCK_N = 128</code>, only the first tile intersects the
+causal diagonal. Its local mask is:</p>
+<pre class="highlight"><code class="language-choreo">apply {i, j} in acc_s.span {
+  if (j &gt; cid * WG_M + i)
+    acc_s.at(i, j) = -inf;
+}</code></pre>
+<p>The remaining <code>bm</code> iterations need no elementwise causal predicate. Starting
+with long query tiles also changes the final grid wave: shorter CTAs are
+launched later. That is a scheduling choice to measure, not a guarantee of
+CUDA block execution order.</p>
+<p>The prologue waits for Q and the first K tile, computes and masks QK, then
+initializes the row maximum, denominator, and BF16 probabilities. Only after
+this does it initialize <code>acc_o</code>, shortening the accumulator's live range.</p>
+<h3 id="the-steady-state-consumer-loop">The steady-state consumer loop<a class="headerlink" href="#the-steady-state-consumer-loop" title="Permanent link">&para;</a></h3>
+<p>This is the v4 steady loop. K and V have independent logical orders because
+QK uses the current K tile while PV still uses the previous V tile:</p>
+<pre class="highlight"><code class="language-choreo">foreach {step} in [kv_bound - 1] {
+  k_slot = k_pipe_order % K_STAGES;
+  prev_v_slot = v_pipe_order % V_STAGES;
 
-      apply {i, j} in acc_o.span
-        acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
-      mma.store acc_o, O_head.subspan(WG_M, DIM).at(bm # wgm, 0);
-    }
+  acc_s = mma.fill.f32 0.0f;
+  wait kf.at(k_pipe_order);
+  qk = mma.row.row.async acc_s,
+    q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[k_slot];
+
+  wait vf.at(v_pipe_order);
+  pv = mma.row.col.async acc_o, acc_s_cast, v_buf[prev_v_slot];
+
+  wait qk;
+  trigger ke.at(k_pipe_order++);
+
+  copy(scores_max_prev, scores_max);
+  reduce_max(scores_max, acc_s, 1);
+  apply {i} in scores_max.span {
+    scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
+    scores_scale.at(i) = __exp2f(
+      scores_max_prev.at(i) * 0.12751743f -
+      scores_max.at(i) * 0.12751743f);
   }
+  apply {i} in logsum.span
+    logsum.at(i) = logsum.at(i) * scores_scale.at(i);
+  apply {i, j} in acc_s.span
+    acc_s.at(i, j) = __exp2f(
+      acc_s.at(i, j) * 0.12751743f - scores_max.at(i) * 0.12751743f);
+  apply {i} in scores_sum.span
+    scores_sum.at(i) = 0.0f;
+  apply {i, j} in acc_s.span
+    scores_sum.at(i) = scores_sum.at(i) + acc_s.at(i, j);
+  apply {i} in logsum.span
+    logsum.at(i) = logsum.at(i) + scores_sum.at(i);
+
+  wait pv;
+  trigger ve.at(v_pipe_order++);
+
+  apply {i, j} in acc_s_cast.span
+    acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
+  apply {i, j} in acc_o.span
+    acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
 }</code></pre>
-<h3 id="croqtile-concepts-for-attention">Croqtile concepts for attention<a class="headerlink" href="#croqtile-concepts-for-attention" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Construct</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>parallel.async {...} : block</code></td>
-<td>Asynchronous grid launch. The <code>.async</code> suffix enables the Hopper async execution model with cluster-level coordination.</td>
-</tr>
-<tr>
-<td><code>.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz()</code></td>
-<td>Slice one batch and one head from a 4-D BSHD tensor, then squeeze the unit dimensions to get a 2-D <code>[seq, dim]</code> view.</td>
-</tr>
-<tr>
-<td><code>dma.copy.swiz&lt;128&gt; src =&gt; shared</code></td>
-<td>SIMT-level cooperative copy with 128-byte swizzle into an auto-allocated shared memory buffer. All threads participate; Croqtile handles coalescing and <code>__syncthreads()</code>.</td>
-</tr>
-<tr>
-<td><code>parallel wgm by [N]: group-4</code></td>
-<td>N warpgroups (each 128 threads) execute the body. Each gets a <code>wgm</code> index.</td>
-</tr>
-<tr>
-<td><code>frag f32[WG_M] scores_max {-inf}</code></td>
-<td>A register-resident fragment with per-element initialization.</td>
-</tr>
-<tr>
-<td><code>reduce_max(dst, src, dim)</code></td>
-<td>Row-wise max reduction across a 2-D fragment.</td>
-</tr>
-<tr>
-<td><code>apply {i, j} in frag.span { ... }</code></td>
-<td>Element-wise transform over a fragment. Compiles to register-register operations with no memory traffic.</td>
-</tr>
-<tr>
-<td><code>mma.row.row acc, A, B</code></td>
-<td>WGMMA: Q*K where both A and B are row-major.</td>
-</tr>
-<tr>
-<td><code>mma.row.col acc, A, B</code></td>
-<td>WGMMA: P*V where A is row-major, B (V) is column-major in the logical contraction.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="how-the-inner-loop-works">How the inner loop works<a class="headerlink" href="#how-the-inner-loop-works" title="Permanent link">&para;</a></h3>
-<p>Each iteration of the <code>foreach {bn}</code> loop performs five steps:</p>
-<pre class="highlight"><code>Load K[bn] -&gt; Compute S = Q*K -&gt; Mask+Softmax -&gt; Load V[bn] -&gt; Compute O += P*V
-     |              |                  |              |              |
-     DMA          WGMMA             Scalar          DMA           WGMMA
-   (stall)      (stall on          (fast but        (stall)      (stall on
-                 DMA)            serialized)                      DMA)</code></pre>
-<p>Every operation waits for the previous one. The two <code>dma.copy</code> calls each stall all threads while data transfers from HBM. The WGMMA instructions stall until shared memory is ready. This is the simplest structure, but it leaves massive performance on the table.</p>
-<h3 id="result-v1">Result: v1<a class="headerlink" href="#result-v1" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Config</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">2.64</td>
-<td style="text-align: right;">207.9</td>
-</tr>
-<tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">9.67</td>
-<td style="text-align: right;">227.5</td>
-</tr>
-<tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">38.8</td>
-<td style="text-align: right;">226.8</td>
-</tr>
-</tbody>
-</table>
-<p><strong>~228 TFLOPS at SEQ=8192 (55% of FA3)</strong></p>
-<hr />
-<h2 id="kernel-2-warp-specialized-1p2c-with-tma-pipeline">Kernel 2: Warp-Specialized 1p2c with TMA Pipeline<a class="headerlink" href="#kernel-2-warp-specialized-1p2c-with-tma-pipeline" title="Permanent link">&para;</a></h2>
-<p><strong>File:</strong> <code>v2_manual_s2_1p2c_tma.co</code></p>
-<p>The v1 kernel serializes data movement and compute. The fix is the same as in the matmul tutorial: split threads into <strong>producer</strong> (TMA loads) and <strong>consumer</strong> (WGMMA compute) warpgroups connected by a double-buffered pipeline.</p>
-<p>The structural changes from v1:</p>
-<ol>
-<li><strong>TMA replaces <code>dma.copy</code></strong> -- one thread drives hardware DMA instead of all threads cooperating</li>
-<li><strong>1 producer + 2 consumer warpgroups</strong> (1p2c) -- the producer prefetches K and V while consumers compute</li>
-<li><strong>2-stage double buffering</strong> -- <code>k_buf[2]</code>, <code>v_buf[2]</code> with <code>shared event</code> barriers</li>
-<li><strong>Q is loaded once via async TMA</strong> before the main loop</li>
-</ol>
-<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
-#define BLOCK_N 128
-#define WG_M 64
-#define WG_K 16
-#define SWIZ 128
-#define STAGES 2
-#define DIM 128
+<p><code>wait qk</code> makes <code>acc_s</code> available while the independent PV operation can
+remain in flight. The intervening softmax work uses scalar instructions.
+<code>wait pv</code> must precede both rescaling <code>acc_o</code> and overwriting the probability
+fragment consumed by PV. The compiler derives WGMMA commit groups and wait
+depths from these future dependencies.</p>
+<pre class="highlight"><code class="language-text">Prologue:  QK[0] -&gt; mask + softmax[0] -&gt; P[0]
 
-__co__ void flash_atten(
-  global bf16[B, Q_SEQ, H, DIM] Q,
-  global bf16[B, KV_SEQ, H, DIM] K,
-  global bf16[B, KV_SEQ, H, DIM] V,
-  global bf16[B, Q_SEQ, H, DIM] O
-) {
-  float scale = 0.12751743f;
+Steady:    issue QK[n] -&gt; issue PV[n-1] -&gt; wait qk
+                                           |
+                              softmax[n] while PV may run
+                                           |
+                              wait pv -&gt; rescale O, write P[n]
 
-  [[launch_bounds(_, 1)]]
-  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
-    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
+Epilogue:  issue PV[last] -&gt; finalize denominator -&gt; wait final_pv -&gt; store</code></pre>
+<p>QK and PV are queued tensor-core operations; this schedule does not require
+them to execute simultaneously on separate tensor cores. The useful overlap
+is scalar softmax work with an outstanding PV operation. Generated code and
+profiling determine how much overlap is actually achieved.</p>
+<h3 id="defer-the-denominators-cross-lane-reduction">Defer the denominator's cross-lane reduction<a class="headerlink" href="#defer-the-denominators-cross-lane-reduction" title="Permanent link">&para;</a></h3>
+<p>In v4, <code>apply {i, j}</code> accumulates the score elements owned by each lane into
+its local row sum. The running denominator keeps these partial sums through
+the KV loop. Because each row's rescaling factor is shared by its lanes, the
+cross-lane sum can be deferred until the end:</p>
+<pre class="highlight"><code class="language-choreo">final_v_slot = v_pipe_order % V_STAGES;
+wait vf.at(v_pipe_order);
+final_pv = mma.row.col.async acc_o, acc_s_cast, v_buf[final_v_slot];
+all_reduce_sum(logsum);
+apply {i} in scores_scale.span
+  scores_scale.at(i) = 1.0f / logsum.at(i);
+wait final_pv;
+trigger ve.at(v_pipe_order++);
 
-    shared bf16[BLOCK_M, DIM] q_shared;
-    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
-    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
+apply {i, j} in acc_o.span
+  acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
+mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
+tma.copy o_buf =&gt; O_head.subspan(BLOCK_M, DIM).at(bm, 0);</code></pre>
+<p><code>all_reduce_sum</code> completes and broadcasts the row denominator while final PV
+is outstanding. Row maxima still require their reduction on each tile.
+Replacing the local sum with <code>reduce_sum</code> would change this schedule.</p>
+<p>The persistent v3 implements local/final row sums with two layout-specific
+CUDA device helpers. The v4 path expresses them with fragment operations.
+Consequently, claims that the entire current v3 needs no handwritten device
+code, or that it is only 80 lines including scheduling, are inaccurate.</p>
+<h2 id="step-4-persistent-scheduling-and-cross-task-lifetimes">Step 4: persistent scheduling and cross-task lifetimes<a class="headerlink" href="#step-4-persistent-scheduling-and-cross-task-lifetimes" title="Permanent link">&para;</a></h2>
+<p>The active v3 launches <code>PERSISTENT_CTAS = 114</code> CTAs and gives each a list of
+query tiles. A tile's causal work grows with <code>bm + 1</code>, so assigning the same
+number of tiles to every CTA does not balance work.</p>
+<p>The host scheduler uses the following cost estimate:</p>
+<pre class="highlight"><code class="language-text">estimated_cost(bm) = 2 * (bm + 1) + fixed_cost
+fixed_cost = 4 by default, configurable with CHOREO_SCHED_FIXED_COST</code></pre>
+<p>The factor two accounts for the QK/PV pair. Tasks are considered in descending
+query-tile order within pairs of batch/head entries and assigned to the
+currently lightest bin. A pair-preserving rebalance reduces the estimated
+heavy/light gap, then each bin is stably ordered by batch/head to retain K/V
+locality. This is a cost-guided static assignment; it is not a device-side
+work-stealing queue.</p>
+<p>The task arrays are cached on the host by workload shape and copied to the
+device. Warmed kernel timings exclude their one-time construction and upload;
+report setup cost separately when evaluating changing request shapes.</p>
+<h3 id="the-q-buffer-needs-its-own-handoff">The Q buffer needs its own handoff<a class="headerlink" href="#the-q-buffer-needs-its-own-handoff" title="Permanent link">&para;</a></h3>
+<p>K and V already have empty/full rings, but Q has only one shared slot reused
+across tasks. Current v3 expresses its lifetime with scalar events:</p>
+<pre class="highlight"><code class="language-choreo">shared event qf;
+shared event qe = ready;
 
-    shared event qf, kf[STAGES], ke[STAGES], vf[STAGES], ve[STAGES];
+// Producer, once per task:
+wait qe;
+q_load = tma.load.async.evict_first.swiz&lt;SWIZ&gt;
+  Q_head.subspan(BLOCK_M, DIM).at(logical_bm, 0) =&gt; q_shared;
+trigger qf after q_load;
 
-    kv_bound = cdiv((bm + 1) * BLOCK_M, BLOCK_N);
-    parallel p by [BLOCK_M/WG_M + 1] : group-4, t by 128 : thread {
-      // --- Producer (p=0): single-thread TMA ---
-      inthreads.async (p == 0) {
-        call croq::cuda::setreg_dec(24);
-        tma.copy.async&lt;qf&gt;.swiz&lt;SWIZ&gt;
-          Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
-        trigger qf;
+// Consumers, before the task's first QK:
+wait qf;
 
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          wait ke[stage];
-          tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;
-            K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[stage];
-          trigger kf[stage];
-
-          wait ve[stage];
-          tma.copy.async&lt;vf[stage]&gt;.swiz&lt;SWIZ&gt;
-            V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[stage];
-          trigger vf[stage];
-        }
-      }
-
-      // --- Consumers (p&gt;0): WGMMA compute ---
-      inthreads.async (p &gt; 0) {
-        call croq::cuda::setreg_inc(240);
-        cid = p - 1;
-        foreach {s} in [STAGES] {
-          trigger ke[s];
-          trigger ve[s];
-        }
-
-        wait qf;
-
-        frag f32[WG_M] scores_max {-inf};
-        frag f32[WG_M] scores_max_prev;
-        frag f32[WG_M] scores_scale;
-        frag f32[WG_M] scores_sum;
-        frag f32[WG_M] logsum {0.0f};
-        acc_o = mma.fill.f32 0.0f;
-
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          acc_s = mma.fill.f32 0.0f;
-
-          wait kf[stage];
-          mma.row.row acc_s,
-            q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[stage];
-          trigger ke[stage];
-
-          // Causal mask (skip if entire tile is unmasked)
-          int causal_row_base = bm * BLOCK_M + cid * WG_M;
-          if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
-            apply {i, j} in acc_s.span {
-              if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + cid * WG_M + i))
-                acc_s.at(i, j) = -inf;
-            }
-          }
-
-          // Online softmax (same as v1)
-          copy(scores_max_prev, scores_max);
-          reduce_max(scores_max, acc_s, 1);
-          apply {i} in scores_max.span {
-            scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
-            scores_scale.at(i) = __exp2f(
-              scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
-          }
-          apply {i, j} in acc_s.span
-            acc_s.at(i, j) = __exp2f(
-              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
-          reduce_sum(scores_sum, acc_s, 1);
-          apply {i} in logsum.span
-            logsum.at(i) =
-              logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
-          apply {i, j} in acc_o.span
-            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
-
-          frag bf16[WG_M, BLOCK_N] acc_s_cast;
-          apply {i, j} in acc_s_cast.span
-            acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
-
-          wait vf[stage];
-          mma.row.col acc_o, acc_s_cast, v_buf[stage];
-          trigger ve[stage];
-        }
-
-        apply {i, j} in acc_o.span
-          acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
-        shared bf16[BLOCK_M, DIM] o_buf;
-        mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
-        tma.copy o_buf.subspan(WG_M, DIM).at(cid, 0) =&gt;
-          O_head.subspan(WG_M, DIM).at(bm * 2 + cid, 0);
-      }
-    }
-  }
-}</code></pre>
-<h3 id="new-concepts-in-v2">New concepts in v2<a class="headerlink" href="#new-concepts-in-v2" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Construct</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>[[launch_bounds(_, 1)]]</code></td>
-<td>Hint to the compiler: at most 1 thread-block per SM. This maximizes per-block register and shared memory budget.</td>
-</tr>
-<tr>
-<td><code>shared event qf, kf[STAGES], ke[STAGES], ...</code></td>
-<td>Named barriers backed by Hopper <code>mbarrier</code>. Five barrier arrays orchestrate the producer/consumer handshake for Q, K (full/empty), and V (full/empty).</td>
-</tr>
-<tr>
-<td><code>call croq::cuda::setreg_dec(24)</code></td>
-<td>Compiler intrinsic: decrease the register allocation for the producer warpgroup (it only issues TMA, needs few registers). Frees registers for the compute-heavy consumers.</td>
-</tr>
-<tr>
-<td><code>call croq::cuda::setreg_inc(240)</code></td>
-<td>Increase register allocation for consumer warpgroups. More registers = fewer spills during softmax and WGMMA accumulation.</td>
-</tr>
-<tr>
-<td><code>tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;</code></td>
-<td>Async TMA that signals barrier <code>kf[stage]</code> on completion. The producer thread is not blocked.</td>
-</tr>
-<tr>
-<td><code>trigger kf[stage]</code> / <code>wait kf[stage]</code></td>
-<td>Signal/wait on named barriers. The producer signals <code>kf</code> after issuing TMA for K; the consumer waits on <code>kf</code> before reading K from shared memory.</td>
-</tr>
-<tr>
-<td><code>trigger ke[stage]</code></td>
-<td>Consumer signals "K buffer consumed" so the producer can reuse the slot. Classic double-buffer protocol.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="the-1p2c-pipeline-structure">The 1p2c pipeline structure<a class="headerlink" href="#the-1p2c-pipeline-structure" title="Permanent link">&para;</a></h3>
-<pre class="highlight"><code>Warpgroup 0 (Producer):
-  Load Q -&gt; [signal qf]
-  for bn in 0..kv_bound:
-    wait ke[stage] -&gt; Load K[bn] -&gt; [signal kf[stage]]
-    wait ve[stage] -&gt; Load V[bn] -&gt; [signal vf[stage]]
-
-Warpgroup 1,2 (Consumers):
-  [signal ke[0..STAGES], ve[0..STAGES]]  // initial empty tokens
-  wait qf
-  for bn in 0..kv_bound:
-    wait kf[stage] -&gt; QK WGMMA -&gt; [signal ke[stage]]
-    softmax
-    wait vf[stage] -&gt; PV WGMMA -&gt; [signal ve[stage]]</code></pre>
-<p>The producer runs ahead of the consumers. With <code>STAGES=2</code>, while consumers compute on <code>k_buf[0]</code>/<code>v_buf[0]</code>, the producer can already be loading into <code>k_buf[1]</code>/<code>v_buf[1]</code>. TMA latency is hidden behind compute.</p>
-<h3 id="why-the-causal-mask-is-optimized">Why the causal mask is optimized<a class="headerlink" href="#why-the-causal-mask-is-optimized" title="Permanent link">&para;</a></h3>
-<p>v2 adds a key optimization over v1: the causal mask check is wrapped in a tile-level guard:</p>
-<pre class="highlight"><code class="language-choreo">if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
-  apply {i, j} in acc_s.span { ... }
-}</code></pre>
-<p>For tiles where all KV positions are before the query position (fully unmasked), the entire <code>apply</code> block is skipped. Since causal attention is lower-triangular, roughly half the tiles skip masking entirely.</p>
-<h3 id="result-v2">Result: v2<a class="headerlink" href="#result-v2" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Config</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">1.66</td>
-<td style="text-align: right;">330.6</td>
-</tr>
-<tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">6.28</td>
-<td style="text-align: right;">350.1</td>
-</tr>
-<tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">36.4</td>
-<td style="text-align: right;">241.6</td>
-</tr>
-</tbody>
-</table>
-<p><strong>~350 TFLOPS at SEQ=8192 (1.54x over v1, 85% of FA3)</strong></p>
-<p>The large SEQ=16384 regression (241 TFLOPS vs 350) suggests the pipeline is not perfectly balanced at very long sequences -- the producer/consumer synchronization overhead grows with <code>kv_bound</code>.</p>
-<hr />
-<h2 id="kernel-3-fa3-style-intra-warpgroup-overlap">Kernel 3: FA3-Style Intra-Warpgroup Overlap<a class="headerlink" href="#kernel-3-fa3-style-intra-warpgroup-overlap" title="Permanent link">&para;</a></h2>
-<p><strong>File:</strong> <code>v3_fa3_overlap.co</code></p>
-<p>The v2 kernel still serializes QK and PV within each consumer's inner loop: the consumer computes QK, performs softmax, then computes PV, then starts the next iteration. The tensor cores are idle during softmax.</p>
-<p>FlashAttention-3 (Shah et al., 2024) introduced <strong>intra-warpgroup overlap</strong>: compute <code>QK[n]</code> and <code>PV[n-1]</code> simultaneously on the same tensor cores, using WGMMA's asynchronous pipeline. The softmax for iteration <code>n</code> runs on scalar units while both WGMMA operations execute on tensor cores.</p>
-<h3 id="the-overlap-idea">The overlap idea<a class="headerlink" href="#the-overlap-idea" title="Permanent link">&para;</a></h3>
-<pre class="highlight"><code>Iteration n:
-  Issue QK[n]  (WGMMA async)     }  Both on tensor cores
-  Issue PV[n-1] (WGMMA async)    }  simultaneously
-  mma.wait&lt;1&gt;                    -- wait for QK[n] only
-  Softmax on QK[n] result        -- scalar units, tensor cores still running PV[n-1]
-  mma.wait&lt;0&gt;                    -- wait for PV[n-1]
-  Cast softmax result to bf16    -- prepare for next iteration's PV[n]</code></pre>
-<p>The key: <code>mma.wait&lt;1&gt;</code> waits until only 1 WGMMA group is outstanding (QK finishes, PV still in flight). Softmax uses scalar FMA units, so PV's tensor core operation runs concurrently.</p>
-<pre class="highlight"><code class="language-choreo">#define BLOCK_M 128
-#define BLOCK_N 128
-#define WG_M 64
-#define WG_K 16
-#define SWIZ 128
-#define STAGES 2
-#define DIM 128
-
-__co__ void flash_atten(
-  global bf16[B, Q_SEQ, H, DIM] Q,
-  global bf16[B, KV_SEQ, H, DIM] K,
-  global bf16[B, KV_SEQ, H, DIM] V,
-  global bf16[B, Q_SEQ, H, DIM] O
-) {
-  float scale = 0.12751743f;
-
-  [[launch_bounds(_, 1)]]
-  parallel.async {bm, head, batch} by [cdiv(Q_SEQ, BLOCK_M), H, B] : block {
-    Q_head = Q.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    K_head = K.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    V_head = V.subspan(1, KV_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-    O_head = O.subspan(1, Q_SEQ, 1, DIM).at(batch, 0, head, 0).sqz();
-
-    shared bf16[BLOCK_M, DIM] q_shared;
-    shared bf16[BLOCK_N, DIM] k_buf[STAGES];
-    shared bf16[BLOCK_N, DIM] v_buf[STAGES];
-
-    shared event qf, kf[STAGES], ke[STAGES], vf[STAGES], ve[STAGES];
-
-    kv_bound = cdiv((bm + 1) * BLOCK_M, BLOCK_N);
-    parallel p by [BLOCK_M/WG_M + 1] : group-4 {
-      // Producer: identical to v2
-      inthreads.async (p == 0) {
-        call croq::cuda::setreg_dec(24);
-        tma.copy.async&lt;qf&gt;.swiz&lt;SWIZ&gt;
-          Q_head.subspan(BLOCK_M, DIM).at(bm, 0) =&gt; q_shared;
-        trigger qf;
-
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          wait ke[stage];
-          tma.copy.async&lt;kf[stage]&gt;.swiz&lt;SWIZ&gt;
-            K_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; k_buf[stage];
-          trigger kf[stage];
-
-          wait ve[stage];
-          tma.copy.async&lt;vf[stage]&gt;.swiz&lt;SWIZ&gt;
-            V_head.subspan(BLOCK_N, DIM).at(bn, 0) =&gt; v_buf[stage];
-          trigger vf[stage];
-        }
-      }
-
-      // Consumer: QK[n] + PV[n-1] overlap
-      inthreads.async (p &gt; 0) {
-        call croq::cuda::setreg_inc(240);
-        cid = p - 1;
-        foreach {s} in [STAGES] {
-          trigger ke[s];
-          trigger ve[s];
-        }
-
-        wait qf;
-
-        frag f32[WG_M] scores_max {-inf};
-        frag f32[WG_M] scores_max_prev;
-        frag f32[WG_M] scores_scale;
-        frag f32[WG_M] scores_sum;
-        frag f32[WG_M] logsum {0.0f};
-        acc_o = mma.fill.f32 0.0f;
-        frag bf16[WG_M, BLOCK_N] acc_s_cast {0.0f};
-        int causal_row_base = bm * BLOCK_M + cid * WG_M;
-
-        // === Unified loop: QK[n] + PV[n-1] ===
-        foreach {bn} in [kv_bound] {
-          stage = bn % STAGES;
-          prev_stage = (bn + 1) % STAGES;
-
-          acc_s = mma.fill.f32 0.0f;
-
-          // Issue QK[n] and PV[n-1] back-to-back
-          wait kf[stage];
-          wait vf[bn == 0 ? stage : prev_stage];
-          mma.row.row acc_s,
-            q_shared.subspan(WG_M, DIM).at(cid, 0), k_buf[stage];
-          trigger ke[stage];
-
-          mma.row.col acc_o,
-            acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];
-          if (bn &gt; 0) trigger ve[prev_stage];
-
-          mma.wait&lt;1&gt;;  // wait for QK only; PV still in flight
-
-          // Causal mask
-          if ((bn + 1) * BLOCK_N &gt; causal_row_base + 1) {
-            apply {i, j} in acc_s.span {
-              if ((bn * BLOCK_N + j) &gt; (bm * BLOCK_M + cid * WG_M + i))
-                acc_s.at(i, j) = -inf;
-            }
-          }
-
-          mma.wait&lt;0&gt;;  // now wait for PV[n-1] too
-
-          // Online softmax
-          copy(scores_max_prev, scores_max);
-          reduce_max(scores_max, acc_s, 1);
-          apply {i} in scores_max.span {
-            scores_max.at(i) = __max(scores_max.at(i), scores_max_prev.at(i));
-            scores_scale.at(i) = __exp2f(
-              scores_max_prev.at(i) * scale - scores_max.at(i) * scale);
-          }
-          apply {i, j} in acc_s.span
-            acc_s.at(i, j) = __exp2f(
-              acc_s.at(i, j) * scale - scores_max.at(i) * scale);
-          reduce_sum(scores_sum, acc_s, 1);
-          apply {i} in logsum.span
-            logsum.at(i) =
-              logsum.at(i) * scores_scale.at(i) + scores_sum.at(i);
-          apply {i, j} in acc_o.span
-            acc_o.at(i, j) = acc_o.at(i, j) * scores_scale.at(i);
-          apply {i, j} in acc_s_cast.span
-            acc_s_cast.at(i, j) = __to&lt;bf16&gt;(acc_s.at(i, j));
-
-          // Epilogue: final PV merged into last iteration
-          if (bn == kv_bound - 1) {
-            wait vf[stage];
-            mma.row.col acc_o, acc_s_cast, v_buf[stage];
-            trigger ve[stage];
-            mma.wait&lt;0&gt;;
-          }
-        }
-
-        apply {i, j} in acc_o.span
-          acc_o.at(i, j) = acc_o.at(i, j) / logsum.at(i);
-        shared bf16[BLOCK_M, DIM] o_buf;
-        mma.store acc_o, o_buf.subspan(WG_M, DIM).at(cid, 0);
-        tma.copy o_buf.subspan(WG_M, DIM).at(cid, 0) =&gt;
-          O_head.subspan(WG_M, DIM).at(bm * 2 + cid, 0);
-      }
-    }
-  }
-}</code></pre>
-<h3 id="new-concepts-in-v3">New concepts in v3<a class="headerlink" href="#new-concepts-in-v3" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Construct</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>frag bf16[WG_M, BLOCK_N] acc_s_cast {0.0f}</code></td>
-<td>Zero-initialized register fragment. On iteration 0, PV uses this zero matrix (no-op multiply), so the first <code>mma.row.col</code> adds nothing. This eliminates a special case for <code>bn==0</code>.</td>
-</tr>
-<tr>
-<td><code>mma.wait&lt;1&gt;</code></td>
-<td>Wait until at most 1 WGMMA group is outstanding. Since QK was issued first and PV second, this waits for QK to complete while PV continues on tensor cores.</td>
-</tr>
-<tr>
-<td><code>mma.wait&lt;0&gt;</code></td>
-<td>Wait for all outstanding WGMMA groups. After this, both QK and PV results are available.</td>
-</tr>
-<tr>
-<td><code>if (bn == kv_bound - 1) { ... }</code></td>
-<td>Epilogue: the final PV has no "next iteration" to overlap with, so it is issued and waited on explicitly in the last iteration.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="how-the-overlap-works">How the overlap works<a class="headerlink" href="#how-the-overlap-works" title="Permanent link">&para;</a></h3>
-<p>The key difference from v2 is the <strong>loop structure</strong>. In v2, each iteration does QK then softmax then PV sequentially. In v3, each iteration does:</p>
-<pre class="highlight"><code>Iteration 0:                    Iteration n (n&gt;0):
-  QK[0]  (WGMMA async)           QK[n]    (WGMMA async)
-  PV[-1] (no-op, zeros)          PV[n-1]  (WGMMA async, using prev softmax)
-  wait QK[0]                     wait QK[n]
-  softmax[0]                     softmax[n]        &lt;-- scalar, while PV runs
-  cast to bf16                   wait PV[n-1]
-                                 cast to bf16</code></pre>
-<p>On the last iteration, an explicit epilogue PV is appended:</p>
-<pre class="highlight"><code>Iteration kv_bound-1:
-  QK[last]  + PV[last-1]
-  softmax[last]
-  PV[last]  (explicit epilogue)</code></pre>
-<p>This is exactly the FA3 loop structure, expressed in ~6 additional lines of Croqtile.</p>
-<h3 id="the-prev_stage-trick">The <code>prev_stage</code> trick<a class="headerlink" href="#the-prev_stage-trick" title="Permanent link">&para;</a></h3>
-<pre class="highlight"><code class="language-choreo">prev_stage = (bn + 1) % STAGES;
-wait vf[bn == 0 ? stage : prev_stage];
-mma.row.col acc_o, acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];</code></pre>
-<p>PV[n-1] reads from the <strong>previous iteration's</strong> V buffer. With <code>STAGES=2</code>, <code>prev_stage = (bn+1) % 2</code> gives the alternate slot. On iteration 0, there is no previous V, so it reads from the current stage (the zero-initialized <code>acc_s_cast</code> makes this a no-op).</p>
-<h3 id="result-v3">Result: v3<a class="headerlink" href="#result-v3" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Config</th>
-<th style="text-align: right;">Time (ms)</th>
-<th style="text-align: right;">TFLOPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SEQ=4096</td>
-<td style="text-align: right;">1.65</td>
-<td style="text-align: right;">332.8</td>
-</tr>
-<tr>
-<td>SEQ=8192</td>
-<td style="text-align: right;">6.09</td>
-<td style="text-align: right;">361.3</td>
-</tr>
-<tr>
-<td>SEQ=16384</td>
-<td style="text-align: right;">23.5</td>
-<td style="text-align: right;">374.3</td>
-</tr>
-</tbody>
-</table>
-<p><strong>~361 TFLOPS at SEQ=8192 (1.03x over v2, 88% of FA3)</strong></p>
-<p>The improvement is modest at short sequences (where the loop body dominates) but significant at SEQ=16384: <strong>374 vs 242 TFLOPS</strong> -- a 1.55x improvement. The overlap shines when there are enough KV iterations to amortize the pipeline startup cost.</p>
-<hr />
-<h2 id="the-optimization-ladder">The Optimization Ladder<a class="headerlink" href="#the-optimization-ladder" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Step</th>
-<th>Technique</th>
-<th>Key Croqtile constructs</th>
-<th style="text-align: right;">SEQ=8192 TFLOPS</th>
-<th style="text-align: right;">Speedup</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>v1</td>
-<td>Sequential DMA + WGMMA</td>
-<td><code>dma.copy.swiz</code>, <code>mma.row.row/col</code></td>
-<td style="text-align: right;">227.5</td>
-<td style="text-align: right;">1.0x</td>
-</tr>
-<tr>
-<td>v2</td>
-<td>1p2c warp spec + TMA pipeline</td>
-<td><code>inthreads.async</code>, <code>shared event</code>, <code>tma.copy.async</code>, <code>setreg</code></td>
-<td style="text-align: right;">350.1</td>
-<td style="text-align: right;">1.54x</td>
-</tr>
-<tr>
-<td>v3</td>
-<td>FA3-style QK/PV overlap</td>
-<td><code>mma.wait&lt;1&gt;</code>, epilogue PV fusion</td>
-<td style="text-align: right;">361.3</td>
-<td style="text-align: right;">1.59x</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="comparison-with-the-ecosystem">Comparison with the Ecosystem<a class="headerlink" href="#comparison-with-the-ecosystem" title="Permanent link">&para;</a></h2>
-<p>At SEQ=8192 (the headline config):</p>
+// Consumers, after the last QK has finished using Q:
+trigger qe;</code></pre>
+<p>The producer can load the next task's Q while consumers finish final PV and
+output for the current task. K/V logical orders are initialized outside the
+task loop and continue across tasks; resetting them would break ring
+generations. Softmax state and accumulators are initialized anew for each
+query tile.</p>
+<p>The producer's Q-empty wait belongs to the two participating producer warps
+(<code>p == 0 &amp;&amp; t &lt; 64</code>). Within that scope, warp 0 issues K and warp 1 issues V.
+Do not narrow the Q handoff to one lane just because one lane issues TMA:
+the compiler uses the actual wait/trigger participants to choose barrier
+lowering. The eligible one-slot ready event can lower to a named barrier;
+TMA completion and staged rings use their appropriate mbarrier paths.</p>
+<p>The current source packs a task as <code>bm | (head &lt;&lt; 8) | (batch &lt;&lt; 14)</code>.
+That limits <code>bm</code> to 8 bits and <code>head</code> to 6 bits. Together with the hardcoded
+114-CTA grid and equal-length causal assumptions, this makes v3 a tuned
+benchmark specialization. Adapting it requires revisiting these limits.</p>
+<h3 id="resources-are-part-of-the-schedule">Resources are part of the schedule<a class="headerlink" href="#resources-are-part-of-the-schedule" title="Permanent link">&para;</a></h3>
+<p>At 128 x 128 BF16, Q and O each occupy 32 KiB; two K and two V tiles occupy
+128 KiB, for 192 KiB of data buffers per CTA. This explains why adding stages
+is a substantial resource change. The current v3/v4 producer requests 40
+registers per thread and the consumers request 232 through <code>setreg_dec</code> and
+<code>setreg_inc</code>; v2 used 24/240. These are allocation controls, not measured
+register counts.</p>
+<p><code>[[launch_bounds(_, 1)]]</code> supplies the minimum-blocks occupancy target used
+for compiler register budgeting. It does not enforce a maximum of one CTA per
+SM. Actual residency follows from threads, registers, and shared memory.
+Likewise, <code>parallel.async</code> expresses an asynchronous launch, not a request
+for cluster cooperation or multicast.</p>
+<h2 id="performance-measurements">Performance measurements<a class="headerlink" href="#performance-measurements" title="Permanent link">&para;</a></h2>
+<p>All numbers below were remeasured on September 21, 2026, using the exact
+downloaded sources. They replace the old measurement tables; no historical
+timing samples are mixed into this table.</p>
+<p>Environment: NVIDIA H800 PCIe (114 SMs), driver 590.48.01, CUDA Toolkit
+13.0.88. Main Python environment: PyTorch 2.11.0+cu130, FA3 3.0.0, TileLang
+0.1.9, Triton 3.6.0. The WS comparison uses PyTorch 2.10.0+cu128 and Triton
+3.8.0+gita59d32fd. Exact dependency revisions and generation flags are in the
+<a href="../assets/flash-attention/standalone/provenance.json">downloadable manifest</a>.</p>
+<p>Each cell reports <strong>median milliseconds / TFLOPS</strong>. Each implementation has
+three independently warmed CUDA-event timing rounds per shape, with 50
+warmups and 200 launches per round. FA3 is measured at both ends of the suite,
+so its displayed median combines six samples.</p>
 <table>
 <thead>
 <tr>
 <th>Implementation</th>
-<th style="text-align: right;">TFLOPS</th>
-<th>Notes</th>
+<th style="text-align: right;">S=4096 ms / TFLOPS</th>
+<th style="text-align: right;">S=8192 ms / TFLOPS</th>
+<th style="text-align: right;">S=16384 ms / TFLOPS</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>FlashAttention-3</td>
-<td style="text-align: right;">410.3</td>
-<td>Hand-tuned CUDA, heavily optimized</td>
+<td style="text-align: right;">1.3944 / 394.3</td>
+<td style="text-align: right;">5.3025 / 414.7</td>
+<td style="text-align: right;">20.7054 / 424.8</td>
 </tr>
 <tr>
-<td><strong>Croqtile v3</strong></td>
-<td style="text-align: right;"><strong>365.0</strong></td>
-<td><strong>~80 lines of <code>.co</code>, no CUDA</strong></td>
+<td>Croqtile v1: sequential</td>
+<td style="text-align: right;">2.5813 / 213.0</td>
+<td style="text-align: right;">9.2858 / 236.8</td>
+<td style="text-align: right;">35.3457 / 248.9</td>
 </tr>
 <tr>
-<td>Triton + WS</td>
-<td style="text-align: right;">354.3</td>
-<td>Warp-specialized Triton kernel</td>
+<td>Croqtile v2: 1p2c TMA (fixed output)</td>
+<td style="text-align: right;">1.6600 / 331.2</td>
+<td style="text-align: right;">6.1387 / 358.2</td>
+<td style="text-align: right;">23.7090 / 371.0</td>
 </tr>
 <tr>
-<td>Triton</td>
-<td style="text-align: right;">312.5</td>
-<td>Standard Triton implementation</td>
+<td>Croqtile v4: non-persistent overlap</td>
+<td style="text-align: right;">1.4642 / 375.5</td>
+<td style="text-align: right;">5.4563 / 403.0</td>
+<td style="text-align: right;">21.1821 / 415.3</td>
 </tr>
 <tr>
-<td>TileLang</td>
-<td style="text-align: right;">295.8</td>
-<td>TileLang compiler-generated</td>
+<td>Croqtile v3: persistent overlap</td>
+<td style="text-align: right;">1.3967 / 393.6</td>
+<td style="text-align: right;">5.2971 / 415.1</td>
+<td style="text-align: right;">20.7939 / 423.0</td>
+</tr>
+<tr>
+<td>TileLang: 128 x 128, 2 stages</td>
+<td style="text-align: right;">1.6511 / 333.0</td>
+<td style="text-align: right;">6.2546 / 351.6</td>
+<td style="text-align: right;">24.2038 / 363.4</td>
+</tr>
+<tr>
+<td>Triton 3.6: autotuned, no WS</td>
+<td style="text-align: right;">1.7542 / 313.4</td>
+<td style="text-align: right;">6.6744 / 329.5</td>
+<td style="text-align: right;">25.9039 / 339.6</td>
+</tr>
+<tr>
+<td>Triton main: Hopper WS, masked loop</td>
+<td style="text-align: right;">1.9217 / 286.1</td>
+<td style="text-align: right;">6.9654 / 315.7</td>
+<td style="text-align: right;">26.6264 / 330.4</td>
 </tr>
 </tbody>
 </table>
-<p>The Croqtile kernel matches Triton+WS and reaches 89% of FA3 -- the current SOTA -- while being expressed in a fraction of the code. The remaining gap to FA3 comes from techniques not yet applied:</p>
-<ul>
-<li><strong>Pingpong scheduling</strong>: FA3 uses a 2-CTA cooperative scheme where adjacent blocks alternate between QK and PV phases, maximizing L2 reuse.</li>
-<li><strong>Persistent kernel with tile scheduler</strong>: Keeps thread blocks alive across output tiles.</li>
-<li><strong>FP8 GQA paths</strong>: FA3 has specialized FP8 and grouped-query attention variants.</li>
-</ul>
-<hr />
-<h2 id="what-each-optimization-costs-in-code">What Each Optimization Costs in Code<a class="headerlink" href="#what-each-optimization-costs-in-code" title="Permanent link">&para;</a></h2>
+<p><img alt="Measured attention throughput for eight implementations at three sequence lengths, with observed timing ranges." src="../assets/flash-attention/performance-light.svg#only-light" />
+<img alt="Measured attention throughput for eight implementations at three sequence lengths, with observed timing ranges." src="../assets/flash-attention/performance-dark.svg#only-dark" /></p>
+<p>Bars show throughput computed from median latency; whiskers show the full
+observed range, not confidence intervals. All panels use the same zero-based
+scale. The figure is generated directly from the
+<a href="../assets/flash-attention/standalone/results/20260921-h800-bf16/summary.csv">measured CSV</a>
+using the downloadable <a href="../assets/flash-attention/plot_performance.py">plot script</a>.</p>
+<p>At S=8192, v4 is 1.70x and v3 is
+1.75x faster than the sequential v1 in this run. The v3 and FA3
+medians are effectively tied at this shape; the measured difference is smaller
+than the FA3 drift below. This is a comparison of these packaged implementations
+and configurations, not a claim of each library's best achievable performance.</p>
+<h3 id="timing-scope-and-comparison-limits">Timing scope and comparison limits<a class="headerlink" href="#timing-scope-and-comparison-limits" title="Permanent link">&para;</a></h3>
+<p>All inputs and outputs are BF16, with FP32 accumulation and causal masking.
+The older Triton scripts used FP16; the packaged variants have been converted
+to BF16 and independently checked. Triton receives contiguous BHSD tensors,
+with the one-time BSHD/BHSD conversion excluded from timing; the other
+implementations consume BSHD. Thus layout conversion cost is not compared.</p>
+<p>CUDA Graphs are not used. Compilation, autotuning, input preparation,
+correctness checks, and v3's one-time scheduler setup are outside the timed
+region. Python output allocations and wrapper launch work remain inside the
+repeated invocation, so host launch gaps can affect CUDA-event elapsed time.
+These are warmed invocation measurements, not application end-to-end latency.</p>
+<p>The updated Triton+WS kernel uses device tensor descriptors and
+<code>tl.range(warp_specialize=True)</code>. The old aref launch options are no longer
+accepted by the measured compiler. A single masked causal loop avoids that
+revision's compiler failure on the old split loops; the wrapper requires
+12 emitted warps (384 threads), preventing a silent non-WS fallback. This
+row is <strong>not</strong> a remeasurement of the old aref implementation.</p>
+<p>GPU clocks were not locked, and backends ran sequentially. The runner waits
+for at most 65 C before each backend, but that is not a constant-temperature
+guarantee during measurement. FA3's first/last three-sample medians show:</p>
 <table>
 <thead>
 <tr>
-<th>Optimization</th>
-<th style="text-align: right;">Lines changed from prev</th>
-<th style="text-align: right;">Lines of equivalent CUDA</th>
+<th>Sequence</th>
+<th style="text-align: right;">FA3 before (ms)</th>
+<th style="text-align: right;">FA3 after (ms)</th>
+<th style="text-align: right;">Change</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>v1 -&gt; v2: warp spec + TMA</td>
-<td style="text-align: right;">+55 lines</td>
-<td style="text-align: right;">~300+ lines (mbarrier init, TMA descriptors, warpgroup dispatch)</td>
+<td>4096</td>
+<td style="text-align: right;">1.3908</td>
+<td style="text-align: right;">1.3980</td>
+<td style="text-align: right;">+0.52%</td>
 </tr>
 <tr>
-<td>v2 -&gt; v3: QK/PV overlap</td>
-<td style="text-align: right;">+10 lines</td>
-<td style="text-align: right;">~80+ lines (WGMMA pipeline fence management, epilogue logic)</td>
+<td>8192</td>
+<td style="text-align: right;">5.2543</td>
+<td style="text-align: right;">5.3796</td>
+<td style="text-align: right;">+2.39%</td>
+</tr>
+<tr>
+<td>16384</td>
+<td style="text-align: right;">20.5006</td>
+<td style="text-align: right;">20.8591</td>
+<td style="text-align: right;">+1.75%</td>
 </tr>
 </tbody>
 </table>
-<p>The v3 kernel is ~80 lines of Croqtile total. A faithful CUDA implementation of the same algorithm requires 400+ lines -- TMA tensor-map construction, mbarrier lifecycle management, WGMMA smem descriptor encoding, swizzle propagation, register allocation hints, and careful fence ordering. One mistake in any of these causes silent numerical errors or deadlocks.</p>
-<hr />
+<p>At S=4096, FA3's six samples span 1.3180-1.5034 ms;
+short-shape results are particularly sensitive to invocation variability.
+Do not interpret small percentage gaps as definitive wins. Every sample,
+min/max range, GPU-state observation, and source SHA-256 is retained in
+<a href="../assets/flash-attention/standalone/results/20260921-h800-bf16/results.json">results.json</a>
+and <a href="../assets/flash-attention/standalone/results/20260921-h800-bf16/summary.csv">summary.csv</a>.
+The archives include all raw verification and timing logs.</p>
+<p>Throughput counts approximate useful causal QK plus PV work:
+<code>TFLOPS = 2 * B * H * S * S * D / (milliseconds * 1e9)</code>.
+It excludes scalar softmax work and extra diagonal-tile arithmetic.</p>
+<h3 id="correctness-gate">Correctness gate<a class="headerlink" href="#correctness-gate" title="Permanent link">&para;</a></h3>
+<p>All eight implementations passed all three shapes before their timing samples
+were accepted. Each Choreo check samples 4096 output elements, including
+targeted tail rows. Python baselines check 261760-262016 output elements per
+shape against explicit FP32 attention on selected rows across every batch/head,
+including tile boundaries and sequence tails. TF32 is disabled for that oracle.</p>
+<p>Both harnesses use <code>abs(error) &lt;= 0.05 + 0.1 * abs(reference)</code>. The largest
+observed absolute error was 0.00203 or less for Choreo and 0.00298 or less for
+the Python baselines. These are sampled checks, not exhaustive tensor checks.
+Each harness uses seed 42, Q/K uniform in [-2,2], and V uniform in [-1,1];
+the C++ and PyTorch RNGs do not generate bit-identical inputs.</p>
+<h2 id="download-and-reproduce">Download and reproduce<a class="headerlink" href="#download-and-reproduce" title="Permanent link">&para;</a></h2>
+<p>Download the <a href="../assets/flash-attention/flash-attention-standalone.zip">standalone ZIP</a>
+or <a href="../assets/flash-attention/flash-attention-standalone.tar.gz">tar.gz</a>.
+Both contain the same sources, scripts, runtime headers, and measured results.
+The <a href="../assets/flash-attention/SHA256SUMS.txt">SHA-256 checksums</a> identify the archives.
+See the <a href="../assets/flash-attention/standalone/README.txt">package README</a> for
+dependencies, licensing, and the measurement contract.</p>
+<pre class="highlight"><code class="language-bash">tar -xzf flash-attention-standalone.tar.gz
+cd flash-attention-standalone
+export CUDA_HOME=/usr/local/cuda
+export CUTE_HOME=/path/to/cutlass
+
+# Builds the included CUDA and verifies/times all four Choreo kernels.
+bash run.sh --gpu 0 --backends v1,v2,v4,v3
+
+# Full comparison, including the separate Triton+WS environment.
+bash run.sh --gpu 0 \
+  --python /path/to/main-environment/bin/python \
+  --ws-python /path/to/triton-ws-environment/bin/python</code></pre>
+<p>No Choreo compiler is needed for the default build. To modify a <code>.co</code> kernel
+and regenerate its CUDA, use a compatible compiler:</p>
+<pre class="highlight"><code class="language-bash">bash run.sh --build-only --regenerate --backends v4 \
+  --choreo /path/to/choreo
+bash run.sh --skip-build --gpu 0 --backends v4</code></pre>
+<p>The default measurement uses 50 warmups, 200 repeats, and three timing rounds
+per shape. Set <code>--warmup</code>, <code>--repeat</code>, and <code>--rounds</code> to change that protocol.
+Each run creates a new <code>results/&lt;UTC timestamp&gt;/</code> directory containing raw
+logs, <code>results.json</code>, <code>summary.csv</code>, and <code>summary.md</code>. A failed correctness
+check or unavailable backend fails the suite and marks the partial result as
+incomplete. The scripts never substitute another implementation silently.</p>
+<p>Inspect the included CUDA in <code>generated/</code> for TMA completion binding, WGMMA
+issue/wait placement, K/V releases, final denominator reduction, and output
+stores. The build writes resource reports to <code>build/*-nvcc.log</code>. To profile
+the standalone v4 after building it:</p>
+<pre class="highlight"><code class="language-bash">CUDA_VISIBLE_DEVICES=0 MHA_SEQ=8192 CHOREO_DISABLE_TIMING=1 \
+  ncu --set full --launch-count 1 \
+  -o build/v4-s8192 build/v4</code></pre>
+<p>Here <code>MHA_SEQ</code> explicitly selects the workload, and the executable launches
+the attention kernel before running its CPU reference check. Always inspect
+the captured kernel name and shape.</p>
+<p>For further tuning, change one aspect at a time: tile shape, stage count,
+release placement, cache hints, or task order. Inspect generated code and
+measure all three shapes before retaining a change. A lower register count,
+more stages, or a persistent grid is useful only when it improves measured
+runtime with the required correctness.</p>
+<h2 id="updating-older-attention-code">Updating older attention code<a class="headerlink" href="#updating-older-attention-code" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Older form or assumption</th>
+<th>Current form or interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inline event in <code>tma.copy.async&lt;event&gt;</code></td>
+<td><code>load = tma.load.async ...; trigger event after load;</code></td>
+</tr>
+<tr>
+<td>Source-level <code>mma.wait&lt;N&gt;</code></td>
+<td><code>op = mma.row.row.async ...; wait op;</code></td>
+</tr>
+<tr>
+<td>Event indexed by the physical data slot</td>
+<td><code>event.at(logical_order)</code>; data still uses <code>[logical_order % stages]</code></td>
+</tr>
+<tr>
+<td>Manually seed an empty ring</td>
+<td>Prefer <code>shared event empty[N] = ready</code>; do not seed twice</td>
+</tr>
+<tr>
+<td>Dummy PV in the first iteration</td>
+<td>Separate QK prologue, QK/PV steady loop, final PV</td>
+</tr>
+<tr>
+<td>Every event is a named barrier</td>
+<td>The backend infers the synchronization primitive from participation</td>
+</tr>
+<tr>
+<td>Persistent scheduling is future work</td>
+<td>The active v3 already includes host-built persistent task lists</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="../assets/flash-attention/standalone/references/futures-and-async.txt">future semantics</a>
+and <a href="../assets/flash-attention/standalone/references/events.txt">event semantics</a>
+used by these examples are included as downloadable reference snapshots.
+The <a href="../assets/flash-attention/standalone/provenance.json">source manifest</a>
+records the generation flags and source versions; measurement records contain
+SHA-256 hashes of the actual kernels, generated CUDA, and runtime headers.
+For compiler development and installation, see the
+<a href="https://github.com/LancerLab/croqtile">open-source Croqtile repository</a>.</p>
 
 
 
@@ -3532,7 +3542,7 @@ mma.row.col acc_o, acc_s_cast, v_buf[bn == 0 ? stage : prev_stage];</code></pre>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.top", "navigation.path", "navigation.indexes", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
       

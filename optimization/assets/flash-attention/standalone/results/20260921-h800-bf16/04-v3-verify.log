@@ -1,0 +1,12 @@
+Choreo Flash Attention v3 persistent LPT (D=128 bf16 causal) (DIM=128, BSHD host and device)
+Layout: [batch, seqlen, heads, dim] (matches FA3 baseline)
+--------------------------------------------
+B=4 H=32 SEQ=4096 causal prefill
+[VERIFY B=4 H=32 SEQ=4096 causal prefill] max_abs_err=0.00194889307022 avg_abs_err=6.18164995103e-05 fail_rate=0 (0/4096) PASS
+--------------------------------------------
+B=4 H=32 SEQ=8192 causal prefill
+[VERIFY B=4 H=32 SEQ=8192 causal prefill] max_abs_err=0.00202107429504 avg_abs_err=4.70733284601e-05 fail_rate=0 (0/4096) PASS
+--------------------------------------------
+B=4 H=32 SEQ=16384 causal prefill
+[VERIFY B=4 H=32 SEQ=16384 causal prefill] max_abs_err=0.0019359588623 avg_abs_err=3.56051386916e-05 fail_rate=0 (0/4096) PASS
+Test Passed

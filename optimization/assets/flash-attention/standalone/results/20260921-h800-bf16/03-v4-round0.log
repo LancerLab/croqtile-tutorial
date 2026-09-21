@@ -1,0 +1,19 @@
+Choreo Flash Attention v4 non-persistent (D=128 bf16 causal) (DIM=128, BSHD host and device)
+Layout: [batch, seqlen, heads, dim] (matches FA3 baseline)
+Warmup=50 Repeat=200
+--------------------------------------------
+B=4 H=32 SEQ=4096 causal prefill
+Timing avg ms: 1.48040100098
+TFLOPS: 371.356013354
+HW efficiency: 49.0886997163%
+--------------------------------------------
+B=4 H=32 SEQ=8192 causal prefill
+Timing avg ms: 5.47535095215
+TFLOPS: 401.622338873
+HW efficiency: 53.0895358722%
+--------------------------------------------
+B=4 H=32 SEQ=16384 causal prefill
+Timing avg ms: 21.2085913086
+TFLOPS: 414.741973864
+HW efficiency: 54.8237903324%
+Test Passed (verify skipped)

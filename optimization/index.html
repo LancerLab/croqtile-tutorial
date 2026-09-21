@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -733,6 +733,8 @@
       
         
       
+        
+      
     
     
     
@@ -881,6 +883,34 @@
     
   
     Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flash-attention-causal-prefill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flash Attention: Causal Prefill D=128
   
 
     
@@ -2456,7 +2486,7 @@
 
 
 <h1 id="performance-tuning-demos">Performance Tuning Demos<a class="headerlink" href="#performance-tuning-demos" title="Permanent link">&para;</a></h1>
-<p>In this part, we iteratively optimize three Croqtile GEMM kernels on H800 PCIe (SM90a, 114 SMs). Each is written as a continuous worklog: start from a correct baseline, measure against hardware limits, change one thing, re-measure, and tell the story of why each optimization works.</p>
+<p>In this part, we iteratively optimize Croqtile GEMM, attention, and fused MoE kernels on H800 PCIe (SM90a, 114 SMs). Each is written as a continuous worklog: start from a correct baseline, measure against hardware limits, change one thing, re-measure, and tell the story of why each optimization works.</p>
 <p>Before diving in, skim <a href="setup-profiling/">Setting Up: TimerOption, TFLOPS, and HW Efficiency</a> for how timing and efficiency are computed — every story uses the same harness.</p>
 <h2 id="dense-gemm-fp16-from-naive-to-tuned"><a href="dense-gemm-fp16-from-naive/">Dense GEMM FP16: From Naive to Tuned</a><a class="headerlink" href="#dense-gemm-fp16-from-naive-to-tuned" title="Permanent link">&para;</a></h2>
 <p>Five-stage tutorial: naive → shared memory → Hopper TMA+WGMMA → warp specialization → production-tuned. Reaches <strong>471 TFLOPS</strong> (105% of cuBLAS) via a 28-iteration parameter sweep. Each stage introduces new Croqtile primitives with side-by-side generated CUDA. <a href="dense-gemm-fp16-from-naive/assets/matmul_tutorial_kernels.tar.gz">Download kernel source files</a>.</p>
@@ -2465,7 +2495,7 @@
 <h2 id="block-scaled-gemm-fp8"><a href="blockscale-gemm-fp8/">Block-Scaled GEMM FP8</a><a class="headerlink" href="#block-scaled-gemm-fp8" title="Permanent link">&para;</a></h2>
 <p>FP8 E4M3 with per-block scaling: <strong>397 → 621 TFLOPS</strong> (+56%). TMA overlap with scale accumulation, N256 tiles, L2 promotion, and scale prefetch.</p>
 <h2 id="flash-attention-causal-prefill-d128"><a href="flash-attention-causal-prefill/">Flash Attention: Causal Prefill D=128</a><a class="headerlink" href="#flash-attention-causal-prefill-d128" title="Permanent link">&para;</a></h2>
-<p>Three-stage tutorial: sequential DMA+WGMMA -&gt; warp-specialized 1p2c with TMA pipeline -&gt; FA3-style intra-warpgroup QK/PV overlap. Reaches <strong>374 TFLOPS</strong> at SEQ=16384 (89% of FlashAttention-3), compared against FA3, Triton, Triton+WS, and TileLang. Shows how Croqtile expresses the full FA3 loop structure in ~80 lines.</p>
+<p>Updated for operation futures and generation-aware events: sequential DMA -&gt; 1p2c TMA -&gt; QK/PV overlap -&gt; persistent task scheduling. Uses the current non-persistent v4 as the teaching example and explains persistent v3, reverse causal traversal, and deferred row-sum reduction. Includes freshly remeasured BF16 results for all three shapes, raw logs and source hashes, and standalone kernel/script downloads with matching CUDA and runtime headers.</p>
 <h2 id="fused-moe-fp8"><a href="fused-moe-fp8/">Fused MoE FP8</a><a class="headerlink" href="#fused-moe-fp8" title="Permanent link">&para;</a></h2>
 <p>Fused Mixture-of-Experts end-to-end kernel for Qwen3.5-35B-A3B inference: <strong>7.11 → 13.14 TFLOPS</strong> (+85%). Kernel fusion (7→4 kernels), <code>parallel.async</code>, CUDA Graphs, L2 persistence, QSG load pipelining, and the <code>__cpp__</code> escape hatch.</p>
 
@@ -2526,7 +2556,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "navigation.path", "navigation.indexes", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
       

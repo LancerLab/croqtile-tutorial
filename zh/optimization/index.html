@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -733,6 +733,8 @@
       
         
       
+        
+      
     
     
     
@@ -881,6 +883,34 @@
     
   
     Block-Scaled GEMM FP8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flash-attention-causal-prefill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flash Attention：因果预填充 D=128
   
 
     
@@ -2365,6 +2395,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#flash-attention-d128" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash Attention：因果预填充 D=128
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2434,14 +2475,16 @@
 
 
 <h1 id="_1">性能调优演示<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>本部分在 H800 PCIe（SM90a，114 个 SM）上对三个鳄霸 GEMM 内核进行迭代优化。每个内核均以连续工作日志的形式撰写：从正确的基线出发，对照硬件上限进行测量，每次只改一处，重新测量，并说明每项优化为何有效。</p>
-<p>在深入阅读之前，请先浏览 <a href="setup-profiling/">环境搭建：TimerOption、TFLOPS 与硬件效率</a>，了解计时与效率的计算方式——后续案例均使用同一套测量框架。</p>
+<p>本部分在 H800 PCIe（SM90a，114 个 SM）上对 Croqtile 的 GEMM、attention 与融合 MoE 内核进行迭代优化。每个内核均以连续工作日志的形式撰写：从正确的基线出发，对照硬件上限进行测量，每次只改一处，重新测量，并说明每项优化为何有效。</p>
+<p>在深入阅读之前，请先浏览 <a href="setup-profiling/">环境搭建：TimerOption、TFLOPS 与硬件效率</a>，了解计时与效率的计算方式。具体的计时范围和对照条件以各案例的说明为准。</p>
 <h2 id="gemm-fp16"><a href="dense-gemm-fp16/">稠密 GEMM FP16</a><a class="headerlink" href="#gemm-fp16" title="Permanent link">&para;</a></h2>
 <p>半精度矩阵乘法从 <strong>208 → 382 TFLOPS</strong>（+83%），与 cuBLAS 持平。分块几何、流水线深度、split-output 1p2c，以及 WN=168 的占用率断崖。</p>
 <h2 id="gemmfp16-e4m3"><a href="sparse-gemm/">稀疏 GEMM：FP16 与 E4M3</a><a class="headerlink" href="#gemmfp16-e4m3" title="Permanent link">&para;</a></h2>
 <p>结构化 2:4 稀疏 GEMM，规模 4096 × 8192 × 8192。FP16：<strong>368 → 655 TFLOPS</strong>（+78%）。E4M3：<strong>671 → 1127 TFLOPS</strong>（+68%）。元数据传递、<code>.co</code> 与 <code>.cu</code> 的边界，以及三阶段不连续性。</p>
 <h2 id="gemm-fp8"><a href="blockscale-gemm-fp8/">块缩放 GEMM FP8</a><a class="headerlink" href="#gemm-fp8" title="Permanent link">&para;</a></h2>
 <p>带每块缩放的 FP8 E4M3：<strong>397 → 621 TFLOPS</strong>（+56%）。TMA 与缩放累加的重叠、N256 分块、L2 提升与缩放预取。</p>
+<h2 id="flash-attention-d128"><a href="flash-attention-causal-prefill/">Flash Attention：因果预填充 D=128</a><a class="headerlink" href="#flash-attention-d128" title="Permanent link">&para;</a></h2>
+<p>按当前操作 future 和带代际事件的写法，依次介绍顺序 DMA、1p2c TMA、QK/PV 重叠及持久化任务调度。以非持久化 v4 讲解计算流水线，再分析持久化 v3、逆序因果遍历和延迟行和归约。包含三个尺寸下重新测量的 BF16 性能表、对比图、原始日志与源码哈希，并提供含 CUDA 和 runtime 头文件的独立内核及脚本下载包。</p>
 
 
 
@@ -2500,7 +2543,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.top", "navigation.path", "navigation.indexes", "search.highlight", "search.suggest", "content.code.annotate", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
       
