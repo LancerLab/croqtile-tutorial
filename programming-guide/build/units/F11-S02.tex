@@ -2,7 +2,7 @@
 
 The bang variants (\texttt{print!}, \texttt{println!}) run at \textbf{compile time}, not at runtime. They print to the compiler's output and are useful for inspecting shapes, extents, and type information without launching a kernel:
 
-\begin{lstlisting}[language=croqtile,caption={print and println : compile-time inspection}]
+\begin{lstlisting}[language=croqtile,caption={A compile-time shape print}]
 __co__ void check_shapes(f32 [3, 2] b) {
   print!("shape of b: ");
   println!("b.span = ", b.span);
@@ -11,7 +11,7 @@ __co__ void check_shapes(f32 [3, 2] b) {
 
 When you compile this file, the compiler emits:
 
-\begin{lstlisting}[language=croqtile,caption={print and println : compile-time inspection}]
+\begin{lstlisting}[language=croqtile,caption={The printed shape}]
 shape of b: b.span = [3, 2]
 \end{lstlisting}
 

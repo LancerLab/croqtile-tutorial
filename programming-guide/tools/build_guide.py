@@ -354,7 +354,7 @@ SLOT_INTROS = {
     '2.11': "A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.",
     '2.12': "A contraction is not one instruction but four: load the operands, compute, accumulate and store. The four-step spelling makes each step visible, so the smallest kernel that uses all of them is enough to read the rest.",
     '2.13': "Croqtile lives inside C++: a \\file{.co} file can call device helpers, inject source text and use the preprocessor. Each mechanism has its own boundary, and the compiler checks nothing across that boundary.",
-    '2.14': "The language has its own print and assert forms, at compile time and at runtime. This section shows what each one reports and when to reach for it.",
+    '2.14': "A shape or a type that is wrong at compile time is cheapest to inspect with \\co@print!@; a value that is wrong at runtime needs \\co@assert@ or a print inside the kernel. The first reports what the compiler believes, the second what the program did.",
     '2.15': "The constructs introduced so far are gathered here as a compact reference, for looking up a spelling or a meaning without re-reading the examples.",
     '3.1': "A Croqtile program is transpiled into host and device code. This section explains the resulting three-layer structure and the compilation models the language supports.",
     '3.2': "The type system has a small number of value families. This section explains how they were designed and what the storage and bounded qualifiers contribute.",
@@ -1117,6 +1117,11 @@ UNIT_OVERRIDES = [
      "A \\texttt{call} statement invokes a device function, with or without "
      "template arguments."),
     ('F24-S07', r'Programmers must code in cautious since', 'Care is needed since'),
+    # Round 38 (2.14): compile-time and runtime inspection.
+    ('F11-S02', None, caption_names([
+        'A compile-time shape print', 'The printed shape'])),
+    ('F11-S03', None, caption_names([
+        'A runtime inspect kernel', 'A print inside a parallel block'])),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

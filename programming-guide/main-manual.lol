@@ -161,10 +161,10 @@
 \contentsline {lstlisting}{\numberline {2.130}The general call syntax}{64}{lstlisting.2.130}%
 \contentsline {lstlisting}{\numberline {2.131}An illegal call site}{64}{lstlisting.2.131}%
 \contentsline {lstlisting}{\numberline {2.132}The Convention: Allowed Argument Types}{65}{lstlisting.2.132}%
-\contentsline {lstlisting}{\numberline {2.133}print and println : compile-time inspection}{66}{lstlisting.2.133}%
-\contentsline {lstlisting}{\numberline {2.134}print and println : compile-time inspection}{66}{lstlisting.2.134}%
-\contentsline {lstlisting}{\numberline {2.135}print and println: runtime device output}{66}{lstlisting.2.135}%
-\contentsline {lstlisting}{\numberline {2.136}print and println: runtime device output}{66}{lstlisting.2.136}%
+\contentsline {lstlisting}{\numberline {2.133}A compile-time shape print}{66}{lstlisting.2.133}%
+\contentsline {lstlisting}{\numberline {2.134}The printed shape}{66}{lstlisting.2.134}%
+\contentsline {lstlisting}{\numberline {2.135}A runtime inspect kernel}{66}{lstlisting.2.135}%
+\contentsline {lstlisting}{\numberline {2.136}A print inside a parallel block}{66}{lstlisting.2.136}%
 \contentsline {lstlisting}{\numberline {2.137}assert: runtime invariant checks}{67}{lstlisting.2.137}%
 \contentsline {lstlisting}{\numberline {3.1}Transpilation and Compilation}{71}{lstlisting.3.1}%
 \contentsline {lstlisting}{\numberline {3.2}Device Program: Parallel Computation}{72}{lstlisting.3.2}%

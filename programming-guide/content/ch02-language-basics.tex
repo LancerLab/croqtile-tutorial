@@ -312,7 +312,7 @@
 \section{Printing, Assertions, and Compile-Time Inspection}
 \label{sec:2-14}
 
-\guideslotintro{The language has its own print and assert forms, at compile time and at runtime. This section shows what each one reports and when to reach for it.}
+\guideslotintro{A shape or a type that is wrong at compile time is cheapest to inspect with \texttt{print!}; a value that is wrong at runtime needs \texttt{assert} or a print inside the kernel. The first reports what the compiler believes, the second what the program did.}
 
 \input{build/units/F11-S02}
 
