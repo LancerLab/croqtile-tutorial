@@ -93,6 +93,7 @@ CHECKS = {
     'heading_only': [],     # a heading with no body at all
     'merged_paragraphs': [],  # adjacent \\inputs with no blank line between
     'preface_positioning': [],  # the reader-facing language positioning
+    'section_1_1_framing': [],  # motivation arc, not deep-internal taxonomy
     # 6. Target-platform vocabulary, stray conversion placeholders.
     'hardware': None,      # uses build_guide.HW
     'placeholders': [r'QZ\d{3}QZ'],
@@ -246,6 +247,25 @@ def scan():
     if re.search(r'\\textbf\{[A-Z][^}]*:\}', preface):
         gaps.append(('content/frontmatter.tex', 1, 'label-style fragments'))
     result['preface_positioning'] = gaps
+
+    # Section 1.1 should read like Triton's Introduction: an observable
+    # problem, one premise, a one-sentence definition, then the honest
+    # difficulties.  It must not open by classifying the language internals.
+    s11 = ''.join(text.get('build/units/%s.tex' % u, '')
+                  for u in ('F01-S01', 'F01-S02', 'F01-S03',
+                            'F12-S01', 'F13-S01'))
+    framing = [('content/ch01-getting-started.tex', 1, 'missing ' + kw)
+               for kw in ('premise', 'Croqtile is a', 'key benefit', 'Of course',
+                          'zero-cost', 'compile-time safety',
+                          'symbolic dimensions', 'MDSpan', 'matmul variants',
+                          'DMA statements', 'running example')
+               if kw not in s11]
+    for phrase in ('three families', 'three promises',
+                   'three descriptions in sync'):
+        if phrase in s11:
+            framing.append(('content/ch01-getting-started.tex', 1,
+                            'opens too deep: ' + phrase))
+    result['section_1_1_framing'] = framing
 
     chapter_text = ''.join(text[p] for p in FILES if p.startswith('content/ch0'))
     for key, (pat, expected) in NARRATIVE.items():

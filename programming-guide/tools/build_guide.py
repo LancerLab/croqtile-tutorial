@@ -295,11 +295,16 @@ SLOT_TITLES = {
 # pages had none of that connective tissue; these paragraphs supply it without
 # replacing any original content unit.
 CHAPTER_INTRO = {
-    '1': ("This chapter takes you from an empty directory to a running Croqtile "
-          "program. It explains what the language is for, how to build the "
-          "compiler, what the command line does, and how to compile, run and "
-          "inspect a \\file{.co} file. By the end you will be able to read a "
-          "simple program and reproduce its output yourself."),
+    '1': ("This chapter takes you from the question of why Croqtile exists to a "
+          "program you have built and run yourself. It begins with the "
+          "motivation for the language and the properties it was designed "
+          "around --- zero-cost abstractions, compile-time safety checks, "
+          "dynamic shapes and symbolic dimensions, and a form that automated "
+          "tuning can work with --- then follows a step-by-step path: the "
+          "smallest kernel that compiles, progressively richer matmul "
+          "variants, and the toolchain needed to build and inspect each one. "
+          "By the end you will be able to reproduce the output of a simple "
+          "program on your own."),
     '2': ("This chapter introduces the core Croqtile DSL you use to write "
           "programs: how a \\co@__co__@ function is declared, how shaped data is "
           "described, how iteration and tile selection are expressed, how tiles "
@@ -326,7 +331,7 @@ CHAPTER_NEXT = {
 }
 
 SLOT_INTROS = {
-    '1.1': "Before installing anything, it helps to know what a program in this language looks like and what the language promises. This section introduces Croqtile itself, the prerequisites, and the way its constructs fit together.",
+    '1.1': "Before installing anything, it is worth knowing what problem Croqtile was built for. This section begins with that problem and the single idea behind the language, then says what Croqtile is, what its constructs give you, and what you need in order to follow the examples.",
     '1.2': "Building a Croqtile program needs a C++ toolchain and the compiler sources. This section lists the prerequisites in the order you will meet them.",
     '1.3': "The compiler is built from source with a short sequence of commands. This section walks through them and explains what each one produces.",
     '1.4': "A minimal check confirms the compiler and its runtime are usable. This section gives the smallest program that does so.",
@@ -431,50 +436,100 @@ UNIT_OVERRIDES = [
     ('F31-S10',
      r'This is covered in detail in the \\emph\{Asynchronous parallel-by\} section\.',
      "Section~\\ref{sec:3-8-4} covers this in detail."),
-    # Round 4: the tutorial's own welcome pages still addressed a student of
-    # a ten-chapter course.  A language guide opens by describing the language.
+    # Round 15: 1.1 keeps the Triton-style arc (observable phenomenon, one
+    # premise, one-sentence definition, concrete comparison, honest difficulty)
+    # but carries the substance of the repo's own Part I tutorial and Part III
+    # coding reference: the four language properties, the matmul-based running
+    # example, and the construct inventory.
     ('F01-S01',
      r'Welcome to the Croqtile tutorial\.',
-     "Writing a tiled computation by hand means keeping three descriptions in "
-     "sync: the shape of the data, the iteration over its tiles, and the "
-     "movement of each tile between the places a program can read it. Croqtile "
-     "makes all three part of the program itself --- in its types, its "
-     "iteration statements and its data expressions --- so the compiler can "
-     "check them together rather than leaving the consistency to the reader."),
+     "The programs at the centre of modern workloads are often short. A matrix "
+     "multiplication, a normalization step, an attention block: each is a few "
+     "lines of mathematics. Yet turning those lines into a program that runs "
+     "well has become a specialist's job, and one that has to be done again "
+     "whenever a shape, a dataflow or a machine changes. The reason is rarely "
+     "the arithmetic. It is that the same small computation also has to say "
+     "where its data lives, how it is divided into tiles, in what order those "
+     "tiles become available, and how concurrent regions agree on progress. "
+     "In most settings those decisions are scattered across library calls, "
+     "build options and code a reader has to infer, so changing one of them "
+     "quietly changes several others. A single family of matrix "
+     "multiplications already produces a long series of variants, each with "
+     "its own tiling, movement and coordination; keeping them consistent is "
+     "where most of the effort goes."),
     ('F01-S01',
      r'(?s)Each chapter introduces.*?\Z',
-     "Every construct in this guide appears inside a program you can compile. "
-     "The examples grow by one idea at a time: a later listing usually differs "
-     "from an earlier one only by the construct that section introduces. When "
-     "a spelling is unfamiliar, Appendix~\\ref{app:quickref} gives its compact "
-     "form without the surrounding program."),
+     "Croqtile begins with a single premise: if those decisions were part of "
+     "the language itself, a person could state them once, in one place, and "
+     "let the compiler check them together before producing the program that "
+     "runs. Croqtile is a C++ embedded DSL for high-performance kernel "
+     "programming, designed from the ground up around four properties: an "
+     "easy-to-use syntax whose abstractions cost nothing at run time, "
+     "comprehensive compile-time safety checks, first-class dynamic shapes "
+     "and symbolic dimensions, and a form that AI tuning tools can work with. "
+     "A program states the shapes, iterations, tiles, movement and "
+     "coordination it needs; the compiler turns that description into "
+     "runnable code. The examples in this guide grow by one idea at a time, "
+     "so a later listing usually differs from an earlier one only by the "
+     "construct that section introduces."),
     ('F01-S02',
      r'(?s)\\begin\{enumerate\}.*?\\end\{enumerate\}',
-     "The constructs fall into three families. Shapes and types say what a "
-     "value is; iteration, tile selection and contraction say which part of a "
-     "value a computation works on; movement and coordination say when that "
-     "part is ready. Most programs are a composition of the three, and the "
-     "chapters that follow build that composition one piece at a time."),
+     "Consider what happens when a computation needs a different tile size. "
+     "In a program where tiling, copying and coordination are written "
+     "separately, that one change reaches into the loop bounds, the address "
+     "arithmetic, the staging buffers and the coordination points. In Croqtile "
+     "the iteration declares the tile, the tile selects the data, and a "
+     "movement statement says when it is ready; the change stays local, and "
+     "the compiler rejects the combinations that do not fit. That is the key "
+     "benefit of making tiles part of the language: the person writing the "
+     "program keeps the decisions, while the compiler takes on the bookkeeping "
+     "that used to tie them together. It also means a complete kernel is short "
+     "enough to read in one sitting, which is how the examples here are built."
+     "\n\n"
+     "The vocabulary follows the way a kernel is put together. A "
+     "\\co@__co__@ function describes the parallel work and sits beside the "
+     "ordinary C++ that prepares buffers through the host API. Shaped types "
+     "built on MDSpan and spanned data carry symbolic dimensions that need "
+     "not be fixed until the program runs. Iteration constructs declare "
+     "independent regions and loop over tiles, DMA statements and "
+     "\\texttt{chunkat} select and move those tiles, and events order the "
+     "regions that share them. Where plain C++ is needed again, "
+     "\\co@__cpp__@ blocks, macros and the preprocessor are available in the "
+     "same file. Appendix~\\ref{app:quickref} collects the exact spelling of "
+     "each form, and the chapters that follow put them to work in complete "
+     "programs."),
     ('F01-S03',
      r'\\item Basic C\+\+ knowledge \(functions, pointers, arrays\)',
-     "\\item Basic C++ knowledge (functions, pointers, arrays)\n"
-     "\\item Familiarity with writing parallel programs: independent work "
-     "items, tiling, and coordination between concurrent regions"),
+     "\\item Basic C++ (functions, pointers and arrays) and the idea of a "
+     "shaped tensor\n"
+     "\\item Some familiarity with parallel programs: independent work items, "
+     "tiles, and coordination between concurrent regions"),
+    ('F01-S03', r'A working Croqtile compiler',
+     'A machine on which you can build the compiler'),
     ('F12-S01',
      r'(?s)Welcome to the Croqtile coding reference\..*?\Z',
-     "The language is built around three promises. Its syntax stays close to "
-     "the mathematics of a tiled computation, so a kernel reads like the shape "
-     "it works on. Shapes and indices are checked at compile time, and shape "
-     "dimensions may stay symbolic until the program runs. Those properties "
-     "come without runtime bookkeeping: the compiler resolves them while it "
-     "transpiles the program."),
+     "Of course, putting those decisions in the language does not make writing "
+     "a kernel trivial; it moves the difficulty into the compiler, where it "
+     "can be discharged once instead of rediscovered by every program. The "
+     "compile-time safety checks have to decide shapes and indices before "
+     "anything runs. Symbolic dimensions have to survive until the program "
+     "runs, so one source serves many input sizes. The abstractions have to "
+     "stay zero-cost, and the constructs have to stay few enough that a person "
+     "can hold all of them in mind. Those constraints shape almost every rule "
+     "in the following chapters; giving you a sense of how the compiler meets "
+     "them is one of the purposes of this guide."),
     ('F10-S01', r'So far the tutorial has built', 'The preceding sections have built'),
     # An upstream page whose entire body was target-platform material would
     # otherwise leave a bare heading behind.  Give it a transition instead.
     ('F13-S01', r'\A\s*\Z',
-     "Those promises are not abstract: Chapter~\\ref{ch:programming-guide} "
-     "returns to each of them with a worked program and the reasoning behind "
-     "it. For now, the next step is to get the compiler running."),
+     "From here the path is step by step. The chapters that follow start with "
+     "the smallest kernel that compiles and evolve a single running example "
+     "through progressively richer matmul variants, so each new idea appears "
+     "in a concrete, working program and every major construct is met before "
+     "the end. The next step is a practical one: build the compiler so that "
+     "each of those programs can be run rather than only read. "
+     "Section~\\ref{sec:1-2} lists what you need, and "
+     "Section~\\ref{sec:1-3} walks through the build."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',
