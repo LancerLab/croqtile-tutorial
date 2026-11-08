@@ -174,7 +174,7 @@
 \subsection{Worked Example: Tiled Matrix Multiplication}
 \label{sec:3-4-1}
 
-\guideslotintro{A tiled matrix multiplication puts the parallelism constructs to work. This section walks through the kernel and the host code that launches it.}
+\guideslotintro{A tiled matrix multiplication is easiest to read when it is built up: the first kernel uses one instance per element, the next adds tiles, and the host code stays the same throughout.}
 
 \input{build/units/F05-S13}
 

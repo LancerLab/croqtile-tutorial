@@ -360,7 +360,7 @@ SLOT_INTROS = {
     '3.2': "A Croqtile type says what a value is, how it is stored and which bounds apply to it. \\co@mdspan@ and spanned data describe shapes and buffers, integers and i-tuples describe indices, and storage and bounded qualifiers attach to each declaration.",
     '3.3': "A dimension does not have to be a literal. \\co@mdspan@ accepts anonymous dimensions filled in by the caller and symbolic dimensions evaluated by the compiler; value numbering is what lets the compiler fold the resulting expressions and still prove shapes safe.",
     '3.4': "Parallelism in Croqtile is declared in layers: a \\co@parallel@ block names independent instances, a space specifier groups them, and masking decides which instances execute a divergent branch. The rules below keep multi-level iteration well defined.",
-    '3.4.1': "A tiled matrix multiplication puts the parallelism constructs to work. This section walks through the kernel and the host code that launches it.",
+    '3.4.1': "A tiled matrix multiplication is easiest to read when it is built up: the first kernel uses one instance per element, the next adds tiles, and the host code stays the same throughout.",
     '3.4.2': "Following one output element through a kernel makes the index arithmetic concrete. This section traces it step by step.",
     '3.5': "Tiling is expressed with data expressions rather than raw pointer arithmetic. This section covers the composition operator and the forms a data expression may take.",
     '3.5.1': "A tile sometimes starts at an offset computed at runtime. This section shows how \\co@view@ and \\co@from@ describe such a window.",
@@ -1191,6 +1191,11 @@ UNIT_OVERRIDES = [
      r'In this section, you examined the motivation for thread masking[^.]*\.',
      "Masking is what allows divergent execution inside an otherwise "
      "uniform parallel region."),
+    # Round 44 (3.4.1): the worked example keeps its code.
+    ('F05-S13',
+     r'Start with just \\texttt\{parallel\} and \\texttt\{\.at\(\)\}',
+     "The first version uses only \\texttt{parallel} and \\texttt{.at()}, "
+     "before any tiling or data movement is added"),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

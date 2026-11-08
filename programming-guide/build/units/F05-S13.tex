@@ -1,6 +1,6 @@
 \subsection*{Scalar Matmul (No DMA)}
 
-Start with just \texttt{parallel} and \texttt{.at()}
+The first version uses only \texttt{parallel} and \texttt{.at()}, before any tiling or data movement is added
 
 \begin{lstlisting}[language=croqtile,caption={Scalar Matmul (No DMA)}]
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
