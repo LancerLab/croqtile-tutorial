@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1159,8 +1159,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\T1/lmtt/m/n/10 .data[] \T1/lmr/m/n/10 (+20) (val-ues),
  []
 
-) [13] (./build/units/F11-S09.tex
-<figures//f11-fig1_debug_workflow_light.png, id=1226, 1927.2pt x 1084.05pt>
+[13]) (./build/units/F11-S09.tex
+<figures//f11-fig1_debug_workflow_light.png, id=1225, 1927.2pt x 1084.05pt>
 File: figures//f11-fig1_debug_workflow_light.png Graphic file (type png)
 <use figures//f11-fig1_debug_workflow_light.png>
 Package pdftex.def Info: figures//f11-fig1_debug_workflow_light.png  used on in
@@ -1603,7 +1603,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (145 pages, 3248873 bytes).
+Output written on main.pdf (145 pages, 3249184 bytes).
 PDF statistics:
  3577 PDF objects out of 3580 (max. 8388607)
  3275 compressed objects within 33 object streams

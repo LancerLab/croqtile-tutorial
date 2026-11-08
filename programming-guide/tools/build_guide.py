@@ -339,7 +339,7 @@ SLOT_INTROS = {
     '1.6': "Beyond compiling one file, the build tree offers its own test targets and shortcuts. They are worth knowing before the first real program, because every example that follows can be checked with them.",
     '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. It is small enough to read in one sitting, and the rest of the guide grows from it.",
     '1.8': "A production \\file{.co} file is three programs in one file: device code, a tileflow \\co@__co__@ function, and the host C++ that prepares buffers and reads the result back. The boundaries between them are what the rest of this guide explains.",
-    '1.9': "When a program surprises you, Croqtile offers compile-time and runtime inspection. This section assembles those tools into a debugging workflow.",
+    '1.9': "When a kernel compiles but the answer is wrong, the fastest path is to narrow down which layer went wrong: the commands the compiler ran, the runtime checks it can insert, the layout of the data, or the types a debugger sees. The tools below are ordered that way, from cheap checks to expensive ones.",
     '1.10': "Reading an unfamiliar \\file{.co} file is a skill. This section gives a checklist for finding the host entry point, the kernel signature and the injected C++.",
     '2.1': "Every Croqtile program has two sides: a \\co@__co__@ function describing parallel work, and ordinary C++ that prepares data and calls it. This section shows where they meet.",
     '2.2': "Take one kernel and read it line by line. This section names each part of a signature and each statement in the body, so the examples that follow become readable.",
@@ -714,6 +714,15 @@ UNIT_OVERRIDES = [
      "The host program is where the data is created and where the result is "
      "checked. It is shown again here with the surrounding calls so that the "
      "boundary between ordinary C++ and the tileflow function is visible:"),
+    # Section 1.9: the imported "Debugging tip" arrived with no bridge, and
+    # the workflow page used one caption for both of its listings.
+    ('F08-S13', r'If something looks wrong after editing a pipeline, verify',
+     "Before reaching for the compiler's inspection flags, look at the "
+     "program itself. If something looks wrong after editing a pipeline, verify"),
+    ('F11-S09', r'caption=\{Putting it together\}\]\n#ifdef DEBUG_PRINT',
+     'caption={Guarding debug prints}]\n#ifdef DEBUG_PRINT'),
+    ('F11-S09', r'caption=\{Putting it together\}\]\ncroqtile kernel\.co',
+     'caption={Debug and production builds}]\ncroqtile kernel.co'),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',

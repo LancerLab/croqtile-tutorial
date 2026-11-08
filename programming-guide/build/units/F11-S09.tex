@@ -6,13 +6,13 @@
 
 Work from cheap to expensive: \texttt{println!} (compile-time shapes) \(\rightarrow\) guarded \texttt{println} on one tile (runtime values) \(\rightarrow\) event/stage prints (synchronization) \(\rightarrow\) pattern analysis (layout) \(\rightarrow\) \texttt{debugger} (pointer bugs). Guard runtime prints behind \texttt{\#ifdef} so they vanish in production:
 
-\begin{lstlisting}[language=croqtile,caption={Putting it together}]
+\begin{lstlisting}[language=croqtile,caption={Guarding debug prints}]
 #ifdef DEBUG_PRINT
   println("tile_k=", iv_k, " accum=", mc);
 #endif
 \end{lstlisting}
 
-\begin{lstlisting}[language={},caption={Putting it together}]
+\begin{lstlisting}[language={},caption={Debug and production builds}]
 croqtile kernel.co -DDEBUG_PRINT -o kernel    # debug build
 croqtile kernel.co -o kernel                   # production build
 \end{lstlisting}

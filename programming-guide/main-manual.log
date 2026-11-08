@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1171,15 +1171,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
  []
 
 ) (./build/units/F11-S09.tex
-<figures//f11-fig1_debug_workflow_light.png, id=1215, 1927.2pt x 1084.05pt>
+<figures//f11-fig1_debug_workflow_light.png, id=1214, 1927.2pt x 1084.05pt>
 File: figures//f11-fig1_debug_workflow_light.png Graphic file (type png)
 <use figures//f11-fig1_debug_workflow_light.png>
 Package pdftex.def Info: figures//f11-fig1_debug_workflow_light.png  used on in
 put line 4.
 (pdftex.def)             Requested size: 357.23218pt x 200.9431pt.
- [14 <./figures//f11-fig1_debug_workflow_light.png>]) (./build/units/F11-S10.te
-x) (./build/units/F10-S12.tex) [15])
-(./content/ch02-language-basics.tex [16]
+) (./build/units/F11-S10.tex [14])
+(./build/units/F10-S12.tex) [15 <./figures//f11-fig1_debug_workflow_light.png>]
+) (./content/ch02-language-basics.tex [16]
 Chapter 2.
 (./build/units/F03-S02.tex) (./build/units/F14-S03.tex [17
 
@@ -1597,7 +1597,7 @@ Package rerunfilecheck Info: File `main-manual.out' has not changed.
 Here is how much of TeX's memory you used:
  36414 strings out of 480247
  710205 string characters out of 5896152
- 1450072 words of memory out of 5000000
+ 1451072 words of memory out of 5000000
  50516 multiletter control sequences out of 15000+600000
  582915 words of font info for 275 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1615,7 +1615,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (153 pages, 3261782 bytes).
+Output written on main-manual.pdf (153 pages, 3261775 bytes).
 PDF statistics:
  3614 PDF objects out of 4296 (max. 8388607)
  3303 compressed objects within 34 object streams

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **1.9**
-- Review rounds: from 16 onward (1.2→16 … 1.8→22)
+- Next section: **1.10**
+- Review rounds: from 16 onward (1.2→16 … 1.9→23)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -72,7 +72,7 @@ chapter numbers; every unit stays in its registered slot.
 | 1.6 | x | round 20 | All 7 source command blocks kept; rewrote the Part III sentence fragments into continuous prose, fixed "corrupted version", gave all 7 listings distinct captions and separated the two units by role. The 4 weak-coverage hits are paraphrases (verified phrase by phrase, no information lost) |
 | 1.7 | x | round 21 | Both source listings survived; removed the tutorial slogan heading, replaced the casual opener with an explicit account of what the first program leaves out and what skeleton it shows, distinguished the two captions and replaced the vague hand-off with the construct-by-construct storyline |
 | 1.8 | x | round 22 | All 5 listings and the figure survived (the second source image is its dark/light variant); replaced both placeholder openings with sentences that name what the listing demonstrates and why the host code is shown twice, and rewrote the slot intro around the three-part structure |
-| 1.9 | . | | |
+| 1.9 | x | round 23 | All 6 listings, 2 tables and the workflow figure survived; rewrote the intro as a cheap-to-expensive debugging chain, bridged the isolated imported "Debugging tip" into that chain, and gave the workflow page's two listings distinct captions |
 | 1.10 | . | | |
 | 2.1 | . | | |
 | 2.2 | . | | |
