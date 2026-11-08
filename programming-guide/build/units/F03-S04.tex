@@ -1,31 +1,31 @@
 \subsection*{The Croqtile Function}
 
-This is the heart of the program. Here it is piece by piece.
+Start with the signature, which declares more than a C++ function prototype would: every parameter and the result carry a shape.
 
-\begin{lstlisting}[language=croqtile,caption={The Croqtile Function}]
+\begin{lstlisting}[language=croqtile,caption={A kernel signature}]
 __co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {
 \end{lstlisting}
 
 The \texttt{\_\_co\_\_} prefix marks this as a Croqtile function. Unlike regular C++ functions, the signature carries full shape information: \texttt{s32 [4, 8]} means "a 2D tensor of shape 4 \(\times\) 8 with element type \texttt{s32} (signed 32-bit integer)". Both parameters and the return type follow this convention --- \texttt{type [shape] name}. The compiler uses these shapes to verify that every indexing operation is in-bounds at compile time.
 
-Croqtile provides the following element types: Croqtile supports these element types: \texttt{s32} (signed 32-bit int), \texttt{f16} (half-precision float), \texttt{bf16} (brain float), \texttt{f32} (single-precision float), and \texttt{f8\_e4m3} / \texttt{f8\_e5m2} (8-bit floats). In the examples that follow, \texttt{s32} is the simplest to reason about.
+Croqtile supports these element types: \texttt{s32} (signed 32-bit int), \texttt{f16} (half-precision float), \texttt{bf16} (brain float), \texttt{f32} (single-precision float), and \texttt{f8\_e4m3} / \texttt{f8\_e5m2} (8-bit floats). In the examples that follow, \texttt{s32} is the simplest to reason about.
 
-\begin{lstlisting}[language=croqtile,caption={The Croqtile Function}]
+\begin{lstlisting}[language=croqtile,caption={Allocating the output}]
 s32 [lhs.span] output;
 \end{lstlisting}
 
 This allocates the output tensor. The expression \texttt{lhs.span} copies the full shape from \texttt{lhs}, so \texttt{output} automatically has shape \texttt{[4, 8]}. If you later change the input shape, the output adjusts --- a pattern that makes Croqtile functions easier to generalize.
 
-\begin{lstlisting}[language=croqtile,caption={The Croqtile Function}]
+\begin{lstlisting}[language=croqtile,caption={The parallel body}]
 parallel {i, j} by [4, 8]
   output.at(i, j) = lhs.at(i, j) + rhs.at(i, j);
 \end{lstlisting}
 
 \texttt{parallel \{i, j\} by [4, 8]} creates 4 \(\times\) 8 = 32 parallel instances, one per element position. Each instance runs the body with its own \texttt{(i, j)} pair. The \texttt{.at(i, j)} accessor indexes into a tensor at position \texttt{(i, j)}, and the addition is direct --- one element, one thread.
 
-The short answer is that \texttt{parallel} without any annotation lets the compiler decide. --- But Croqtile deliberately hides that mapping at this level.
+What \texttt{parallel} leaves unsaid is how those instances map onto the machine: without an annotation the compiler decides. That mapping is deliberately absent from the language here --- the statement describes independent work, not the resources that run it.
 
-\begin{lstlisting}[language=croqtile,caption={The Croqtile Function}]
+\begin{lstlisting}[language=croqtile,caption={Returning the result}]
 return output;
 \end{lstlisting}
 

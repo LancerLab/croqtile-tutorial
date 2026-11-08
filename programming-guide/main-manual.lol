@@ -30,10 +30,10 @@
 \contentsline {lstlisting}{\numberline {1.30}Guarding debug prints}{14}{lstlisting.1.30}%
 \contentsline {lstlisting}{\numberline {1.31}Debug and production builds}{14}{lstlisting.1.31}%
 \contentsline {lstlisting}{\numberline {2.1}The three regions of one source file}{17}{lstlisting.2.1}%
-\contentsline {lstlisting}{\numberline {2.2}The Croqtile Function}{18}{lstlisting.2.2}%
-\contentsline {lstlisting}{\numberline {2.3}The Croqtile Function}{18}{lstlisting.2.3}%
-\contentsline {lstlisting}{\numberline {2.4}The Croqtile Function}{19}{lstlisting.2.4}%
-\contentsline {lstlisting}{\numberline {2.5}The Croqtile Function}{19}{lstlisting.2.5}%
+\contentsline {lstlisting}{\numberline {2.2}A kernel signature}{18}{lstlisting.2.2}%
+\contentsline {lstlisting}{\numberline {2.3}Allocating the output}{18}{lstlisting.2.3}%
+\contentsline {lstlisting}{\numberline {2.4}The parallel body}{19}{lstlisting.2.4}%
+\contentsline {lstlisting}{\numberline {2.5}Returning the result}{19}{lstlisting.2.5}%
 \contentsline {lstlisting}{\numberline {2.6}The Host Program}{19}{lstlisting.2.6}%
 \contentsline {lstlisting}{\numberline {2.7}The Host Program}{20}{lstlisting.2.7}%
 \contentsline {lstlisting}{\numberline {2.8}Host Code}{20}{lstlisting.2.8}%

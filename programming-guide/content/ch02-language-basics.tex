@@ -18,7 +18,7 @@
 \section{Reading a Kernel Line by Line}
 \label{sec:2-2}
 
-\guideslotintro{Take one kernel and read it line by line. This section names each part of a signature and each statement in the body, so the examples that follow become readable.}
+\guideslotintro{An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.}
 
 \input{build/units/F03-S04}
 

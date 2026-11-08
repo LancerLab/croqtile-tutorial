@@ -342,7 +342,7 @@ SLOT_INTROS = {
     '1.9': "When a kernel compiles but the answer is wrong, the fastest path is to narrow down which layer went wrong: the commands the compiler ran, the runtime checks it can insert, the layout of the data, or the types a debugger sees. The tools below are ordered that way, from cheap checks to expensive ones.",
     '1.10': "An unfamiliar \\file{.co} file is easier to read once you know the order its parts appear in: guards and helpers, host setup, the \\co@__co__@ function, and the injected C++. The chapters that follow define each of those constructs.",
     '2.1': "A \\file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \\co@__co__@ prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.",
-    '2.2': "Take one kernel and read it line by line. This section names each part of a signature and each statement in the body, so the examples that follow become readable.",
+    '2.2': "An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.",
     '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result. This section covers the API every program uses.",
     '2.4': "Shapes are part of a Croqtile type, not metadata discovered at runtime. This section shows how \\co@mdspan@ shapes are written, derived and evaluated.",
     '2.5': "Loop bounds and indices are compile-time values with types of their own. This section covers integers, I-tuples and bounded values.",
@@ -840,6 +840,32 @@ UNIT_OVERRIDES = [
      "code. Like the host program, it passes through Croqtile compilation "
      "unchanged. The compiler leaves both sides of ordinary C++ alone; only "
      "the \\texttt{\\_\\_co\\_\\_} function between them is rewritten."),
+    # Round 26 (2.2): one line, one purpose; four captions that used to be
+    # the same section title; two sentences left duplicated or dangling by
+    # the source pages.
+    ('F03-S04', None, caption_names([
+        'A kernel signature', 'Allocating the output',
+        'The parallel body', 'Returning the result'])),
+    ('F03-S04',
+     r'This is the heart of the program\. Here it is piece by piece\.',
+     "Start with the signature, which declares more than a C++ function "
+     "prototype would: every parameter and the result carry a shape."),
+    ('F03-S04',
+     r'Croqtile provides the following element types: Croqtile supports these element types:',
+     'Croqtile supports these element types:'),
+    ('F03-S04',
+     r'(?s)The short answer is that .*?at this level\.',
+     "What \\texttt{parallel} leaves unsaid is how those instances map onto "
+     "the machine: without an annotation the compiler decides. That mapping "
+     "is deliberately absent from the language here --- the statement "
+     "describes independent work, not the resources that run it."),
+    ('F08-S08',
+     r'(?s)\\begin\{center\}\\small\\emph\{.*?\\end\{center\}',
+     "\\begin{center}\\small\\emph{Using \\texttt{s32} with scalar "
+     "accumulation is a simplified style that isolates the \\texttt{swap} "
+     "mechanism (Section~\\ref{sec:3-6-2}); the same return-type deduction "
+     "applies to the FP16/MMA kernels in Section~\\ref{sec:3-7}.}"
+     "\\end{center}"),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
