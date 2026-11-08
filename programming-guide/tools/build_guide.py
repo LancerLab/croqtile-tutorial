@@ -334,7 +334,7 @@ SLOT_INTROS = {
     '1.1': "Before installing anything, it is worth knowing what problem Croqtile was built for. This section begins with that problem and the single idea behind the language, then says what Croqtile is, what its constructs give you, and what you need in order to follow the examples.",
     '1.2': "Croqtile ships as source, so a working toolchain comes before the first program. This section lists what the build needs and why those versions matter; Section~\\ref{sec:1-3} gives the commands.",
     '1.3': "A checkout needs three commands before it is usable: one prepares the dependencies, one builds the compiler, and one runs the test suite. The test result is what tells you the binary is ready, and Section~\\ref{sec:1-4} gives the smallest program that confirms it end to end.",
-    '1.4': "A minimal check confirms the compiler and its runtime are usable. This section gives the smallest program that does so.",
+    '1.4': "A four-element copy is enough to exercise the whole chain: the compiler parses the program, the generated code compiles and links, and the host program reads back the result. Section~\\ref{sec:1-5} looks at what else the command line can do.",
     '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
     '1.6': "Beyond compiling one file, you will want the test suite and the development helpers. This section collects the commands you will return to.",
     '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. This section builds and runs it end to end.",
@@ -576,6 +576,22 @@ UNIT_OVERRIDES = [
      "Add it to your \\texttt{PATH} or invoke it by its full path. "
      "Section~\\ref{sec:1-4} compiles a minimal program to confirm the "
      "installation end to end."),
+    # Section 1.4: Triton and TileLang both say what a verification command
+    # proves, then name the expected output.  The upstream page dropped the
+    # reader straight into a program with no sentence about its purpose.
+    ('F02-S04',
+     r'Create a minimal \\texttt\{\.co\} file to confirm the compiler runs:',
+     "The smallest useful check is a kernel that copies four integers. Save it "
+     "as \\file{verify.co}:"),
+    ('F02-S04', r'caption=\{Verify the Installation\}\]\n__co__',
+     'caption={A minimal Croqtile program}]\n__co__'),
+    ('F02-S04', r'caption=\{Verify the Installation\}\]\ncroqtile verify\.co',
+     'caption={Compile and run the check}]\ncroqtile verify.co'),
+    ('F02-S04',
+     r'You should see \\texttt\{OK\}\. If you do, the compiler, linker, and runtime are all working\.',
+     "You should see \\texttt{OK}. If you do, the compiler, linker, and "
+     "runtime are all working. Section~\\ref{sec:1-5} lists the options that "
+     "change what the command produces."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',
@@ -921,6 +937,8 @@ GENERIC_HEADINGS = {
     'prerequisitions': '',
     # Section 1.3 repeats its slot title as a subsection.
     'build from source': '',
+    # Section 1.4 repeats its slot title as a subsection.
+    'verify the installation': '',
 }
 
 

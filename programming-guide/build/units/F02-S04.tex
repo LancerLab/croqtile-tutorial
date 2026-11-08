@@ -1,8 +1,6 @@
-\subsection*{Verify the Installation}
+The smallest useful check is a kernel that copies four integers. Save it as \file{verify.co}:
 
-Create a minimal \texttt{.co} file to confirm the compiler runs:
-
-\begin{lstlisting}[language=croqtile,caption={Verify the Installation}]
+\begin{lstlisting}[language=croqtile,caption={A minimal Croqtile program}]
 __co__ s32 [4] identity(s32 [4] input) {
   s32 [input.span] output;
   parallel i by 4
@@ -21,9 +19,9 @@ int main() {
 
 Compile and run:
 
-\begin{lstlisting}[language={},caption={Verify the Installation}]
+\begin{lstlisting}[language={},caption={Compile and run the check}]
 croqtile verify.co -o verify
 ./verify
 \end{lstlisting}
 
-You should see \texttt{OK}. If you do, the compiler, linker, and runtime are all working.
+You should see \texttt{OK}. If you do, the compiler, linker, and runtime are all working. Section~\ref{sec:1-5} lists the options that change what the command produces.

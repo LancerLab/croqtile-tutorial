@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **1.4**
-- Review rounds: from 16 onward (one `--compare` round per section; 1.2 used 16, 1.3 used 17)
+- Next section: **1.5**
+- Review rounds: from 16 onward (1.2→16, 1.3→17, 1.4→18)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -67,7 +67,7 @@ chapter numbers; every unit stays in its registered slot.
 | 1.1 | x | baseline | Triton-style arc + Part I/III substance (rounds 14-15) |
 | 1.2 | x | round 16 | Part I table + Part III duplicate list merged; version rationale restored; table set in place to avoid a stranded lead-in |
 | 1.3 | x | round 17 | No source information lost; removed the heading repeated from the slot title, gave the three listings distinct captions, replaced the meta-narration intro with the command/verification chain, and handed off to 1.4 |
-| 1.4 | . | | |
+| 1.4 | x | round 18 | Both source listings survived; dropped the duplicated subsection heading, distinguished the two captions, said what the four-element copy verifies before showing the code, and handed off to the command-line section |
 | 1.5 | . | | |
 | 1.6 | . | | |
 | 1.7 | . | | |

@@ -1,8 +1,8 @@
 \contentsline {lstlisting}{\numberline {1.1}Clone and prepare}{3}{lstlisting.1.1}%
 \contentsline {lstlisting}{\numberline {1.2}Build the compiler}{3}{lstlisting.1.2}%
 \contentsline {lstlisting}{\numberline {1.3}Run the test suite}{3}{lstlisting.1.3}%
-\contentsline {lstlisting}{\numberline {1.4}Verify the Installation}{4}{lstlisting.1.4}%
-\contentsline {lstlisting}{\numberline {1.5}Verify the Installation}{4}{lstlisting.1.5}%
+\contentsline {lstlisting}{\numberline {1.4}A minimal Croqtile program}{4}{lstlisting.1.4}%
+\contentsline {lstlisting}{\numberline {1.5}Compile and run the check}{4}{lstlisting.1.5}%
 \contentsline {lstlisting}{\numberline {1.6}Compiler Usage}{4}{lstlisting.1.6}%
 \contentsline {lstlisting}{\numberline {1.7}Build and Compile}{4}{lstlisting.1.7}%
 \contentsline {lstlisting}{\numberline {1.8}Build and Compile}{5}{lstlisting.1.8}%
@@ -12,7 +12,7 @@
 \contentsline {lstlisting}{\numberline {1.12}Development Utilities}{7}{lstlisting.1.12}%
 \contentsline {lstlisting}{\numberline {1.13}Environment}{7}{lstlisting.1.13}%
 \contentsline {lstlisting}{\numberline {1.14}Environment}{7}{lstlisting.1.14}%
-\contentsline {lstlisting}{\numberline {1.15}Environment}{8}{lstlisting.1.15}%
+\contentsline {lstlisting}{\numberline {1.15}Environment}{7}{lstlisting.1.15}%
 \contentsline {lstlisting}{\numberline {1.16}Environment}{8}{lstlisting.1.16}%
 \contentsline {lstlisting}{\numberline {1.17}Environment}{8}{lstlisting.1.17}%
 \contentsline {lstlisting}{\numberline {1.18}Environment}{8}{lstlisting.1.18}%
