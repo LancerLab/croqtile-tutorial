@@ -2,7 +2,7 @@
 
 In Croqtile, you can define multiple levels of parallelism. Here's an example:
 
-\begin{lstlisting}[language=croqtile,caption={Multiple-Level Parallelism}]
+\begin{lstlisting}[language=croqtile,caption={One parallel level}]
 parallel p by 2 {
   // parallel-level-0
   parallel q by 12 {
@@ -17,7 +17,7 @@ One key difference observable by programmers is the \textbf{synchronization cost
 
 In Croqtile syntax, you can define multiple-level parallelism in a single line:
 
-\begin{lstlisting}[language=croqtile,caption={Multiple-Level Parallelism}]
+\begin{lstlisting}[language=croqtile,caption={Two parallel levels}]
 parallel p by 2, q by 12 { ... }
 \end{lstlisting}
 

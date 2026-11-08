@@ -2,7 +2,7 @@
 
 Similar to 'parallel-by', 'with-in' statement can also bind \emph{i-tuples} to a \emph{mdspan}. The below code shows an example.
 
-\begin{lstlisting}[language=croqtile,caption={The with-in Block and where Clause}]
+\begin{lstlisting}[language=croqtile,caption={Indexing a with-in block}]
 with index in [10, 10] {
   // index is ituple with 2 elements
 }
@@ -10,13 +10,13 @@ with index in [10, 10] {
 
 Here, 'index' is a \emph{i-tuple} with 2 elements. Sometimes programmers prefer that the 2 elements being named. This is possible by using the below syntax.
 
-\begin{lstlisting}[language=croqtile,caption={The with-in Block and where Clause}]
+\begin{lstlisting}[language=croqtile,caption={A tuple of indices}]
 with {x, y} in [10, 10] {...}
 \end{lstlisting}
 
 Or even to name both the \emph{i-tuple} and its elements.
 
-\begin{lstlisting}[language=croqtile,caption={The with-in Block and where Clause}]
+\begin{lstlisting}[language=croqtile,caption={Indices derived from a tuple}]
 with index = {x, y} in [10, 10] {...}
 \end{lstlisting}
 
@@ -26,7 +26,7 @@ While 'with-in' may seem like 'parallel-by', it operates differently. One signif
 
 In addition, programmers could append a 'where' clause. For example,
 
-\begin{lstlisting}[language=croqtile,caption={The with-in Block and where Clause}]
+\begin{lstlisting}[language=croqtile,caption={Nested bounded groups}]
 with {m, n} in [M, N], {n_p, k} in [N_P, K] where n_p <-> n {
   // matmul implements with m,n,K. n_p is no long useful.
 }

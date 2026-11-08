@@ -88,31 +88,31 @@
 \contentsline {lstlisting}{\numberline {2.57}: thread --- Threads Within a Block}{34}{lstlisting.2.57}%
 \contentsline {lstlisting}{\numberline {2.58}Nesting Specifiers}{34}{lstlisting.2.58}%
 \contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{35}{lstlisting.2.59}%
-\contentsline {lstlisting}{\numberline {2.60}The with-in Block and where Clause}{35}{lstlisting.2.60}%
-\contentsline {lstlisting}{\numberline {2.61}The with-in Block and where Clause}{35}{lstlisting.2.61}%
-\contentsline {lstlisting}{\numberline {2.62}The with-in Block and where Clause}{35}{lstlisting.2.62}%
-\contentsline {lstlisting}{\numberline {2.63}The with-in Block and where Clause}{36}{lstlisting.2.63}%
+\contentsline {lstlisting}{\numberline {2.60}Indexing a with-in block}{35}{lstlisting.2.60}%
+\contentsline {lstlisting}{\numberline {2.61}A tuple of indices}{35}{lstlisting.2.61}%
+\contentsline {lstlisting}{\numberline {2.62}Indices derived from a tuple}{35}{lstlisting.2.62}%
+\contentsline {lstlisting}{\numberline {2.63}Nested bounded groups}{36}{lstlisting.2.63}%
 \contentsline {lstlisting}{\numberline {2.64}The foreach Block}{36}{lstlisting.2.64}%
-\contentsline {lstlisting}{\numberline {2.65}Basic Syntax: parallel-by}{36}{lstlisting.2.65}%
-\contentsline {lstlisting}{\numberline {2.66}Basic Syntax: parallel-by}{37}{lstlisting.2.66}%
-\contentsline {lstlisting}{\numberline {2.67}Multiple-Level Parallelism}{37}{lstlisting.2.67}%
-\contentsline {lstlisting}{\numberline {2.68}Multiple-Level Parallelism}{37}{lstlisting.2.68}%
+\contentsline {lstlisting}{\numberline {2.65}A named parallel index}{36}{lstlisting.2.65}%
+\contentsline {lstlisting}{\numberline {2.66}An unnamed parallel index}{37}{lstlisting.2.66}%
+\contentsline {lstlisting}{\numberline {2.67}One parallel level}{37}{lstlisting.2.67}%
+\contentsline {lstlisting}{\numberline {2.68}Two parallel levels}{37}{lstlisting.2.68}%
 \contentsline {lstlisting}{\numberline {2.69}Sub-Level Parallelism}{37}{lstlisting.2.69}%
-\contentsline {lstlisting}{\numberline {2.70}Loops in Croqtile}{38}{lstlisting.2.70}%
-\contentsline {lstlisting}{\numberline {2.71}Loops in Croqtile}{38}{lstlisting.2.71}%
-\contentsline {lstlisting}{\numberline {2.72}Defining Bounded Variables:}{38}{lstlisting.2.72}%
-\contentsline {lstlisting}{\numberline {2.73}Defining Bounded Variables:}{39}{lstlisting.2.73}%
-\contentsline {lstlisting}{\numberline {2.74}Defining Bounded Variables:}{39}{lstlisting.2.74}%
-\contentsline {lstlisting}{\numberline {2.75}Basic Syntax}{39}{lstlisting.2.75}%
-\contentsline {lstlisting}{\numberline {2.76}Basic Syntax}{39}{lstlisting.2.76}%
-\contentsline {lstlisting}{\numberline {2.77}Basic Syntax}{40}{lstlisting.2.77}%
-\contentsline {lstlisting}{\numberline {2.78}Basic Syntax}{40}{lstlisting.2.78}%
-\contentsline {lstlisting}{\numberline {2.79}Basic Syntax}{40}{lstlisting.2.79}%
-\contentsline {lstlisting}{\numberline {2.80}Syntactic Sugar}{40}{lstlisting.2.80}%
-\contentsline {lstlisting}{\numberline {2.81}Syntactic Sugar}{40}{lstlisting.2.81}%
-\contentsline {lstlisting}{\numberline {2.82}Deriving the Loop From a Bounded Integer}{41}{lstlisting.2.82}%
-\contentsline {lstlisting}{\numberline {2.83}Deriving the Loop From a Bounded Integer}{41}{lstlisting.2.83}%
-\contentsline {lstlisting}{\numberline {2.84}Deriving the Loop From a Bounded Integer}{41}{lstlisting.2.84}%
+\contentsline {lstlisting}{\numberline {2.70}A foreach loop}{38}{lstlisting.2.70}%
+\contentsline {lstlisting}{\numberline {2.71}The equivalent C++ loop}{38}{lstlisting.2.71}%
+\contentsline {lstlisting}{\numberline {2.72}A bounded variable}{38}{lstlisting.2.72}%
+\contentsline {lstlisting}{\numberline {2.73}A tuple of bounded variables}{39}{lstlisting.2.73}%
+\contentsline {lstlisting}{\numberline {2.74}A variable derived from a tuple}{39}{lstlisting.2.74}%
+\contentsline {lstlisting}{\numberline {2.75}Indexing one shape}{39}{lstlisting.2.75}%
+\contentsline {lstlisting}{\numberline {2.76}A tuple of indices}{39}{lstlisting.2.76}%
+\contentsline {lstlisting}{\numberline {2.77}The generated C++ loop}{40}{lstlisting.2.77}%
+\contentsline {lstlisting}{\numberline {2.78}Several bounded groups}{40}{lstlisting.2.78}%
+\contentsline {lstlisting}{\numberline {2.79}The generated inner loop}{40}{lstlisting.2.79}%
+\contentsline {lstlisting}{\numberline {2.80}A foreach loop}{40}{lstlisting.2.80}%
+\contentsline {lstlisting}{\numberline {2.81}The with-in form it expands to}{40}{lstlisting.2.81}%
+\contentsline {lstlisting}{\numberline {2.82}A tuple of bounded variables}{41}{lstlisting.2.82}%
+\contentsline {lstlisting}{\numberline {2.83}The derived C++ loop}{41}{lstlisting.2.83}%
+\contentsline {lstlisting}{\numberline {2.84}The bounded-variable syntax}{41}{lstlisting.2.84}%
 \contentsline {lstlisting}{\numberline {2.85}chunkat(...): equal partitioning}{42}{lstlisting.2.85}%
 \contentsline {lstlisting}{\numberline {2.86}subspan(...).at(...): explicit tile extents on a tile grid}{42}{lstlisting.2.86}%
 \contentsline {lstlisting}{\numberline {2.87}view(...).from(...): explicit tile extents with explicit element offsets}{42}{lstlisting.2.87}%

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.7** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.6)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30)
+- Next section: **2.8** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.7)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -80,7 +80,7 @@ chapter numbers; every unit stays in its registered slot.
 | 2.4 | x | round 28 | Named all eight shape examples individually, replaced the "first-class citizen / in this section" opener with an account of what a shape value does, re-anchored the dangling "This comes up" sentence, and removed a "Note that" opener without losing the dimensional-arithmetic rule |
 | 2.5 | x | round 29 | Gave the ten integer/i-tuple listings distinct captions, replaced both "In this section" bookends with statements about what the constructs do, removed a dangling "However" and a dangling "As described", and converted leftover Markdown asterisks into a plain constraint sentence |
 | 2.6 | x | round 30 | Named the repeated declaration, parameter and default-storage listings, replaced the "In this section" opening and the "This section covered" summary with the declaration/specifier facts they stood for, and turned a bare "Example:" into a lead-in for the shared qualifier |
-| 2.7 | . | | |
+| 2.7 | x | round 31 | Gave twenty-one repeated iteration listings distinct names, removed the "And / However / Note that" openers, and replaced both tutorial bookends with statements about what bounded variables do |
 | 2.8 | . | | |
 | 2.9 | . | | |
 | 2.10 | . | | |

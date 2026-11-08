@@ -7,7 +7,7 @@ Croqtile gives you two separate knobs:
 \item \textbf{Space specifiers} (\texttt{: block}, \texttt{: thread}, \texttt{: group}, \texttt{: group-4}) --- tell the compiler  each parallel axis maps to. This is a physical statement.
 \end{enumerate}
 
-And there is \texttt{foreach}, which is the opposite of \texttt{parallel}: iterations run \textbf{sequentially}, in order. Use \texttt{foreach} when later iterations depend on earlier ones --- an accumulation loop, a K-dimension reduction, a pipeline that loads tile \emph{k} before computing with it.
+There is also \texttt{foreach}, which is the opposite of \texttt{parallel}: iterations run \textbf{sequentially}, in order. Use \texttt{foreach} when later iterations depend on earlier ones --- an accumulation loop, a K-dimension reduction, a pipeline that loads tile \emph{k} before computing with it.
 
 \begin{lstlisting}[language=croqtile,caption={Croqtile s Two-Layer Parallelism Model}]
 parallel {px, py} by [8, 16] : block

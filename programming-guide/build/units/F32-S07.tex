@@ -1,6 +1,6 @@
 \subsection*{Syntactic Sugar}
 
-\begin{lstlisting}[language=croqtile,caption={Syntactic Sugar}]
+\begin{lstlisting}[language=croqtile,caption={A foreach loop}]
 foreach x in 128 { }
 foreach idx in [10, 20] { }
 foreach {y, z} in [8, 16] { }
@@ -8,7 +8,7 @@ foreach {y, z} in [8, 16] { }
 
 The code above is equivalent to the following code:
 
-\begin{lstlisting}[language=croqtile,caption={Syntactic Sugar}]
+\begin{lstlisting}[language=croqtile,caption={The with-in form it expands to}]
 with x in 128 {
   foreach x { }
 }

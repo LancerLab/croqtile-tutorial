@@ -4,7 +4,7 @@ In C++, loops are typically constructed using \texttt{for}, \texttt{while}, and 
 
 In contrast, Croqtile, being a domain-specific language for data movement, supports a more constrained loop structure. The current loop construction in Croqtile is as follows:
 
-\begin{lstlisting}[language=croqtile,caption={Loops in Croqtile}]
+\begin{lstlisting}[language=croqtile,caption={A foreach loop}]
 foreach index {
   // loop body
 }
@@ -12,7 +12,7 @@ foreach index {
 
 Here, \texttt{index} is a \emph{bounded variable} (introduced in the previous section). If \texttt{index} has an upper bound of \texttt{6}, the above code is equivalent to:
 
-\begin{lstlisting}[language={},caption={Loops in Croqtile}]
+\begin{lstlisting}[language={},caption={The equivalent C++ loop}]
 for (int index = 0; index < 6; ++index) {
   // loop body
 }

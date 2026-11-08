@@ -2,7 +2,7 @@
 
 The basic syntax for a \texttt{parallel-by} block is as follows:
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax: parallel-by}]
+\begin{lstlisting}[language=croqtile,caption={A named parallel index}]
 parallel p by 6 {
   // SPMD (Single Program, Multiple Data) code
 }
@@ -18,7 +18,7 @@ You name the code inside \texttt{\{\}} as the SPMD-style \textbf{parallel execut
 
 In some scenarios, programers may not require an explicit \emph{parallel variable} for a simple parallel construct. It is possible to omit it:
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax: parallel-by}]
+\begin{lstlisting}[language=croqtile,caption={An unnamed parallel index}]
 parallel by 2 { ... }
 \end{lstlisting}
 

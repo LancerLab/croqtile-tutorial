@@ -347,7 +347,7 @@ SLOT_INTROS = {
     '2.4': "A shape is a value a program can name and compute with, not just an annotation on a declaration. \\co@mdspan@ defines one, arithmetic derives another from it, and an anonymous dimension leaves a size for the caller to supply.",
     '2.5': "Integers control loops and index arrays; an \\co@ituple@ groups several of them into one index. Both are declared with an initializer, both are immutable, and both are checked against the shape they are used with.",
     '2.6': "A buffer in Croqtile always arrives with its shape. Declaring one fixes the element type and the dimensions; a storage specifier says where it lives, and an initializer can fill it at the declaration site.",
-    '2.7': "Iteration in Croqtile declares independence rather than a schedule. This section introduces \\co@parallel@, \\co@with-in@ and \\co@foreach@ through small programs.",
+    '2.7': "Iteration constructs state which iterations are independent, leaving the schedule to the compiler. \\co@parallel@, \\co@with-in@ and \\co@foreach@ differ in what they name and how much of the index space each instance sees.",
     '2.8': "A tile is a slice of a larger buffer. This section shows the ways to select one --- \\co@chunkat@, \\co@subspan@, \\co@view().from()@ --- and the compose operator \\co@#@.",
     '2.9': "Moving a tile is a statement in the language, not a library call. This section introduces the DMA statement, futures, and synchronous versus asynchronous copies.",
     '2.10': "Concurrent regions have to agree on who may proceed. This section introduces \\co@inthreads@, events and the asynchronous forms through short examples.",
@@ -989,6 +989,41 @@ UNIT_OVERRIDES = [
      "lives, and the compiler manages its lifetime from there."),
     ('F37-S05', r'(?m)^Example:$',
      'A \\texttt{shared} buffer follows the same declaration syntax:'),
+    # Round 31 (2.7): iteration constructs, one name per example.
+    ('F15-S15', None, caption_names([
+        'Indexing a with-in block', 'A tuple of indices',
+        'Indices derived from a tuple', 'Nested bounded groups'])),
+    ('F31-S03', None, caption_names([
+        'A named parallel index', 'An unnamed parallel index'])),
+    ('F31-S04', None, caption_names([
+        'One parallel level', 'Two parallel levels'])),
+    ('F32-S02', None, caption_names([
+        'A foreach loop', 'The equivalent C++ loop'])),
+    ('F32-S04', None, caption_names([
+        'A bounded variable', 'A tuple of bounded variables',
+        'A variable derived from a tuple'])),
+    ('F32-S06', None, caption_names([
+        'Indexing one shape', 'A tuple of indices',
+        'The generated C++ loop', 'Several bounded groups',
+        'The generated inner loop'])),
+    ('F32-S07', None, caption_names([
+        'A foreach loop', 'The with-in form it expands to'])),
+    ('F32-S08', None, caption_names([
+        'A tuple of bounded variables', 'The derived C++ loop',
+        'The bounded-variable syntax'])),
+    ('F05-S03', r'And there is \\texttt\{foreach\}', 'There is also \\texttt{foreach}'),
+    ('F15-S14', r'However, the syntax of constructing a parallel region',
+     'The syntax of constructing a parallel region'),
+    ('F31-S05', r'Note that the first element', 'The first element'),
+    ('F32-S01',
+     r'In this section, you will learn about constructing \\emph\{bounded variable\}s using the \\texttt\{with-in\} statement and creating loops with the \\texttt\{foreach\} statement\.',
+     "A \\texttt{with-in} statement declares a \\emph{bounded variable}; a "
+     "\\texttt{foreach} statement iterates over its range. Together they "
+     "describe a loop without spelling out its bounds in C++."),
+    ('F32-S10',
+     r'In this section, you explain the use of \\texttt\{with-in\} and \\texttt\{foreach\} statements in Croqtile to define and iterate over \\emph\{bounded variable\}s, which are essential for data movement tasks\.',
+     "Bounded variables and the loops derived from them are what data "
+     "movement code is built from."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

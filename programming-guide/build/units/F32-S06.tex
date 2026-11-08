@@ -1,6 +1,6 @@
 The \texttt{with-in} statement defines \emph{bounded variable}s, which can then be iterated over using the \texttt{foreach} statement. The basic syntax is as follows:
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax}]
+\begin{lstlisting}[language=croqtile,caption={Indexing one shape}]
 with index in [6] {
   foreach index {
     // Perform operations with each index
@@ -12,7 +12,7 @@ In this example, the \texttt{foreach} block iterates 6 times, with the value of 
 
 It is also possible to iterate over \emph{bounded ituple}s. For example:
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax}]
+\begin{lstlisting}[language=croqtile,caption={A tuple of indices}]
 with index = {x, y} in [6, 17] {
   foreach index { }
 }
@@ -20,7 +20,7 @@ with index = {x, y} in [6, 17] {
 
 This code defines a \emph{bounded ituple} \texttt{index}. Iterating over \texttt{index} is equivalent to a nested loop structure:
 
-\begin{lstlisting}[language={},caption={Basic Syntax}]
+\begin{lstlisting}[language={},caption={The generated C++ loop}]
 for (int x = 0; x < 6; ++x)
   for (int y = 0; y < 17; ++y) { }
 \end{lstlisting}
@@ -29,7 +29,7 @@ Notice the ordering of the loop nesting: the \textbf{left-to-right} order of the
 
 Furthermore, This rule also applies to the \emph{comma-separated bounded variable list} that follows the \texttt{foreach} statement:
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax}]
+\begin{lstlisting}[language=croqtile,caption={Several bounded groups}]
 with index = {x, y} in [6, 17], iv in [128] {
   foreach iv, index { }
 }
@@ -37,7 +37,7 @@ with index = {x, y} in [6, 17], iv in [128] {
 
 In this code, two bounded variables are defined. The following \texttt{foreach} block is equivalent to a multi-level nested loop:
 
-\begin{lstlisting}[language={},caption={Basic Syntax}]
+\begin{lstlisting}[language={},caption={The generated inner loop}]
 for (int iv = 0; iv < 128; ++iv)
   for (int x = 0; x < 6; ++x)
     for (int y = 0; y < 17; ++y) { }

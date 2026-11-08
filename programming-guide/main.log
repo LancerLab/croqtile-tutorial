@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1585,10 +1585,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  36377 strings out of 480247
- 709632 string characters out of 5896152
+ 709630 string characters out of 5896152
  1467792 words of memory out of 5000000
  50514 multiletter control sequences out of 15000+600000
- 581875 words of font info for 264 fonts, out of 8000000 for 9000
+ 581911 words of font info for 264 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  105i,17n,113p,1074b,2026s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/en
@@ -1604,7 +1604,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (147 pages, 3252187 bytes).
+Output written on main.pdf (147 pages, 3252603 bytes).
 PDF statistics:
  3579 PDF objects out of 3580 (max. 8388607)
  3275 compressed objects within 33 object streams

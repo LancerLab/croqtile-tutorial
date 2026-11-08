@@ -16,4 +16,4 @@ parallel {px, py, pz} by [1, 1, 2] {
 
 In this example, two levels of parallelism are defined. The first level (\emph{level-0}) is subdivided into three sub-levels, annotated by the \texttt{\{px, py, pz\}} \texttt{ituple}. The second level (\emph{level-1}) is subdivided into two sub-levels, annotated by the \texttt{\{qx, qy\}} \texttt{ituple}, or \texttt{t\_index} as a whole. For each sub-level, the parallelization count corresponds to the respective value inside the \texttt{mdspan}.
 
-Note that the first element inside the \texttt{ituple} represents the \textbf{least significant parallel variable}. Croqtile adopts this ordering to align with  developers' conventions, rather than for internal consistency.
+The first element inside the \texttt{ituple} represents the \textbf{least significant parallel variable}. Croqtile adopts this ordering to align with  developers' conventions, rather than for internal consistency.

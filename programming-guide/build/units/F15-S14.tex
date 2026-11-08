@@ -2,7 +2,7 @@
 
 In systems like CPU, it allows of asynchronous thread to realize the parallel execution. However, in Croqtile, it employs the Single Instruction Multiple Data (SPMD) model as it way to realize parallelization.
 
-However, the syntax of constructing a parallel region is quite different. It employs the C-style bracket and encloses the code for parallel execution within the 'parallel-by' block.
+The syntax of constructing a parallel region is quite different. It employs the C-style bracket and encloses the code for parallel execution within the 'parallel-by' block.
 
 \begin{lstlisting}[language=croqtile,caption={Parallel Region: the parallel-by Block}]
 parallel p by 6 {
