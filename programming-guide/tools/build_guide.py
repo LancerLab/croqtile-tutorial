@@ -353,7 +353,7 @@ SLOT_INTROS = {
     '2.10': "Concurrent regions need a way to agree on who may proceed. Events, \\co@inthreads@ blocks and their asynchronous forms encode that agreement in the program rather than in an implicit schedule.",
     '2.11': "A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.",
     '2.12': "A contraction is not one instruction but four: load the operands, compute, accumulate and store. The four-step spelling makes each step visible, so the smallest kernel that uses all of them is enough to read the rest.",
-    '2.13': "Croqtile lives inside C++: a \\file{.co} file can call helpers, inject source text and use the preprocessor. This section covers each mechanism in turn.",
+    '2.13': "Croqtile lives inside C++: a \\file{.co} file can call device helpers, inject source text and use the preprocessor. Each mechanism has its own boundary, and the compiler checks nothing across that boundary.",
     '2.14': "The language has its own print and assert forms, at compile time and at runtime. This section shows what each one reports and when to reach for it.",
     '2.15': "The constructs introduced so far are gathered here as a compact reference, for looking up a spelling or a meaning without re-reading the examples.",
     '3.1': "A Croqtile program is transpiled into host and device code. This section explains the resulting three-layer structure and the compilation models the language supports.",
@@ -1092,6 +1092,31 @@ UNIT_OVERRIDES = [
      r'Every tensor-contraction kernel follows the same rhythm:',
      "Every contraction kernel follows the same rhythm, and the spelling "
      "makes each step visible:"),
+    # Round 37 (2.13): C++ embedding, calls, macros and the preprocessor.
+    ('F10-S07', None, caption_names([
+        'A macro inside a cpp string', 'Its expanded form'])),
+    ('F23-S02', None, caption_names([
+        'An object-like macro', 'A macro with parameters'])),
+    ('F24-S03', None, caption_names([
+        'The general call syntax', 'An illegal call site'])),
+    ('F23-S02',
+     r'Note that, till now Croqtile does only support macros with parameters\. It means code like:',
+     "The preprocessor currently supports only macros without parameters, "
+     "so code like:"),
+    ('F23-S04',
+     r'Note that, the capability of croqtile preprocessor is still enhancing\. But it is likely that you would not implement full C preprocessing support\. Croqtile would not pick up existing C features unless people find it is necessary\.',
+     "The preprocessor is still being extended, and full C preprocessing "
+     "support is not planned: a C feature is picked up only when a program "
+     "actually needs it."),
+    ('F24-S03',
+     r'Note that \\textbf\{Croqtile transpilation process would not apply any check',
+     '\\textbf{Croqtile transpilation process would not apply any check'),
+    ('F24-S03', r'Therefore, in the following example,', 'In the following example,'),
+    ('F24-S07',
+     r'In this section, you learned the syntax to invoke device functions, including normal ones and those triggers function template instantiations\.',
+     "A \\texttt{call} statement invokes a device function, with or without "
+     "template arguments."),
+    ('F24-S07', r'Programmers must code in cautious since', 'Care is needed since'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.13** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.12)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36)
+- Next section: **2.14** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.13)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -86,7 +86,7 @@ chapter numbers; every unit stays in its registered slot.
 | 2.10 | x | round 34 | Named the four event listings, turned four "Note that / Note it / Therefore" openers into plain statements, fixed the "ochestrate" typo and removed the tutorial summary opener |
 | 2.11 | x | round 35 | Replaced the meta-narration slot intro with the distinction between a predicate and an early return, and made the yield description say which instance leaves the code |
 | 2.12 | x | round 36 | Replaced the meta-narration slot intro with the four contraction steps and made the rhythm sentence point at the spelling instead of an unstated list |
-| 2.13 | . | | |
+| 2.13 | x | round 37 | Named the repeated macro/call/cpp-string listings, corrected the contradictory macro-parameter assertion, removed four tutorial "Note that / Therefore / In this section" openers and repaired "code in cautious" |
 | 2.14 | . | | |
 | 2.15 | . | | |
 | 3.1 | . | | |

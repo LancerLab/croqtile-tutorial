@@ -2,17 +2,17 @@
 
 The general syntax for a \texttt{call} statement in Croqtile is:
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax of Call Statements}]
+\begin{lstlisting}[language=croqtile,caption={The general call syntax}]
 call func-name <optional-template-args> (arguments);
 \end{lstlisting}
 
 Here, the keyword \texttt{call} is followed by a function name \texttt{func-name}, an optional \texttt{\textless{}\textgreater{}} enclosed template arguments, which are comma-separated. The \texttt{arguments} are also comma-separated and listed inside \texttt{()} like normal C/C++ functions.
 
-Note that \textbf{Croqtile transpilation process would not apply any check between the callers and the callees}, including the function existence, function signature consistency, and parameter consistency. It delegates such duties to the target compilation process. Programmers must be careful about the conventions between Croqtile function and device function consequently.
+\textbf{Croqtile transpilation process would not apply any check between the callers and the callees}, including the function existence, function signature consistency, and parameter consistency. It delegates such duties to the target compilation process. Programmers must be careful about the conventions between Croqtile function and device function consequently.
 
-Therefore, in the following example, \texttt{call bar();} in \texttt{mou} is illegal code since it tries to call device function in a code location which is assumed to be host code area.
+In the following example, \texttt{call bar();} in \texttt{mou} is illegal code since it tries to call device function in a code location which is assumed to be host code area.
 
-\begin{lstlisting}[language=croqtile,caption={Basic Syntax of Call Statements}]
+\begin{lstlisting}[language=croqtile,caption={An illegal call site}]
 __co__ void foo() {
   parallel p by 1 {
     call bar();  // ok
