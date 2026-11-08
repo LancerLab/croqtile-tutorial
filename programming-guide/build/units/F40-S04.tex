@@ -1,0 +1,17 @@
+\subsection*{Memory Tiling with \texttt{chunkat}}
+
+In the matrix multiplication example, \textbf{memory tiling} is achieved using the \texttt{chunkat} method, which slices the input matrices \texttt{lhs} (left-hand side) and \texttt{rhs} (right-hand side) into smaller chunks to be processed in parallel.
+
+\noindent\textbf{Tiling via \texttt{chunkat}:}\par
+
+\begin{itemize}[leftmargin=1.6em]
+\item The \texttt{lhs} and \texttt{rhs} matrices are tiled using the \texttt{chunkat} method. The chunks are defined by \texttt{m\_tile}, \texttt{k\_tile}, and \texttt{n\_tile}, which represent different dimensions of the matrices involved in the multiplication.
+\item The chunks for both matrices are loaded asynchronously into the  (\texttt{lhs\_load} and \texttt{rhs\_load}) with the \texttt{dma.copy.async} operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.
+\end{itemize}
+
+\noindent\textbf{Bounded Variables:}\par
+
+\begin{itemize}[leftmargin=1.6em]
+\item The variables \texttt{m\_tile}, \texttt{k\_tile}, and \texttt{n\_tile} are \textbf{bounded variables}. They are defined in the context of \texttt{parallel-by} and \texttt{with-in} constructs, which define the iteration space for the tiling.
+\item These bounded variables allow the chunks to be computed in parallel, where each thread works on a different slice of the matrix. This parallelization enables efficient computation of matrix multiplications across multiple threads.
+\end{itemize}

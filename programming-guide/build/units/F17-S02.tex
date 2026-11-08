@@ -1,0 +1,41 @@
+\subsection*{Integers for Program Control}
+
+In high-performance computation kernels, integers are typically used for program control rather than computation. In Croqtile \emph{tileflow programs}, integers are used exclusively for loop control and array indexing. Given the limited value ranges in these scenarios, Croqtile has provided a single integer type --- the \emph{32-bit signed integer} --- to simplify the design for this domain-specific use.
+
+In Croqtile, an \textbf{integer}-typed variable is defined similar to C/C++:
+
+\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+int a = 1;
+\end{lstlisting}
+
+However, since Croqtile can infer the type from the \emph{initialization expression}, you can also define an integer variable in another style:
+
+\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+a = 1;
+\end{lstlisting}
+
+Similar to C/C++, you can define multiple integers in a single line:
+
+\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+int a = 1, b = 2, c = 3;
+d = 4, e = 5;
+\end{lstlisting}
+
+In Croqtile, the \emph{mdspan}-typed shape can not be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:
+
+\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+__co__ void foo(int a) {
+  // ...
+  call kernel(a, 3);
+}
+\end{lstlisting}
+
+Unlike C/C++, Croqtile does not allow the declaration of integers without initialization or the reassignment of an integer. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+int a;  // error: declaration without initialization
+int b = 1;
+b = 3;  // error: re-assignment
+\end{lstlisting}
+
+This enforces that \textbf{integers must be initialized at declaration and cannot be reassigned}. In some contexts, these integers are referred to as "\textbf{immutable}" or "\textbf{constant}".

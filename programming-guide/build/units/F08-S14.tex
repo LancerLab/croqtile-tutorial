@@ -1,0 +1,18 @@
+\paragraph*{Syntax at a glance}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Syntax} & \textbf{Meaning} \\
+\midrule
+\texttt{dma.\allowbreak{}copy.\allowbreak{}async src =\textgreater{} dst} & Non-blocking copy (returns immediately) \\
+\texttt{dma.any} & Placeholder future (no transfer in flight yet) \\
+\texttt{swap(f0, f1)} & Exchange two future handles without copying data \\
+\texttt{rotate(f0, f1, f2)} & Cycle three future handles \\
+\texttt{with tile\_\allowbreak{}k in N \{ .\allowbreak{}.\allowbreak{}.\allowbreak{} \}} & Scoped tile axis binding with extent N \\
+\texttt{foreach tile\_\allowbreak{}k(1:\allowbreak{})} & Iterate starting from index 1 \\
+\texttt{\_\allowbreak{}\_\allowbreak{}co\_\allowbreak{}\_\allowbreak{} auto fn(.\allowbreak{}.\allowbreak{}.\allowbreak{})} & Return type inferred from \texttt{return} statement \\
+\bottomrule
+\end{tabularx}
+\end{table}

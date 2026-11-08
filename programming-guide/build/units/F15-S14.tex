@@ -1,0 +1,15 @@
+\subsection*{Parallel Region: the 'parallel-by' Block}
+
+In systems like CPU, it allows of asynchronous thread to realize the parallel execution. However, in Croqtile, it employs the Single Instruction Multiple Data (SPMD) model as it way to realize parallelization.
+
+However, the syntax of constructing a parallel region is quite different. It employs the C-style bracket and encloses the code for parallel execution within the 'parallel-by' block.
+
+\begin{lstlisting}[language=croqtile,caption={Parallel Region: the parallel-by Block}]
+parallel p by 6 {
+  // SPMD code
+}
+\end{lstlisting}
+
+The above code snippet illustrates the method to create a parallel region with Croqtile keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)
+
+Despite parallelism, there is one more implication of 'parallel-by'. In the statement, 'p' is an integer associated with its bound [0, 6). You name 'p' as a \textbf{bounded integer} instead of a simple integer. In some special operations like 'chunkat' (explain later), it requires the \emph{bounded-integer} to work properly since the bound is essential for its computation.

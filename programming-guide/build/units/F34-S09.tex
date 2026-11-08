@@ -1,0 +1,17 @@
+\subsection*{Implicit Masking}
+
+In Croqtile, code between multiple \texttt{parallel-by} levels can be considered as a type of implicit masking. The below code showcases an example:
+
+\begin{lstlisting}[language=croqtile,caption={Implicit Masking}]
+__co__  void foo() {
+  parallel p by 6 {
+    // implicit masking: 'inthreads (q == 0) { ... } '
+    parallel q by 2 {
+      // code here is for all threads
+    }
+    // implicit masking: 'inthreads (q == 0) { ... } '
+  }
+}
+\end{lstlisting}
+
+In this example, there exists two levels of parallelization. The code inside \texttt{parallel p by 6} block but outside \texttt{parallel q by 2} blocks is conceptually for the outer parallelization only. This means, only one thread from the sub-level parallelization execute the code, which is equivalent to \texttt{inthreads (q == 0) \{ .\allowbreak{}.\allowbreak{}.\allowbreak{} \}}. Programmers must be aware there is only single thread instance to execute the code part. Only the code inside the inner \texttt{parallel-by} is executed by all threads.

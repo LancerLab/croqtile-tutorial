@@ -1,0 +1,7 @@
+\subsection*{The three phases}
+
+\textbf{Prologue.} Issue loads for tile 0 into \texttt{lf0}/\texttt{rf0}. No compute yet --- the first tile must land before anything can multiply it.
+
+\textbf{Steady state.} For each subsequent tile: start loads into \texttt{lf1}/\texttt{rf1}, compute on \texttt{lf0}/\texttt{rf0} from the previous iteration, then \texttt{swap} so names track the active buffers. New copies land in \texttt{lf1}/\texttt{rf1} \textbf{before} the compute reads \texttt{lf0}/\texttt{rf0}, so you never read a buffer being overwritten.
+
+\textbf{Epilogue.} After the last swap, \texttt{lf0}/\texttt{rf0} hold the final tile; one more compute pass drains them.

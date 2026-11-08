@@ -1,0 +1,9 @@
+\subsection*{Rules}
+
+\begin{itemize}[leftmargin=1.6em]
+\item Stream binding is only allowed on \textbf{block-level} parallel (\texttt{: block}).
+\item The identifier inside \texttt{\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}} must be a \texttt{stream}-typed variable.
+\item Without stream binding, synchronous \texttt{parallel-by} uses device-wide
+\end{itemize}
+
+synchronization, and asynchronous \texttt{parallel-by} uses the default stream.

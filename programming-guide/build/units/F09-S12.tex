@@ -1,0 +1,20 @@
+\paragraph*{Syntax at a glance}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Syntax} & \textbf{Meaning} \\
+\midrule
+\texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{} src =\textgreater{} dst} & TMA copy with swizzle mode \texttt{N} (0--3) \\
+\texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{} src =\textgreater{} dst} & DMA copy with swizzle mode \texttt{N} (0--3); same layout as TMA \\
+\texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{} src} & MMA operand load consistent with swizzle \texttt{N} \\
+\texttt{.\allowbreak{}view(M, N).\allowbreak{}from(r, c)} & Arbitrary-offset \texttt{M x N} window \\
+\texttt{.\allowbreak{}subspan(M, K).\allowbreak{}step(sM, sK).\allowbreak{}at(i, j)} & Strided tile selection \\
+\texttt{.zfill} & Zero-fill out-of-bounds elements on copy source \\
+\texttt{span\_as(dims)} & Reinterpret linear storage as shaped tensor \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Section~\ref{sec:2-13} covers C++ interop: \texttt{\_\_device\_\_} functions, preprocessor guards and injected source text for the cases where a program needs plain C++.

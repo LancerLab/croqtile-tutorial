@@ -1,0 +1,58 @@
+\subsection*{Compile Croqtile Program}
+
+However, since Croqtile integrates lower-level \emph{target compiler} in its compilation process, it appears as an \textbf{end-to-end compiler} when the vendor-provided device-level C++ compiler is properly configured.
+
+Therefore, Once Croqtile is built, developers can compile Croqtile programs into various output forms, including:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Target source code
+\item Target object module
+\item Target executable binary/module
+\item Target assembly
+\item Work-script
+\end{itemize}
+
+Species except for \emph{target source code} and \emph{work-script} (introduced later) are similar to those of \texttt{gcc} and \texttt{clang}. However, the availability of these output forms depends on the target platform's support and limitations.
+
+The usage of the Croqtile compiler is similar to that of \texttt{gcc} or \texttt{clang}. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Compile Croqtile Program}]
+croqtile your_program.co
+\end{lstlisting}
+
+This command generates an \texttt{a.out} executable file. The \texttt{-\allowbreak{}o \textless{}filename\textgreater{}} option can be used to specify the output filename when needed. Compiler options like \texttt{-c} and \texttt{-S} work similarly to those in C++ compilers, provided they are supported by the target platform.
+
+The \texttt{-\allowbreak{}t \textless{}platform\textgreater{}} option allows you to specify the target platform for the compilation. Additionally, the \texttt{-es} option generates \emph{target source code} without performing the "target compilation*. For instance:
+
+\begin{lstlisting}[language={},caption={Compile Croqtile Program}]
+croqtile -t target your_program.co -es -o target_source.co
+\end{lstlisting}
+
+Notably, Croqtile allows the \texttt{-E} option to support Croqtile-only preprocessing. The Croqtile preprocessor handles simple macros and preprocessor directives such as \texttt{\#if}, \texttt{\#ifdef}, \texttt{\#ifndef}, \texttt{\#else}, and \texttt{\#endif}, enabling Croqtile functions to be integrated with other C++ code. The \texttt{-E} option outputs the preprocessed code, for example, removing code within \texttt{\#if 0} and \texttt{\#endif} directives inside Croqtile functions.
+
+Furthermore, in development scenarios, Croqtile can generate \emph{work-script} (using the \texttt{-gs} option) to drive further low-level compilation and execution. This facilitates the development process, as many scripts are integrated for easy debugging.
+
+Lastly, options \texttt{--help} and \texttt{--help-hidden} are available for listing the full option set. Programmers and users can check the list to find their appropriate usage.
+
+Here is a example output of \texttt{--help}:
+
+\begin{lstlisting}[language={},caption={Compile Croqtile Program}]
+// --help
+Usage: croqtile [options] file...
+Options:
+  --help                    Display this information.
+  --help-hidden             Display hidden options.
+  -e, --dump-ast            Dump the Abstract Syntax Tree (AST) after parsing.
+  -i, --infer-types         Show the result of type inference.
+  -bf16n, --native-bf16     Utilize native bf16 type when target platform support.
+  -f16n, --native-f16       Utilize native f16 type when target platform support.
+  -n, --remove-comments     Remove all comments in non-croqtile code. (Useful for FileCheck)
+  -t, --target <platform>   Set the compilation target. Use '--help-target' to show current supported targets.
+  -v, --verbose             Display the programs invoked by the compiler.
+  -E                        Preprocess only; do not compile.
+  -arch=<processor>         Set the target configuration to execute the binary code.
+  -c                        Compile croqtile code and the generated target code; Without linking.
+  -es                       Emit target source file without target source compilation.
+  -gs                       Generate target script.
+  -o <file>                 Place the output into <file>.
+\end{lstlisting}

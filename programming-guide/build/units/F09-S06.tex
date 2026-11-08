@@ -1,0 +1,5 @@
+\subsection*{Handling irregular access}
+
+The tiling primitives introduced so far --- \texttt{chunkat}, \texttt{subspan(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}at(.\allowbreak{}.\allowbreak{}.\allowbreak{})} --- assume tensors that divide evenly into tiles. This works for textbook GEMM where M, N, K are multiples of the tile dimensions. Production kernels are rarely so tidy. Expert batches start at dynamic offsets. Convolution windows overlap. The last K-tile is almost never an exact multiple of TILE\_K. Some inputs arrive as flat buffers that need reshaping before MMA can consume them.
+
+Croqtile provides four tools for these cases. Each one modifies how the compiler interprets a tensor's addressing without touching the pipeline structure --- DMA, TMA, MMA, events, swizzle all continue to work unchanged.

@@ -1,0 +1,37 @@
+\subsection*{Scalar Matmul (No DMA)}
+
+Start with just \texttt{parallel} and \texttt{.at()}
+
+\begin{lstlisting}[language=croqtile,caption={Scalar Matmul (No DMA)}]
+__co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+  parallel {p, q} by [16, 64] {
+    foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]
+      output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);
+  }
+  return output;
+}
+\end{lstlisting}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f05-fig5_scalar_matmul_light.png}
+\end{figure}
+\begin{center}\small\emph{The [128, 256] output divided into a 16 \(\times\) 64 tile grid. Each (p, q) pair owns one tile.}\end{center}
+
+This is dense --- here is what each piece does.
+
+\textbf{Output shape from operand dimensions.} \texttt{s32 [lhs.\allowbreak{}span(0), rhs.\allowbreak{}span(1)] output} builds the output shape from the inputs: \texttt{lhs.span(0)} is 128 (rows of the left matrix) and \texttt{rhs.span(1)} is 256 (columns of the right matrix).
+
+\textbf{Multi-axis parallel.} \texttt{parallel \{p, q\} by [16, 64]} declares two parallel indices of one parallel level with a comma. This creates a 16 \(\times\) 64 = 1024-way parallel grid. Each \texttt{(p, q)} pair owns a tile of the output.
+
+\textbf{Named tuple destructuring.} \texttt{foreach index = \{m, n, k\} in [128 /\allowbreak{} \#\allowbreak{}p, 256 /\allowbreak{} \#\allowbreak{}q, 256]} introduces three nested loop indices --- \texttt{m}, \texttt{n}, \texttt{k} --- bound to a tuple called \texttt{index}. The trip counts are:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \texttt{128 /\allowbreak{} \#\allowbreak{}p = 128 /\allowbreak{} 16 = 8} rows per tile
+\item \texttt{256 /\allowbreak{} \#\allowbreak{}q = 256 /\allowbreak{} 64 = 4} columns per tile
+\item \texttt{256} for the full contraction dimension
+\end{itemize}
+
+\textbf{Composed global indices.} \texttt{p\#m} composes the tile index with the within-tile offset. \texttt{p} selects which of the 16 row-tiles, \texttt{m} runs 0..7 within that tile, so \texttt{p\#m} covers 0..127 across all tiles.
+
+\textbf{The arithmetic.} \texttt{output.\allowbreak{}at(p\#\allowbreak{}m, q\#\allowbreak{}n) += lhs.\allowbreak{}at(p\#\allowbreak{}m, k) * rhs.\allowbreak{}at(k, q\#\allowbreak{}n)} is the textbook dot product: for each output element, sum products along K.

@@ -1,0 +1,14 @@
+\subsection*{\emph{Ubound} Operation}
+
+In the previous chapter, you learned that a \emph{bounded variable} defined by a \texttt{parallel-by} or \texttt{with-in} statement is either an \emph{integer} or an \emph{ituple} with one or more bounds. You also learned how to use the \emph{current value} and \emph{upper-bound value} of the \emph{bounded variable} to construct loops in \texttt{foreach} blocks, where the \emph{upper-bound} is implicitly used.
+
+However, in Croqtile, you can use the \textbf{ubound operation} to explicitly retrieve the upper bound of a bounded variable. \emph{Ubound} is a unary operation that uses the prefix symbol \texttt{\#} before a bounded variable. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Ubound Operation}]
+with size in [32] {
+  local u8 [#size, 16] a; // buffer shape: [32, 16]
+  local u8 [size, 16] b; // error in shape: [0, 16]
+}
+\end{lstlisting}
+
+In this code, the local buffer \texttt{a} is shaped as \texttt{[32, 16]}, since \texttt{\#size} evaluates to the upper-bound of \texttt{size}. However, the declaration of \texttt{b} uses the \emph{current value} of \texttt{size}, resulting in an incorrect shape definition.

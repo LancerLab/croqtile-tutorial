@@ -1,0 +1,18 @@
+\subsection*{storage hints: \texttt{setmaxnreg}}
+
+\begin{lstlisting}[language=croqtile,caption={storage hints: setmaxnreg}]
+parallel p1 by 2 : group-4 {
+  inthreads.async (p1 == 0) {
+    __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 40;");)");
+    foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
+      // ... TMA loads ...
+    }
+  }
+  inthreads.async (p1 == 1) {
+    __cpp__(R"(asm volatile("setmaxnreg.inc.sync.aligned.u32 216;");)");
+    mc = mma.fill.f16 0.0f;
+  }
+}
+\end{lstlisting}
+
+\textbf{Placement} --- Put the hint at the top of each \texttt{inthreads.\allowbreak{}async} branch, before the heavy loop.

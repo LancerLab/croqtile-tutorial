@@ -1,0 +1,37 @@
+\subsection*{Defining a \emph{Spanned Data}}
+
+Defining a \emph{spanned data} requires both the element type and its shape. For example,
+
+\begin{lstlisting}[language=croqtile,caption={Defining a Spanned Data}]
+f32 [32, 16] data;
+\end{lstlisting}
+
+This defines a buffer with a shape of \texttt{[32, 16]}, where the element type is \texttt{f32}, which is the \emph{IEEE-754} single-precision float. It is also possible to use a named \texttt{mdspan} to define the buffer:
+
+\begin{lstlisting}[language=croqtile,caption={Defining a Spanned Data}]
+shape : [72, 14];
+s32 [shape] data0;              // using the named mdspan `shape`
+u32 [shape(0), shape(1)] data1; // same shape as the above
+u16 [shape + 6] data2;          // shaped as [78, 20]
+s16 [shape, 8] data3;           // shaped as [72, 14, 8]
+\end{lstlisting}
+
+Here the previous example used the named \emph{mdspan} \texttt{shape} to define a 2D buffer named \texttt{data0}, where the elements are 32-bit integers. Note that the named \emph{mdspan} \texttt{shape} is placed inside \texttt{[]}. Additionally, it is allowed to use \emph{element-of}, arithmetics, or concatenation on \emph{mdspan}s to specify the buffer's shape.
+
+In Croqtile terminology, the element type is referred to as the \textbf{fundamental type}. Croqtile supports multiple fundamental types, including:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Unsigned Integers}: \texttt{u8}, \texttt{u16}, \texttt{u32}
+\item \textbf{Signed Integers}: \texttt{s8}, \texttt{s16}, \texttt{s32}
+\item \textbf{Floating Points}: \texttt{f16}, \texttt{bf16}, \texttt{f32}
+\end{itemize}
+
+The prefixes \texttt{u} and \texttt{s} stand for "unsigned" and "signed", respectively, while the number suffix indicates the bit width of the type. \texttt{f16} refers to the \emph{IEEE-754} standard \emph{half-float}, and \texttt{bf16} refers to the 16-bit \emph{binary float}, commonly used in machine learning scenario.
+
+Note \texttt{s32} is different from \texttt{int}. Although they occupy the same amount of storage, in Croqtile, \texttt{s32} can not be used alone to define programming entities. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Defining a Spanned Data}]
+s32 a;  // error: the fundamental type can not be used for variable definition alone
+\end{lstlisting}
+
+This results in a compile-time failure. Consequently, \texttt{s32} cannot be used for program control like \texttt{int}, and type conversion between them is not possible.

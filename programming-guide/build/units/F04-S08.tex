@@ -1,0 +1,29 @@
+\subsection*{Futures, \texttt{.data}, and \texttt{.span}}
+
+The result of a DMA or TMA statement is a future-like handle:
+
+\begin{lstlisting}[language=croqtile,caption={Futures, .data, and .span}]
+f = dma.copy input => shared;
+\end{lstlisting}
+
+That handle gives you two important things:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \texttt{f.data}: the moved tile, as a spanned tensor.
+\item \texttt{f.span}: the shape of that tile.
+\end{itemize}
+
+Example:
+
+\begin{lstlisting}[language=croqtile,caption={Futures, .data, and .span}]
+f = dma.copy input => shared;
+foreach idx in [f.span]
+  output.at(idx) = f.data.at(idx);
+\end{lstlisting}
+
+Even synchronous copies are worth naming when you want to pass the moved tile to later code.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig_future_data_light.png}
+\end{figure}
+\begin{center}\small\emph{The transfer result is a handle. Read the copied tile through \texttt{.data} and its shape through \texttt{.span}.}\end{center}

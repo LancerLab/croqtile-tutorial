@@ -1,0 +1,36 @@
+\subsection*{Double buffering with \texttt{swap}}
+
+Give the K-loop \textbf{two} logical buffers. While the math drains buffer 0, DMA fills buffer 1 with the next tile. After the math step, \textbf{swap} the handles: what was "next" becomes "current," and the freed slot is ready for the following load.
+
+Croqtile spells this with \texttt{dma.copy.async} (non-blocking copy), \texttt{dma.any} (a placeholder future), \texttt{swap} (exchange future handles), and a three-phase loop:
+
+\begin{lstlisting}[language=croqtile,caption={Double buffering with swap}]
+__co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+  parallel {px, py} by [8, 16] : block
+    parallel {qx, qy} by [16, 16] : thread {
+    with tile_k in 16 {
+      // Prologue: start loading tile 0
+      lf0 = dma.copy.async lhs.chunkat(px, tile_k) => shared;
+      rf0 = dma.copy.async rhs.chunkat(tile_k, py) => shared;
+      // Placeholder futures for buffer 1
+      lf1 = dma.any;
+      rf1 = dma.any;
+      // Steady state: load next tile while computing on current
+      foreach tile_k(1:) {
+        lf1 = dma.copy.async lhs.chunkat(px, tile_k) => shared;
+        rf1 = dma.copy.async rhs.chunkat(tile_k, py) => shared;
+        wait lf0, rf0;
+        foreach k in [256 / #tile_k]
+          output.at(px#qx, py#qy) += lf0.data.at(qx, k) * rf0.data.at(k, qy);
+        swap(lf0, lf1);
+        swap(rf0, rf1);
+      }
+      // Epilogue: compute on the last loaded tile
+      foreach k in [256 / #tile_k]
+        output.at(px#qx, py#qy) += lf0.data.at(qx, k) * rf0.data.at(k, qy);
+    }
+  }
+  return output;
+}
+\end{lstlisting}

@@ -1,0 +1,9 @@
+\subsection*{\texttt{assert}: runtime invariant checks}
+
+Croqtile's \texttt{assert} builtin checks an invariant at runtime and aborts the kernel with a message if it fails:
+
+\begin{lstlisting}[language=croqtile,caption={assert: runtime invariant checks}]
+assert(stage < MATMUL_STAGES, "stage index out of bounds");
+\end{lstlisting}
+
+On the device, this compiles to a \texttt{printf} of the message followed by an abort. Use assertions to catch index-out-of-range, null pointer, and other "this should never happen" conditions early.

@@ -1,0 +1,21 @@
+\subsection*{Operations over \emph{mdspan} and \emph{i-tuple}}
+
+In Croqtile, you allow special operation over \emph{i-tuple} and \emph{mdspan}. Below is an example to apply a fixed tiling over an mdspan:
+
+\begin{lstlisting}[language=croqtile,caption={Operations over mdspan and i-tuple}]
+sp : [6, 8];
+tiling_factor = {3, 2};
+spn : sp / tiling_factor;   // spn is defined as [2, 4];
+\end{lstlisting}
+
+In Croqtile, mdspan can be defined with such \textbf{Tuple-Span Operations}. The supported operations includes:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \emph{mdspan} $/$ \emph{i-tuple}
+\item \emph{mdspan} $+$ \emph{i-tuple}
+\item \emph{mdspan} $\%$ \emph{i-tuple}
+\item \emph{mdspan} $*$ \emph{i-tuple}
+\item \emph{mdspan} $-$ \emph{i-tuple}
+\end{itemize}
+
+Essentially, these operations can be achieved through mdspan \emph{dimension-wise} definition. However, \emph{tuple-span operations} aid programmers in writing more readable code. This is also the objective that Croqtile aims to achieve.

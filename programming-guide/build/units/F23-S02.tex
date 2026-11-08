@@ -1,0 +1,27 @@
+\subsection*{Object-Like Macros}
+
+Croqtile preprocessor supports C/C++ \textbf{object-like macros} to connect both host code and tileflow code. The \emph{object-like macro} performs pure text replacement and accepts no parameters. The below code gives an example:
+
+\begin{lstlisting}[language=croqtile,caption={Object-Like Macros}]
+#define M 256
+#define N 32
+#define K 64
+__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
+void foo() {
+  croqtile::f32 a[M][K];
+  croqtile::f32 b[N][K];
+  // ...
+  auto res = matmul(croqtile::make_spanview<2>(a, {M, K}),
+                    croqtile::make_spanview<2>(b, {N, K}));
+}
+\end{lstlisting}
+
+In the code snippet, the inputs of croqtile function \texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \texttt{M}, \texttt{N}, \texttt{K} with values \texttt{256}, \texttt{32}, \texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers makes different code consistent and easy to manipulate.
+
+Note that, till now Croqtile does only support macros with parameters. It means code like:
+
+\begin{lstlisting}[language={},caption={Object-Like Macros}]
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+\end{lstlisting}
+
+would not work.

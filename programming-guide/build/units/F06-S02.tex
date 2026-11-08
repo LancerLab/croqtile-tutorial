@@ -1,0 +1,12 @@
+Every tensor-contraction kernel follows the same rhythm:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{\texttt{mma.fill 0.0}}
+\item \textbf{\texttt{mma.load}}
+\item \textbf{\texttt{mma.\allowbreak{}row.\allowbreak{}row mc, ma, mb}} --- issue the contraction: \textbf{C += A \(\times\) B} into \texttt{mc}.
+\item \textbf{\texttt{mma.\allowbreak{}store mc, dst}}
+\end{enumerate}
+
+You loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \texttt{mc}), then run step 4 once to flush the completed output tile. --- You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\texttt{row.row} here).
+
+The \texttt{.row.row} suffix is a \textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \texttt{row.row}, \texttt{row.col}, \texttt{col.row}, and \texttt{col.col}; in practice, \texttt{row.row} and \texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint

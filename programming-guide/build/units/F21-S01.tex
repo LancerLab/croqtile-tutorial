@@ -1,0 +1,7 @@
+\subsection*{Introduction to Croqtile Value Numbering}
+
+In Croqtile, the value numbering process serves to facilitate Shape Inference by either directly inferring shapes known at compile time or generating shape computation expressions.
+
+While many value numbering approaches focus on eliminating redundant computations (expressions that consistently produce the same value), Croqtile's value numbering aims to establish a progressive method for simplifying the Croqtile domain-specific construct 'mdspan'. In this context, the application of constant propagation, algebraic simplification, and other techniques becomes more essential.
+
+In terms of the implementation method, Croqtile utilizes a simple \textbf{scope-based} value numbering approach, an extension of the local value numbering method, complemented by a lexical-scoped value number table[1]. Unlike other value numbering methods, Croqtile does not necessitate the construction of basic blocks, pruned-SSA, or a compiler backend, as it applies value numbering directly onto the Abstract Syntax Tree (AST). However, to facilitate this approach, certain restrictions must be imposed on Croqtile's syntax rules, particularly to prevent value mutation.

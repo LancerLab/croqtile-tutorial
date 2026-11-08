@@ -1,0 +1,34 @@
+\subsection*{Deriving the Loop From a Bounded Integer}
+
+In certain scenarios, such as pipelining data movement, it may be necessary to modify loop iterations. In Croqtile, this can be achieved by deriving a loop from a \emph{bounded integer} within the \texttt{foreach} statement. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Deriving the Loop From a Bounded Integer}]
+with {x, y} in [6, 17] {
+  foreach x, y(1::) { }
+}
+\end{lstlisting}
+
+In this case, the \textbf{Range Expression} \texttt{y(1::)} is used to derive the loop. This results in equivalent C/C++ code:
+
+\begin{lstlisting}[language={},caption={Deriving the Loop From a Bounded Integer}]
+for (int x = 0; x < 6; ++x)
+  for (int y = 1; y < 17; ++y) { }
+\end{lstlisting}
+
+As seen in the code, the \texttt{y}-loop starts at \texttt{1}. The \emph{range expression} consists of a \emph{bounded variable}, followed by braced enclosing three colon-separated integer values, like the below form:
+
+\begin{lstlisting}[language=croqtile,caption={Deriving the Loop From a Bounded Integer}]
+  bounded-variable(lower-offset:upper-offset:stride)
+\end{lstlisting}
+
+This derives a loop from the \texttt{bounded-\allowbreak{}variable}, where the \texttt{bounded-\allowbreak{}variable} serves as the \emph{iteration variable} of the loop. Specifically:
+
+\begin{itemize}[leftmargin=1.6em]
+\item The initial value of the \emph{iteration variable} is the \texttt{lower-offset} plus the lower bound of the \texttt{bounded-\allowbreak{}variable}. Since all bounded integers have a lower bound of \texttt{0} in Croqtile, the \texttt{lower-offset} sets the initial value of the loop.
+\item The loop terminates when the \emph{iteration variable} is equal to or greater than the upper bound of the \texttt{bounded-\allowbreak{}variable} plus \texttt{upper-offset}. Negative values are typically used for \texttt{upper-offset}.
+\item The \emph{iteration variable} increments by \texttt{stride} at the end of each iteration.
+\end{itemize}
+
+Thus, \texttt{y(1:-1:2)} results in a loop like \texttt{for (y = 0 + 1; y \textless{} 17 -\allowbreak{} 1; y += 2)} in the example above. If any field of the \emph{range expression} is not specified, it results in default values: \texttt{0} for \texttt{lower-offset} and \texttt{upper-offset}, and \texttt{1} for \texttt{stride}.
+
+Note that \emph{range expression}s only apply to the \emph{bounded variable}s. \emph{Range expression} over the \emph{bounded ituple} triggers an error at compile time.

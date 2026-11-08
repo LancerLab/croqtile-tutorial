@@ -1,0 +1,20 @@
+\subsection*{The canonical pattern: 1 producer + 1 consumer}
+
+The most common use of \texttt{inthreads.\allowbreak{}async} is the \textbf{1P1C} (one producer, one consumer) split for matmul:
+
+\begin{lstlisting}[language=croqtile,caption={The canonical pattern: 1 producer 1 consumer}]
+parallel p1 by 2 : group-4 {
+  inthreads.async (p1 == 0) {
+  }
+  inthreads.async (p1 == 1) {
+  }
+}
+\end{lstlisting}
+
+\textbf{\texttt{parallel p1 by 2 :\allowbreak{} group-\allowbreak{}4}}
+
+\textbf{\texttt{inthreads.\allowbreak{}async (p1 == 0)}}
+
+\textbf{\texttt{inthreads.\allowbreak{}async (p1 == 1)}} --- The two blocks are separate programs sharing an address space.
+
+But sharing an address space is exactly what makes this dangerous. Without coordination, the consumer might read a buffer before the producer has finished writing it. This is where events come in.

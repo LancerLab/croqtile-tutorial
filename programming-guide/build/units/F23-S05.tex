@@ -1,0 +1,9 @@
+\subsection*{Difference with C++ pre-processing}
+
+One important notices about croqtile preprocessing is that it is triggered much earlier than c++ preprocessing. The workflow of croqtile compilation is as shown below:
+
+\begin{lstlisting}[language=croqtile,caption={Difference with C pre-processing}]
+chore-preprocessing -> croqtile compilation -> c/c++ preprocessing -> c/c++ compilation
+\end{lstlisting}
+
+The primary target of croqtile preprocessing is to make host/device macros work as a whole, but such a workflow makes it possible sometimes different. From an implementation perspective, Croqtile pre-processor only substitute/conditionally-compile code inside the tileflow function, while leaving other pre-processing to the C++ preprocessor. That could restrict Croqtile pre-processing in a limited scope.

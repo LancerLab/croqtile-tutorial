@@ -1,0 +1,12 @@
+\subsection*{\texttt{.\allowbreak{}swiz\textless{}N\textgreater{}}: Shared-Memory Layout for the Consumer}
+
+Typical GEMM staging code looks like this:
+
+\begin{lstlisting}[language=croqtile,caption={.swiz N : Shared-Memory Layout for the Consumer}]
+dma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
+\end{lstlisting}
+
+The load-side and compute-side swizzles need to agree. If you stage a tile with \texttt{.\allowbreak{}swiz\textless{}128\textgreater{}}, the consumer should usually load it with the matching swizzle.
+
+This part of the guide only introduces the idea. The MMA chapters go deeper into which swizzle values pair well with which matrix layouts.

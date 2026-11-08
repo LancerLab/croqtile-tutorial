@@ -1,0 +1,27 @@
+\subsection*{Croqtile's Two-Layer Parallelism Model}
+
+Croqtile gives you two separate knobs:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{\texttt{parallel}} --- declares that iterations are independent and \emph{may} run concurrently. This is a logical statement.
+\item \textbf{Space specifiers} (\texttt{: block}, \texttt{: thread}, \texttt{: group}, \texttt{: group-4}) --- tell the compiler  each parallel axis maps to. This is a physical statement.
+\end{enumerate}
+
+And there is \texttt{foreach}, which is the opposite of \texttt{parallel}: iterations run \textbf{sequentially}, in order. Use \texttt{foreach} when later iterations depend on earlier ones --- an accumulation loop, a K-dimension reduction, a pipeline that loads tile \emph{k} before computing with it.
+
+\begin{lstlisting}[language=croqtile,caption={Croqtile s Two-Layer Parallelism Model}]
+parallel {px, py} by [8, 16] : block
+  foreach {tile_k} in [16]               // sequential -- K-dimension loop
+    parallel {qx, qy} by [16, 16] : thread  // concurrent -- mapped to threads
+      foreach k in [16]                      // sequential -- inner accumulation
+        output += lhs * rhs;
+\end{lstlisting}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f05-fig2_logical_vs_physical_light.png}
+\end{figure}
+\begin{center}\small\emph{Left: the logical nesting the programmer writes (parallel = concurrent, foreach = sequential). Space specifiers bridge the two.}\end{center}
+
+If you omit the space specifier --- just \texttt{parallel p by 8} --- the compiler picks a default mapping. That is what Chapters 1 and 2 did, and it worked fine for simple cases. Explicit specifiers are how you take control when performance matters.
+
+Both \texttt{parallel} and \texttt{foreach} support multi-dimensional indices (\texttt{\{a, b\}} syntax), the compose operator (\texttt{\#}), and the extent operator (\texttt{\#p}). Everything from Chapters 1 and 2 still applies.

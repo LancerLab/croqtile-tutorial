@@ -1,0 +1,20 @@
+\subsection*{Parameters Passing between Croqtile and C++ Function}
+
+Passing arguments to Croqtile or opposite requires inclusion of Croqtile header file: croqtile.h. Normally, programmers combine the raw C++ pointer and associated dimensions info to construct Croqtile spanned data. The code below demonstrates how it works.
+
+\begin{lstlisting}[language=croqtile,caption={Parameters Passing between Croqtile and C Function}]
+#include "croqtile.h"
+void bar(const float* data, unsigned size) {}
+__co__ void foo(f32 mdspan<2> d) {
+  parallel p by 6 {
+    call bar(d, |d|);     // Call the C++ function
+  }
+}
+void foobar(float* a) {
+  foo(croqtile::make_spanview<2>(a, {1, 2}));
+}
+\end{lstlisting}
+
+In the example, you make use of croqtile utility function (template) 'make\_spanview' to wrap the data, which does not invoke copy. And in Croqtile function 'foo', the parameter 'f32 mdspan\textless{}2\textgreater{}' is the corresponding entity. Because the data is implicitly cast, you can simply use 'd' as the first parameter of C++ function 'bar'. And operation '|d|' obtains the total size of the spanned data 'd'. These are used for calling C++ function 'bar'.
+
+Similarly, \emph{Scalar Type} data can also be passed from/to Croqtile function. Nevertheless, ituple is only used inside Croqtile function.

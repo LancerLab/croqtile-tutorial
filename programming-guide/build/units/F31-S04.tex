@@ -1,0 +1,24 @@
+\subsection*{Multiple-Level Parallelism}
+
+In Croqtile, you can define multiple levels of parallelism. Here's an example:
+
+\begin{lstlisting}[language=croqtile,caption={Multiple-Level Parallelism}]
+parallel p by 2 {
+  // parallel-level-0
+  parallel q by 12 {
+    // parallel-level-1
+  }
+}
+\end{lstlisting}
+
+This code defines two levels of parallelism with values \texttt{2} and \texttt{12}, respectively. This means a total of \texttt{2 x 12 = 24} parallel threads are invoked for the task. Each thread is identified by a unique combination of \texttt{p} and \texttt{q}. In Croqtile, you refer to the level of \texttt{p} as \emph{parallel-level-0} and the level of \texttt{q} as \emph{parallel-level-1}.
+
+One key difference observable by programmers is the \textbf{synchronization cost}. This hierarchical design encourages programmers to place the most divergent code (that requires synchronization) within the \textbf{block} level to enhance overall performance.
+
+In Croqtile syntax, you can define multiple-level parallelism in a single line:
+
+\begin{lstlisting}[language=croqtile,caption={Multiple-Level Parallelism}]
+parallel p by 2, q by 12 { ... }
+\end{lstlisting}
+
+This achieves the same parallelization as the previous example. It uses the \textbf{comma-separated} \emph{parallel-by} expression, assuming there is no code in the between two parallel levels.

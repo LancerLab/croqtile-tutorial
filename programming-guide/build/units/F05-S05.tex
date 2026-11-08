@@ -1,0 +1,9 @@
+\subsection*{\texttt{: block} --- parallel blocks}
+
+\begin{lstlisting}[language=croqtile,caption={: block --- parallel blocks}]
+parallel {px, py} by [8, 16] : block
+\end{lstlisting}
+
+This creates an 8 \(\times\) 16 = 128 block grid. Blocks cannot communicate with each other during execution --- they are truly independent.
+
+Use \texttt{: block} for the outermost tiling of your output. If your output is \texttt{[128, 256]} and each block handles a \texttt{[16, 16]} tile, you need \texttt{128/\allowbreak{}16 x 256/\allowbreak{}16 = 8 x 16 = 128} blocks.

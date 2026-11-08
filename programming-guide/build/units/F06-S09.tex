@@ -1,0 +1,19 @@
+\paragraph*{In short}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Topic} & \textbf{Takeaway} \\
+\midrule
+2D tensor contraction & C += A \(\times\) B on tile-shaped operands --- the universal inner kernel \\
+Four-step abstraction & \textbf{fill \(\rightarrow\) load \(\rightarrow\) multiply \(\rightarrow\) store}; the compiler handles fragment layouts for each target \\
+Scaling cooperation & Syntax stays invariant \\
+Layout contract & \texttt{mma.row.row}, \texttt{mma.row.col}, etc. \\
+Sparse and quantized & \texttt{.sp} adds a metadata operand; \texttt{.scale} fuses per-tile dequantization \\
+Swizzle and pipeline & \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} matches swizzled shared layouts; \texttt{mma.commit} fences pipeline stages \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The contraction is fast, but loads and compute still take turns --- Section~\ref{sec:3-8} introduces \textbf{role specialization} so different thread groups can play different roles: one group loading data while another computes, overlapping memory and math in time.

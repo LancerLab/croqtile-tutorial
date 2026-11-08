@@ -1,0 +1,338 @@
+uid	source	slot	status	heading
+F01-S01	tutorial/index.md	1.1	kept	Croqtile Tutorial
+F01-S02	tutorial/index.md	1.1	kept	Chapters
+F01-S03	tutorial/index.md	1.1	kept	Prerequisites
+F02-S01	tutorial/ch00-installation.md	1.2	kept	Ch 0: Installing Croqtile
+F02-S02	tutorial/ch00-installation.md	1.2	kept	System Requirements
+F02-S03	tutorial/ch00-installation.md	1.3	kept	Build from Source
+F02-S04	tutorial/ch00-installation.md	1.4	kept	Verify the Installation
+F02-S05	tutorial/ch00-installation.md	1.5	kept	Compiler Usage
+F02-S06	tutorial/ch00-installation.md	1.6	kept	Development Utilities
+F03-S01	tutorial/ch01-hello-croqtile.md	1.7	kept	Hello Croqtile: From Zero to Running Kernel
+F03-S02	tutorial/ch01-hello-croqtile.md	2.1	kept	The Two Parts of a Croqtile Program
+F03-S03	tutorial/ch01-hello-croqtile.md	1.7	kept	A Complete Example: Element-Wise Addition
+F03-S04	tutorial/ch01-hello-croqtile.md	2.2	kept	The Croqtile Function
+F03-S05	tutorial/ch01-hello-croqtile.md	2.3	kept	The Host Program
+F03-S06	tutorial/ch01-hello-croqtile.md	1.5	kept	Build and Compile
+F03-S07	tutorial/ch01-hello-croqtile.md	3.6	kept	What You Have So Far
+F04-S01	tutorial/ch02-data-movement.md	3.6	kept	Data Movement: The Tile Movement Engine
+F04-S02	tutorial/ch02-data-movement.md	2.9	kept	The DMA Statement Family
+F04-S03	tutorial/ch02-data-movement.md	2.9	kept	First Example: Tiled Addition Through Shared Memory
+F04-S04	tutorial/ch02-data-movement.md	3.5	kept	`chunkat`, `subspan`, and `view().from()`: Three Ways to Select a Tile
+F04-S05	tutorial/ch02-data-movement.md	2.8	kept	`chunkat(...)`: equal partitioning
+F04-S06	tutorial/ch02-data-movement.md	2.8	kept	`subspan(...).at(...)`: explicit tile extents on a tile grid
+F04-S07	tutorial/ch02-data-movement.md	2.8	kept	`view(...).from(...)`: explicit tile extents with explicit element offsets
+F04-S08	tutorial/ch02-data-movement.md	2.9	kept	Futures, `.data`, and `.span`
+F04-S09	tutorial/ch02-data-movement.md	2.9	kept	Synchronous and Asynchronous Copies
+F04-S10	tutorial/ch02-data-movement.md	3.6	kept	Other Operations: `transp` and `pad`
+F04-S11	tutorial/ch02-data-movement.md	2.9	kept	`dma.transp<...>`
+F04-S12	tutorial/ch02-data-movement.md	2.9	kept	`dma.pad<...>`
+F04-S13	tutorial/ch02-data-movement.md	3.5	kept	`#`: Compose and Extent
+F04-S14	tutorial/ch02-data-movement.md	2.8	kept	Compose: `outer # inner`
+F04-S15	tutorial/ch02-data-movement.md	2.8	kept	Extent: `#name`
+F04-S16	tutorial/ch02-data-movement.md	2.4	kept	`span` and `span(i)`
+F04-S17	tutorial/ch02-data-movement.md	X	moved	
+F04-S18	tutorial/ch02-data-movement.md	3.7	kept	Partial Tiles, Guarding, and `.zfill`
+F04-S19	tutorial/ch02-data-movement.md	3.7	kept	`.swiz<N>`: Shared-Memory Layout for the Consumer
+F04-S20	tutorial/ch02-data-movement.md	3.6	kept	DMA vs TMA
+F04-S21	tutorial/ch02-data-movement.md	3.6	kept	The main TMA constraint
+F04-S22	tutorial/ch02-data-movement.md	X	moved	
+F04-S23	tutorial/ch02-data-movement.md	X	moved	
+F04-S24	tutorial/ch02-data-movement.md	X	moved	
+F04-S25	tutorial/ch02-data-movement.md	2.15	kept	Checklist
+F05-S01	tutorial/ch03-parallelism.md	3.4	kept	Parallelism: How Croqtile Represents Parallel Work
+F05-S02	tutorial/ch03-parallelism.md	3.4	kept	How We Think About Parallel Tasks
+F05-S03	tutorial/ch03-parallelism.md	2.7	kept	Croqtile's Two-Layer Parallelism Model
+F05-S04	tutorial/ch03-parallelism.md	X	moved	
+F05-S05	tutorial/ch03-parallelism.md	2.7	kept	`: block` — Thread Blocks
+F05-S06	tutorial/ch03-parallelism.md	2.7	kept	`: thread` — Threads Within a Block
+F05-S07	tutorial/ch03-parallelism.md	X	moved	
+F05-S08	tutorial/ch03-parallelism.md	3.4	kept	`: group-4` — Warpgroups
+F05-S09	tutorial/ch03-parallelism.md	2.7	kept	Nesting Specifiers
+F05-S10	tutorial/ch03-parallelism.md	X	moved	
+F05-S11	tutorial/ch03-parallelism.md	3.2	kept	Type System Aside: `mdspan` and `ituple`
+F05-S12	tutorial/ch03-parallelism.md	3.4	kept	Matrix Multiply: Putting It Together
+F05-S13	tutorial/ch03-parallelism.md	3.4.1	kept	Scalar Matmul (No DMA)
+F05-S14	tutorial/ch03-parallelism.md	3.6.1	kept	DMA Matmul: Tiles in Shared Memory
+F05-S15	tutorial/ch03-parallelism.md	X	moved	
+F05-S16	tutorial/ch03-parallelism.md	2.3	kept	Host Code
+F05-S17	tutorial/ch03-parallelism.md	3.4.2	kept	Tracing One Output Element
+F05-S18	tutorial/ch03-parallelism.md	2.15	kept	Summary of New Syntax
+F06-S01	tutorial/ch04-mma.md	3.7	kept	Tensor Contraction: the `mma` Syntax
+F06-S02	tutorial/ch04-mma.md	2.12	kept	The four-step MMA syntax
+F06-S03	tutorial/ch04-mma.md	3.7	kept	Scaling the cooperation scope
+F06-S04	tutorial/ch04-mma.md	3.7.1	kept	One warp, one tile: the simplest MMA matmul
+F06-S05	tutorial/ch04-mma.md	3.7.2	kept	Widening the scope: warpgroups and WGMMA
+F06-S06	tutorial/ch04-mma.md	3.7.3	kept	Tiling further: two warpgroups sharing operands
+F06-S07	tutorial/ch04-mma.md	3.7	kept	Beyond dense FP16: what else the four steps express
+F06-S08	tutorial/ch04-mma.md	3.7.9	kept	New syntax
+F06-S09	tutorial/ch04-mma.md	3.7.10	kept	Chapter summary
+F07-S01	tutorial/ch05-branch-control.md	3.8	kept	Control Flow: Divergence, Concurrency, and Coordination
+F07-S02	tutorial/ch05-branch-control.md	2.11	kept	Predicated execution with `if`
+F07-S03	tutorial/ch05-branch-control.md	3.8	kept	Structured concurrent regions with `inthreads.async`
+F07-S04	tutorial/ch05-branch-control.md	3.8.1	kept	The canonical pattern: 1 producer + 1 consumer
+F07-S05	tutorial/ch05-branch-control.md	3.8	kept	Inter-region signaling with events
+F07-S06	tutorial/ch05-branch-control.md	2.10	kept	Event arrays for multi-stage pipelines
+F07-S07	tutorial/ch05-branch-control.md	2.10	kept	Bootstrap protocol
+F07-S08	tutorial/ch05-branch-control.md	3.8.2	kept	A 1P1C matmul skeleton
+F07-S09	tutorial/ch05-branch-control.md	3.8.3	kept	Persistent scheduling and the `if` guard
+F07-S10	tutorial/ch05-branch-control.md	3.8.3	kept	Data-dependent vs persistent grids
+F07-S11	tutorial/ch05-branch-control.md	3.8.4	kept	`parallel.async`: host-level concurrency
+F07-S12	tutorial/ch05-branch-control.md	2.11	kept	Early return from `parallel`
+F07-S13	tutorial/ch05-branch-control.md	2.15	kept	New syntax
+F07-S14	tutorial/ch05-branch-control.md	3.8.10	kept	Chapter summary
+F08-S01	tutorial/ch06-synchronization.md	3.8	kept	Synchronization in Practice: Pipelines, Buffers, and Events
+F08-S02	tutorial/ch06-synchronization.md	3.6.2	kept	Double buffering with `swap`
+F08-S03	tutorial/ch06-synchronization.md	3.6.2	kept	The three phases
+F08-S04	tutorial/ch06-synchronization.md	3.6.2	kept	`swap`: names, not bytes
+F08-S05	tutorial/ch06-synchronization.md	2.7	kept	`with tile_k in 16`
+F08-S06	tutorial/ch06-synchronization.md	3.6.2	kept	`dma.any`: placeholder futures
+F08-S07	tutorial/ch06-synchronization.md	2.7	kept	`foreach tile_k(1:)`: sliced iteration
+F08-S08	tutorial/ch06-synchronization.md	2.2	kept	`__co__ auto` return type
+F08-S09	tutorial/ch06-synchronization.md	3.8	kept	Why you cannot "just overlap" without events
+F08-S10	tutorial/ch06-synchronization.md	3.8.5	kept	The full 1P1C event pipeline
+F08-S11	tutorial/ch06-synchronization.md	3.8.5	kept	Walking through the kernel
+F08-S12	tutorial/ch06-synchronization.md	3.8.5	kept	Credit flow for one stage
+F08-S13	tutorial/ch06-synchronization.md	1.9	kept	Debugging tip
+F08-S14	tutorial/ch06-synchronization.md	2.15	kept	New syntax
+F08-S15	tutorial/ch06-synchronization.md	3.8.10	kept	Summary
+F09-S01	tutorial/ch07-advanced-movement.md	X	moved	
+F09-S02	tutorial/ch07-advanced-movement.md	3.6	kept	`tma.copy`: hardware tensor movement
+F09-S03	tutorial/ch07-advanced-movement.md	3.7	kept	Swizzle and bank conflicts
+F09-S04	tutorial/ch07-advanced-movement.md	3.10	kept	Why the restricted interface works: expressiveness vs performance
+F09-S05	tutorial/ch07-advanced-movement.md	3.6.3	kept	Example: TMA in a pipelined matmul
+F09-S06	tutorial/ch07-advanced-movement.md	3.5	kept	Handling irregular access
+F09-S07	tutorial/ch07-advanced-movement.md	3.5.1	kept	Arbitrary-offset windows: `view` and `from`
+F09-S08	tutorial/ch07-advanced-movement.md	3.5.2	kept	Strided tiles: `.subspan`, `.step`, and `.at`
+F09-S09	tutorial/ch07-advanced-movement.md	3.5.3	kept	Zero-padding: `.zfill`
+F09-S10	tutorial/ch07-advanced-movement.md	3.5.4	kept	Layout reinterpretation: `span_as`
+F09-S11	tutorial/ch07-advanced-movement.md	3.5.10	kept	Chapter summary
+F09-S12	tutorial/ch07-advanced-movement.md	3.5.10	kept	New syntax
+F10-S01	tutorial/ch08-cpp-interop.md	3.9	kept	C++ Interop: Device Functions, Inline Code, and the Preprocessor
+F10-S02	tutorial/ch08-cpp-interop.md	1.8	kept	How `.co` files compile
+F10-S03	tutorial/ch08-cpp-interop.md	3.9	kept	`__device__` vs ordinary C++ inline
+F10-S04	tutorial/ch08-cpp-interop.md	3.9.1	kept	`__device__` functions: CUDA alongside Croqtile
+F10-S05	tutorial/ch08-cpp-interop.md	2.13	kept	`__cpp__`: verbatim C++ injection
+F10-S06	tutorial/ch08-cpp-interop.md	3.9.2	kept	Register hints: `setmaxnreg`
+F10-S07	tutorial/ch08-cpp-interop.md	2.13	kept	Macros inside `__cpp__` strings
+F10-S08	tutorial/ch08-cpp-interop.md	2.13	kept	The preprocessor
+F10-S09	tutorial/ch08-cpp-interop.md	2.13	kept	Tile geometry as macros
+F10-S10	tutorial/ch08-cpp-interop.md	2.13	kept	Compile-time assertions with `#error`
+F10-S11	tutorial/ch08-cpp-interop.md	2.13	kept	Conditional code paths
+F10-S12	tutorial/ch08-cpp-interop.md	1.10	kept	Reading a production `.co` file
+F10-S13	tutorial/ch08-cpp-interop.md	3.9.10	kept	Chapter summary
+F11-S01	tutorial/ch09-debug-verbose.md	3.11	kept	Debug and Verbose: Printing, Assertions, and GDB
+F11-S02	tutorial/ch09-debug-verbose.md	2.14	kept	`print!` and `println!`: compile-time inspection
+F11-S03	tutorial/ch09-debug-verbose.md	2.14	kept	`print` and `println`: runtime device output
+F11-S04	tutorial/ch09-debug-verbose.md	2.14	kept	`assert`: runtime invariant checks
+F11-S05	tutorial/ch09-debug-verbose.md	1.9	kept	Verbose mode: `-v`
+F11-S06	tutorial/ch09-debug-verbose.md	1.9	kept	Runtime checks: `-rtc`
+F11-S07	tutorial/ch09-debug-verbose.md	1.9	kept	Debugging MMA-heavy kernels
+F11-S08	tutorial/ch09-debug-verbose.md	1.9	kept	Debug RTTI and `cuda-gdb`
+F11-S09	tutorial/ch09-debug-verbose.md	1.9	kept	Putting it together
+F11-S10	tutorial/ch09-debug-verbose.md	1.9	kept	Summary
+F12-S01	documentation/index.md	1.1	kept	Croqtile Coding Reference
+F12-S02	documentation/index.md	3.1	kept	What You Will Find Here
+F13-S01	documentation/what-is-choreo.md	1.1	kept	What is Good in CroqTile?
+F13-S02	documentation/what-is-choreo.md	3.10	kept	Easy to Use
+F13-S03	documentation/what-is-choreo.md	3.10	kept	Compile-Time Safety
+F13-S04	documentation/what-is-choreo.md	3.10	kept	Dynamic Shapes
+F13-S05	documentation/what-is-choreo.md	3.10	kept	Born for AI Tuning
+F14-S01	documentation/choreo-program-structure.md	3.1	kept	Overview
+F14-S02	documentation/choreo-program-structure.md	3.1	kept	Construct a Choreo-C++ Program
+F14-S03	documentation/choreo-program-structure.md	2.1	kept	Host, Device and Tileflow
+F14-S04	documentation/choreo-program-structure.md	3.1	kept	Transpilation and Compilation
+F14-S05	documentation/choreo-program-structure.md	1.8	kept	A Full Choreo-Cute C++ Code Example
+F14-S06	documentation/choreo-program-structure.md	1.8	kept	Host Program - the Control Center
+F14-S07	documentation/choreo-program-structure.md	3.1	kept	Device Program: Parallel Computation
+F14-S08	documentation/choreo-program-structure.md	2.9	kept	Tileflow Program: Orchestrating the Data Movement
+F14-S09	documentation/choreo-program-structure.md	3.1	kept	Quick Summary
+F15-S01	documentation/syntax-design-of-choreo.md	3.2	kept	Syntax Design of Choreo
+F15-S02	documentation/syntax-design-of-choreo.md	3.2	kept	Introduction
+F15-S03	documentation/syntax-design-of-choreo.md	3.2	kept	Embedding Choreo within C++
+F15-S04	documentation/syntax-design-of-choreo.md	3.2	kept	Variables and Types
+F15-S05	documentation/syntax-design-of-choreo.md	2.5	kept	Scalar Types
+F15-S06	documentation/syntax-design-of-choreo.md	3.2	kept	Spanned Types
+F15-S07	documentation/syntax-design-of-choreo.md	3.2	kept	The Partial Type: **mdspan**
+F15-S08	documentation/syntax-design-of-choreo.md	2.6	kept	Fully-Typing
+F15-S09	documentation/syntax-design-of-choreo.md	2.6	kept	The Storage Qualifier
+F15-S10	documentation/syntax-design-of-choreo.md	2.5	kept	I-Tuple Types
+F15-S11	documentation/syntax-design-of-choreo.md	2.5	kept	Operations over *mdspan* and *i-tuple*
+F15-S12	documentation/syntax-design-of-choreo.md	3.2	kept	Bounded Types
+F15-S13	documentation/syntax-design-of-choreo.md	3.4	kept	Control Structures
+F15-S14	documentation/syntax-design-of-choreo.md	2.7	kept	Parallel Region: the 'parallel-by' Block
+F15-S15	documentation/syntax-design-of-choreo.md	2.7	kept	The 'with-in' Block and 'where' Clause
+F15-S16	documentation/syntax-design-of-choreo.md	2.7	kept	The 'foreach' Block
+F15-S17	documentation/syntax-design-of-choreo.md	3.2	kept	The 'upper-bound' Operation
+F15-S18	documentation/syntax-design-of-choreo.md	3.6	kept	Async Operation: the DMA Statement
+F15-S19	documentation/syntax-design-of-choreo.md	2.8	kept	Bounded-ituple/integer and 'chunkat' Operation
+F15-S20	documentation/syntax-design-of-choreo.md	2.13	kept	Function Calls and Call Choreo Function
+F15-S21	documentation/syntax-design-of-choreo.md	2.3	kept	Parameters Passing between Choreo and C++ Function
+F15-S22	documentation/syntax-design-of-choreo.md	3.2	kept	Summary
+F16-S01	documentation/shape-in-choreo.md	2.4	kept	Overview
+F16-S02	documentation/shape-in-choreo.md	3.3	kept	First-Class Citizen: Shape
+F16-S03	documentation/shape-in-choreo.md	2.4	kept	Defining Shapes with `mdspan`
+F16-S04	documentation/shape-in-choreo.md	2.4	kept	Deriving *mdspan*s
+F16-S05	documentation/shape-in-choreo.md	3.3	kept	Evaluation of *mdspan*
+F17-S01	documentation/integer-ituple.md	2.5	kept	Overview
+F17-S02	documentation/integer-ituple.md	2.5	kept	Integers for Program Control
+F17-S03	documentation/integer-ituple.md	3.2	kept	Group of Ranges and Group of Integers
+F17-S04	documentation/integer-ituple.md	2.5	kept	Group Integers as Integer-Tuple (I-Tuple)
+F17-S05	documentation/integer-ituple.md	2.5	kept	Defining I-Tuples
+F17-S06	documentation/integer-ituple.md	2.5	kept	Operations on I-Tuples
+F17-S07	documentation/integer-ituple.md	3.3	kept	Evaluation of Integers and I-Tuples
+F17-S08	documentation/integer-ituple.md	3.2	kept	Look-Ahead: Bounded I-Tuples
+F17-S09	documentation/integer-ituple.md	2.5	kept	Quick Summary
+F18-S01	documentation/spanned-data.md	2.6	kept	Overview
+F18-S02	documentation/spanned-data.md	3.2	kept	*Spanned*: Data and Buffers
+F18-S03	documentation/spanned-data.md	2.6	kept	Defining a *Spanned Data*
+F18-S04	documentation/spanned-data.md	2.6	kept	Storage Specifier
+F18-S05	documentation/spanned-data.md	2.6	kept	Initialization
+F18-S06	documentation/spanned-data.md	2.6	kept	Declaring the Parameters and Return Values
+F18-S07	documentation/spanned-data.md	3.2	kept	Buffer Lifetime Management
+F18-S08	documentation/spanned-data.md	2.6	kept	Quick Summary
+F19-S01	documentation/symbolic-shape.md	3.3	kept	Overview
+F19-S02	documentation/symbolic-shape.md	3.3	kept	Fixed and Dynamic Shape
+F19-S03	documentation/symbolic-shape.md	2.4	kept	*mdspan* with **Anonymous Dimension**
+F19-S04	documentation/symbolic-shape.md	2.4	kept	Step Further: **Symbolic Dimension**
+F19-S05	documentation/symbolic-shape.md	3.3	kept	Improved Code Safety
+F19-S06	documentation/symbolic-shape.md	3.3	kept	Cost and Limitations
+F19-S07	documentation/symbolic-shape.md	3.3	kept	Quick Summary
+F20-S01	documentation/why-symbolic-shapes.md	3.3	kept	**Why Symbolic Dimensions are Better Than `?` or `-1`**
+F20-S02	documentation/why-symbolic-shapes.md	3.3	kept	**a. Improved Readability and Clarity**
+F20-S03	documentation/why-symbolic-shapes.md	3.3	kept	**b. Type Safety and Compile-Time Checking**
+F20-S04	documentation/why-symbolic-shapes.md	3.3	kept	**c. Expressiveness and Flexibility**
+F20-S05	documentation/why-symbolic-shapes.md	3.3	kept	**d. Compile-Time Optimization**
+F21-S01	documentation/value-numbering.md	3.3	kept	Introduction to Choreo Value Numbering
+F21-S02	documentation/value-numbering.md	3.3	kept	Quick Example
+F21-S03	documentation/value-numbering.md	3.3	kept	Implementations
+F21-S04	documentation/value-numbering.md	3.3	kept	From Expressions to Value Numbers
+F21-S05	documentation/value-numbering.md	3.3	kept	Simplifications
+F21-S06	documentation/value-numbering.md	3.3	kept	From Value Numbers to Expression
+F21-S07	documentation/value-numbering.md	3.3	kept	Design Considerations
+F21-S08	documentation/value-numbering.md	3.3	kept	Lexical Scopes and Restriction
+F21-S09	documentation/value-numbering.md	3.3	kept	Limitations
+F21-S10	documentation/value-numbering.md	3.3	kept	Reference
+F22-S01	documentation/getting-started-with-choreo.src.md	1.2	kept	Build Choreo From Source Code and Compile Choreo Program
+F22-S02	documentation/getting-started-with-choreo.src.md	1.3	kept	Build Choreo from Scratch
+F22-S03	documentation/getting-started-with-choreo.src.md	1.2	kept	Prerequisitions
+F22-S04	documentation/getting-started-with-choreo.src.md	1.6	kept	Environment
+F22-S05	documentation/getting-started-with-choreo.src.md	1.5	kept	Compile Choreo-C++ Program
+F23-S01	documentation/macro-in-choreo.md	2.13	kept	Overview
+F23-S02	documentation/macro-in-choreo.md	2.13	kept	Object-Like Macros
+F23-S03	documentation/macro-in-choreo.md	2.13	kept	Comments
+F23-S04	documentation/macro-in-choreo.md	2.13	kept	Conditional Compilation
+F23-S05	documentation/macro-in-choreo.md	3.9	kept	Difference with C++ pre-processing
+F23-S06	documentation/macro-in-choreo.md	3.9	kept	Pre-defined Macros
+F24-S01	documentation/call-in-choreo.src.md	2.13	kept	Overview
+F24-S02	documentation/call-in-choreo.src.md	2.13	kept	Call Device Functions
+F24-S03	documentation/call-in-choreo.src.md	2.13	kept	Basic Syntax of Call Statements
+F24-S04	documentation/call-in-choreo.src.md	2.13	kept	The Convention: Allowed Argument Types
+F24-S05	documentation/call-in-choreo.src.md	3.9	kept	Instantiate the Function Template for Call
+F24-S06	documentation/call-in-choreo.src.md	3.9	kept	Trigger C++ Template Instantiation
+F24-S07	documentation/call-in-choreo.src.md	2.13	kept	Quick Summary
+F25-S01	documentation/input-output.md	2.3	kept	Overview
+F25-S02	documentation/input-output.md	2.3	kept	Choreo Function Input
+F25-S03	documentation/input-output.md	2.3	kept	Input Parameters
+F25-S04	documentation/input-output.md	2.3	kept	C++ Host: Data Argument with Shape
+F25-S05	documentation/input-output.md	2.3	kept	Choreo Function Output
+F25-S06	documentation/input-output.md	2.3	kept	Return Type and Type Deduction
+F25-S07	documentation/input-output.md	2.3	kept	C++ Host: Shape Return
+F25-S08	documentation/input-output.md	3.9	kept	More Questions
+F26-S01	documentation/target/calls.md	3.9	kept	*Factor* Target Specific Details
+F27-S01	documentation/target/env_setting_up.md	X	moved	
+F28-S01	documentation/basic-dma.md	2.9	kept	Overview
+F28-S02	documentation/basic-dma.md	3.6	kept	Data Movement Statement
+F28-S03	documentation/basic-dma.md	2.9	kept	Basic Syntax
+F28-S04	documentation/basic-dma.md	2.9	kept	Synchronous and Asynchronous
+F28-S05	documentation/basic-dma.md	3.6	kept	Operation Type
+F28-S06	documentation/basic-dma.md	2.9	kept	Data Expression
+F28-S07	documentation/basic-dma.md	2.9	kept	Future and Wait
+F28-S08	documentation/basic-dma.md	2.9	kept	Quick Summary
+F29-S01	documentation/tiling-chunkat.md	2.8	kept	Overview
+F29-S02	documentation/tiling-chunkat.md	2.8	kept	*Ubound* Operation
+F29-S03	documentation/tiling-chunkat.md	2.8	kept	Use `chunkat` Expression to Tile Data
+F29-S04	documentation/tiling-chunkat.md	2.8	kept	Use Multiple Bounded Variables
+F29-S05	documentation/tiling-chunkat.md	3.5	kept	Tile and Flow
+F29-S06	documentation/tiling-chunkat.md	2.8	kept	Quick Summary
+F30-S01	documentation/intro-loop-parallel.md	3.4	kept	Sequentialism and Parallelism
+F31-S01	documentation/parallel-in-choreo.md	3.4	kept	Overview
+F31-S02	documentation/parallel-in-choreo.md	3.4	kept	Parallel Execution Block
+F31-S03	documentation/parallel-in-choreo.md	2.7	kept	Basic Syntax: `parallel-by`
+F31-S04	documentation/parallel-in-choreo.md	2.7	kept	Multiple-Level Parallelism
+F31-S05	documentation/parallel-in-choreo.md	2.7	kept	Sub-Level Parallelism
+F31-S06	documentation/parallel-in-choreo.md	3.2	kept	Bounded Variable
+F31-S07	documentation/parallel-in-choreo.md	3.4	kept	The Implications
+F31-S08	documentation/parallel-in-choreo.md	3.1	kept	Heterogeneity: Transpiling to Kernel Launch
+F31-S09	documentation/parallel-in-choreo.md	X	moved	
+F31-S10	documentation/parallel-in-choreo.md	3.8.4	kept	Asynchronous Kernel Launch and Stream Binding
+F31-S11	documentation/parallel-in-choreo.md	3.4	kept	Quick Summary
+F32-S01	documentation/within-loops.md	2.7	kept	Overview
+F32-S02	documentation/within-loops.md	2.7	kept	Loops in Choreo
+F32-S03	documentation/within-loops.md	2.7	kept	The **With-In** Block
+F32-S04	documentation/within-loops.md	2.7	kept	Defining *Bounded Variable*s:
+F32-S05	documentation/within-loops.md	2.7	kept	The `foreach` Block
+F32-S06	documentation/within-loops.md	2.7	kept	Basic Syntax
+F32-S07	documentation/within-loops.md	2.7	kept	Syntactic Sugar
+F32-S08	documentation/within-loops.md	2.7	kept	Deriving the Loop From a Bounded Integer
+F32-S09	documentation/within-loops.md	3.2	kept	Values of Bounded Variables
+F32-S10	documentation/within-loops.md	2.7	kept	Quick Summary
+F33-S01	documentation/loop-in-advance.md	3.4	kept	Overview
+F33-S02	documentation/loop-in-advance.md	3.4	kept	Parallelization and Masking
+F33-S03	documentation/loop-in-advance.md	3.4	kept	Explicit Masking/Condition
+F33-S04	documentation/loop-in-advance.md	3.4	kept	Implicit Masking
+F33-S05	documentation/loop-in-advance.md	3.4	kept	Experimental: Optional *Where-Binding* for `within`
+F34-S01	documentation/thread-masking.md	3.4	kept	Overview
+F34-S02	documentation/thread-masking.md	3.4	kept	Mask the Parallel Threads
+F34-S03	documentation/thread-masking.md	3.4	kept	Masking in SPMD
+F34-S04	documentation/thread-masking.md	3.4	kept	Uniform and Divergence
+F34-S05	documentation/thread-masking.md	3.4	kept	`inthreads`: Divergent Code with the Thread Mask
+F34-S06	documentation/thread-masking.md	2.10	kept	Parallel Perspective of Tileflow Programs
+F34-S07	documentation/thread-masking.md	3.8	kept	Make it Asynchronous
+F34-S08	documentation/thread-masking.md	3.4	kept	Masking for Multi-Levels
+F34-S09	documentation/thread-masking.md	2.10	kept	Implicit Masking
+F34-S10	documentation/thread-masking.md	3.4	kept	Quick Summary
+F35-S01	documentation/events.md	2.10	kept	Overview
+F35-S02	documentation/events.md	2.10	kept	Event Basics
+F35-S03	documentation/events.md	3.8	kept	Event Instances
+F35-S04	documentation/events.md	3.8	kept	DeadLocks
+F35-S05	documentation/events.md	2.10	kept	Quick Summary
+F36-S01	documentation/general-async.md	3.8.4	kept	Synchronization and Asynchronous `parallel-by`
+F36-S02	documentation/general-async.md	3.8.4	kept	Stream Binding
+F36-S03	documentation/general-async.md	3.8.4	kept	Stream Binding without `.async`
+F36-S04	documentation/general-async.md	3.8.4	kept	Rules
+F37-S01	documentation/memory-in-choreo.md	3.2	kept	Memory in Choreo
+F37-S02	documentation/memory-in-choreo.md	3.2	kept	Spanned Types in Choreo
+F37-S03	documentation/memory-in-choreo.md	3.2	kept	Storage Qualifiers in Choreo
+F37-S04	documentation/memory-in-choreo.md	2.6	kept	1. `global`
+F37-S05	documentation/memory-in-choreo.md	2.6	kept	2. `shared`
+F37-S06	documentation/memory-in-choreo.md	2.6	kept	3. `local`
+F37-S07	documentation/memory-in-choreo.md	2.6	kept	Default Behavior and Usage
+F37-S08	documentation/memory-in-choreo.md	2.6	kept	Example Code: Using Storage Qualifiers
+F38-S01	documentation/multi-buffering-patterns.md	3.6.2	kept	Multi-Buffering Optimization with Choreo
+F39-S01	documentation/dma-in-advance.md	3.6	kept	Overview
+F39-S02	documentation/dma-in-advance.md	3.6	kept	Advances in *Data Expression*
+F39-S03	documentation/dma-in-advance.md	3.6	kept	Reshape with `.span_as`
+F39-S04	documentation/dma-in-advance.md	3.6	kept	Dimension Composition inside `chunkat`
+F39-S05	documentation/dma-in-advance.md	3.6	kept	Full Non-Blocking DMA Mode (Chain Mode in Choreo)
+F39-S06	documentation/dma-in-advance.md	3.6	kept	Dynamic Shape
+F39-S07	documentation/dma-in-advance.md	3.6	kept	The Placeholders
+F39-S08	documentation/dma-in-advance.md	3.6	kept	Mutate the Current Value
+F40-S01	documentation/tileflow-opt.md	3.10	kept	Tiling Optimisation in Choreo
+F40-S02	documentation/tileflow-opt.md	3.10.1	kept	Example 1: `matmul`
+F40-S03	documentation/tileflow-opt.md	3.10.1	kept	Example Code: Matrix Multiplication with Tiling
+F40-S04	documentation/tileflow-opt.md	3.10.1	kept	Memory Tiling with `chunkat`
+F40-S05	documentation/tileflow-opt.md	3.10.2	kept	Example 2: rgb2gray
+F40-S06	documentation/tileflow-opt.md	3.10.2	kept	Example Code
+F40-S07	documentation/tileflow-opt.md	3.5	kept	Compose Two Bounded Variables for Tiling with `#`
+F40-S08	documentation/tileflow-opt.md	X	moved	
+F40-S09	documentation/tileflow-opt.md	X	moved	
+F40-S10	documentation/tileflow-opt.md	X	moved	
+F40-S11	documentation/tileflow-opt.md	X	moved	
+F40-S12	documentation/tileflow-opt.md	X	moved	
+F41-S01	documentation/async-dma-patterns.md	占位	placeholder	
+F42-S01	documentation/contribute.md	占位	placeholder	
+F43-S01	documentation/dynamic-design.md	占位	placeholder	
+F44-S01	documentation/elementwise-add-sample.md	占位	placeholder	
+F45-S01	documentation/operator-samples.md	占位	placeholder	
+F46-S01	documentation/symbolic-evaluation.md	占位	placeholder	

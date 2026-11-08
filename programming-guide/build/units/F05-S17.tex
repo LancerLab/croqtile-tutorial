@@ -1,0 +1,5 @@
+Pick global position \texttt{(row=37, col=50)} in the output. Which block and thread own it?
+
+Blocks partition 128 rows into 8 tiles of 16: \texttt{px = 37 /\allowbreak{} 16 = 2}, offset \texttt{qx = 37 \% 16 = 5}. Columns partition 256 into 16 tiles of 16: \texttt{py = 50 /\allowbreak{} 16 = 3}, offset \texttt{qy = 50 \% 16 = 2}. So block \texttt{(2, 3)}, thread \texttt{(5, 2)}.
+
+For that thread, the K-loop runs 16 iterations. On iteration \texttt{tile\_k = 0}, \texttt{dma.copy} loads \texttt{lhs} rows 32..47 and K columns 0..15 into shared \texttt{lhs\_load}, and \texttt{rhs} K rows 0..15 and columns 48..63 into shared \texttt{rhs\_load}. The inner \texttt{foreach k in [16]} accumulates \texttt{lhs\_\allowbreak{}load.\allowbreak{}data.\allowbreak{}at(5, k) * rhs\_\allowbreak{}load.\allowbreak{}data.\allowbreak{}at(k, 2)} for k = 0..15 into \texttt{output.\allowbreak{}at(37, 50)}. Then \texttt{tile\_k = 1} loads the next K-strip, and so on. After all 16 iterations, \texttt{output.\allowbreak{}at(37, 50)} holds the complete dot product --- same answer as the scalar reference.

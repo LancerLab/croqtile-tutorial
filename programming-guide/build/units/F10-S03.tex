@@ -1,0 +1,9 @@
+\subsection*{\texttt{\_\_device\_\_} vs ordinary C++ inline}
+
+Both \texttt{\_\_device\_\_} functions and ordinary C++ functions are passed through unchanged, but they land in different compilation paths --- and the distinction matters.
+
+A \texttt{\_\_device\_\_} function compiles to . The \texttt{\_\_co\_\_} body calls it with the \texttt{call} keyword, and the generated \texttt{\_\_global\_\_} kernel invokes it directly on the device.
+
+An ordinary C++ function (no \texttt{\_\_device\_\_} or \texttt{\_\_co\_\_} annotation) compiles to \textbf{CPU code}. It runs on the host --- setting up buffers, launching kernels, printing results. You cannot call a host function from inside a \texttt{\_\_co\_\_} body;
+
+The boundary is strict: \texttt{\_\_device\_\_} lives on the device side of the \texttt{c++} split, host C++ lives on the host side. The \texttt{\_\_co\_\_} function is the bridge --- the compiler transforms it into a \texttt{\_\_global\_\_} kernel (device side) and generates a host-side wrapper that launches it.

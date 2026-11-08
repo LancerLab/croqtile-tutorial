@@ -1,0 +1,16 @@
+\subsection*{Control Flow: Divergence, Concurrency, and Coordination}
+
+Every programming language that targets a parallel machine must answer one question: \textbf{what happens when different threads need to do different things?}
+
+On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. --- It must \textbf{serialize} the divergent paths and mask inactive threads.
+
+All threads evaluate the condition; threads where it is false are masked (deactivated); This is \textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.
+
+But predicated execution is not enough. This is not a data-dependent branch --- it is two \textbf{structurally different programs} that happen to share an address space. Trying to express this with \texttt{if} means one program pauses while the other runs. There is no overlap, no pipeline.
+
+Croqtile introduces two additional control-flow primitives to fill this gap:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{\texttt{inthreads.\allowbreak{}async}} --- \textbf{structured concurrent regions}: compile-time partitioning of threads into groups that run \textbf{different programs simultaneously}. The compiler generates separate instruction streams;
+\item \textbf{\texttt{shared event} / \texttt{wait} / \texttt{trigger}} --- \textbf{inter-region signaling}: lightweight synchronization tokens that let concurrent regions communicate safely.
+\end{itemize}

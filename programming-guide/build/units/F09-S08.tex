@@ -1,0 +1,15 @@
+\texttt{subspan(M, K).\allowbreak{}at(i, j)} selects the tile at logical tile indices \texttt{(i, j)} with extent \texttt{[M, K]}. By default, tiles are packed contiguously: tile \texttt{(1, 0)} starts immediately after tile \texttt{(0, 0)}. But some layouts space tiles apart --- either because there is padding between rows, or because a stencil kernel needs overlapping windows.
+
+Adding \texttt{.step(sM, sK)} overrides the stride: tiles are spaced \texttt{sM} rows and \texttt{sK} columns apart instead of being packed:
+
+\begin{lstlisting}[language=croqtile,caption={Strided tiles: .subspan, .step, and .at}]
+matrix.subspan(16, 16).step(32, 32).at(i, j);
+\end{lstlisting}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig5_subspan_step_light.png}
+\end{figure}
+
+Tile \texttt{(0,0)} starts at \texttt{(0,0)}, but tile \texttt{(1,0)} starts at row 32 (not row 16), leaving a 16-row gap. Omitting \texttt{.step} uses a step equal to the tile size --- the packed case.
+
+\textbf{When you need this.} Skipping padding or guard bands between rows. Overlapping stencil windows where the step is smaller than the tile extent (e.g., a \texttt{16 x 16} tile sliding by 8 rows). Matching an outer memory layout that is not dense tile-major --- for instance, when tiles are interleaved with metadata.

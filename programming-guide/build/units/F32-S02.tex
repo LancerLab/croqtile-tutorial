@@ -1,0 +1,23 @@
+\subsection*{Loops in Croqtile}
+
+In C++, loops are typically constructed using \texttt{for}, \texttt{while}, and \texttt{do-while} blocks. These loops include conditions for termination and usually involve variable manipulations related to loop control. Programmers have the freedom to define exit conditions, loop stepping, and other aspects, allowing for flexible loop structures.
+
+In contrast, Croqtile, being a domain-specific language for data movement, supports a more constrained loop structure. The current loop construction in Croqtile is as follows:
+
+\begin{lstlisting}[language=croqtile,caption={Loops in Croqtile}]
+foreach index {
+  // loop body
+}
+\end{lstlisting}
+
+Here, \texttt{index} is a \emph{bounded variable} (introduced in the previous section). If \texttt{index} has an upper bound of \texttt{6}, the above code is equivalent to:
+
+\begin{lstlisting}[language={},caption={Loops in Croqtile}]
+for (int index = 0; index < 6; ++index) {
+  // loop body
+}
+\end{lstlisting}
+
+While \emph{bounded variables} may seem restrictive, they are sufficient for data movement tasks, as you typically won't move data with a negative or out-of-bound index.
+
+In Croqtile, \emph{bounded variables} defined within a \texttt{parallel-by} statement are immutable and cannot be used in \texttt{foreach} statements. Instead, programmers should use the \texttt{with-in} statement to define the \emph{bounded variables} suitable for loops.

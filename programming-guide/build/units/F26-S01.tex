@@ -1,0 +1,29 @@
+\subsection*{\emph{Factor} Target Specific Details}
+
+In some target like \emph{factor}, it requires the device function to follow C-linkage, where the device functions must be prefixed with \texttt{extern "C"}. Since template functions can not be applies to functions with C-linkage, Croqtile has some wrapper tricks to enable it. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Factor Target Specific Details}]
+__cok__ {
+extern "C" void bar(int v) {};  // v is a compile-time constant
+}
+__co__ void foo() {
+  parallel p by 1 { call bar(3); }
+}
+\end{lstlisting}
+
+Programmers can turn \texttt{bar} into a function template, like following:
+
+\begin{lstlisting}[language=croqtile,caption={Factor Target Specific Details}]
+__cok__ {
+template <int v> void bar() {};
+// compiler generate a explicit function template specialization:
+// template<> void bar<3>() {};
+}
+__co__ void foo() {
+  parallel p by 1 { call bar<3>(); }
+}
+\end{lstlisting}
+
+As the comment depicts, Croqtile compiler may generate a specialization version of function template \texttt{bar\textless{}3\textgreater{}}, which enables the function template as well. But note that, the function template no longer requires \texttt{extern "C" decoration} as those for normal \emph{factor} device functions.
+
+As the implementation is different with other targets, you may utilize \texttt{-kt} to enable such functionality for \emph{croqtile-factor} compilation.

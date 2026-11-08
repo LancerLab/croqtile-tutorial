@@ -1,0 +1,9 @@
+\subsection*{Event arrays for multi-stage pipelines}
+
+For pipelines with multiple buffered stages, declare event arrays:
+
+\begin{lstlisting}[language=croqtile,caption={Event arrays for multi-stage pipelines}]
+shared event full[STAGES], empty[STAGES];
+\end{lstlisting}
+
+Each physical buffer slot gets its own \texttt{full}/\texttt{empty} pair. The ring index \texttt{stage = iv\_\allowbreak{}k \% STAGES} maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on \texttt{wait empty}.

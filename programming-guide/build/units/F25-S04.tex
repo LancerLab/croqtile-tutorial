@@ -1,0 +1,37 @@
+\subsection*{C++ Host: Data Argument with Shape}
+
+One obvious gap between C/C++ pointers/arrays and Croqtile \emph{spanned data} is that \emph{spanned data} is shaped. Therefore, to call a Croqtile function, it is necessary to convert pointers or arrays.
+
+One direct method is to use the Croqtile API provided in \texttt{croqtile.h}. Though programs does not necessary to explicitly include \texttt{croqtile.h} in Croqtile compilation environment, it is included for every Croqtile programs.
+
+\begin{lstlisting}[language=croqtile,caption={C Host: Data Argument with Shape}]
+__co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
+void entry(float * input, float* output) {
+  // foo(input, output); <-- result in error since missing shape
+  foo(croqtile::make_spanned<2>(input, {7, 16}),
+      croqtile::make_spanned<2>(output, {7, 16}));
+}
+\end{lstlisting}
+
+In the above example, you make use of \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanned} function template, providing the rank as template parameter, and typed pointer together with shape list as the function parameters. In this way, a shape is attached with the pointer, which makes a valid Croqtile function parameter. As you may figure out from \texttt{croqtile.h}, it results in \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} object, which simply wraps the C/C++ pointer/array and the array-based list. To make it easy to understand, you list simplified definition is like:
+
+\begin{lstlisting}[language={},caption={C Host: Data Argument with Shape}]
+template <typename T, size_t Rank>
+class spanned_view {
+  T* ptr;                 // typed pointer to the data
+  size_t dims[Rank];      // ranked dimensions
+};
+\end{lstlisting}
+
+It is also possible to have variable as dimensions to construct the shaped data, like following:
+
+\begin{lstlisting}[language=croqtile,caption={C Host: Data Argument with Shape}]
+__co__ void foo(f32 [7, 16] input) {...}
+void entry(float * input, float* output, int M, int N) {
+  foo(croqtile::make_spanned<2>(input, {M, N})),
+}
+\end{lstlisting}
+
+In this example, the \texttt{input} shape is runtime variable. But do not worry if wrong parameter is provided. Croqtile will check if \texttt{M == 7} and \texttt{N == 16} when entering into the tileflow program. \textbf{If not, the program will terminate immediately} since all the assumptions about shapes in the Croqtile function does not hold.
+
+One important notice for the \emph{spanned data} inputs is that they are \textbf{references to the input data/buffers}. That implies no data copy happens at invoking Croqtile function, though somebody may think from the language perspective it look like copy-semantics.

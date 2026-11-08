@@ -1,0 +1,34 @@
+\subsection*{Defining \emph{Bounded Variable}s:}
+
+A \texttt{with-in} statement allows you to define either a \emph{bounded integer} or a \emph{bounded ituple}. Syntactically, it resembles the \texttt{parallel-by} statement but only defines \emph{bounded variable}s without invoking multiple instances for execution. Below are examples:
+
+\begin{lstlisting}[language=croqtile,caption={Defining Bounded Variables:}]
+with x in 128 {
+  // 'x' is a bounded integer
+}
+with y in [512] {
+  // 'y' is a bounded ituple
+}
+with index in [10, 10] {
+  // 'index' is a bounded ituple
+}
+\end{lstlisting}
+
+Here, \texttt{x} represents a bounded integer with an upper bound of \texttt{128}. Both \texttt{y} and \texttt{index} represent bounded ituples whose upper bounds are \texttt{512} and \texttt{10, 10} respectively. Similar to the \texttt{parallel-by} statement, you can name the elements of the ituple for clarity or declare both the bounded ituple and the associated bounded integers, as shown below:
+
+\begin{lstlisting}[language=croqtile,caption={Defining Bounded Variables:}]
+with {x, y} in [10, 10] {
+  // x and y are explicitly named elements of the ituple
+}
+with index = {x, y} in [10, 10] {
+  // 'x', 'y', and 'index' can be used within the block
+}
+\end{lstlisting}
+
+Like the \texttt{parallel-by} statement, multiple \texttt{with-in} declarations can be combined using a comma-separated syntax, as demonstrated below:
+
+\begin{lstlisting}[language=croqtile,caption={Defining Bounded Variables:}]
+with index = {x, y} in [10, 10], idx in [100, 10] { }
+\end{lstlisting}
+
+In this way, two bounded ituples are defined. Note that either \texttt{index} or \texttt{idx} can only be referenced within the following \texttt{with-in} block.

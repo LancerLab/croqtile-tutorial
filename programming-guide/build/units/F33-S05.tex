@@ -1,0 +1,12 @@
+\subsection*{Experimental: Optional \emph{Where-Binding} for \texttt{within}}
+
+You can append a \emph{where-clause} to impose \textbf{Where-Binding} constraints among different bounded variables defined in a \texttt{with-in} statement. This allows different bounded variables to be treated as aliases for each other. Below is an example:
+
+\begin{lstlisting}[language=croqtile,caption={Experimental: Optional Where-Binding for within}]
+with {m, n} in [M, N], {n_p, k} in [N_P, K]
+where n_p <-> n {
+  // matmul implements with m, n, K. 'n_p' always refers to the same value as 'n'.
+}
+\end{lstlisting}
+
+Syntactically, the \texttt{\textless{}-\allowbreak{}\textgreater{}} operation establishes the \emph{where-binding} between two bounded variables. Within the \texttt{with-in} block, any reference to \texttt{n\_p} refers to \texttt{n}, and vice versa.

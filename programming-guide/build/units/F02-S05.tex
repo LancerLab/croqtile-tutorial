@@ -1,0 +1,30 @@
+\subsection*{Compiler Usage}
+
+The \texttt{croqtile} command works like \texttt{gcc} or \texttt{clang}:
+
+\begin{lstlisting}[language={},caption={Compiler Usage}]
+croqtile program.co                     # compile and link -> a.out
+croqtile program.co -o my_kernel        # specify output name
+croqtile -es -t target program.co -o out.cu  # emit target source only
+croqtile -E program.co                  # preprocess only
+\end{lstlisting}
+
+Key flags:
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Flag} & \textbf{Effect} \\
+\midrule
+\texttt{-\allowbreak{}o \textless{}file\textgreater{}} & Set output filename \\
+\texttt{-\allowbreak{}t \textless{}platform\textgreater{}} & Select target platform (e.g. \texttt{target}) \\
+\texttt{-es} & Emit target source code without compiling it \\
+\texttt{-E} & Preprocess only (expand macros, strip \texttt{\#if 0} blocks) \\
+\texttt{-c} & Compile without linking \\
+\texttt{-S} & Emit assembly \\
+\texttt{--help} & Show all options \\
+\texttt{--help-hidden} & Show advanced/internal options \\
+\bottomrule
+\end{tabularx}
+\end{table}

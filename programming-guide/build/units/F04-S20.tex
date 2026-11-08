@@ -1,0 +1,28 @@
+\subsection*{DMA vs TMA}
+
+Both engines move shaped tiles. The difference is how they do it and what constraints they require.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+ & \textbf{\texttt{dma}} & \textbf{\texttt{tma}} \\
+\midrule
+Common destination & \texttt{shared} & \texttt{shared} \\
+Async support & Yes & Yes \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Example TMA use:
+
+\begin{lstlisting}[language=croqtile,caption={DMA vs TMA}]
+f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) => shared;
+wait f;
+\end{lstlisting}
+
+The practical rule is simple:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Use \texttt{dma} when tile sizes are dynamic, irregular, or you want the portable path.
+\end{itemize}

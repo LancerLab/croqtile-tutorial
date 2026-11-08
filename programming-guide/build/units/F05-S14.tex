@@ -1,0 +1,44 @@
+\subsection*{DMA Matmul: Tiles in shared storage}
+
+\begin{lstlisting}[language=croqtile,caption={DMA Matmul: Tiles in shared storage}]
+__co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+  parallel {px, py} by [8, 16] : block {
+    foreach {tile_k} in [16] {
+      lhs_load = dma.copy lhs.chunkat(px, tile_k) => shared;
+      rhs_load = dma.copy rhs.chunkat(tile_k, py) => shared;
+      parallel {qx, qy} by [16, 16] : thread {
+        foreach k in [256 / #tile_k]
+          output.at(px#qx, py#qy) += lhs_load.data.at(qx, k) * rhs_load.data.at(k, qy);
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f05-fig6_dma_matmul_light.png}
+\end{figure}
+
+What changed from the scalar version:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item The outer \texttt{parallel} now uses \texttt{: block} with brace-form indices \texttt{\{px, py\}}. An 8 \(\times\) 16 grid of blocks covers the output.
+\end{enumerate}
+
+\begin{enumerate}[leftmargin=1.6em]
+\item A \texttt{foreach} over \texttt{tile\_k} walks the K dimension in 16 steps. Each step copies one strip of \texttt{lhs} and one strip of \texttt{rhs} into \texttt{shared} storage with \texttt{dma.\allowbreak{}copy .\allowbreak{}.\allowbreak{}.\allowbreak{} =\textgreater{} shared}.
+\end{enumerate}
+
+\begin{enumerate}[leftmargin=1.6em]
+\item An inner \texttt{parallel \{qx, qy\} by [16, 16] :\allowbreak{} thread} creates 256 threads within each block. Each thread owns one output element within the block's tile.
+\end{enumerate}
+
+\begin{enumerate}[leftmargin=1.6em]
+\item The arithmetic reads from \texttt{lhs\_load.data} and \texttt{rhs\_load.data} --- the shared-memory copies --- instead of global \texttt{lhs} and \texttt{rhs}.
+\end{enumerate}
+
+The composed indices work in two layers: \texttt{px\#qx} composes block index \texttt{px} with thread index \texttt{qx} to form the global row; \texttt{py\#qy} does the same for columns.
+
+\textbf{Dimension arithmetic.} With \texttt{[8, 16]} blocks, each block owns \texttt{128/8 = 16} rows and \texttt{256/16 = 16} columns. The inner \texttt{[16, 16]} threads subdivide that into one element per thread. Along K, 16 tiles of \texttt{256/16 = 16} elements each cover the full contraction.

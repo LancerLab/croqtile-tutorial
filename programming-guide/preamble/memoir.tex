@@ -1,0 +1,28 @@
+%% Version C -- LaTeXTemplates "Memoir" (classic long-form technical book).
+%% memoir owns its chapter/heading machinery, so titlesec/fancyhdr are not used.
+\usepackage[a4paper,top=2.8cm,bottom=2.8cm,left=2.9cm,right=2.9cm]{geometry}
+\chapterstyle{dowding}
+\renewcommand*{\chapnumfont}{\normalfont\Huge\bfseries\sffamily\color{croqgreen}}
+\renewcommand*{\chaptitlefont}{\normalfont\Huge\bfseries\sffamily\color{croqink}}
+\setsecheadstyle{\Large\bfseries\sffamily\color{croqgreen}}
+\setsubsecheadstyle{\large\bfseries\sffamily\color{croqink}}
+
+%% Three-digit page numbers in the contents need a slightly wider box.
+\makeatletter
+\renewcommand*{\@pnumwidth}{2.4em}
+\makeatother
+
+%% memoir names its title-page environment `titlingpage`; the shared front
+%% matter uses the standard `titlepage` name, so provide a thin alias.
+\newenvironment{titlepage}%
+  {\cleardoublepage\thispagestyle{empty}\begingroup\centering}%
+  {\par\endgroup\cleardoublepage}
+
+\renewcommand{\guidetemplate}{LaTeXTemplates Memoir (classic technical book)}
+\renewcommand{\guidetemplateurl}{https://latextemplates.com/template/memoir/}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=croqblue,citecolor=croqgreen,
+  urlcolor=croqblue,pdftitle={Croqtile Programming Guide (Memoir edition)},
+  pdfauthor={LancerLab},pdfsubject={Croqtile kernel programming tutorial},
+  bookmarksnumbered=true,bookmarksopen=true}

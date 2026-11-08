@@ -1,0 +1,25 @@
+\subsection*{\texttt{print} and \texttt{println}: runtime device output}
+
+\begin{lstlisting}[language=croqtile,caption={print and println: runtime device output}]
+__co__ void inspect(s32 [4, 8] data) {
+  foreach i in [data.span] {
+    println("element ", i, " = ", data.at(i));
+  }
+}
+\end{lstlisting}
+
+Each call takes a comma-separated mix of string literals and expressions. The output order across threads is \textbf{nondeterministic}
+
+\textbf{Guarding output.} For a specific check, guard the print with a condition:
+
+\begin{lstlisting}[language=croqtile,caption={print and println: runtime device output}]
+parallel {px, py} by [8, 16] : block
+  parallel {qx, qy} by [16, 16] : thread {
+    // ... compute ...
+    if (px == 0 && py == 0 && qx == 3 && qy == 5) {
+      println("partial sum = ", accum);
+    }
+  }
+\end{lstlisting}
+
+Without the guard you get one line per thread --- thousands of lines for a large grid.

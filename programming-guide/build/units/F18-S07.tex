@@ -1,0 +1,3 @@
+\subsection*{Buffer Lifetime Management}
+
+The lifetime of storage allocated inside a \emph{croqtile function} is managed by the Croqtile compiler for efficient use. The compiler attempts to reuse buffers as much as possible if their lifetimes do not overlap. Therefore users of Croqtile are not necessary to do buffer management.

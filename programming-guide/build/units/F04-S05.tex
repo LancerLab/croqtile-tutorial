@@ -1,0 +1,14 @@
+\subsection*{\texttt{chunkat(...)}: equal partitioning}
+
+\begin{lstlisting}[language=croqtile,caption={chunkat(...): equal partitioning}]
+lhs.chunkat(tr, tc)
+\end{lstlisting}
+
+\texttt{chunkat} divides each dimension into equal chunks based on the surrounding parallel structure. If \texttt{lhs} has shape \texttt{[64, 128]} and the kernel uses \texttt{parallel \{tr, tc\} by [4, 8]}, then \texttt{lhs.\allowbreak{}chunkat(tr, tc)} selects a \texttt{[16, 16]} tile.
+
+That makes \texttt{chunkat} the natural tool when your tiling follows the parallel decomposition directly.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig3_chunkat_light.png}
+\end{figure}
+\begin{center}\small\emph{\texttt{chunkat(1, 3)} selects one equal tile from a regular tiling grid.}\end{center}

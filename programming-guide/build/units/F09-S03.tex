@@ -1,0 +1,24 @@
+\subsection*{Swizzle and layout conflicts}
+
+\textbf{Swizzle} applies a fixed XOR-style remapping to column indices within each row, spreading accesses across banks. Croqtile exposes it on \textbf{both DMA and TMA}, with the same syntax and the same effect:
+
+\begin{lstlisting}[language=croqtile,caption={Swizzle and layout conflicts}]
+dma.copy.swiz<3> src => dst;       // software DMA with swizzle
+tma.copy.swiz<3> src => dst;
+\end{lstlisting}
+
+The MMA read path must use the same \texttt{swiz\textless{}N\textgreater{}} so addresses match the staged layout:
+
+\begin{lstlisting}[language=croqtile,caption={Swizzle and layout conflicts}]
+ma = mma.load.swiz<3> lhs_load_s.chunkat(_, iv_warp);
+\end{lstlisting}
+
+Swizzle is not a TMA-specific feature. In Croqtile, \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} and \texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} produce identical shared-memory layouts. The difference is only in how the data gets there; the layout that arrives is the same in both cases.
+
+\textbf{Swizzle levels.} The template argument sets the granularity: \texttt{swiz\textless{}0\textgreater{}} is identity, then 64B, 128B, and 256B XOR patterns for \texttt{\textless{}1\textgreater{}}, \texttt{\textless{}2\textgreater{}}, and \texttt{\textless{}3\textgreater{}}. Larger granularities defeat wider conflict patterns but require tile extents that line up with that granularity.
+
+\textbf{Matching rule.} The \texttt{\textless{}N\textgreater{}} on the copy must match \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}}. If you load with plain \texttt{mma.load} from \texttt{swiz\textless{}3\textgreater{}} data, addresses disagree and you read garbage. The compiler does not enforce the pairing --- it is a correctness invariant you maintain. (As introduced in Section~\ref{sec:3-7}, \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} is part of the MMA load family.)
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig2_swizzle_light.png}
+\end{figure}

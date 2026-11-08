@@ -1,0 +1,21 @@
+{
+  "round": 3,
+  "counts": {
+    "meta": 0,
+    "pov": 0,
+    "generic_headings": 0,
+    "typos": 0,
+    "broken": 0,
+    "dangling_refs": 0,
+    "dup_headings": 0,
+    "hardware": 0,
+    "placeholders": 0,
+    "narrative_gap": 0
+  },
+  "total": 0,
+  "narrative": {
+    "chapter_intro": 3,
+    "slot_intro": 62,
+    "where_next": 3
+  }
+}

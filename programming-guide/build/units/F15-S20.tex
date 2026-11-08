@@ -1,0 +1,14 @@
+\subsection*{Function Calls and Call Croqtile Function}
+
+Croqtile functions are not allowed to call another Croqtile function. However, inside a Croqtile function, it is normal to have function calls to C++ kernels.
+
+\begin{lstlisting}[language=croqtile,caption={Function Calls and Call Croqtile Function}]
+void bar() {...}    // C++ kernel function
+__co__ void foo() {
+  parallel p by 6 {
+    call bar();     // Call the C++ function
+  }
+}
+\end{lstlisting}
+
+In the above example, program calls the existing C++ function 'bar' using Croqtile keyword 'call', which is intuitive.

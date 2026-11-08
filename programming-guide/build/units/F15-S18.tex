@@ -1,0 +1,29 @@
+\subsection*{Async Operation: the DMA Statement}
+
+Except for parallel execution, Croqtile allows one fixed form of async operation: the DMA statement.
+
+Conceptually, a DMA statement is executed asynchronously with the SPMD code. It works quite similar to CPU async thread, except its behavior is limited by the DMA configuration. (CPU allows to program the async thread as will)
+
+The below code showcases one basic DMA statement.
+
+\begin{lstlisting}[language=croqtile,caption={Async Operation: the DMA Statement}]
+global f32 [10] g_data;
+local f32 [10] l_data;
+f = dma.copy.async g_data => l_data;
+// ... async operations
+wait f;         // explicit wait
+\end{lstlisting}
+
+You might observe the assignment of 'f'. This is the handler for the asynchronous DMA entity. In Croqtile, you refer to it as the 'future' of the DMA operation. Programmers have the option to code the explicit synchronization statement 'wait' to pause the current thread until the 'future' arrives. Otherwise, the thread continues execution in parallel with the DMA operation.
+
+At times, programmers may find it tedious to explicitly define temporal data. Croqtile offers an even simpler syntax:
+
+\begin{lstlisting}[language=croqtile,caption={Async Operation: the DMA Statement}]
+global f32 [10] data;
+f = dma.copy data => local;
+... f.data;  // retrieve the 'local' data from the future
+\end{lstlisting}
+
+Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination memory type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
+
+DMA operations entail intricate details that demand careful programming. Programmers should refer to the DMA manual to make informed decisions for their code. Nonetheless, Croqtile compiler provides plenty of static and runtime checks to assist programmers in avoiding potential errors in this aspect.

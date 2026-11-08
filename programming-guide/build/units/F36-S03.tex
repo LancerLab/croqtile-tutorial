@@ -1,0 +1,12 @@
+\subsection*{Stream Binding without \texttt{.async}}
+
+Stream binding also works with synchronous \texttt{parallel-by}. In this case, the host launches the kernel on the specified stream and then waits for that stream to complete:
+
+\begin{lstlisting}[language=croqtile,caption={Stream Binding without .async}]
+__co__ void bar(stream _s, f32[M] a) {
+  parallel<_s> p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host synchronizes on stream _s before continuing
+}
+\end{lstlisting}

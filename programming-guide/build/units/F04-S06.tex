@@ -1,0 +1,7 @@
+\subsection*{\texttt{subspan(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}at(.\allowbreak{}.\allowbreak{}.\allowbreak{})}: explicit tile extents on a tile grid}
+
+\begin{lstlisting}[language=croqtile,caption={subspan(...).at(...): explicit tile extents on a tile grid}]
+lhs.subspan(64, 64).at(block_m, iv_k)
+\end{lstlisting}
+
+\texttt{subspan} says what the tile shape is. \texttt{.at(...)} says which tile instance you want. This is the better fit when the tile shape is an explicit algorithmic choice, such as a GEMM tile of \texttt{[64, 64]}, rather than something you want inferred from \texttt{parallel by .\allowbreak{}.\allowbreak{}.\allowbreak{}}.

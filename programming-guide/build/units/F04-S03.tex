@@ -1,0 +1,30 @@
+\subsection*{First Example: Tiled Addition Through shared storage}
+
+\begin{lstlisting}[language=croqtile,caption={First Example: Tiled Addition Through shared storage}]
+__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
+  s32 [lhs.span] output;
+  parallel {tr, tc} by [4, 8] {
+    lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
+    rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
+    foreach {i, j} in lhs_load.span
+      output.at(tr # i, tc # j) =
+          lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
+  }
+  return output;
+}
+\end{lstlisting}
+
+The arithmetic is still element-wise addition. What changed is the data path:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \texttt{chunkat(tr, tc)} selects one logical tile from each input.
+\item \texttt{dma.\allowbreak{}copy .\allowbreak{}.\allowbreak{}.\allowbreak{} =\textgreater{} shared} stages that tile into block-visible fast memory.
+\item \texttt{tr \# i} and \texttt{tc \# j} map tile-local coordinates back to global output coordinates.
+\end{enumerate}
+
+This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig2_tiled_add_light.png}
+\end{figure}
+\begin{center}\small\emph{Load a tile, compute on the staged data, then write results back using global coordinates.}\end{center}

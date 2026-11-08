@@ -1,0 +1,11 @@
+\subsection*{Walking through the kernel}
+
+\textbf{Ring index.} \texttt{stage = iv\_\allowbreak{}k \% STAGES} maps the unbounded K iteration to a fixed number of physical buffer slots --- double buffering generalized to N buffers.
+
+\textbf{Producer path.} For each \texttt{iv\_k}, \texttt{wait empty[stage]} acquires a free slot. The \texttt{dma.copy} lines fill \texttt{lhs\_load\_s} / \texttt{rhs\_load\_s} at that stage. Then \texttt{trigger full[stage]} hands the slot to the consumer.
+
+\textbf{Consumer bootstrap.} The loop \texttt{foreach \{s\} in [STAGES] \{ trigger empty[s]; \}} runs \textbf{before} the K-loop so every stage starts with an \texttt{empty} credit. Without this, the producer blocks forever on its first \texttt{wait empty} --- a deadlock.
+
+\textbf{Consumer path.} Each \texttt{iv\_k}: \texttt{wait full[stage]} blocks until the producer has filled that slot, then MMA over the tile, \texttt{mma.commit}, and \texttt{trigger empty[stage]} to release the slot for reuse.
+
+\texttt{mma.commit} is the fence that completes one K-slab's contribution to \texttt{mc} before that stage's shared buffer may be reused. Omitting it risks reading stale data --- the MMA might still be consuming operands when the producer overwrites the buffer.

@@ -1,0 +1,11 @@
+\subsection*{Type System Aside: \texttt{mdspan} and \texttt{ituple}}
+
+Before you build the matmul, two features of Croqtile's type system are worth mentioning. You have already used them implicitly; now is a good time to name them.
+
+\textbf{\texttt{mdspan}} --- every tensor in Croqtile carries its shape as part of its type. When you write \texttt{s32 [128, 256] lhs}, the shape \texttt{[128, 256]} is not a runtime value --- it is a compile-time property. The compiler uses it to verify that every \texttt{.at()}, \texttt{chunkat}, and \texttt{dma.copy} is dimensionally consistent. If you try \texttt{lhs.\allowbreak{}at(i, j, k)} on a 2D tensor, the compiler rejects it. The expression \texttt{output.\allowbreak{}at(px\#\allowbreak{}qx, py\#\allowbreak{}qy)} is verified to produce indices within the output's bounds.
+
+The \texttt{span(i)} syntax extracts one dimension: \texttt{lhs.span(0)} is 128, \texttt{rhs.span(1)} is 256. The shorthand \texttt{lhs.span} copies the entire shape.
+
+\textbf{\texttt{ituple}} --- the \texttt{\{px, py\}} syntax in \texttt{parallel \{px, py\} by [8, 16]} introduces an \texttt{ituple}, a compile-time integer tuple. The compose operator \texttt{px\#qx} combines two ituple elements into a global index. The extent operator \texttt{\#p} extracts the upper bound of a parallel variable. These are all resolved at compile time --- no runtime overhead.
+
+For the full details, see Sections~\ref{sec:2-4} and~\ref{sec:2-5}. In the examples that follow, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.

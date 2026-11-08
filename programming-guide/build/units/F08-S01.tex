@@ -1,0 +1,7 @@
+\subsection*{Synchronization in Practice: Pipelines, Buffers, and Events}
+
+Section~\ref{sec:3-8} introduced three control-flow primitives: \textbf{\texttt{if}} for predicated execution, \textbf{\texttt{inthreads.\allowbreak{}async}} for structured concurrent regions, and \textbf{events} (\texttt{shared event} / \texttt{wait} / \texttt{trigger}) for inter-region signaling. This part of the guide puts them to work. You will see two progressively complex kernel patterns, each demonstrating how the primitives compose to solve real synchronization problems.
+
+The first pattern --- \textbf{double buffering with \texttt{swap}} --- uses a single thread group that interleaves loading and computing within one program. No \texttt{inthreads.\allowbreak{}async}, no events: just two buffer handles and a rotation. The second pattern --- \textbf{the full 1P1C event pipeline} --- splits loading and computing into separate concurrent programs with \texttt{inthreads.\allowbreak{}async} and coordinates them with event arrays.
+
+Both patterns solve the same underlying problem: \textbf{you cannot read a buffer while someone is writing to it}. They differ in how they structure the solution.

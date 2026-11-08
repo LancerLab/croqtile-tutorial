@@ -1,0 +1,38 @@
+%% Version B -- software-manual skin, modelled on Overleaf's
+%% "Technical Document Template" (Software Manual and Technical Document
+%% Template, LPPL-1.3c). The original ol-softwaremanual class is Overleaf-only,
+%% so the same visual grammar (versioned title page, ruled chapter heads,
+%% running headers, list of code listings) is implemented on the book class.
+\usepackage[a4paper,top=2.9cm,bottom=2.9cm,left=3.2cm,right=3.2cm]{geometry}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\bfseries\color{croqink}}
+  {\large\color{croqgreen}\chaptertitlename\ \thechapter}
+  {8pt}{\Huge}
+  [\vspace{6pt}{\color{croqgreen}\titlerule}]
+\titleformat{\section}
+  {\normalfont\Large\bfseries\sffamily\color{croqblue}}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\sffamily\color{croqink}}{\thesubsection}{1em}{}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\sffamily\nouppercase{\leftmark}}
+\fancyhead[RE,LO]{\small\sffamily Croqtile Programming Guide, v\guideversion}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%% Compatibility with the Overleaf software-manual template's front matter.
+\newcommand{\version}[1]{\renewcommand{\guideversion}{#1}}
+\newcommand{\softwarelogo}[1]{}
+
+\renewcommand{\guidetemplate}{Overleaf Technical Document / Software Manual style}
+\renewcommand{\guidetemplateurl}{https://www.overleaf.com/latex/templates/technical-document-template/mdgftpdfbvbs}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=croqblue,citecolor=croqgreen,
+  urlcolor=croqblue,pdftitle={Croqtile Programming Guide (Software Manual edition)},
+  pdfauthor={LancerLab},pdfsubject={Croqtile kernel programming tutorial},
+  bookmarksnumbered=true,bookmarksopen=true}

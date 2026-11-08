@@ -1,0 +1,33 @@
+\subsection*{The DMA Statement Family}
+
+All of Croqtile's tile-movement operations use the same basic form:
+
+\begin{lstlisting}[language=croqtile,caption={The DMA Statement Family}]
+future = engine.operation.modifiers source => destination;
+\end{lstlisting}
+
+The important pieces are:
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Part} & \textbf{Meaning} \\
+\midrule
+\texttt{future} & Optional handle to the transfer result. Use \texttt{future.data} to access the moved tile and \texttt{future.span} to query its shape. \\
+\texttt{operation} & \texttt{copy}, \texttt{transp\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}}, or \texttt{pad\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}}. \\
+\texttt{modifiers} & Optional flags such as \texttt{.async}, \texttt{.zfill}, or \texttt{.\allowbreak{}swiz\textless{}N\textgreater{}}. \\
+\texttt{source =\textgreater{} destination} & The source view and the destination memory or destination view. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Minimal examples:
+
+\begin{lstlisting}[language=croqtile,caption={The DMA Statement Family}]
+f = dma.copy input.chunkat(block) => shared;
+g = dma.transp<1, 0> matrix => local;
+h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
+\end{lstlisting}
+
+The key shift from Section~\ref{sec:1-7} is that these statements move shaped regions, not individual elements.

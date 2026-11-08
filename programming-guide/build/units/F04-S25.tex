@@ -1,0 +1,28 @@
+\subsection*{Checklist}
+
+By the end of this part of the guide, the new pieces of syntax should mean the following:
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Syntax} & \textbf{Meaning} \\
+\midrule
+\texttt{dma.\allowbreak{}copy.\allowbreak{}async .\allowbreak{}.\allowbreak{}.\allowbreak{}} & Start a non-blocking DMA transfer. \\
+\texttt{wait f} & Wait until future \texttt{f} is ready to consume. \\
+\texttt{future.data} & Access the moved tile. \\
+\texttt{future.span} & Access the moved tile's shape. \\
+\texttt{dma.\allowbreak{}transp\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}} & Permute dimensions during transfer. \\
+\texttt{dma.\allowbreak{}pad\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}} & Pad during transfer with an explicit fill value. \\
+\texttt{.zfill} & Zero-fill out-of-bounds positions in partial tiles. \\
+\texttt{.\allowbreak{}swiz\textless{}N\textgreater{}} & Choose a shared-memory swizzle layout. \\
+\texttt{chunkat(...)} & Select one equal tile from a regular tiling. \\
+\texttt{subspan(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}at(.\allowbreak{}.\allowbreak{}.\allowbreak{})} & Select a tile by explicit tile extents and tile coordinates. \\
+\texttt{view(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}from(.\allowbreak{}.\allowbreak{}.\allowbreak{})} & Select a tile by explicit extents and explicit element offsets. \\
+\texttt{tile \# i} & Compose tile and in-tile coordinates into a global coordinate. \\
+\texttt{\#tile} & Ask for the extent of the \texttt{tile} axis. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The next chapter builds on this by overlapping movement with compute. Once you can think of a kernel as a loop that repeatedly stages tiles and computes on staged tiles, double buffering and pipelining become natural extensions rather than new ideas.

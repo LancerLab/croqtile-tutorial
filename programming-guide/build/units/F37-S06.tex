@@ -1,0 +1,7 @@
+\subsection*{3. \texttt{local}}
+
+It is particularly useful when each thread requires a small amount of data, such as scalar values or small arrays that do not need to be shared with other threads. Example:
+
+\begin{lstlisting}[language=croqtile,caption={3. local}]
+local f16 [5] thread_local_data;
+\end{lstlisting}

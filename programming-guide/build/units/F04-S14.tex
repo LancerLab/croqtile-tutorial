@@ -1,0 +1,14 @@
+\subsection*{Compose: \texttt{outer \# inner}}
+
+\begin{lstlisting}[language=croqtile,caption={Compose: outer inner}]
+output.at(tr # i, tc # j)
+\end{lstlisting}
+
+This combines a tile coordinate with an in-tile coordinate to produce a coordinate in the full tensor.
+
+Read \texttt{tr \# i} as "row \texttt{i} inside tile \texttt{tr}."
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig_compose_light.png}
+\end{figure}
+\begin{center}\small\emph{Compose a tile index with an in-tile offset to recover a global coordinate.}\end{center}

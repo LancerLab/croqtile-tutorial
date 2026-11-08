@@ -1,0 +1,17 @@
+Croqtile's preprocessor runs before the main compiler pass. Macros expand in both \texttt{\_\_co\_\_} regions and host C++ in the same \texttt{.co} file, so one definition keeps tile geometry and host-side checks aligned.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Directive} & \textbf{Role} \\
+\midrule
+\texttt{\#\allowbreak{}define NAME value} & Object-like macro: textual replacement \\
+\texttt{\#if} / \texttt{\#elif} / \texttt{\#else} / \texttt{\#endif} & Conditional inclusion \\
+\texttt{\#ifdef} / \texttt{\#ifndef} & Shorthand for whether a macro is defined \\
+\texttt{\#\allowbreak{}error message} & Force a compile-time failure with a message \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Function-like macros (\texttt{\#\allowbreak{}define MAX(a, b) .\allowbreak{}.\allowbreak{}.\allowbreak{}}) are not supported. Use \texttt{constexpr} helpers in ordinary C++.

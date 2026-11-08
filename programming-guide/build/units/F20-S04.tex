@@ -1,0 +1,14 @@
+\subsection*{\textbf{c. Expressiveness and Flexibility}}
+
+Symbolic dimensions enable a \textbf{richer} set of expressions for describing data shapes. Instead of using arbitrary placeholders like \texttt{?} or \texttt{-1}, which are limited to basic dimensionality, symbolic dimensions can be \textbf{constrained} using complex arithmetic and relationships. For example, you can directly express how one dimension depends on another, or how it is scaled or tiled, in a much more natural way.
+
+In contrast, using \texttt{?} or \texttt{-1} often leads to brittle code, where developers need to manually calculate or infer the actual size at runtime, introducing potential errors and making the code harder to reason about.
+
+For example, you can easily express relationships between dimensions using symbolic variables:
+
+\begin{lstlisting}[language=croqtile,caption={c. Expressiveness and Flexibility}]
+mdspan sp : [M, N]; // Symbolic dimensions
+mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expressions
+\end{lstlisting}
+
+If you were using \texttt{?} or \texttt{-1}, expressing the same relationships would require convoluted workarounds or additional runtime logic.

@@ -1,0 +1,14 @@
+\subsection*{Step Further: \textbf{Symbolic Dimension}}
+
+Another approach in Croqtile to support dynamic shape is to use \textbf{Symbolic Dimension}. \emph{Symbolic dimension}s are named but as well unknown at compile-time. Here's an example:
+
+\begin{lstlisting}[language=croqtile,caption={Step Further: Symbolic Dimension}]
+__co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
+  int tile_m = 32, tile_m = 8, tile_k = 16;
+  s32 [M / tile_m, K / tile_k] tiled_lhs;
+  s32 [K / tile_k, N / tile_n] tiled_rhs;
+  // ...
+}
+\end{lstlisting}
+
+In the code, each dimension is given a symbolic name (\texttt{M, K, N} in this case) for the \emph{spanned} inputs. Compared to \emph{anonymous dimension}, \emph{symbolic dimension} approach clearly describes the relationship between shapes. The code looks intuitive and is easy to maintain. Furthermore, it is possible to improve the code safety with the additional information provided. Let us dive deeper for this.

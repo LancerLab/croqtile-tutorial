@@ -1,0 +1,5 @@
+\subsection*{Parallelization and Masking}
+
+It is usually necessary to mask off some \emph{parallel thread} in programming SPMD code. Programmers may invoke fixed number of parallel threads where the tasks can not evenly divided. Thus masking is necessary to close this gap: it makes only parts of the threads to work, while leaving the other threads wait the working threads..
+
+In Croqtile code, the code may be implicitly masked, or explicit masked. Let us dive into the detail.

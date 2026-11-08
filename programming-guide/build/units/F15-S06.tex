@@ -1,0 +1,7 @@
+\subsection*{Spanned Types}
+
+A spanned type is a \textbf{Composite Type}. It consists of a \textbf{fundamental type}, and a \textbf{multi-dimensional-span(mdspan) type}. Neither the \emph{fundamental type} nor the \emph{mdspan} is a \emph{complete type}. It implies that neither of them can type a data with storage. In Croqtile, you name them as \emph{partial types}.
+
+The reason for making the type be composition of two is to specifically manipulate \emph{mdspan} alone. This is crucial in ML scenarios where data are always organized as multi-dimensional. It is very common for the programmers to tile the data into smaller blocks/chunks, and move them across storage hierarchy. Therefore, manipulating the \_shape\_ (represented by \_mdspan\_) of multi-dimensional data plays a vital role.
+
+In the following sections, this section shows how to define such partial types and how to compose partial types into a complete type for declaring/defining multi-dimensional data purpose.

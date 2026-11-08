@@ -1,0 +1,5 @@
+\subsection*{Debugging MMA-heavy kernels}
+
+When the wrong answer comes from a tensor-core path, suspect \textbf{layout first} --- row versus column major, and whether the RHS is \texttt{[N, K]} versus \texttt{[K, N]} in memory. Then check \textbf{indexing} (which \texttt{block\_m}, \texttt{block\_n}, and K slice you attached with \texttt{.at} / \texttt{chunkat}).
+
+A common mistake is mislabeling \texttt{mma.row.row} when the staged data is actually column-major, or using \texttt{chunkat} indices that do not align with the MMA tile geometry. If you use swizzled loads (\texttt{tma.copy.swiz} / \texttt{mma.load.swiz}), a mismatch shows up as a regular pattern in the error (e.g., every sixteenth element correct, the rest shifted).

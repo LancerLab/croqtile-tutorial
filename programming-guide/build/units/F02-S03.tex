@@ -1,0 +1,23 @@
+\subsection*{Build from Source}
+
+Clone the repository and run the automated setup:
+
+\begin{lstlisting}[language={},caption={Build from Source}]
+git clone https://github.com/LancerLab/croqtile.git
+cd croqtile
+make setup-core
+\end{lstlisting}
+
+\texttt{make setup-\allowbreak{}core} pulls git submodules and downloads the required versions of Flex, Bison, FileCheck, and GoogleTest if they are not already present. Once setup finishes, build the compiler:
+
+\begin{lstlisting}[language={},caption={Build from Source}]
+make
+\end{lstlisting}
+
+Then run the test suite to confirm everything works:
+
+\begin{lstlisting}[language={},caption={Build from Source}]
+make test
+\end{lstlisting}
+
+If all tests pass, the \texttt{croqtile} binary is ready in your build directory. Add it to your \texttt{PATH} or invoke it by its full path.

@@ -1,0 +1,19 @@
+\paragraph*{Syntax at a glance}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Syntax} & \textbf{Meaning} \\
+\midrule
+\texttt{if (expr) \{ .\allowbreak{}.\allowbreak{}.\allowbreak{} \}} & Predicated execution --- runtime conditional, divergent threads masked \\
+\texttt{inthreads.\allowbreak{}async (condition)} & Structured concurrent region --- compile-time thread partitioning \\
+\texttt{shared event name[N]} & Declare N synchronization tokens \\
+\texttt{trigger name} & Signal that a condition is met \\
+\texttt{wait name} & Block until the corresponding \texttt{trigger} fires \\
+\texttt{tile\_\allowbreak{}id = tile\_\allowbreak{}iter \#\allowbreak{} block\_\allowbreak{}id} & Compose indices for tile striping \\
+\texttt{int total\_\allowbreak{}tiles = expr} & Local integer variable \\
+\texttt{yield} & Early return from \texttt{parallel} block \\
+\bottomrule
+\end{tabularx}
+\end{table}

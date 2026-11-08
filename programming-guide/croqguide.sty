@@ -1,0 +1,157 @@
+%% croqguide.sty
+%% Shared typesetting layer for the Croqtile Programming Guide.
+%% Three root documents (main.tex, main-manual.tex, main-memoir.tex) share
+%% this package and the same content/ files; only the template skin differs.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{croqguide}[2026/11/06 v1.0 Croqtile Programming Guide shared style]
+
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{lmodern}
+\RequirePackage[dvipsnames,svgnames,table]{xcolor}
+\RequirePackage{amssymb}
+\RequirePackage{graphicx}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{listings}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage{enumitem}
+\RequirePackage{natbib}
+\RequirePackage{microtype}
+
+\graphicspath{{figures/}}
+
+\definecolor{croqgreen}{HTML}{137A5B}
+\definecolor{croqgreenlight}{HTML}{EAF5F0}
+\definecolor{croqink}{HTML}{1F2933}
+\definecolor{croqgray}{HTML}{5B6770}
+\definecolor{croqgraylight}{HTML}{F4F6F7}
+\definecolor{croqamber}{HTML}{A96400}
+\definecolor{croqamberlight}{HTML}{FFF3DF}
+\definecolor{croqred}{HTML}{A8362D}
+\definecolor{croqredlight}{HTML}{FBECEA}
+\definecolor{croqblue}{HTML}{1F5C99}
+\definecolor{croqcodebg}{HTML}{F6F8FA}
+
+\setlength{\emergencystretch}{4em}
+\tolerance=2500
+\hfuzz=2pt
+\renewcommand{\arraystretch}{1.15}
+
+%% ---------------------------------------------------------------------------
+%% Croqtile code listings
+%% ---------------------------------------------------------------------------
+\lstdefinelanguage{croqtile}{%
+  alsoletter={_},%
+  morekeywords={%
+    __co__,__device__,__cpp__,__global__,__forceinline__,%
+    parallel,foreach,by,in,with,return,yield,if,else,call,%
+    inthreads,async,wait,trigger,swap,rotate,event,stream,%
+    global,shared,local,void,int,auto,float,const,template,%
+    dma,tma,mma,copy,transp,pad,fill,load,store,commit,scale,%
+    row,col,sp,swiz,zfill,any,span,span_as,data,at,chunkat,subspan,%
+    view,from,step,assert,print,println,cdiv,%
+    f16,f32,bf16,s32,f8_e4m3,f8_e5m2,%
+    make_spandata,croq_assert,define,ifdef,ifndef,endif,error,include},%
+  sensitive=true,%
+  morecomment=[l]{//},%
+  morecomment=[s]{/*}{*/},%
+  morestring=[b]",%
+  morestring=[b]'%
+}
+
+\lstset{%
+  language=croqtile,%
+  basicstyle=\ttfamily\small\color{croqink},%
+  keywordstyle=\bfseries\color{croqgreen},%
+  commentstyle=\itshape\color{croqgray},%
+  stringstyle=\color{croqamber},%
+  columns=fullflexible,%
+  keepspaces=true,%
+  showstringspaces=false,%
+  tabsize=2,%
+  breaklines=true,%
+  breakatwhitespace=false,%
+  frame=single,%
+  rulecolor=\color{black!18},%
+  backgroundcolor=\color{croqcodebg},%
+  numbers=left,%
+  numberstyle=\tiny\color{black!35},%
+  numbersep=6pt,%
+  xleftmargin=1.9em,%
+  framexleftmargin=1.5em,%
+  captionpos=b,%
+  aboveskip=1.1em,%
+  belowskip=1.0em%
+}
+
+\renewcommand{\lstlistingname}{Listing}
+\renewcommand{\lstlistlistingname}{List of Code Listings}
+
+%% Inline Croqtile code. Use \co@...@ (the @ is a delimiter, not part of the
+%% code); unlike \texttt{...}, this handles #, _, <, > and quotes safely.
+%% Example: \co@dma.copy tr # i => shared@
+\newcommand{\co}{\lstinline[language={}]}
+%% \nolinkurl (hyperref) typesets paths verbatim AND allows line breaks at
+%% '/', '.', '-' etc. Plain \texttt{\detokenize{...}} cannot break long paths,
+%% which produced overfull boxes in the source-map appendix.
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\chapref}[1]{Chapter~\ref{#1}}
+
+%% ---------------------------------------------------------------------------
+%% Callout boxes
+%% ---------------------------------------------------------------------------
+\newtcolorbox{keypoint}[1][Key point]{%
+  enhanced,breakable,%
+  colback=croqgreenlight,colframe=croqgreen,%
+  colbacktitle=croqgreen,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+
+\newtcolorbox{pitfall}[1][Common pitfall]{%
+  enhanced,breakable,%
+  colback=croqredlight,colframe=croqred,%
+  colbacktitle=croqred,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+
+\newtcolorbox{tryit}[1][Try it]{%
+  enhanced,breakable,%
+  colback=croqamberlight,colframe=croqamber,%
+  colbacktitle=croqamber,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+
+\newtcolorbox{brief}[1][In this chapter]{%
+  enhanced,breakable,%
+  colback=croqgraylight,colframe=croqgray,%
+  colbacktitle=croqgray,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+
+%% Narrative scaffolding used by tools/build_guide.py.  Kept as macros so the
+%% review loop can count how many chapters/sections actually have an
+%% introduction instead of dropping the reader straight into a code listing.
+\newcommand{\guidechapterintro}[1]{%
+  \begin{brief}[Chapter roadmap]#1\end{brief}}
+\newcommand{\guidechapternext}[1]{%
+  \begin{brief}[Where to go next]#1\end{brief}}
+\newcommand{\guideslotintro}[1]{%
+  \noindent\emph{#1}\par\smallskip}
+
+%% ---------------------------------------------------------------------------
+%% Guide metadata (each preamble overrides the template name)
+%% ---------------------------------------------------------------------------
+\newcommand{\guideversion}{1.0}
+\newcommand{\guidereleasedate}{November 2026}
+\providecommand{\guidetemplate}{LaTeXTemplates eBook}
+\providecommand{\guidetemplateurl}{https://latextemplates.com/template/ebook-book/}

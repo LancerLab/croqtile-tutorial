@@ -1,0 +1,12 @@
+\subsection*{Group of Ranges and Group of Integers}
+
+In Croqtile, \emph{mdspan} can be used to represent dimensional shapes. However, as introduced, \emph{mdspan} stands for \textbf{Multi-Dimensional Span}. The elements inside are \emph{Dimensional Spans}, which imply ranges of values.
+
+For example, an \emph{mdspan} \texttt{[7, 14]} represents a group of two ranges \texttt{[0, 7), [0, 14)}. Therefore, an \emph{mdspan} does not represent a list of integer values. However, grouping integer values is useful in certain scenarios:
+
+\begin{itemize}[leftmargin=1.6em]
+\item When considering the delta of two mdspans, multiple integers are needed. In high-level semantics, the delta may reflect padding differences when adjusting shape dimensions.
+\item When tiling a shape, the multiple tiling factors are integers, not ranges.
+\end{itemize}
+
+These situations motivate Croqtile to have a type for grouping integer values.

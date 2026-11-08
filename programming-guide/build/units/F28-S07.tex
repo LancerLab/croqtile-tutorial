@@ -1,0 +1,33 @@
+\subsection*{Future and Wait}
+
+Both \emph{Sync-DMA} and \emph{Async-DMA} operations can be used to define a \emph{future}. As seen in earlier examples, a \emph{future} acts as a handle for asynchronous operations and is typically used as a parameter of the \texttt{wait} statement to synchronize an \emph{Async-DMA}.
+
+Croqtile allows the \texttt{wait} statement to take multiple \emph{future}s. However, using a \emph{future} from a \textbf{Sync-DMA} in a \texttt{wait} statement will result in an error. The following code provides an example:
+
+\begin{lstlisting}[language=croqtile,caption={Future and Wait}]
+f0 = dma.copy.async input0 => shared;
+f1 = dma.copy.async input1 => shared;
+f2 = dma.copy input2 => shared;
+...
+wait f0, f1;  // Multiple wait
+wait f2;      // Error: cannot wait on a sync-dma
+\end{lstlisting}
+
+In Croqtile, another use of a \emph{future} is to retrieve the destination buffer of the associated DMA statement. This is also the reason why \textbf{Sync-DMA} is allowed to define a future. Croqtile provides two built-in member functions for \emph{future} variables:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \texttt{.span} to retrieve the \textbf{mdspan} of the DMA destination buffer.
+\item \texttt{.data} to retrieve the reference of the DMA destination buffer (spanned data).
+\end{itemize}
+
+For example:
+
+\begin{lstlisting}[language=croqtile,caption={Future and Wait}]
+f0 = dma.copy.async input0 => shared;
+f1 = dma.copy input2 => shared;
+...
+local f32 [f0.span] buffer;
+call device_kernel(f1.data, |f1.span|);
+\end{lstlisting}
+
+In this example, you use \texttt{.span} built-in member function to retrieve the shape of \texttt{f0}'s destination buffer, and \texttt{.data} to retrieve the \emph{spanned} data of \texttt{f1}'s destination. In addition, the \textbf{ElementCount} operation on the \emph{mdspan} of the destination buffer of \texttt{f1}. The \textbf{ElementCount} operation returns the number of elements in an \textbf{mdspan}, which is useful in many scenarios.

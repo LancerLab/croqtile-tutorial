@@ -1,0 +1,31 @@
+\subsection*{Host, Device and Tileflow}
+
+The code below showcases a \emph{Croqtile} program targeting :
+
+\begin{lstlisting}[language=croqtile,caption={Host, Device and Tileflow}]
+__device__ void device_function(...) {
+  // High-performance device kernel implementation
+}
+// Tileflow program: orchestrating data movement
+__co__ void croqtile_function(...) {
+  // ... croqtile code ...
+  device_function(...);
+  // ...
+}
+// Host program: typically runs on CPU
+void main() {
+  // ... prepare data ...
+  croqtile_function(...);
+  // ...
+}
+\end{lstlisting}
+
+Let's briefly review each part:
+
+The \emph{Host Program} serves as the entry point of the \emph{Croqtile} module/program and is the caller of the \emph{Tileflow} Program (Croqtile Functions). Written in standard C++, it runs on the CPU and manages the overall workflow of the heterogeneous application.
+
+In a simple high-performance kernel implementation, programmers typically prepare the necessary data in the host program to invoke \emph{Croqtile functions} and handel their return values to advance further steps.
+
+The \emph{Device Program} defines computation-intensive operations executed on the target device. In the example above, the device function is prefixed with \texttt{\_\_device\_\_}, which is an keyword from , indicating it runs exclusively on the heterogeneous device. Similar to the \emph{host program}, any device program is not altered in Croqtile compilation process.
+
+Those familiar with  may already be acquainted with host programs and device programs. However, the \emph{Tileflow Program}, composed of \emph{Croqtile functions} (prefixed with \texttt{\_\_co\_\_}), is the core of \emph{Croqtile} programs. It orchestrates data movement among different hosts/devices and among different storage levels within a single device. In a typical workflow, the Tileflow program moves data to an appropriate storage location (as buffer) and calls \emph{device programs} to perform computations. Once the work is complete, it moves the results back to the host.

@@ -1,0 +1,28 @@
+\subsection*{Operations on I-Tuples}
+
+Operations on \emph{i-tuple}s are similar to those on \emph{mdspan}. You can either use the \emph{element-of} operation \texttt{()} to retrieve the element values or use \emph{ituple} as a whole:
+
+\begin{lstlisting}[language=croqtile,caption={Operations on I-Tuples}]
+a = {3, 4};
+b = {a(0), 1, a(1)};  // '()' to retrieve the element value
+c = a {(0), (1), 2};  // syntax sugar
+d = {a, 5, 6};        // concatenate
+e = a + 1;            // addition is applied elementwise
+\end{lstlisting}
+
+Note that, similar to \emph{integer} and \emph{mdspan}, **an \emph{ituple} variable must be initialized and cannot be reassigned**.
+
+In practice, \emph{ituple}s are often used with \emph{mdspan}s. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Operations on I-Tuples}]
+shape : [7, 18, 28];
+tiling_factors = {1, 2, 4};
+tiled_shape : shape / tiling_factors;
+padded_shape : shape + {2, 0, 2};
+\end{lstlisting}
+
+In this code, a mdspan-typed shape is divided by an ituple-typed tiling factor to derive a \texttt{tiled\_shape}. Additionally, a \texttt{padded\_shape} is derived from the addition of the initial \texttt{shape} and an anonymous \emph{ituple}. Note that when a \emph{mdspan} is added by an \emph{ituple}, their rank must be consistent. Or else, an error will occur.
+
+\begin{lstlisting}[language=croqtile,caption={Operations on I-Tuples}]
+shape : [7, 8, 9] + {1, 2}; // error: inconsistent rank
+\end{lstlisting}

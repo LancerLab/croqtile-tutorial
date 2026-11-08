@@ -1,0 +1,53 @@
+\subsection*{Host Program - the Control Center}
+
+As introduced, the \textbf{host program} serves as the entry point of the \emph{Croqtile} program and acts as the control center. For convenience, here is the code again:
+
+\begin{lstlisting}[language=croqtile,caption={Host Program - the Control Center}]
+int main() {
+  // Define data arrays
+  croqtile::s32 a[6][17][128] = {0};
+  croqtile::s32 b[6][17][128] = {0};
+  // Fill arrays with data
+  std::fill_n(&a[0][0][0], sizeof(a) / sizeof(a[0][0][0]), 1);
+  std::fill_n(&b[0][0][0], sizeof(b) / sizeof(b[0][0][0]), 2);
+  // Call Croqtile function (data movement and device kernel execution)
+  auto res = ele_add(croqtile::make_spanview<3>(&a[0][0][0], {6, 17, 128}),
+                     croqtile::make_spanview<3>(&b[0][0][0], {6, 17, 128}));
+  // Verification: check correctness of results
+  for (size_t i = 0; i < res.shape()[0]; ++i)
+    for (size_t j = 0; j < res.shape()[1]; ++j)
+      for (size_t k = 0; k < res.shape()[2]; ++k)
+        if (a[i][j][k] + b[i][j][k] != res[i][j][k]) {
+          std::cerr << "result does not match.\n";
+          abort();
+        }
+  std::cout << "Test Passed\n" << std::endl;
+}
+\end{lstlisting}
+
+The \texttt{main} function is written with standard C++, except for the use of Croqtile APIs. In this program, you first define two arrays, \texttt{a} and \texttt{b}, and fill them with different values. The API \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanview} is then used to attach shape information to the data.
+
+The \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanview} is declared as follows:
+
+\begin{lstlisting}[language={},caption={Host Program - the Control Center}]
+template <size_t Rank, typename T>
+spanned_view<T, Rank> make_spanview(T* ptr, std::initializer_list<size_t> init);
+\end{lstlisting}
+
+Here is the usage for reference:
+
+\begin{lstlisting}[language={},caption={Host Program - the Control Center}]
+croqtile::make_spanview<3>(&a[0][0][0], {6, 17, 128});
+\end{lstlisting}
+
+This API is essential for connecting \emph{host code} to the \emph{croqtile functions}. Essentially, any input buffer (named the \texttt{spanned} data) of croqtile function is always associated with its shape. It enables Croqtile to guarantee shape safety at compile and runtime.
+
+\begin{keypoint}[Note]
+The most significant dimension value comes first in the \texttt{initializer\_\allowbreak{}list} shape. Thus, a shape of \texttt{\{6, 17, 128\}} corresponds to a C multi-dimensional array like \texttt{a[6][17][128]}.
+\end{keypoint}
+
+In the example code, croqtile function \texttt{ele\_add} is called to calculate the element-wise sum in parallel. Afterward, the host code verifies the result buffer \texttt{res}.
+
+One important detail is that the output of the croqtile function is of type \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data}. Unlike \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view}, which does not own the buffer memory of the data it points to, \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data} owns the buffer. This ensures that the subsequent data verification process is applied to valid memory. The \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} provides rich APIs, supporting C-style array indexing and shape queries via the member function \texttt{.shape()}.
+
+Similarly, the most significant dimension is listed first in this shape array (\texttt{res.shape()[0]} in this case). Croqtile follows a '\textbf{most-significant-dimension-major}' ordering, also known as '\textbf{row-major}' ordering, where the first dimension varies the slowest.

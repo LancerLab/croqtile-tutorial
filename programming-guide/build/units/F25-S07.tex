@@ -1,0 +1,29 @@
+\subsection*{C++ Host: Shape Return}
+
+The C++ host code that receives the output of Croqtile function actually receives a buffer. Semantics, the return must be copied than reference, or else it returns a reference to an object allocated in the called function. For example:
+
+\begin{lstlisting}[language=croqtile,caption={C Host: Shape Return}]
+__co__ auto foo() {
+  f32 [7, 16] output;
+  // ...
+  return output;  // semantically copy
+}
+void entry() {
+  auto result = foo(); // move the 'spanned_data' to caller
+  // ...
+}
+\end{lstlisting}
+
+In this example, the \texttt{output} is semantically copied to the caller. However, in Croqtile's implementation, no copy happens. The returned type is \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data}, where its simplified definition is as following:
+
+\begin{lstlisting}[language={},caption={C Host: Shape Return}]
+template <typename T, size_t Rank>
+class spanned_data {
+  std::unique_ptr<T[]> ptr; // move only pointers
+  size_t dims[Rank];        // ranked dimensions
+};
+\end{lstlisting}
+
+In contrary to \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view}, \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data} owns the buffer it points to. Thus there is \textbf{no copy actually happen when returning from a Croqtile function}. In compiler's term, this is called the \emph{Return Value Optimization}.
+
+You may use member function like \texttt{.rank()}, \texttt{.shape()} to query shape related information of Croqtile return. This allows you able to work without knowing the too much detail about Croqtile function.

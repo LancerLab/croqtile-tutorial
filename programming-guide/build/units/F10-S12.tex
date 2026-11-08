@@ -1,0 +1,9 @@
+When you open a benchmark kernel, read top down:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Macros and \texttt{\#error} guards}
+\item \textbf{\texttt{\_\_device\_\_} functions} --- Helper algorithms (top-K, reductions, shuffle wrappers) that Croqtile passes through.
+\item \textbf{Host setup} --- Buffers, launch configuration, timing; ordinary C++.
+\item \textbf{The \texttt{\_\_co\_\_} function} --- Orchestration: \texttt{parallel}, \texttt{foreach}, TMA/MMA, \texttt{inthreads.\allowbreak{}async}, events. Map each region back to earlier chapters.
+\item \textbf{\texttt{\_\_cpp\_\_} islands} --- Usually a handful of lines.
+\end{enumerate}

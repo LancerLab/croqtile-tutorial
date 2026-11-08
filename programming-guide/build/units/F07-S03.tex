@@ -1,0 +1,38 @@
+\subsection*{Structured concurrent regions with \texttt{inthreads.\allowbreak{}async}}
+
+\texttt{inthreads.\allowbreak{}async} solves a fundamentally different problem than \texttt{if}. Instead of asking "should this thread execute this code?" at runtime, it says "this group of threads runs this program, that group runs that program" at \textbf{compile time}.
+
+\begin{lstlisting}[language=croqtile,caption={Structured concurrent regions with inthreads.async}]
+parallel p1 by 2 : group-4 {
+  inthreads.async (p1 == 0) {
+  }
+  inthreads.async (p1 == 1) {
+  }
+}
+\end{lstlisting}
+
+The distinction from \texttt{if} is structural, not just performance:
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+ & \textbf{\texttt{if} (predicated execution)} & \textbf{\texttt{inthreads.\allowbreak{}async} (structured concurrency)} \\
+\midrule
+\textbf{Resolution} & Runtime --- every thread evaluates the condition & Compile time --- thread assignment is fixed \\
+\textbf{Instruction streams} & One program; divergent threads masked & Separate programs per region \\
+\textbf{PL analogy} & \texttt{if}/\texttt{else} in any language & \texttt{async}/\texttt{spawn} in structured concurrency (Trio, Go goroutines, Cilk) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Why "structured"?} The regions are lexically scoped --- the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each \texttt{inthreads.\allowbreak{}async} block is a static partition.
+
+\textbf{The \texttt{.async} modifier.} Without \texttt{.async}, \texttt{inthreads} would execute regions sequentially --- thread subsets take turns. This is analogous to the \texttt{async} keyword in structured concurrency frameworks --- it marks a region as independently schedulable.
+
+The figure below shows the effect. --- The producer's DMA and the consumer's MMA overlap in time:
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f07-fig1_role_comparison_light.png}
+\end{figure}
+\begin{center}\small\emph{Each waits for the other. Bottom: \texttt{inthreads.\allowbreak{}async} partitions into two concurrent programs --- DMA and MMA overlap, roughly halving wall-clock time.}\end{center}

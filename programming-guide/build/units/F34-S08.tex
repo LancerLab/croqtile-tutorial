@@ -1,0 +1,36 @@
+\subsection*{Masking for Multi-Levels}
+
+Thread masking can be applied at different parallel levels. The following example demonstrates this:
+
+\begin{lstlisting}[language=croqtile,caption={Masking for Multi-Levels}]
+__co__  void foo() {
+  parallel p by 3, q by 4 {
+    inthreads (p < 2 && q == 0) {
+      // divergent code for thread (0, 0), (1, 0)
+      // thread-mask: 011-0001
+    }
+    inthreads (q == 1) {
+      // divergent code for thread (0, 1), (1, 1), (2, 1)
+      // thread-mask: 111-0010
+    }
+  }
+}
+\end{lstlisting}
+
+This code uses two levels of parallelization:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Outer level (\texttt{p}): Parallel count of 3
+\item Inner level (\texttt{q}): Parallel count of 4
+\end{itemize}
+
+The first \texttt{inthreads} predicate (\texttt{p \textless{} 2 \&\& q == 0}) restricts execution to:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Outer parallel IDs: \texttt{0, 1} (excluding 2)
+\item Inner parallel ID: \texttt{0} only
+\end{itemize}
+
+The thread mask (\texttt{011-0001}) reflects these constraints, where the two levels are separated by a hyphen (-).
+
+The second predicate (\texttt{q == 1}) imposes no restriction on the outer level (\texttt{p}), allowing all outer IDs (\texttt{0, 1, 2}) while restricting the inner level to \texttt{q == 1}.

@@ -1,0 +1,9 @@
+\subsection*{\texttt{dma.\allowbreak{}pad\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}}}
+
+\begin{lstlisting}[language=croqtile,caption={dma.pad ...}]
+f = dma.pad<{2, 1}, {3, 2}, {0, 0}, V>.async input => shared;
+wait f;
+dma.copy f.data => output;
+\end{lstlisting}
+
+Padding creates a larger destination tile. The template arguments describe low padding, high padding, internal stride-style padding, and the fill value. Use \texttt{pad} when you want explicit border values, not just out-of-bounds protection.

@@ -1,0 +1,24 @@
+\subsection*{Build and Compile}
+
+Croqtile files use the \texttt{.co} extension. The compiler works like \texttt{gcc} or \texttt{clang}:
+
+\begin{lstlisting}[language={},caption={Build and Compile}]
+croqtile ele_add.co                          # produces a.out
+croqtile ele_add.co -o ele_add               # specify output name
+croqtile -es -t target ele_add.co -o out.cu    # emit target source only
+\end{lstlisting}
+
+The \texttt{-t} flag selects the target platform.
+
+To see all available options, run \texttt{croqtile -\allowbreak{}-\allowbreak{}help}:
+
+\begin{lstlisting}[language={},caption={Build and Compile}]
+croqtile --help
+\end{lstlisting}
+
+This prints the full set of compiler flags --- output naming, target selection, verbosity, and diagnostic options. It is worth scanning once so you know what is available when you need it.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f03-compile_and_run_light.png}
+\end{figure}
+\begin{center}\small\emph{Compiling and running a Croqtile program, plus the \texttt{--help} output.}\end{center}

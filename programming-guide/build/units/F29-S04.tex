@@ -1,0 +1,21 @@
+\subsection*{Use Multiple Bounded Variables}
+
+The following code showcases an example that utilizes multiple bounded variables:
+
+\begin{lstlisting}[language=croqtile,caption={Use Multiple Bounded Variables}]
+__co__ void foo(f32 [36, 14, 8] input) {
+  parallel p by 6 {
+    with index in [7, 4] {
+      foreach index {
+        dma.copy input.chunkat(p, index) => shared;
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+In this example, there are two bounded variables: \texttt{p} is the \emph{bounded integer} defined by the \texttt{parallel-by} statement, while \texttt{index} is the \emph{bounded ituple} with two integers. The \texttt{chunkat} expression concatenates them to form a \emph{bounded ituple} with upper-bounds \texttt{\{\#\allowbreak{}p, \#\allowbreak{}index\}} and current values \texttt{\{p, index\}}. Thus, the shape of each chunk is calculated as \texttt{[36, 14, 8] /\allowbreak{} \{\#\allowbreak{}p, \#\allowbreak{}index\} = [36, 14, 8] /\allowbreak{} \{6, 7, 4\} = [6, 2, 2]}.
+
+In addition, since \texttt{p} is the bounded variable for parallelization, there are \texttt{6} threads working in parallel, each handling a large chunk of \texttt{[6, 14, 8]}. Within a single parallel thread, it iterates \texttt{7x4} times, each time moving a \texttt{[6, 2, 2]} small chunk to a compiler-allocated \texttt{shared} storage.
+
+With this approach, you can apply tiling to data movement, where each iteration in each parallel thread selects only a part of the data/buffer for transfer. The Croqtile compiler uses information about the \emph{spanned} data and the \emph{bounded variables} to transpile the DMA statement into C++ subscripting, DMA configurations, etc., simplifying the trivial and error-prone work that C++ programmers typically face. This makes learning the Croqtile syntax worthwhile.

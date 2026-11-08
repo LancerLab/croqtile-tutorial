@@ -1,0 +1,9 @@
+\subsection*{Cost and Limitations}
+
+To support dynamic shapes, Croqtile compile has to be conservative at compile time. This limitation restricts certain compile-time checks and necessitates some checks to be performed at runtime instead. Although the implementation aims to minimize overhead by placing these checks in the host code, they \textbf{remain more conservative compared to code with fixed-sized shapes}. Programmers should be mindful of this situation and may need to add user-level assertions to enhance code safety when necessary.
+
+A significant limitation of both \emph{anonymous dimension} and \emph{symbolic dimension} is that they can **only be applied to the \emph{spanned data} in parameter lists**. Dimensions of buffers declared within Croqtile functions cannot be made dynamic. For example, the following code will result in a compile-time error:
+
+\begin{lstlisting}[language=croqtile,caption={Cost and Limitations}]
+__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer
+\end{lstlisting}

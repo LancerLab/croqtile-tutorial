@@ -1,0 +1,30 @@
+\subsection*{DeadLocks}
+
+By default, the event is lock-free for high-performance synchoronization between different asynchronous blocks. That implies it is risky when multiple threads try to update the event, especially for \texttt{wait}.
+
+For example,
+
+\begin{lstlisting}[language=croqtile,caption={DeadLocks}]
+parallel p by 1 {
+  shared event e;
+  trigger e;   // one thread set e;
+  parallel q by 2 {
+    wait e;    // two threads can reset e;
+  }
+}
+\end{lstlisting}
+
+In this code, two threads wait a single event \texttt{e}. However, since \texttt{wait} resets the event \texttt{e}, it is possible that \texttt{thread-0} resets the event before \texttt{thread-1} find the \texttt{e} has been triggered. As a result, \texttt{thread-1} is never unblocked and deadlocking happens.
+
+\begin{lstlisting}[language=croqtile,caption={DeadLocks}]
+qc = 2;
+parallel p by 1 {
+  shared event e[qc];
+  trigger e;   // one thread set e[0] and e[1];
+  parallel q by qc {
+    wait e[q]; // no dead lock
+  }
+}
+\end{lstlisting}
+
+In this code, you utilize an event array to guarantee each event is waited and reset by a single thread.

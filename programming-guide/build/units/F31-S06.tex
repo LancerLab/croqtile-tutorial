@@ -1,0 +1,12 @@
+\subsection*{Bounded Variable}
+
+In a \texttt{parallel-by} block, the variables defined after the \texttt{parallel} keyword are referred to as \textbf{Bounded Variables}. Specifically:
+
+\begin{itemize}[leftmargin=1.6em]
+\item If the variable is an \emph{integer}, it is called a \textbf{bounded integer}.
+\item If the variable is an \emph{ituple}, it is called a \textbf{bounded ituple}.
+\end{itemize}
+
+This terminology indicates that the variable not only has a value but also has defined bounds. For example, in the statement \texttt{parallel p by 6}, \texttt{p} is a \emph{bounded integer} with a bound \texttt{[0, 6)}, where \texttt{6} is the exclusive upper bound.
+
+The concept of bounded variables will be explored further in later sections, where their usage will be detailed.

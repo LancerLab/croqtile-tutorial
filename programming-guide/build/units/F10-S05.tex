@@ -1,0 +1,8 @@
+\subsection*{\texttt{\_\_cpp\_\_}: verbatim C++ injection}
+
+Whatever you place there must be valid at the splice point. The Croqtile compiler does not parse or rewrite the contents.
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{\texttt{\_\allowbreak{}\_\allowbreak{}cpp\_\allowbreak{}\_\allowbreak{}(".\allowbreak{}.\allowbreak{}.\allowbreak{}")}} --- Ordinary string; best for short one-liners.
+\item \textbf{\texttt{\_\allowbreak{}\_\allowbreak{}cpp\_\allowbreak{}\_\allowbreak{}(R"(.\allowbreak{}.\allowbreak{}.\allowbreak{})")}} --- Raw string literal; use for \texttt{asm volatile} where escaping every \texttt{"} would be painful.
+\end{itemize}

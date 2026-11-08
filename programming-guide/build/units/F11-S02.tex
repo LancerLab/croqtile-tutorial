@@ -1,0 +1,18 @@
+\subsection*{\texttt{print!} and \texttt{println!}: compile-time inspection}
+
+The bang variants (\texttt{print!}, \texttt{println!}) run at \textbf{compile time}, not at runtime. They print to the compiler's output and are useful for inspecting shapes, extents, and type information without launching a kernel:
+
+\begin{lstlisting}[language=croqtile,caption={print and println : compile-time inspection}]
+__co__ void check_shapes(f32 [3, 2] b) {
+  print!("shape of b: ");
+  println!("b.span = ", b.span);
+}
+\end{lstlisting}
+
+When you compile this file, the compiler emits:
+
+\begin{lstlisting}[language=croqtile,caption={print and println : compile-time inspection}]
+shape of b: b.span = [3, 2]
+\end{lstlisting}
+
+String literals are concatenated (\texttt{"wor" "ld!"} becomes \texttt{"world!"}).

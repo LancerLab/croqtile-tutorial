@@ -1,0 +1,10 @@
+\subsection*{Initialization}
+
+It is possible to initialize a buffer at the declaration site. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Initialization}]
+local s32 [17, 6] b1 {0};       // elements are initialized to 0
+shared f32 [128, 16] b2 {3.14f}; // elements are initialized to 3.14f
+\end{lstlisting}
+
+The syntax for the \emph{initialization expression} of a \emph{spanned data} is straightforward: it encloses an initial value inside brackets following the variable name. However, its functionality is limited --- it always set all elements to a fixed value.

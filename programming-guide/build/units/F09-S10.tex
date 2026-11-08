@@ -1,0 +1,21 @@
+\subsection*{Layout reinterpretation: \texttt{span\_as}}
+
+Some kernels load data as a flat 1D strip but need to feed it to MMA as a 2D matrix. A naive approach would copy the data into a reshaped buffer --- \texttt{span\_as} avoids this by reinterpreting the existing buffer's shape in place:
+
+\begin{lstlisting}[language=croqtile,caption={Layout reinterpretation: span as}]
+flat_buffer.span_as([rows, cols])
+\end{lstlisting}
+
+Element count is preserved; only the logical rank changes. No data is moved.
+
+\begin{lstlisting}[language=croqtile,caption={Layout reinterpretation: span as}]
+strip_load = dma.copy data.chunkat(tile) => shared;
+tile_2d = strip_load.data.span_as([tile_m, tile_k]);
+ma = mma.load tile_2d.chunkat(_, iv_warp);
+\end{lstlisting}
+
+\texttt{rows * cols} must equal the span length of the underlying storage, or the compiler rejects the program --- this invariant is checked at compile time, not at runtime.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig7_span_as_light.png}
+\end{figure}

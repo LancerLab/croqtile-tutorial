@@ -1,0 +1,22 @@
+\subsection*{Implicit Masking}
+
+There are some code structures in Croqtile that implies implicit masking. One typical situation is the multi-level \texttt{parallel-by} block. The below code showcases an example:
+
+\begin{lstlisting}[language=croqtile,caption={Implicit Masking}]
+__co__  void foo() {
+  parallel p by 6 {
+    // parallel-level-0:
+    //   code here is as if implicitly masked 'if (q == 0)'
+    parallel q by 2 {
+      // parallel-level-1:
+      //   code here is for all 'q' threads
+    }
+    // parallel-level-0:
+    //   code here is as if implicitly masked 'if (q == 0)'
+  }
+}
+\end{lstlisting}
+
+In this example, there exists two-level of parallelization. The code inside \texttt{parallel p by 6} block but outside \texttt{parallel q by 2} blocks is only for \emph{parallel-level-0}. However, for target like , it could invoke 2 parallel threads in practise to execute either code inside \emph{parallel-level-0} or \emph{parallel-level-1}. Therefore, the \emph{parallel-level-0}-only part is as if guarded with a C++ block \texttt{if (q == 0)}.
+
+Conditional \texttt{foreach} Block Since It is possible to guard the \texttt{foreach} loop with conditions. One direct

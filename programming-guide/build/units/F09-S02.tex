@@ -1,0 +1,24 @@
+\subsection*{\texttt{tma.copy}: target tensor movement}
+
+The surface syntax mirrors \texttt{dma.copy}:
+
+\begin{lstlisting}[language=croqtile,caption={tma.copy: target tensor movement}]
+tma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+\end{lstlisting}
+
+Same source expression, same \texttt{=\textgreater{}} destination form. The difference is \textbf{who does the work}:
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig3_tma_descriptor_light.png}
+\end{figure}
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{DMA path.} Threads cooperate to cover the tile; each lane participates in address math and load issue.
+\item \textbf{TMA path.} One descriptor-based operation describes the tensor slice;
+\end{itemize}
+
+\textbf{What this buys you.} You still synchronize on the whole tile (with events or the pipeline discipline from Section~\ref{sec:3-8-5}), but you drop the per-thread load choreography. The compiler builds the tensor descriptor from your \texttt{\_\_co\_\_} signature and global layouts.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig1_tma_vs_dma_light.png}
+\end{figure}

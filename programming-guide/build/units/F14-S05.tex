@@ -1,0 +1,51 @@
+\subsection*{A Full Croqtile-target C++ Code Example}
+
+Below is a complete  code example that performs element-wise addition on two arrays of the same size and element type:
+
+\begin{lstlisting}[language=croqtile,caption={A Full Croqtile-target C Code Example}]
+// Device Program
+__device__ void kernel(int * a, int * b, int * c, int n) {
+  for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
+}
+// Tileflow Program
+__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
+  s32 [lhs.span] output; // Use same shape as lhs
+  parallel p by 6 {
+    with index in [17, 4] { // Tiling factors
+      foreach index {
+        lhs_load = dma.copy lhs.chunkat(p, index) => local;
+        rhs_load = dma.copy rhs.chunkat(p, index) => local;
+        local s32 [lhs_load.span] l1_out;
+        // Call kernel with loaded data
+        call kernel(lhs_load.data, rhs_load.data, l1_out, |lhs_load.span|);
+        // Store result back to output
+        dma.copy l1_out => output.chunkat(p, index);
+      }
+    }
+  }
+  return output;
+}
+// Host Program
+int main() {
+  // Define data arrays
+  croqtile::s32 a[6][17][128] = {0};
+  croqtile::s32 b[6][17][128] = {0};
+  // Fill arrays with data
+  std::fill_n(&a[0][0][0], sizeof(a) / sizeof(a[0][0][0]), 1);
+  std::fill_n(&b[0][0][0], sizeof(b) / sizeof(b[0][0][0]), 2);
+  // Call Croqtile function (data movement and device kernel execution)
+  auto res = ele_add(croqtile::make_spanview<3>(&a[0][0][0], {6, 17, 128}),
+                     croqtile::make_spanview<3>(&b[0][0][0], {6, 17, 128}));
+  // Verification: check correctness of results
+  for (size_t i = 0; i < res.shape()[0]; ++i)
+    for (size_t j = 0; j < res.shape()[1]; ++j)
+      for (size_t k = 0; k < res.shape()[2]; ++k)
+        if (a[i][j][k] + b[i][j][k] != res[i][j][k]) {
+          std::cerr << "result does not match.\n";
+          abort();
+        }
+  std::cout << "Test Passed\n" << std::endl;
+}
+\end{lstlisting}
+
+The subsequent sections will explain the different parts of the code.

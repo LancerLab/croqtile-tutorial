@@ -1,0 +1,13 @@
+\subsection*{Tile geometry as macros}
+
+Production matmul sources centralize tile dimensions at the top:
+
+\begin{lstlisting}[language=croqtile,caption={Tile geometry as macros}]
+#define MATMUL_WARP_M 64
+#define MATMUL_WARP_N 128
+#define MATMUL_TILE_K 64
+#define MATMUL_WARP_K 16
+#define MATMUL_STAGES 4
+\end{lstlisting}
+
+The same names appear in \texttt{parallel}, shared-memory declarations, \texttt{foreach} bounds, and host-side verification.

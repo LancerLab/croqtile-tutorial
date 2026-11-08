@@ -1,0 +1,13 @@
+\subsection*{Development Utilities}
+
+The Makefile includes shortcuts for running the bundled test suites:
+
+\begin{lstlisting}[language={},caption={Development Utilities}]
+make help                              # list all available targets
+make sample-test                       # run all sample operator tests
+make sample-test-operator OPERATOR=add # test a specific operator
+\end{lstlisting}
+
+These are useful when you modify Croqtile itself or want to verify a specific operator family.
+
+With the compiler installed and verified, you are ready to write your first real Croqtile program in Section~\ref{sec:1-7}.

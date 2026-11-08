@@ -1,0 +1,52 @@
+\subsection*{The full 1P1C event pipeline}
+
+This kernel combines \texttt{inthreads.\allowbreak{}async} (from Section~\ref{sec:3-8}) with event arrays to build a complete multi-stage pipeline. The producer and consumer run as separate concurrent programs, coordinated entirely through \texttt{wait} / \texttt{trigger}:
+
+\begin{lstlisting}[language=croqtile,caption={The full 1P1C event pipeline}]
+#define TILE_M 128
+#define TILE_N 128
+#define TILE_K 128
+#define WARP_M 64
+#define WARP_N 64
+#define WARP_K 16
+#define STAGES 2
+__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared event full[STAGES], empty[STAGES];
+    shared f16 [WARP_M, TILE_K] lhs_load_s[STAGES];
+    shared f16 [WARP_N, TILE_K] rhs_load_s[STAGES];
+    shared f16 [WARP_M, WARP_N] output_s;
+    parallel p1 by 2 : group-4 {
+      inthreads.async (p1 == 0) {
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          stage = iv_k % STAGES;
+          wait empty[stage];
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k)
+            => lhs_load_s[stage];
+          dma.copy rhs.chunkat(block_n, iv_k)
+            => rhs_load_s[stage];
+          trigger full[stage];
+        }
+      }
+      inthreads.async (p1 == 1) {
+        mc = mma.fill.f16 0.0f;
+        foreach {s} in [STAGES]
+          trigger empty[s];
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          stage = iv_k % STAGES;
+          wait full[stage];
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+            ma = mma.load lhs_load_s[stage].chunkat(_, iv_warp);
+            mb = mma.load rhs_load_s[stage].chunkat(_, iv_warp);
+            mma.row.row mc, ma, mb;
+          }
+          mma.commit;
+          trigger empty[stage];
+        }
+        mma.store mc, output_s;
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+}
+\end{lstlisting}

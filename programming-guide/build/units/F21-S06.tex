@@ -1,0 +1,9 @@
+\subsection*{From Value Numbers to Expression}
+
+After value numbering and simplification, each expression is associated with its simplified value number. In Croqtile, this is important step for the shape inference process of the mdspan type.
+
+The \emph{mdspan} type is a partial type that defines count of fundamental-typed elements. And in programming, together with a fundamental type, e.g, it decides the memory size an \emph{spanned} object takes.
+
+The shape detail of \emph{mdspan} could be runtime decided. However, in many scenario, the shape is possible to be fully evaluated to fixed numbers at compile time. In such a scenario, static memory allocation can also be triggered at compile time to best utilize the system memory. Or else, the it requires to generate code to calculate the shapes.
+
+Consequently, except the constant values, it is required to generate expressions back from value numbers.

@@ -1,0 +1,20 @@
+\subsection*{Tensor Contraction: the \texttt{mma} Syntax}
+
+Section~\ref{sec:3-4}'s tiled matmul computes the inner contraction the way a CPU would: a \texttt{foreach k} loop where each iteration multiplies two scalars and accumulates into one output element. That works.
+
+The job is \textbf{2D tensor contraction} --- the operation C += A \(\times\) B where A, B, and C are small, fixed-shape matrix tiles. It is the inner kernel of every GEMM, every convolution expressed as an im2col matmul, every attention head's QK\textasciicircum{}T.
+
+\begin{center}\small\emph{The same mathematical operation --- C += A \(\times\) B on tile-shaped operands}\end{center}
+
+What makes this hard for programmers is not the math but the . Get the layout wrong --- say, load a column-major tile into a row-major fragment --- and the result is silently incorrect.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f06-fig2_register_loading_light.png}
+\end{figure}
+
+Croqtile's design sidesteps this complexity entirely.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f06-fig3_mma_syntax_light.png}
+\end{figure}
+\begin{center}\small\emph{The four-step MMA syntax is an abstract interface}\end{center}

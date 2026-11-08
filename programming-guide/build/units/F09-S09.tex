@@ -1,0 +1,16 @@
+\subsection*{Zero-padding: \texttt{.zfill}}
+
+Every tiled kernel faces the same edge case: what happens when M or K is not a multiple of the tile size? The last tile along that axis is partial --- some of its elements lie beyond the tensor boundary.
+
+The brute-force fix is to add a special code path for the boundary tile. But this breaks the uniformity of the MMA loop and adds branches that the compiler cannot optimize away. \texttt{.zfill} solves this elegantly:
+
+\begin{lstlisting}[language=croqtile,caption={Zero-padding: .zfill}]
+tma.copy.swiz<3> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
+  => lhs_load_s;
+\end{lstlisting}
+
+\texttt{.zfill} applies to the source side of a copy: out-of-range elements are written as zero in the destination tile. For a GEMM, zeros contribute nothing to the accumulation (0 \(\times\) anything = 0), so the MMA loop stays completely uniform --- same code for interior tiles and boundary tiles --- while remaining mathematically correct. No branches, no special cases, no performance penalty.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig6_zfill_light.png}
+\end{figure}

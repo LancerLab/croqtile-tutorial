@@ -1,0 +1,19 @@
+\subsection*{\emph{mdspan} with \textbf{Anonymous Dimension}}
+
+Croqtile supports shape dimensions with unknown values, similar to many high-level machine learning languages. The simplest method is to use \textbf{Anonymous Dimension} in \texttt{mdspan}:
+
+\begin{lstlisting}[language=croqtile,caption={mdspan with Anonymous Dimension}]
+__co__ auto foo(s32 [?, 1, 2] input) { ... }
+\end{lstlisting}
+
+Here, the question mark \texttt{?} represents a compile-time unknown value. Any positive integer could be assumed here. However, the value must be provided at runtime, as the following example shows:
+
+\begin{lstlisting}[language={},caption={mdspan with Anonymous Dimension}]
+void bar(int * data, int dim0) {
+  foo(croqtile::make_spanview<3>(data, {dim0, 1, 2}));
+}
+\end{lstlisting}
+
+In this example, the first dimension of \texttt{input} is provided by \texttt{foo}'s \emph{spanned} input, where the value is retrieved from \texttt{bar}'s caller at execution. You may assume the value be determined by reading a configuration file, through shape derivation in a machine learning framework, or etc..
+
+The \emph{anonymous dimension} can work properly for this case. However, in certain scenarios, it is not sufficient.

@@ -1,0 +1,12 @@
+\subsection*{Variables and Types}
+
+Croqtile introduces four fundamental type categories: scalar-type, spanned-type, integer-tuple-type (ituple-type) and bounded-type. These types serve for different purposes.
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Scalar Type}. It is designed to fullfil the requirement of program control. It consist of \emph{Integer Type} and \emph{Boolean Type}.
+\item \textbf{Spanned Type}. It represents the data type (normally the tensor) for computation. Apart from referencing the raw data, a \emph{spanned type} also associates data with a shape representing by multi-dimensional ranges. The 'multi-dimensional ranges' is named 'mdspan'. It is useful for tiling, etc, which is introduced soon.
+\item \textbf{Integer Tuple (I-Tuple) Type}. It represents a group of integer values. A common usage of \emph{i-tuple} is to introduce the bound of multi-dimensional data.
+\item \textbf{Bounded (Integer/ITuple) Type}. This is the special type that is used to simplify data (sub-zone) reference. And it works with loop construct to iteratively process data.
+\end{itemize}
+
+Among the four type categories, \emph{scalar} and \emph{ituple} could be well accepted consider it maps to elements of existing general purpose programming languages. However, the \emph{spanned type}, and \emph{bounded type} are specific to the domain. The following sections will show the detail.

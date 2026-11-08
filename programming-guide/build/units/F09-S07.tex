@@ -1,0 +1,24 @@
+\texttt{chunkat} divides a tensor into a regular grid of equal-sized tiles. But what if the slice you need does not start on a tile boundary? Consider a mixture-of-experts (MoE) kernel: each expert processes a different number of tokens, so the starting row for each expert's operand is determined at runtime. You cannot precompute a fixed tile grid.
+
+\texttt{view(M, N).\allowbreak{}from(row, col)} defines an \texttt{M x N} rectangle starting at any \texttt{(row, col)} --- no alignment requirement:
+
+\begin{lstlisting}[language=croqtile,caption={Arbitrary-offset windows: view and from}]
+patch = matrix.view(16, 16).from(37, 50);
+\end{lstlisting}
+
+This is a \texttt{[16, 16]} slice starting at row 37, column 50. The origin can be any runtime value.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
+\end{figure}
+
+The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{tma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
+
+\begin{lstlisting}[language=croqtile,caption={Arbitrary-offset windows: view and from}]
+expert_lhs = lhs.view(expert_M, K).from(expert_offset, 0);
+dma.copy expert_lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => shared;
+\end{lstlisting}
+
+In an MoE stack, each expert's token batch starts at a dynamic row \texttt{expert\_offset}. The \texttt{view} / \texttt{from} call rewires the operand at the top of the pipeline; everything below --- DMA, staging, MMA loop --- runs the same code for every expert.
+
+\textbf{When to use it.} Prefer \texttt{chunkat} when the tensor divides evenly into tiles at compile time. Use \texttt{view} / \texttt{from} when the window's origin or extent is determined at runtime, or when the geometry does not align to the tile grid.

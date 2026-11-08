@@ -1,0 +1,19 @@
+{
+  "round": 1,
+  "counts": {
+    "meta": 6,
+    "pov": 3,
+    "generic_headings": 0,
+    "typos": 0,
+    "broken": 1,
+    "hardware": 0,
+    "placeholders": 0,
+    "narrative_gap": 0
+  },
+  "total": 10,
+  "narrative": {
+    "chapter_intro": 3,
+    "slot_intro": 62,
+    "where_next": 3
+  }
+}

@@ -1,0 +1,17 @@
+\subsection*{Early return from \texttt{parallel}}
+
+Sometimes you need to early return from a \texttt{parallel} block. The \texttt{yield} keyword will simply generate a \texttt{return;} instruction to get out of device code.
+
+\begin{lstlisting}[language=croqtile,caption={Early return from parallel}]
+parallel p by BLK_CNT: block {
+  parallel q by THR_CNT : thread {
+    if (cond) yield;
+    ...
+  }
+}
+\end{lstlisting}
+
+\begin{pitfall}[Common pitfall]
+The \texttt{yield} keyword currently will \textbf{not} do any compile-time nor runtime checks. Be careful about synchronization safety.
+
+\end{pitfall}

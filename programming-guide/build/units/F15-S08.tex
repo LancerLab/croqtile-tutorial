@@ -1,0 +1,19 @@
+\subsection*{Fully-Typing}
+
+A \emph{mdspan} can not be applied alone to define the data for computation. In Croqtile function, a data definition must be fully-typed, which consists of a fundamental type and a \emph{mdspan}. The below code showcases how it works.
+
+\begin{lstlisting}[language=croqtile,caption={Fully-Typing}]
+ndims : [20, 15];
+f32 [10, 10] d0;
+f16 [ndims] d1;
+\end{lstlisting}
+
+There are fundamental types that Croqtile has supported, including:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Unsigned Integers: \emph{u8/u16/u32}
+\item Signed Integers: \emph{s8/s16/s32}
+\item Floating-points: \emph{f16/bf16/f32}
+\end{itemize}
+
+Note 's32' and 'int' are different in Croqtile. 's32' is a fundamental type, which can not be applied for a fully typing.

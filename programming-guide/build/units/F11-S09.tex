@@ -1,0 +1,18 @@
+\subsection*{Putting it together}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f11-fig1_debug_workflow_light.png}
+\end{figure}
+
+Work from cheap to expensive: \texttt{println!} (compile-time shapes) \(\rightarrow\) guarded \texttt{println} on one tile (runtime values) \(\rightarrow\) event/stage prints (synchronization) \(\rightarrow\) pattern analysis (layout) \(\rightarrow\) \texttt{debugger} (pointer bugs). Guard runtime prints behind \texttt{\#ifdef} so they vanish in production:
+
+\begin{lstlisting}[language=croqtile,caption={Putting it together}]
+#ifdef DEBUG_PRINT
+  println("tile_k=", iv_k, " accum=", mc);
+#endif
+\end{lstlisting}
+
+\begin{lstlisting}[language={},caption={Putting it together}]
+croqtile kernel.co -DDEBUG_PRINT -o kernel    # debug build
+croqtile kernel.co -o kernel                   # production build
+\end{lstlisting}

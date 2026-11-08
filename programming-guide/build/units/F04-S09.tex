@@ -1,0 +1,28 @@
+\subsection*{Synchronous and Asynchronous Copies}
+
+By default, copies are synchronous:
+
+\begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous Copies}]
+f = dma.copy input => shared;
+dma.copy f.data => output;
+\end{lstlisting}
+
+Add \texttt{.async} when you want the transfer to proceed in the background:
+
+\begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous Copies}]
+f = dma.copy.async input => shared;
+wait f;
+dma.copy f.data => output;
+\end{lstlisting}
+
+The same pattern applies to TMA:
+
+\begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous Copies}]
+f = tma.copy.async input => shared;
+wait f;
+tma.copy f.data => output;
+\end{lstlisting}
+
+Rule: if you read \texttt{f.data} from an async transfer, wait first.
+
+Later chapters use async copies to overlap load and compute. In this part of the guide, the important part is the contract: \texttt{.async} creates an in-flight transfer, and \texttt{wait} makes it safe to consume.

@@ -1,0 +1,20 @@
+\subsection*{Summary of New Syntax}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Syntax} & \textbf{Meaning} \\
+\midrule
+\texttt{parallel p by N} & N-way parallelism, index \texttt{p} runs 0..N-1 concurrently \\
+\texttt{parallel \{px, py\} by [M, N]} & Multi-dimensional parallel level \textless{}br\textgreater{} (\texttt{p} and \texttt{q} correspond to one parallel level) \\
+\texttt{parallel p by A, q by B} & Comma-separated parallel levels \textless{}br\textgreater{} (\texttt{p} and \texttt{q} correspond to different parallel levels) \\
+\texttt{parallel q by N :\allowbreak{} thread} & Map to threads within a block \\
+\texttt{foreach index = \{m, n, k\} in [a, b, c]} & Named tuple destructuring in a \texttt{foreach} \\
+\texttt{lhs.span(0)} & Extract one dimension of a tensor's shape \\
+\texttt{p \# m} & Compose outer tile index \texttt{p} with inner offset \texttt{m} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The next chapter replaces the scalar \texttt{.at()} arithmetic in the inner loop with \textbf{tensor-core} operations

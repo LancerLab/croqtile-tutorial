@@ -1,0 +1,9 @@
+\subsection*{Masking in SPMD}
+
+It is typically necessary to mask off some \emph{parallel threads} in SPMD programming. For example, programmers often divide data into chunks for parallel or iterative processing. However, there may be a remainder that cannot be evenly distributed across all threads.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f34-masking-datachunk-dispatch.png}
+\end{figure}
+
+The figure aboves showcases a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \emph{thread-0} is required to work. You may observe the \textbf{thread mask} for each iteration are \texttt{1111}, except for the last iteration (\texttt{1000}). The thread mask is a combination of boolean bits, where \texttt{1} stands for \textbf{active}, and \texttt{0} stands for \textbf{inactive}. So in this case, only \emph{thread-0} is set to be \emph{active} to avoid unnecessary data chunk processing in the last iteration.

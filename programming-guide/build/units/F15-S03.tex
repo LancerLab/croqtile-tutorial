@@ -1,0 +1,18 @@
+\subsection*{Embedding Croqtile within C++}
+
+Croqtile is the DSL code embedded within C++. The Croqtile compiler performs the source-to-source translation of the Croqtile function to be C++ code. It implicitly includes "croqtile.h", which bridges the translated code to work properly with other C++ code. The below code snippet showcases an example.
+
+\begin{lstlisting}[language=croqtile,caption={Embedding Croqtile within C}]
+// some C++ code
+__co__ void croqtile_function() {
+  // croqtile code
+}
+// another C++ code
+void foo() {
+  croqtile_function();
+}
+\end{lstlisting}
+
+Note, a Croqtile function is prefixed with the "\textbackslash{}\_\_co\textbackslash{}\_\_" keyword. All code in the function scope is translated by the Croqtile compiler. Other C++ code calls the Croqtile function by its name as declared.
+
+In addition, certain Croqtile-specific types are introduced to ensure consistency between Croqtile function arguments and their respective callers. Considering that there are some important programming elements missing, you will defer the introduction of such details until the data types are explained.

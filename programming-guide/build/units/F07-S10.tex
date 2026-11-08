@@ -1,0 +1,15 @@
+\subsection*{Data-dependent vs persistent grids}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+\textbf{Aspect} & \textbf{One block per tile} & \textbf{Persistent (\texttt{NUM\_GROUPS} blocks)} \\
+\midrule
+Grid size & Grows with problem & Fixed \\
+Tail utilization & Last wave may leave SMs idle & All SMs stay busy \\
+Extra constructs & Minimal & \texttt{total\_tiles}, \texttt{tile\_\allowbreak{}iter \#\allowbreak{} block\_\allowbreak{}id}, \texttt{if} \\
+Complexity & Lower & Higher \\
+\bottomrule
+\end{tabularx}
+\end{table}

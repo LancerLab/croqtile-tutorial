@@ -1,0 +1,3 @@
+\subsection*{Parallelism: How Croqtile Represents Parallel Work}
+
+The previous two chapters kept things simple: \texttt{parallel \{i, j\} by [4, 8]} created 32 instances, each handling one element, and you never asked where those instances actually ran. That was fine for element-wise addition and for understanding data movement --- the compiler picked sensible defaults.

@@ -1,0 +1,15 @@
+\subsection*{Predicated execution with \texttt{if}}
+
+Croqtile's \texttt{if} behaves like its C counterpart:
+
+\begin{lstlisting}[language=croqtile,caption={Predicated execution with if}]
+if (tile_id < total_tiles) {
+  // body executes only when the condition is true
+}
+\end{lstlisting}
+
+All threads in scope evaluate the condition. Threads where it is false skip the body. --- Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.
+
+\textbf{When to use \texttt{if}:} data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values --- loop indices, input data, tile coordinates.
+
+The practical rule: keep \texttt{if} conditions  (all 32 threads agree) whenever possible.

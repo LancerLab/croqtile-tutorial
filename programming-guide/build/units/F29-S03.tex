@@ -1,0 +1,28 @@
+\subsection*{Use \texttt{chunkat} Expression to Tile Data}
+
+In all the examples from the previous section, the \emph{data expressions} of the \emph{DMA statement} directly utilized the \emph{spanned} data or \emph{storage} annotation. However, programmers can use the \textbf{chunkat} expression to enable tiling behavior in practice. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Use chunkat Expression to Tile Data}]
+__co__ void foo(f32 [36] input) {
+  parallel p by 6 {
+    dma.copy input.chunkat(p) => shared;
+  }
+}
+\end{lstlisting}
+
+In this example, the built-in member function \texttt{.chunkat} is used to create a tile or block for the source expression of the DMA statement. Each tiled block is called a \textbf{chunk} in Croqtile. The \texttt{.chunkat(...)} data expression can be considered a simpler form of \texttt{.\allowbreak{}chunk(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}at(.\allowbreak{}.\allowbreak{}.\allowbreak{})}, where the semantics of each part are illustrated in the figure below:
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f29-chunkat.png}
+\end{figure}
+
+Considering the expression \texttt{input.\allowbreak{}chunkat(p)}, which is equivalent to \texttt{input.\allowbreak{}chunk(\#\allowbreak{}p).\allowbreak{}at(p)}:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \texttt{input} is the \emph{spanned data} to be tiled.
+\item \texttt{\#p} indicates the \textbf{tiling factor}. It also specifies the total \textbf{chunk count} for each dimension to process. In this case, the 1D input is tiled by \texttt{6}, resulting in \texttt{6} chunks to be processed.
+\item \texttt{.chunk(\#p)} determines the \textbf{chunk shape}. The chunk is a 1D data segment tiled from \texttt{input}, with its size being the data \emph{mdspan} divided by the \emph{upper-bound} of the bounded variable. In this example, the chunk shape is calculated as \texttt{[input.\allowbreak{}span /\allowbreak{} \#\allowbreak{}p] = [6]}.
+\item \texttt{.at(p)} determines the \textbf{chunk index}. Here, \texttt{p} ranges from \texttt{[0, 6)}, allowing parallel threads to process different chunks of \texttt{input}. Specifically, parallel thread \texttt{1} processes a chunk with elements \texttt{[6, 12)} from \texttt{input}, while parallel thread \texttt{5} processes a chunk with elements \texttt{[30, 36)}, and so on.
+\end{itemize}
+
+In many scenarios, it is unnecessary to use separate \texttt{.chunk} and \texttt{.at} expressions, as \texttt{.chunkat} takes bounded variables as parameters. The upper-bounds of these variables act as the \emph{tiling factors}, and their current values act as the \emph{chunk index}.

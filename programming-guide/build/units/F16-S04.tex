@@ -1,0 +1,51 @@
+\subsection*{Deriving \emph{mdspan}s}
+
+In practical coding, it is common to derive a new shape from an existing one. For example, you might want to perform data \textbf{tiling} or \textbf{blocking}, which requires dividing the dimensions of a shape. Alternatively, you might want to \textbf{pad} specific dimensions, which involves adding delta to the shape dimensions.
+
+In Croqtile, such shape derivations can be easily accomplished using arithmetic operations on \emph{mdspan}. The following code showcases an example:
+
+\begin{lstlisting}[language=croqtile,caption={Deriving mdspans}]
+shape : [128, 64]; // initial shape
+new-shape0 : shape [(0) / 2, (1) / 4, 1];  // tile and reshape: [1, 64, 16]
+new-shape1 : shape [(1) + 2, (0) / 16];    // pad and reshape: [66, 8]
+\end{lstlisting}
+
+In this example, the \texttt{new-shape0} is derived from \texttt{shape}, with dimension 0 divided by \texttt{2}, dimension 1 divided by \texttt{4}. This corresponds to \emph{tiling} operation in high-level semantics. Additionally, the code adds a new dimension to \texttt{new-shape}. In high-level semantics, this operation is often referred to as \emph{reshaping}.
+
+In Croqtile, the definition of \texttt{new-shape0} is equivalent to:
+
+\begin{lstlisting}[language=croqtile,caption={Deriving mdspans}]
+new-shape0: [shape(0) / 2, shape(1) / 4, 1];
+\end{lstlisting}
+
+Here, the initial \texttt{shape} is explicitly listed element-wise rather than specified outside \texttt{[]}. But similar to the prior version, The \textbf{element-of} operation, which is annotated as \texttt{()}, is used on top of existing shape to retrieve dimension values. Obviously, this approach requires more code but yields the same result. Thus, the prior version can be considered \emph{syntactic sugar} for the complete \emph{initialization expression} of the new shape.
+
+In the code example, \texttt{new-shape1} is also derived from \texttt{shape}, it pads dimension 1 by \texttt{2} and swaps the dimensions in the derived shape.
+
+Furthermore, you may use the \texttt{mdspan} as a whole for derivations:
+
+\begin{lstlisting}[language=croqtile,caption={Deriving mdspans}]
+shape : [32, 72]
+new-shape0 : shape;  // [32, 72]
+new-shape1 : shape + 1;  // [33, 73]
+new-shape2 : shape / 4;  // [8, 18]
+new-shape3 : [shape, 6]; // [32, 72, 6]
+\end{lstlisting}
+
+Note that arithmetic operations on an \emph{mdspan} variable are applied dimensionally. Thus, the statement
+
+\texttt{new-\allowbreak{}shape1 :\allowbreak{} shape + 1;}
+
+is equivalent to
+
+\texttt{new-\allowbreak{}shape1 :\allowbreak{} shape [(0) + 1, (1) + 1];}
+
+The derived definition of \texttt{new-shape3} demonstrates that using an \emph{mdspan} variable in an \emph{mdspan initialization expression} results in \textbf{concatenation} behavior. Thus, the declaration
+
+\texttt{new-\allowbreak{}shape3 :\allowbreak{} [shape, 6];}
+
+is equivalent to
+
+\texttt{new-\allowbreak{}shape3 :\allowbreak{} shape [(0), (1), 6];}
+
+The prior version can be as well deemed as a \emph{syntactical sugar} of a complete definition.

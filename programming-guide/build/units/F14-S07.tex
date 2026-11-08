@@ -1,0 +1,25 @@
+\subsection*{Device Program: Parallel Computation}
+
+The kernel is designed to operate on input data, process it in parallel, and generate the output.
+
+You repeat the code as below:
+
+\begin{lstlisting}[language=croqtile,caption={Device Program: Parallel Computation}]
+__device__ void kernel(int * a, int * b, int * c, int n) {
+  for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
+}
+\end{lstlisting}
+
+For targets that only support the \_Separated Source Programming Model\_, the code may need to be wrapped within a \texttt{\_\allowbreak{}\_\allowbreak{}cok\_\allowbreak{}\_\allowbreak{} \{\}} block. The equivalent  code is shown below:
+
+\begin{lstlisting}[language=croqtile,caption={Device Program: Parallel Computation}]
+__cok__ {
+  extern "C" void kernel(int * a, int * b, int * c, int n) {
+    for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
+  }
+} // end of __cok__
+\end{lstlisting}
+
+Here, the \texttt{extern "C"} annotation replaces the \texttt{\_\_device\_\_} keyword used in  target, as  requires C-linkage for the device functions.
+
+Programmers must be aware that the device program follows the \emph{Single-Program-Multiple-Data (SPMD)} paradigm. However, unlike traditional  programs, the device program does not manage data movement ---whether between the host and device or across multiple storage levels within the device. Instead, the \emph{tileflow program} orchestrates these tasks in a much simpler and safer manner.

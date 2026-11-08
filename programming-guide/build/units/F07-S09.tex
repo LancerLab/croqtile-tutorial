@@ -1,0 +1,45 @@
+In Chapters 3--4, the grid grew with the problem: roughly one block per output tile. For large matrices that means large launch counts, and the last wave of blocks often leaves SMs partially idle --- \textbf{tail underutilization}.
+
+A \textbf{persistent kernel} fixes the launch size (often near the SM count) and lets each block iterate over multiple tiles:
+
+\begin{lstlisting}[language=croqtile,caption={Persistent scheduling and the if guard}]
+__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
+  parallel block_id by NUM_GROUPS : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
+    foreach {tile_iter} in [cdiv(total_tiles, NUM_GROUPS)] {
+      tile_id = tile_iter # block_id;
+      if (tile_id < total_tiles) {
+        block_m = tile_id / cdiv(N, WARP_N);
+        block_n = tile_id % cdiv(N, WARP_N);
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+          dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) => rhs_load_s;
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+            parallel p by 1 : group-4 {
+              ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+              mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+              mma.row.row mc, ma, mb;
+            }
+          }
+        }
+        mma.store mc, output_s;
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\textbf{\texttt{parallel block\_\allowbreak{}id by NUM\_\allowbreak{}GROUPS :\allowbreak{} block}} --- Fixed worker count.
+
+\textbf{\texttt{tile\_\allowbreak{}id = tile\_\allowbreak{}iter \#\allowbreak{} block\_\allowbreak{}id}} --- Composes iteration with block index to stripe across tiles.
+
+\textbf{\texttt{if (tile\_\allowbreak{}id \textless{} total\_\allowbreak{}tiles)}} --- The \texttt{if} guard: a runtime predicate that skips the body for padding iterations. This is exactly the use case \texttt{if} is designed for --- a data-dependent decision, not a structural partition.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f07-fig2_persistent_kernel_light.png}
+\end{figure}

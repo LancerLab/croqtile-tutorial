@@ -1,0 +1,17 @@
+\subsection*{Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}
+
+In Croqtile, it's possible to perform a full non-blocking DMA by chaining multiple asynchronous DMA operations and using event-based notifications with after. This enables complete non-blocking execution, where one DMA operation is triggered only after the completion of a prior one. Here's an example of such a setup:
+
+\begin{lstlisting}[language=croqtile,caption={Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}]
+out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;
+\end{lstlisting}
+
+In this example:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \texttt{out\_store} is the asynchronous DMA operation that transfers data from l2\_out to output.chunkat(m\_tile, n\_tile).
+\item \texttt{out\_store\_s} is another DMA operation or event that must complete before out\_store can proceed.
+\item The after out\_store\_s syntax specifies that \texttt{out\_store} should only start after the completion of \texttt{out\_store\_s}, which ensures that there is no blocking in the main thread.
+\end{itemize}
+
+In this case, neither \texttt{out\_store} nor \texttt{out\_store\_s} will block the main program flow. The program continues executing while these DMA operations are handled in the background. The key difference here is that the completion of \texttt{out\_store\_s} triggers the start of \texttt{out\_store}, creating an event-driven dependency between the two DMA operations. This model enables highly efficient and non-blocking memory transfers.

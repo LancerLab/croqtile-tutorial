@@ -1,0 +1,16 @@
+You need a C++17-capable compiler and two parser-generator tools:
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Dependency} & \textbf{Minimum Version} \\
+\midrule
+GCC & 8.1+ (or Clang 6+) \\
+Bison & 3.8+ \\
+Flex & 2.6.4+ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Most Linux distributions ship Flex and an older Bison. If your system Bison is below 3.8, the setup step below will fetch a compatible version automatically.

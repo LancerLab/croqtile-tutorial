@@ -1,0 +1,15 @@
+\subsection*{Example Code: Using Storage Qualifiers}
+
+To better understand how storage qualifiers work, consider the following code example:
+
+\begin{lstlisting}[language=croqtile,caption={Example Code: Using Storage Qualifiers}]
+ndims : [20, 15];
+local f32 [10, 10] d0;
+shared f16 [ndims] d1;
+global f32 [100, 200] matrix;
+// Perform computations on these arrays, utilizing the appropriate storage space
+dma.copy d0 => d1;
+dma.copy d1 => matrix;
+\end{lstlisting}
+
+In this code:

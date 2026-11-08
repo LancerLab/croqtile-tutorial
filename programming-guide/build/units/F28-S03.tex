@@ -1,0 +1,11 @@
+A DMA statement in Croqtile can be an asynchronous entity, meaning that the code following an \textbf{asynchronous DMA} executes in parallel with the DMA statement. For a \emph{asynchronous DMA}, explicit synchronization is required before using the DMA result.
+
+To support these features, the syntax is organized as follows:
+
+\begin{lstlisting}[language=croqtile,caption={Basic Syntax}]
+future = dma-op src-expr => dst-expr;
+\end{lstlisting}
+
+The statement defines a \textbf{future}-typed variable, which appears on the left side of the operator \texttt{=}. In Croqtile, **a \emph{future} represents both the handle of the asynchronous execution instance and the DMA result**. Therefore, the definition of \emph{future} can be ignored for \emph{synchronized DMA} statements.
+
+The right-hand side of the \textbf{DMA operation} includes the \textbf{operation type} (\texttt{dma-op}), the \textbf{data expression} for the operation source (\texttt{src-expr}), and the \emph{data expression} for the destination (\texttt{dst-expr}). The source and destination are separated by the symbol \texttt{=\textgreater{}}, which indicates the direction of data flow.

@@ -1,0 +1,9 @@
+\subsection*{Compile-time assertions with \texttt{\#error}}
+
+\begin{lstlisting}[language=croqtile,caption={Compile-time assertions with error}]
+#if MATMUL_SWIZ != (2 * MATMUL_TILE_K)
+#error "MATMUL_SWIZ must equal 2 * MATMUL_TILE_K for f16 kernel"
+#endif
+#if MATMUL_WARP_M != 64
+#endif
+\end{lstlisting}

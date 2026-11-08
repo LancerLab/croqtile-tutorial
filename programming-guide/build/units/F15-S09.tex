@@ -1,0 +1,21 @@
+\subsection*{The Storage Qualifier}
+
+A spanned-typed data in Croqtile is usually large.
+
+In croqtile, the language defines three storage qualifiers to annotate the data being defined, including:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{global},
+\item \textbf{shared},
+\item and \textbf{local}.
+\end{itemize}
+
+The below code showcases the usage.
+
+\begin{lstlisting}[language=croqtile,caption={The Storage Qualifier}]
+ndims : [20, 15];
+local f32 [10, 10] d0;
+shared f16 [ndims] d1;
+\end{lstlisting}
+
+By default, when no storage qualifier appears, the data defined is considered as from the \emph{global} storage.

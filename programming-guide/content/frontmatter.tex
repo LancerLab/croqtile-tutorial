@@ -1,0 +1,100 @@
+\frontmatter
+\begin{titlepage}
+\centering
+\vspace*{1.4cm}
+{\sffamily\bfseries\fontsize{36}{40}\selectfont\color{croqink} Croqtile\par}
+\vspace{0.1cm}
+{\sffamily\bfseries\fontsize{26}{30}\selectfont\color{croqgreen} Programming Guide\par}
+\vspace{0.8cm}
+{\Large\itshape A guide to the Croqtile language\par}
+\vspace{1.1cm}
+\rule{0.72\linewidth}{0.6pt}\par
+\vspace{0.9cm}
+{\large Version \guideversion{} --- \guidereleasedate\par}
+\vfill
+{\small\color{croqgray} LancerLab\par}
+\vspace{1.0cm}
+\end{titlepage}
+\thispagestyle{empty}
+\cleardoublepage
+
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+Croqtile is a C++ embedded domain-specific language for describing tiled
+computations. A program lives in a \file{.co} file: ordinary C++ prepares
+shaped buffers and calls a \co@__co__@ function, and that function spells
+out the parallel iterations, the tile selection and the data movement that
+make up the computation. The compiler transpiles this description into host
+and device code, so a program is written once in terms of the language rather
+than in terms of one particular target. This guide explains the language
+itself --- what its constructs mean, how they fit together, and why the
+design is the way it is.
+
+\begin{brief}[Who this guide is for]
+\textbf{Audience:} developers writing or reading Croqtile programs.\par
+\textbf{Prerequisites:} C++ (functions, pointers, arrays) and the idea of a
+shaped tensor. No prior Croqtile experience is assumed, and no knowledge of
+a particular target platform is required.\par
+\textbf{Scope:} program structure, shapes and types, iteration and tile
+selection, data movement, coordination, C++ interoperability and
+diagnostics.\par
+\textbf{What you will learn:} how to build and run a \file{.co} file; how to
+read a kernel line by line; how to express tiling, movement and contraction;
+and how the compiler reasons about shapes and parallel regions.
+\end{brief}
+
+\section*{How the guide is organised}
+
+\begin{description}[leftmargin=2.2em,style=nextline]
+\item[Chapter~1, Getting Started] Build the compiler, use the command line,
+  compile and run a first program, and work through a complete example and
+  the debugging workflow.
+\item[Chapter~2, Language Basics] Short, program-shaped examples that say what
+  each construct \emph{means}: signatures and shapes, the host API,
+  iteration, tile selection, data movement, coordination, branching,
+  contraction, C++ embedding and diagnostics.
+\item[Chapter~3, Programming Guide] The same language organised by function:
+  program structure and compilation models, the type system, symbolic shapes,
+  parallelism, tile selection, movement, contraction, coordination,
+  interoperability and the reasoning behind them. Each section opens with
+  what problem it solves, so the chapter can also be read as a reference.
+\end{description}
+
+Appendix~\ref{app:quickref} is a condensed syntax reference for looking up a
+spelling or a meaning.
+
+\section*{Suggested reading order}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Chapter~1, if this is your first Croqtile program.
+\item Chapter~2, to read existing \file{.co} files with confidence.
+\item Chapter~3, in any order: its sections are independent and each one
+  keeps the worked kernels next to the feature they demonstrate.
+\item Appendix~\ref{app:quickref}, whenever you want the compact form of a
+  construct.
+\end{enumerate}
+
+\section*{Conventions}
+
+Croqtile code is set in a monospaced font. Longer examples appear as
+numbered listings (see the \emph{List of Code Listings}); short fragments
+appear inline, for example \co@s32 [4, 8] output;@ or
+\co@dma.copy src => shared@. Three kinds of callout box are used:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Chapter roadmap} --- what a chapter covers and where to go
+  afterwards.
+\item \textbf{Key point} --- an idea worth carrying forward.
+\item \textbf{Common pitfall} --- a rule that is easy to get wrong.
+\end{itemize}
+
+Examples use the \texttt{croq::} namespace for host-side helpers and
+\texttt{\_\_co\_\_} for the function that describes parallel work; the two
+forms appear together in almost every complete program.
+
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\lstlistoflistings
+\cleardoublepage

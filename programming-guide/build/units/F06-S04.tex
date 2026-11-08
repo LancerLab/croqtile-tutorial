@@ -1,0 +1,46 @@
+\subsection*{One group, one tile: the simplest MMA matmul}
+
+In Croqtile, that corresponds to \texttt{: group}.
+
+\begin{lstlisting}[language=croqtile,caption={One group, one tile: the simplest MMA matmul}]
+#define TILE_M 16
+#define TILE_N 16
+#define TILE_K 16
+#define WARP_M 16
+#define WARP_N 16
+#define WARP_K 16
+__co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, TILE_N)] : block {
+    shared f16 [TILE_M, TILE_N] output_s;
+    parallel {warp_m, warp_n} by [cdiv(TILE_M, MMA_M), cdiv(TILE_N, MMA_N)] : group {
+      mc = mma.fill 0.0;
+      foreach {iv_k} in [cdiv(K, TILE_K)] {
+        lhs_load_s = dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) => shared;
+        rhs_load_s = dma.copy rhs.subspan(TILE_N, TILE_K).at(block_n, iv_k) => shared;
+        foreach iv_warp_k in [cdiv(TILE_K, MMA_K)] {
+          ma = mma.load lhs_load_s.chunkat(warp_m, iv_warp_k);
+          mb = mma.load rhs_load_s.chunkat(warp_n, iv_warp_k);
+          mma.row.row mc, ma, mb;
+        }
+      }
+      mma.store mc, output_s.subspan(MMA_M, MMA_N).at(warp_m, warp_n);
+    }
+    dma.copy output_s => output.subspan(TILE_M, TILE_N).at(block_m, block_n);
+  }
+}
+\end{lstlisting}
+
+\textbf{\texttt{\_\allowbreak{}\_\allowbreak{}co\_\allowbreak{}\_\allowbreak{} void} and in-place output.} The kernel returns nothing;
+
+\textbf{Block grid.} \texttt{cdiv(M, TILE\_\allowbreak{}M)} is ceiling division --- how many tiles along M, including partial tiles. \texttt{block\_m} and \texttt{block\_n} pick which output tile this block owns.
+
+With all dimensions 16, extents are 1\(\times\)1
+
+Section~\ref{sec:3-6} goes deeper on \texttt{subspan} versus \texttt{chunkat}.
+
+\begin{keypoint}[Quick `subspan` syntax reminder]
+\texttt{subspan(h, w)} declares a fixed-size rectangular view shape, and \texttt{.at(i, j)} selects which view instance you want from the parent tensor. In other words, \texttt{lhs.\allowbreak{}subspan(TILE\_\allowbreak{}M, TILE\_\allowbreak{}K).\allowbreak{}at(block\_\allowbreak{}m, iv\_\allowbreak{}k)} means "take the \texttt{[TILE\_\allowbreak{}M, TILE\_\allowbreak{}K]} tile at \texttt{(block\_\allowbreak{}m, iv\_\allowbreak{}k)}." Use \texttt{subspan} when you want an explicit tile shape; use \texttt{chunkat} when you want to slice by equal chunks of an existing dimension.
+
+\end{keypoint}
+
+The four-step syntax reads linearly and the tile geometry is obvious.

@@ -1,0 +1,21 @@
+\paragraph*{In short}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+\textbf{Tool} & \textbf{Level} & \textbf{Cost} \\
+\midrule
+\texttt{print!} / \texttt{println!} & Compile-time & Free \\
+\texttt{assert(expr, "msg")} & Runtime & Low --- aborts on violation \\
+\texttt{print} / \texttt{println} & Runtime & Medium --- serialized \texttt{printf} \\
+\texttt{-rtc=high} & Runtime & Medium --- bounds checks \\
+\texttt{-v} / \texttt{--verbose} & Compiler & Free --- shows subprocess invocations \\
+\texttt{-g} + \texttt{debugger} + RTTI & Runtime & High --- debug symbols, no optimization \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The tools above answer three questions in order: what the compiler believed at compile time, what the program did at runtime, and which flag exposes each. Start with \texttt{print!} when a shape or a type is surprising, move to \texttt{assert} when a value is surprising, and only then turn on a verbose build.
+
+The next step is to open a benchmark kernel from the \texttt{croqtile/\allowbreak{}benchmark/\allowbreak{}} directory, map its regions to the chapters here, change one constant, rebuild, and measure.

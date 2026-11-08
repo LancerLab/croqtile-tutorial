@@ -1,0 +1,37 @@
+\subsection*{Partial Tiles, Guarding, and \texttt{.zfill}}
+
+Real kernels often end with a partial tile. The important distinction is whether the \textbf{source tile shape} and \textbf{destination tile shape} are the same.
+
+For example:
+
+\begin{lstlisting}[language=croqtile,caption={Partial Tiles, Guarding, and .zfill}]
+dma.copy.swiz<32>.zfill
+  lhs.view(ROWS_M, TILE_K).from(base_m, base_k)
+    => lhs_load_s;
+\end{lstlisting}
+
+Here \texttt{lhs\_load\_s} might have shape \texttt{[group\_\allowbreak{}M, TILE\_\allowbreak{}K]}, while the source view has shape \texttt{[ROWS\_\allowbreak{}M, TILE\_\allowbreak{}K]} and \texttt{ROWS\_M} may be smaller than \texttt{group\_M} on the last tile. That is a real shape mismatch, so \texttt{.zfill} means: copy the valid source rows and write zero into the remaining rows of the destination tile.
+
+That is the right use for \texttt{.zfill}.
+
+What happens when the shapes are the same:
+
+\begin{itemize}[leftmargin=1.6em]
+\item If the source view and destination tile have the same shape, the compiler already guards runtime tails automatically.
+\item In that case it generates masking so out-of-bounds elements are not read or written.
+\item This is enough for cases like tiling a \texttt{[100]} tensor into \texttt{[64]} tiles: the last tile simply has 36 valid elements.
+\end{itemize}
+
+So \texttt{.zfill} is \textbf{not} the general mechanism for ``any partial tile.'' It is specifically for cases where the destination tile is larger than the valid source region and the extra part of the destination must be filled with zeros.
+
+Why \texttt{.zfill} matters:
+
+\begin{itemize}[leftmargin=1.6em]
+\item If the consumer reads only the valid region, the compiler's automatic masking is usually enough.
+\item If the consumer reads the whole destination tile, especially an MMA fragment, the invalid region must hold a known value.
+\item \texttt{.zfill} makes that extra region zero.
+\end{itemize}
+
+Use \texttt{.zfill} when the valid source region is smaller than the destination tile and the consumer will treat the destination as a full dense tile. This is the common case for GEMM-style pipelines with dynamic row counts or padded edge tiles.
+
+If you add \texttt{.zfill} when the source and destination shapes are already the same, the compiler can warn that the \texttt{.zfill} is redundant. Conversely, when the shapes differ, the compiler can also warn that \texttt{.zfill} is needed to avoid using undefined values in the uncovered region.

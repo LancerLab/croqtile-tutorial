@@ -1,0 +1,24 @@
+\subsection*{From Expressions to Value Numbers}
+
+In current implement, the value numbering process in a syntax-directed way. It traverse the Abstract Syntax Tree nodes and generate value numbers when the node contains an expression.
+
+The method of generating value numbers is simple. For each expression, it takes the expression as the input, and returns corresponding value number.
+
+More specifically, it:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Generates a signature from an expression.
+\item If the signature has already existed, return the associated value number by looking up the value number table.
+\item Or else, it associates the signature with a new value number in the value number table, and return it.
+\end{itemize}
+
+Notably, for simplicity, current signature is an string of expression. This can be improved by hashing later (like most value numbering process does).
+
+In addition, to handle the symbol definition and symbol reference, it follows the below rules:
+
+\begin{itemize}[leftmargin=1.6em]
+\item When an expression is to initialize a symbol (variable or partial type), the symbol is assign the same value number of the expression. More specifically, it associate the signature of the \emph{scoped} symbol name with the value number in the value number table.
+\item When an expression references a symbol, it looks up its corresponding signature in the value number table, and return it.
+\end{itemize}
+
+Note the symbol must use its \emph{scoped name} for signature generation, since identical names are allowed to be defined in different scope.

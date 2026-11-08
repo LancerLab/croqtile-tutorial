@@ -1,0 +1,14 @@
+\subsection*{\texttt{span} and \texttt{span(i)}}
+
+\texttt{tensor.span} gives the full shape of a tensor. \texttt{tensor.span(i)} gives one dimension.
+
+\begin{lstlisting}[language=croqtile,caption={span and span(i)}]
+s32 [lhs.span(0), rhs.span(1)] output;
+\end{lstlisting}
+
+This comes up constantly in data movement code because output shapes often come from different inputs, and moved tiles frequently need to preserve or recompute shape information.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig_span_light.png}
+\end{figure}
+\begin{center}\small\emph{Use \texttt{span} for the whole shape, \texttt{span(i)} for a single axis.}\end{center}

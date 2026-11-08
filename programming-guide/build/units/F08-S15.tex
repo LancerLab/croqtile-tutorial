@@ -1,0 +1,16 @@
+\paragraph*{In short}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+\textbf{Pattern} & \textbf{Primitives used} & \textbf{When to use} \\
+\midrule
+\texttt{swap} double buffering & \texttt{dma.any}, \texttt{swap} & Single thread group interleaving load and compute \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Both patterns achieve the same goal --- overlapping memory and compute --- but at different levels of complexity. Start with \texttt{swap} for simpler kernels;
+
+The same synchronization patterns from this part of the guide, with richer data movement primitives underneath.

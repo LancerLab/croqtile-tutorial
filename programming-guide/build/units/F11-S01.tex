@@ -1,0 +1,5 @@
+\subsection*{Debug and Verbose: Printing, Assertions, and GDB}
+
+The universal debugging discipline is the same everywhere: \textbf{systematically narrow the search space}, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list.
+
+Croqtile provides tools at each level: \textbf{compile-time shape printing} (\texttt{print!}, \texttt{println!}) to verify tile dimensions without launching a kernel, \textbf{runtime assertions} (\texttt{assert}) for invariant checks, \textbf{guarded device \texttt{println}} for runtime inspection of specific threads, \textbf{debug RTTI} for \texttt{debugger}, and a \textbf{verbose mode} (\texttt{-v}) to see what the compiler is actually doing under the hood.

@@ -1,0 +1,18 @@
+\subsection*{Data Movement: The Tile Movement Engine}
+
+Section~\ref{sec:1-7} used scalar indexing: pick one position, read inputs, compute, write output.
+
+Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \texttt{dma.copy} moves a tile as-is.
+\item \texttt{dma.\allowbreak{}transp\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}} permutes dimensions while moving it.
+\item \texttt{dma.\allowbreak{}pad\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}} enlarges a tile and fills the border.
+\end{itemize}
+
+This part of the guide introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig1_element_vs_block_light.png}
+\end{figure}
+\begin{center}\small\emph{Left: element-by-element thinking. Right: tile-by-tile movement into fast memory.}\end{center}

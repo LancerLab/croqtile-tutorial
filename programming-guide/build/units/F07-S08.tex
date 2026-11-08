@@ -1,0 +1,39 @@
+\subsection*{A 1P1C matmul skeleton}
+
+Event-based synchronization is left out of this skeleton; Section~\ref{sec:3-8-5} adds the full pipeline protocol. Focus on the program structure:
+
+\begin{lstlisting}[language=croqtile,caption={A 1P1C matmul skeleton}]
+__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
+    parallel p1 by 2 : group-4 {
+      inthreads.async (p1 == 0) {
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+          dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
+        }
+      }
+      inthreads.async (p1 == 1) {
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+            ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+            mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+            mma.row.row mc, ma, mb;
+          }
+        }
+        mma.store mc, output_s;
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\textbf{Producer \texttt{foreach}} --- Walks K with \texttt{cdiv(K, TILE\_\allowbreak{}K)} steps;
+
+\textbf{Consumer \texttt{mma} path}
+
+\textbf{Missing coordination} --- Both sides loop over K independently. The consumer assumes each K-slab is ready when it reads. Making that assumption correct requires events (Section~\ref{sec:3-8-5}).

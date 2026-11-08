@@ -1,0 +1,50 @@
+\subsection*{Improved Code Safety}
+
+The reason for improved code safety of using \emph{symbolic dimension} is that more comprehensive code checks can be applied by Croqtile compiler. For example, consider an \emph{anonymous dimension} version of the \texttt{Matmul} function:
+
+\begin{lstlisting}[language=croqtile,caption={Improved Code Safety}]
+__co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
+  int tile_m = 32, tile_m = 8, tile_k = 16;
+  s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // 'mdspan' and 'ituple': rank must be same
+  s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // 'tiled_rhs' can not have a zero dimension
+  // ...
+}
+\end{lstlisting}
+
+Croqtile performs both compile-time and runtime checks to ensure safety:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Compile-time Checks}: Croqtile verifies rank consistency. In this example, \texttt{lhs.span} has a ranked of \texttt{2}, matching the rank of \texttt{\{tile\_\allowbreak{}m, tile\_\allowbreak{}k\}}, so there are no issues.
+\item \textbf{Runtime Checks}: Croqtile generates code to validate dimensions at runtime. For instance, in the declaration of \texttt{tiled\_lhs}, its shape must not have a dimension of \texttt{0}, which would result in an invalid zero-sized buffer. Croqtile's \emph{transpilation} process generates the following \emph{target host code}:
+\end{itemize}
+
+\begin{lstlisting}[language={},caption={Improved Code Safety}]
+void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
+                                croqtile::span_view<2, croqtile::s32> rhs) {
+  croqtile_assert(lhs.shape()[0] / 32 > 0,
+                "the 0 dimension of 'lhs' may result in spanned data "
+                "with a dimension value of 0.");
+  // ...
+}
+\end{lstlisting}
+
+Here, the \texttt{croqtile\_\allowbreak{}abort} function aborts program execution if the condition is not met. This early check helps Croqtile detect issues promptly.
+
+For the \emph{symbolic dimension} version, Croqtile compiler generates additional checks in the \emph{target host code}:
+
+\begin{lstlisting}[language={},caption={Improved Code Safety}]
+void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
+                                croqtile::span_view<2, croqtile::s32> rhs) {
+  // additional check happens only when using symbolic dimensions
+  croqtile_assert(lhs.shape()[1] == rhs.shape()[0],
+                "dimension 'K' is not consistent.");
+  croqtile_assert(lhs.shape()[0] / 32 > 0,
+                "the 0 dimension of 'lhs' may result in spanned data "
+                "with a dimension value of 0.");
+  // ...
+}
+\end{lstlisting}
+
+In addition to the checks performed in the \emph{anonymous dimension} version, the \emph{symbolic dimension} version verifies the consistency of dimensions between \texttt{lhs} and \texttt{rhs}, resulting in safer code.
+
+Therefore, it is recommended that programmers use symbolic dimensions not only for ease of use but also to enhance code safety.

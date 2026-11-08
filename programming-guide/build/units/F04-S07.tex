@@ -1,0 +1,17 @@
+\subsection*{\texttt{view(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}from(.\allowbreak{}.\allowbreak{}.\allowbreak{})}: explicit tile extents with explicit element offsets}
+
+\begin{lstlisting}[language=croqtile,caption={view(...).from(...): explicit tile extents with explicit element offsets}]
+lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)
+\end{lstlisting}
+
+\texttt{view(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}from(.\allowbreak{}.\allowbreak{}.\allowbreak{})} is the most general selection form introduced in this part of the guide. \texttt{view(...)} states the shape of the region you want, and \texttt{.from(...)} gives its starting coordinate in element space.
+
+This is the right tool when the tile origin is already available as element offsets rather than tile indices, or when the region is not most naturally described as an equal chunk. It is especially useful for dynamic and irregular access patterns where \texttt{chunkat(...)} would be awkward or impossible.
+
+You can think of the three forms like this:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Use \texttt{chunkat(...)} when the surrounding parallel decomposition already defines an equal tiling.
+\item Use \texttt{subspan(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}at(.\allowbreak{}.\allowbreak{}.\allowbreak{})} when you want an explicit tile shape and tile coordinates.
+\item Use \texttt{view(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}from(.\allowbreak{}.\allowbreak{}.\allowbreak{})} when you want an explicit tile shape and element-space starting offsets.
+\end{itemize}

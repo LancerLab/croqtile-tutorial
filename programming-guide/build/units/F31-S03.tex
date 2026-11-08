@@ -1,0 +1,25 @@
+\subsection*{Basic Syntax: \texttt{parallel-by}}
+
+The basic syntax for a \texttt{parallel-by} block is as follows:
+
+\begin{lstlisting}[language=croqtile,caption={Basic Syntax: parallel-by}]
+parallel p by 6 {
+  // SPMD (Single Program, Multiple Data) code
+}
+\end{lstlisting}
+
+You name the code inside \texttt{\{\}} as the SPMD-style \textbf{parallel execution block}, and the instances of the code as the \textbf{parallel thread}. In this example:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{\texttt{parallel}}: This keyword initiates the \emph{parallel execution block}.
+\item \textbf{\texttt{p}}: It is the \textbf{parallel variable}. It contains an integer value identifying the current \emph{parallel thread}. Each \emph{parallel thread} runs the same code but with a different value of \emph{parallel variable} \texttt{p}.
+\item \textbf{\texttt{by 6}}: It indicates that there are totally 6 \emph{parallel thread}s. Thus, the \emph{parallel variable} \texttt{p} ranges from \texttt{0} to \texttt{5} across different threads.
+\end{itemize}
+
+In some scenarios, programers may not require an explicit \emph{parallel variable} for a simple parallel construct. It is possible to omit it:
+
+\begin{lstlisting}[language=croqtile,caption={Basic Syntax: parallel-by}]
+parallel by 2 { ... }
+\end{lstlisting}
+
+This invokes two parallel threads to execute. However, it is not possible for the two threads to work on different data, which is normally required by SPMD programs for a data-parallel processing purpose.

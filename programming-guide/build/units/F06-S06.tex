@@ -1,0 +1,51 @@
+\subsection*{Tiling further: two cooperative group sharing operands}
+
+Section~\ref{sec:3-4} introduced \texttt{parallel p1 by 2 :\allowbreak{} group-\allowbreak{}4} --- With MMA, both groups can share the same B tile while loading different rows of A.
+
+\begin{lstlisting}[language=croqtile,caption={Tiling further: two cooperative group sharing operands}]
+#define TILE_M 128
+#define TILE_N 128
+#define TILE_K 128
+#define WARP_M 64
+#define WARP_N 64
+#define WARP_K 16
+__co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, WARP_N)] : block {
+    shared f16 [TILE_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [TILE_M, WARP_N] output_s;
+    mc = mma.fill.f32 0.0f;
+    foreach {iv_k} in [cdiv(K, TILE_K)] {
+      dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+      dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
+      parallel p1 by 2 : group-4 {
+        foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+          ma = mma.load lhs_load_s.subspan(WARP_M, TILE_K).at(p1, 0).chunkat(_, iv_warp);
+          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+          mma.row.row mc, ma, mb;
+        }
+      }
+    }
+    parallel p1 by 2 : group-4
+      mma.store mc, output_s.subspan(WARP_M, WARP_N).at(p1, 0);
+    dma.copy output_s => output.subspan(TILE_M, WARP_N).at(block_m, block_n);
+  }
+}
+\end{lstlisting}
+
+\textbf{Splitting M with \texttt{p1}.} With \texttt{TILE\_M = 128} and \texttt{group\_M = 64}, the block spans 128 rows; \texttt{p1} selects the upper or lower 64-row strip. Both use the same \texttt{rhs\_load\_s}.
+
+The four-step syntax stays invariant; only the parallel decomposition of the tile changes.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXXX@{}}
+\toprule
+\textbf{Aspect} &  &  &  \\
+\midrule
+Operand sharing & N/A & N/A & B tile shared, A rows split by \texttt{p1} \\
+Threads & 32 & 128 & 256 \\
+Accumulator & \texttt{mma.fill 0.0} & \texttt{mma.\allowbreak{}fill.\allowbreak{}f16 0.\allowbreak{}0f} & \texttt{mma.\allowbreak{}fill.\allowbreak{}f32 0.\allowbreak{}0f} \\
+\bottomrule
+\end{tabularx}
+\end{table}

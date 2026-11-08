@@ -1,0 +1,18 @@
+\subsection*{Bounded-ituple/integer and 'chunkat' Operation}
+
+'chunkat' is an operation performed on spanned data. It creates a new \emph{mdspan} over the existing data. Thus in certain systems, it is referred to as 'subview'. However, as 'chunkat' accepts bounded-ituple and bounded-integer as parameters, it is named differently in Croqtile.
+
+\begin{lstlisting}[language=croqtile,caption={Bounded-ituple/integer and chunkat Operation}]
+global f32 [6, 10, 100] data;
+parallel p by 6 {
+  with index = {x, y} in [10, 10] {
+    // for every data move, the stride into 'data' is
+    //    stride = p*1000 + x * 100 + y * 10
+    //
+    // for each chunk, the dimensioned size for the movement is {1, 1, 10}
+    f = dma.copy data.chunkat(p, index) => local;
+  }
+}
+\end{lstlisting}
+
+The example above shows one typical use of \texttt{chunkat}. Here the spanned data has type \texttt{f32 [6, 10, 100]}. The operation takes two parameters --- the \emph{integer} \texttt{p} and the \emph{ituple} \texttt{index} --- and divides the data into \(6 \times 10 \times 10\) pieces, one for each combination of their ranges. Each piece holds 10 consecutive elements along the least significant dimension and is copied into local storage.

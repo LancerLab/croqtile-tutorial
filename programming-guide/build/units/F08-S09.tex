@@ -1,0 +1,9 @@
+\subsection*{Why you cannot "just overlap" without events}
+
+The \texttt{swap} pattern works because one thread group controls both loading and computing --- it knows the order. They cannot share a \texttt{swap} schedule; they need a signaling mechanism.
+
+The picture below contrasts a strict load-then-compute staircase with double-buffered overlap: same logical work, less idle time.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f08-fig1_pipeline_timeline_light.png}
+\end{figure}

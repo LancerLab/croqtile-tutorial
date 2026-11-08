@@ -1,0 +1,17 @@
+\subsection*{Event Instances}
+
+In Croqtile, events are associated with the storage specifier, either \texttt{global}, \texttt{shared}, and \texttt{local}. Such storage specifier specifies the event instances.
+
+\begin{lstlisting}[language=croqtile,caption={Event Instances}]
+__co__ void foo() {
+  global event ge;     // single instance in the tileflow program
+  parallel p by 2 {    // shared level
+    shared event se;   // two instances, 1 for each shared instance
+    parallel q by 6 {  // local level
+      local event le;  // 12 instances in total, 6 for each shared instance
+    }
+  }
+}
+\end{lstlisting}
+
+The comments in the above code explain the event instances. The mechanism is same to the spanned data declarations, where storage specifier is also required. From implementation perspective, event can be implement as the leveled boolean data within the specified storage. Therefore, it also takes the storage of this level. However, in concept, the event belongs to a specific level. Therefore, its instance count coresponds to its parallel level.

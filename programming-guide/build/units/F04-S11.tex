@@ -1,0 +1,8 @@
+\subsection*{\texttt{dma.\allowbreak{}transp\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}}}
+
+\begin{lstlisting}[language=croqtile,caption={dma.transp ...}]
+fa = dma.transp<1, 0, 2> a => local;
+dma.copy fa.data => o;
+\end{lstlisting}
+
+This permutes dimensions during the movement itself. You do not first copy and then transpose. The transfer produces data in the transposed layout.

@@ -1,0 +1,45 @@
+\subsection*{Widening the scope: cooperative group and mma}
+
+But the four-step syntax does not change. The only thing that changes in Croqtile is the space specifier: \texttt{: group-4} instead of \texttt{: group}.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f06-fig4_sm86_vs_sm90_light.png}
+\end{figure}
+
+\begin{lstlisting}[language=croqtile,caption={Widening the scope: cooperative group and mma}]
+#define TILE_M 128
+#define TILE_N 128
+#define TILE_K 128
+#define WARP_M 64
+#define WARP_N 64
+#define WARP_K 16
+__co__ void matmul_wgmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    mc = mma.fill.f16 0.0f;
+    foreach {iv_k} in [cdiv(K, TILE_K)] {
+      dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+      dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
+      foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+        parallel p by 1 : group-4 {
+          ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+          mma.row.row mc, ma, mb;
+        }
+      }
+    }
+    shared f16 [WARP_M, WARP_N] output_s;
+    mma.store mc, output_s;
+    dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+  }
+}
+\end{lstlisting}
+
+Fill, load, multiply, store --- the rhythm is identical. The differences are mechanical:
+
+\texttt{.f16}, \texttt{.f32}, etc. FP16 operands with FP32 accumulation is a common pattern for long K dimensions, avoiding numerical overflow in partial sums. The \texttt{0.0f} means the initial value is of type \texttt{f32} (there is no literal \texttt{f16} in the Croqtile). Casting will be performed to \texttt{f16} in the fill operation. If \texttt{.f16} is not specified, the initial value will be inferred from the type of the \texttt{ma} and \texttt{mb} operands.
+
+\textbf{\texttt{chunkat(\_\allowbreak{}, iv\_\allowbreak{}group)}.} \texttt{\_} means "do not tile that dimension" --- Only K is subdivided per MMA slice.
+
+That is the whole point of the abstraction: the same four operations, the same layout contract, the same \texttt{chunkat} / \texttt{subspan} expressions. You think about \emph{what} contraction to perform; the cooperation width is a deployment detail.

@@ -1,0 +1,73 @@
+\contentsline {chapter}{Preface}{iii}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Getting Started}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}What is Croqtile}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}System Requirements}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Building the Compiler from Source}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Verifying the Installation}{3}{section.1.4}%
+\contentsline {section}{\numberline {1.5}The croqtile Command Line}{3}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Development and Test Utilities}{6}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Your First Program}{7}{section.1.7}%
+\contentsline {section}{\numberline {1.8}A Complete Program, End to End}{8}{section.1.8}%
+\contentsline {section}{\numberline {1.9}Inspecting and Debugging a Build}{12}{section.1.9}%
+\contentsline {section}{\numberline {1.10}Reading a Production .co File}{14}{section.1.10}%
+\contentsline {chapter}{\numberline {2}Language Basics}{16}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Two Parts of a Croqtile Program}{16}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Reading a Kernel Line by Line}{17}{section.2.2}%
+\contentsline {section}{\numberline {2.3}The Host-Side API: Inputs and Outputs}{18}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Shapes and mdspan}{22}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Integers, I-Tuples, and Bounded Values}{25}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Spanned Data and Storage Specifiers}{29}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Iteration: parallel-by, with-in, and foreach}{33}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Tile Selection: chunkat, subspan, and view/from}{42}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Data Movement: the DMA Statement and Futures}{47}{section.2.9}%
+\contentsline {section}{\numberline {2.10}Coordination: inthreads, Events, and Async Blocks}{55}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Branching and Early Return}{58}{section.2.11}%
+\contentsline {section}{\numberline {2.12}The Four-Step MMA Syntax}{59}{section.2.12}%
+\contentsline {section}{\numberline {2.13}C++ Embedding, Calls, Macros, and the Preprocessor}{60}{section.2.13}%
+\contentsline {section}{\numberline {2.14}Printing, Assertions, and Compile-Time Inspection}{65}{section.2.14}%
+\contentsline {section}{\numberline {2.15}Syntax Quick Reference}{66}{section.2.15}%
+\contentsline {chapter}{\numberline {3}Programming Guide}{69}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Program Structure and Compilation Models}{69}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Syntax Design and the Type System}{72}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Symbolic Shapes, Shape Evaluation, and Value Numbering}{78}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Parallelism, Space Specifiers, and Masking}{85}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Worked Example: Tiled Matrix Multiplication}{90}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Tracing One Output Element}{91}{subsection.3.4.2}%
+\contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{91}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{93}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{94}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Zero-Padding with zfill}{94}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Layout Reinterpretation with span\_as}{95}{subsection.3.5.4}%
+\contentsline {subsection}{\numberline {3.5.5}Tile Selection: Summary and Syntax}{96}{subsection.3.5.5}%
+\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{97}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Worked Example: DMA Matmul}{101}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Multi-Buffering: dma.any, swap, and rotate}{103}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}Worked Example: A Pipelined Kernel}{105}{subsection.3.6.3}%
+\contentsline {section}{\numberline {3.7}Contraction and Layout Contracts}{107}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Worked Example: One Cooperative Group}{110}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Worked Example: Widening the Cooperation Scope}{112}{subsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.7.3}Worked Example: Two Cooperative Groups}{113}{subsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.7.4}MMA Syntax Summary}{114}{subsection.3.7.4}%
+\contentsline {subsection}{\numberline {3.7.5}MMA Design Summary}{114}{subsection.3.7.5}%
+\contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{115}{section.3.8}%
+\contentsline {subsection}{\numberline {3.8.1}Canonical Pattern: One Producer and One Consumer}{119}{subsection.3.8.1}%
+\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{120}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{121}{subsection.3.8.3}%
+\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{122}{subsection.3.8.4}%
+\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{124}{subsection.3.8.5}%
+\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{126}{subsection.3.8.6}%
+\contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{127}{section.3.9}%
+\contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{130}{subsection.3.9.1}%
+\contentsline {subsection}{\numberline {3.9.2}Verbatim C++ Injection}{131}{subsection.3.9.2}%
+\contentsline {subsection}{\numberline {3.9.3}Interoperability Summary}{131}{subsection.3.9.3}%
+\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{131}{section.3.10}%
+\contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{133}{subsection.3.10.1}%
+\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{134}{subsection.3.10.2}%
+\contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{135}{section.3.11}%
+\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{136}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Declarations and shapes}{136}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Iteration}{136}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Tile selection and movement}{136}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{137}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{137}{section.A.5}%
+\contentsline {chapter}{References}{139}{section*.4}%

@@ -1,0 +1,3 @@
+Writing a tiled computation by hand means keeping three descriptions in sync: the shape of the data, the iteration over its tiles, and the movement of each tile between the places a program can read it. Croqtile makes all three part of the program itself --- in its types, its iteration statements and its data expressions --- so the compiler can check them together rather than leaving the consistency to the reader.
+
+Every construct in this guide appears inside a program you can compile. The examples grow by one idea at a time: a later listing usually differs from an earlier one only by the construct that section introduces. When a spelling is unfamiliar, Appendix~\ref{app:quickref} gives its compact form without the surrounding program.

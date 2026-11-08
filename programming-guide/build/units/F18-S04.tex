@@ -1,0 +1,17 @@
+In practical code, some buffer declarations must specify a \textbf{storage specifier}, like so:
+
+\begin{lstlisting}[language=croqtile,caption={Storage Specifier}]
+global f32 [32, 7, 2] a;
+shared u8 [512, 144] b;
+local u8 [72, 1024] c;
+\end{lstlisting}
+
+Since Croqtile handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.
+
+\begin{itemize}[leftmargin=1.6em]
+\item \emph{global}: Refers to the device's global storage.
+\item \emph{shared}: Refers to the device block's shared storage
+\item \emph{local}: Refers to the thread-private storage.
+\end{itemize}
+
+Other targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters.

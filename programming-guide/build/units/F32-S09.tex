@@ -1,0 +1,27 @@
+\subsection*{Values of Bounded Variables}
+
+Understanding the values associated with a bounded variable is crucial. A bounded variable has two key values:
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Current Value}:
+\begin{itemize}[leftmargin=1.6em]
+\item Within a \texttt{foreach} statement, the current value is determined by the loop iteration, as the bounded variable serves as the iteration variable.
+\item Outside of a \texttt{foreach} statement, the bounded variable always has a value of zero.
+\end{itemize}
+\end{itemize}
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{Upper-Bound Value}: This is specified in the \texttt{with-in} or \texttt{parallel-by} statements.
+\end{itemize}
+
+Programmers may encounter issues when using the current value of a bounded variable outside of a \texttt{foreach} statement, particularly after the loop has completed. By definition, the current value of a bounded variable is immutable except within a \texttt{foreach} loop. The following code illustrates this:
+
+\begin{lstlisting}[language=croqtile,caption={Values of Bounded Variables}]
+with x in 6 {
+  // x's current value is 0
+  foreach x {
+    // x's current value is either 0, 1, 2, ..., 5
+  }
+  // x's current value is 0, NOT 6
+}
+\end{lstlisting}

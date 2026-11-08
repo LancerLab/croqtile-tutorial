@@ -1,0 +1,27 @@
+\subsection*{Simplifications}
+
+Every time the value numbering process generates a signature, it tries to simplify the expression. For example,
+
+\begin{lstlisting}[language=croqtile,caption={Simplifications}]
+   int a = 0 + 1;
+\end{lstlisting}
+
+Given the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:
+
+\begin{lstlisting}[language=croqtile,caption={Simplifications}]
+   VN #0:  const_3
+   VN #1:  const_8
+   VN #2:  +:#0:#1
+   Alias a -> #2
+\end{lstlisting}
+
+Here, without optimizations, two constant values \#0 and \#1, and a new value number \#2, which is an addition of \#0 and \#1 are generated. \#2 has the signature of "+:\#0:\#1". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The below output showcases the optimized value numbering process:
+
+\begin{lstlisting}[language=croqtile,caption={Simplifications}]
+   VN #0:  const_3
+   VN #1:  const_8
+   VN #2:  const_11
+   Alias a -> #2
+\end{lstlisting}
+
+The signature of \#2 now represents a constant, which implies the algebraic simplification is applied successfully.

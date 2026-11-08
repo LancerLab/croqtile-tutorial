@@ -1,0 +1,13 @@
+\subsection*{Nesting Specifiers}
+
+Real kernels nest these levels. A common pattern:
+
+\begin{lstlisting}[language=croqtile,caption={Nesting Specifiers}]
+parallel {px, py} by [8, 16] : block {
+  parallel {qx, qy} by [16, 16] : thread {
+    // 128 blocks x 256 threads = 32,768 threads total
+  }
+}
+\end{lstlisting}
+
+The outer \texttt{parallel} creates the block grid. The inner \texttt{parallel} creates threads within each block. The braces \texttt{\{px, py\}} introduce multi-dimensional indices --- shorthand for two nested \texttt{parallel} lines.

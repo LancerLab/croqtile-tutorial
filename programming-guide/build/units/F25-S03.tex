@@ -1,0 +1,11 @@
+\subsection*{Input Parameters}
+
+For a Croqtile function, it only accepts two types of input parameters: the \emph{spanned data}, and the \emph{integer}.
+
+Similar to any C++ program, the parameter may either be named or unnamed:
+
+\begin{lstlisting}[language=croqtile,caption={Input Parameters}]
+__co__ void foo(f32 [7] a, int) {...}
+\end{lstlisting}
+
+In this example, the second parameter is unnamed, which makes it unable to be reference in the Croqtile function. However, this is still the valid code.

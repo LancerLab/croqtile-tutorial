@@ -1,0 +1,11 @@
+\subsection*{Why the restricted interface works: expressiveness vs performance}
+
+This flexibility is a double-edged sword.
+
+Croqtile takes the opposite approach: it restricts the expressible patterns to those that are \textbf{guaranteed to be in the performance sweet spot}. There is no way to accidentally write a strided, uncoalesced global load or a layout conflict shared-memory layout --- the syntax simply does not allow it.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig8_expressiveness_light.png}
+\end{figure}
+
+Croqtile's \texttt{dma.copy} follows the same principle --- The trade is explicit: you give up the ability to write arbitrary data movement, and in return, every data movement you write is fast.

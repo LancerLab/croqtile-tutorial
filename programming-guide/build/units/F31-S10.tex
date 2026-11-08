@@ -1,0 +1,14 @@
+\subsection*{Asynchronous program launch and Stream Binding}
+
+By default, the host waits for a \texttt{parallel-by} kernel to complete before continuing. To launch kernels asynchronously, use \texttt{parallel.async}.
+
+\begin{lstlisting}[language=croqtile,caption={Asynchronous program launch and Stream Binding}]
+__co__ void foo(stream s, f32[M] a) {
+  parallel.async<s> p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host continues immediately (no synchronization)
+}
+\end{lstlisting}
+
+Section~\ref{sec:3-8-4} covers this in detail.

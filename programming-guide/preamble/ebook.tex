@@ -1,0 +1,30 @@
+%% Version A -- LaTeXTemplates "eBook" (technical eBook starter, MIT).
+%% Plain book class + tcolorbox callouts + listings, as in the original template.
+\usepackage[a4paper,top=2.7cm,bottom=2.7cm,left=2.7cm,right=2.7cm]{geometry}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\bfseries\color{croqink}}
+  {\large\color{croqgreen}\chaptertitlename\ \thechapter}
+  {8pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\sffamily\color{croqgreen}}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\sffamily\color{croqink}}{\thesubsection}{1em}{}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\sffamily\nouppercase{\leftmark}}
+\fancyhead[RE,LO]{\small\sffamily Croqtile Programming Guide}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\renewcommand{\guidetemplate}{LaTeXTemplates eBook (technical eBook starter)}
+\renewcommand{\guidetemplateurl}{https://latextemplates.com/template/ebook-book/}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=croqblue,citecolor=croqgreen,
+  urlcolor=croqblue,pdftitle={Croqtile Programming Guide},
+  pdfauthor={LancerLab},pdfsubject={Croqtile kernel programming tutorial},
+  bookmarksnumbered=true,bookmarksopen=true}

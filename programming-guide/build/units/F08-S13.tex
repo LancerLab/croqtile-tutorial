@@ -1,0 +1,3 @@
+\subsection*{Debugging tip}
+
+If something looks wrong after editing a pipeline, verify \textbf{event order and trip counts} before chasing MMA layout bugs: producer and consumer must use the same \texttt{cdiv(K, TILE\_\allowbreak{}K)} loop bound, and too few stages shifts pressure to \texttt{wait full} when the consumer outruns the producer.

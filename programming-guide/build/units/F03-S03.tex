@@ -1,0 +1,33 @@
+\subsection*{A Complete Example: Element-Wise Addition}
+
+Here is the full program. It adds two \texttt{[4, 8]} matrices of 32-bit integers element by element:
+
+\begin{lstlisting}[language=croqtile,caption={A Complete Example: Element-Wise Addition}]
+__co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {
+  s32 [lhs.span] output;
+  parallel {i, j} by [4, 8]
+    output.at(i, j) = lhs.at(i, j) + rhs.at(i, j);
+  return output;
+}
+int main() {
+  auto lhs = croq::make_spandata<croq::s32>(4, 8);
+  auto rhs = croq::make_spandata<croq::s32>(4, 8);
+  lhs.fill_random(-10, 10);
+  rhs.fill_random(-10, 10);
+  auto res = ele_add(lhs.view(), rhs.view());
+  for (int i = 0; i < 4; ++i)
+    for (int j = 0; j < 8; ++j)
+      croq::croq_assert(lhs[i][j] + rhs[i][j] == res[i][j],
+                          "values are not equal.");
+  std::cout << "Test Passed\n" << std::endl;
+}
+\end{lstlisting}
+
+Save this as \texttt{ele\_add.co}, compile, and run:
+
+\begin{lstlisting}[language={},caption={A Complete Example: Element-Wise Addition}]
+croqtile ele_add.co -o ele_add
+./ele_add
+\end{lstlisting}
+
+You should see \texttt{Test Passed}. Now for a closer look at each part.

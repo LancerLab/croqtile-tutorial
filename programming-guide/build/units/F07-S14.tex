@@ -1,0 +1,18 @@
+\paragraph*{In short}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+\textbf{Concept} & \textbf{Primitive} & \textbf{When to use} \\
+\midrule
+Predicated execution & \texttt{if} & Data-dependent decisions (bounds, conditions) \\
+Structured concurrency & \texttt{inthreads.\allowbreak{}async} & Compile-time thread partitioning (producer/consumer, heterogeneous roles) \\
+Inter-region signaling & \texttt{shared event} / \texttt{wait} / \texttt{trigger} & Coordination between concurrent regions \\
+Host concurrency & \texttt{parallel.async} / \texttt{stream s} & Multi-kernel overlap, non-blocking launch \\
+Persistent scheduling & \texttt{if} + \texttt{foreach} + \texttt{\#} & Fixed grid size, tile striping with padding guard \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The 1P1C skeleton above is incomplete: without \texttt{wait} / \texttt{trigger}, the consumer can read before the producer has finished writing. Section~\ref{sec:3-8-5} adds the buffering and event protocols that make the pipeline safe, and walks through the resulting kernel stage by stage.

@@ -1,0 +1,16 @@
+\subsection*{How You Think About Parallel Tasks}
+
+Before you touch any Croqtile syntax, let's talk about what "parallel" actually means.
+
+Suppose you have eight independent tasks --- eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single CPU core, they execute one after another. On a 4-core CPU, maybe four run simultaneously.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f05-fig1_virtual_parallelism_light.png}
+\end{figure}
+\begin{center}\small\emph{The tasks are identical}\end{center}
+
+The point is that parallelism is a \textbf{virtual} concept.
+
+If you want to change the tiling, you also have to change the launch configuration. The logical and physical are tangled together.
+
+Croqtile untangles them.

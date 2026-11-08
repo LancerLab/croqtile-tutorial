@@ -1,0 +1,8 @@
+Every Croqtile program has exactly two parts:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Croqtile Function} (\texttt{\_\_co\_\_}) --- the kernel logic, marked with the \texttt{\_\_co\_\_} prefix. It describes computation on shaped tensors.
+\item \textbf{Host Program} --- standard C++ that prepares data, calls the Croqtile function, and checks results.
+\end{enumerate}
+
+Both parts live in a single \texttt{.co} file. The compiler tells them apart by the \texttt{\_\_co\_\_} prefix.

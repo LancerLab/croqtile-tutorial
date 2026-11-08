@@ -1,0 +1,22 @@
+\paragraph*{Syntax at a glance}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Syntax} & \textbf{Meaning} \\
+\midrule
+\texttt{mc = mma.\allowbreak{}fill 0.\allowbreak{}0} & Initialize accumulator tile to zero \\
+\texttt{mma.\allowbreak{}fill.\allowbreak{}f16 0.\allowbreak{}0f} / \texttt{mma.\allowbreak{}fill.\allowbreak{}f32 0.\allowbreak{}0f} & Accumulator with explicit precision \\
+\texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{} src} & Load with swizzle mode (see \emph{Ch 7}) \\
+\texttt{mma.\allowbreak{}row.\allowbreak{}row mc, ma, mb} & C += A \(\times\) B (both row-major) \\
+\texttt{mma.\allowbreak{}row.\allowbreak{}col mc, ma, mb} & C += A \(\times\) B (A row-major, B col-major) \\
+\texttt{mma.\allowbreak{}row.\allowbreak{}row.\allowbreak{}sp mc, ma, mb, me} & Sparse MMA with metadata operand \\
+\texttt{mma.\allowbreak{}row.\allowbreak{}row.\allowbreak{}scale mc, ma, mb, sc\_\allowbreak{}a, sc\_\allowbreak{}b} & Fused MMA + per-tile dequantization \\
+\texttt{mma.\allowbreak{}scale mc, sc\_\allowbreak{}a, sc\_\allowbreak{}b} & Standalone post-MMA scaling \\
+\texttt{mma.\allowbreak{}store.\allowbreak{}transp mc, dst} & Write accumulator transposed \\
+\texttt{cdiv(a, b)} & Ceiling division \\
+\texttt{\_\allowbreak{}\_\allowbreak{}co\_\allowbreak{}\_\allowbreak{} void fn(.\allowbreak{}.\allowbreak{}.\allowbreak{})} & Kernel that writes results in-place \\
+\bottomrule
+\end{tabularx}
+\end{table}

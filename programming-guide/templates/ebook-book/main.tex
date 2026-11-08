@@ -1,0 +1,82 @@
+\documentclass[11pt]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{natbib}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+}
+
+\newtcolorbox{note}[1][]{colback=black!5,colframe=black!40,title={Note},#1}
+
+\title{An Open-Source eBook}
+\author{Noor Fatima}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Getting Started}
+
+\section{Why This Book Mixes Prose and Code}
+
+A technical eBook reads best when code listings sit directly beside the
+prose that explains them \citep{knuth1984texbook}. This starter uses
+\texttt{listings} for that, kept plain rather than routed through a
+shell-escape-dependent highlighter.
+
+\begin{lstlisting}[caption={A minimal example.}]
+def greet(name):
+    return f"Hello, {name}!"
+\end{lstlisting}
+
+\begin{note}
+Callout boxes like this one, built with \texttt{tcolorbox}, are useful for
+asides that should stand apart from the main narrative.
+\end{note}
+
+\section{A Summary Table}
+
+Table~\ref{tab:chapters} lists what each chapter of this starter covers.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    Chapter & Covers \\
+    \midrule
+    1 & Code listings and callout boxes \\
+    2 & Citations and the bibliography \\
+    \bottomrule
+  \end{tabular}
+  \caption{Chapter overview.}
+  \label{tab:chapters}
+\end{table}
+
+\chapter{Closing the Book}
+
+\section{Citing a Source}
+
+The reference used throughout this starter is resolved below
+\citep{knuth1984texbook}.
+
+\section{Wrapping Up}
+
+The two chapters above are enough to show the combination this template is
+for: prose, syntax-highlighted-looking listings, callouts, and a standard
+bibliography, all under the plain \texttt{book} class.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

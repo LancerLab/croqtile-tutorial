@@ -1,0 +1,59 @@
+\subsection*{Tileflow Program: Orchestrating the Data Movement}
+
+The \emph{Tileflow Program} consists of \emph{Croqtile functions}. As described earlier, it manages the movement of data between the host and the target device, ensuring that data is copied correctly across different storage locations.
+
+For convenience, let's revisit the code:
+
+\begin{lstlisting}[language=croqtile,caption={Tileflow Program: Orchestrating the Data Movement}]
+__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
+  s32 [lhs.span] output; // Use same shape as lhs
+  parallel p by 6 {
+    with index in [17, 4] { // Tiling factors
+      foreach index {
+        lhs_load = dma.copy lhs.chunkat(p, index) => local;
+        rhs_load = dma.copy rhs.chunkat(p, index) => local;
+        local s32 [lhs_load.span] l1_out;
+        // Call kernel with loaded data
+        call kernel(lhs_load.data, rhs_load.data, l1_out, |lhs_load.span|);
+        // Store result back to output
+        dma.copy l1_out => output.chunkat(p, index);
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+In this code, the \texttt{\_\_co\_\_}-prefixed croqtile function accepts two inputs \texttt{lhs} and \texttt{rhs}, both with the shape \texttt{[6, 17, 128]} and the element type of \texttt{s32} (signed 32-bit integer). And the output is defined to have the same shape and type as the inputs.
+
+The \texttt{parallel p by 6 \{.\allowbreak{}.\allowbreak{}.\allowbreak{}\}} block indicates that the enclosed code runs in parallel. Specifically, six instances of the code are executed concurrently. This implies a transition in the execution environment from the host to the device.
+
+Inside the \texttt{parallel-by} block, a \texttt{with-in} block binds the symbol \texttt{index} to two values, \texttt{17} and \texttt{4}. In Croqtile, \texttt{index} is referred to as a \texttt{bounded-ituple} with two \texttt{bounded} values, which can be used in \texttt{foreach} statements. (You will explain \texttt{bounded} types in later chapters.)
+
+The \texttt{foreach index \{.\allowbreak{}.\allowbreak{}.\allowbreak{}\}} statement is equivalent to the following C code:
+
+\begin{lstlisting}[language={},caption={Tileflow Program: Orchestrating the Data Movement}]
+for (int x = 0; x < 17; x++)  // assume 'x' represents the 1st element of 'index'
+  for (int y = 0; y < 4; y++) { ... }  // and 'y' represents the 2nd element of 'index'
+\end{lstlisting}
+
+Within the \texttt{foreach} block, the \texttt{dma.copy} statement describes how data movement occurs. For example, consider the statement \texttt{lhs\_\allowbreak{}load = dma.\allowbreak{}copy lhs.\allowbreak{}chunkat(p, index) =\textgreater{} local;}:
+
+\begin{itemize}[leftmargin=1.6em]
+\item The symbol \texttt{lhs\_load} is called \textbf{future} of the DMA operation, which contains information about the DMA destination.
+\item \texttt{dma.copy} invokes a direct DMA data transfer without transforming the shape of the data. The expression on the left-hand side of \texttt{=\textgreater{}} represents the DMA source, while the right-hand side represents the destination.
+\item In this case, the destination is specified as a \texttt{local} buffer, which is automatically allocated by the Croqtile compiler.
+\item The source expression \texttt{lhs.\allowbreak{}chunkat(p, index)} is referred to as the \textbf{chunkat expression} in Croqtile. Here, \texttt{p} and \texttt{index} tiling factors for the \texttt{lhs}. Given that \texttt{lhs} has a shape of \texttt{[6, 17, 128]} and the upper bounds of \texttt{p} and \texttt{index} are \texttt{6}, \texttt{17}, and \texttt{4}, the data chunk size is \texttt{1x1x32} (\texttt{6/\allowbreak{}6, 17/\allowbreak{}17, 128/\allowbreak{}4}). In each iteration, a single data chunk is used as the source, with the exact chunk determined by the current values of \texttt{p} and \texttt{index}. For example, in parallel thread \texttt{1} and the iteration \texttt{\{16, 2\}}, the chunk's offset is set to \texttt{\{1, 16, 2\}}.
+\end{itemize}
+
+This is illustrated in the below figure:
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f14-chunkat-6-17-4.drawio.png}
+\end{figure}
+
+With the DMA statement, different chunks of data tiled from \texttt{lhs} are moved iteratively and in parallel from the host to the device's \texttt{local} storage. Similarly, the DMA statement manages \texttt{rhs} by moving it in small chunks to \texttt{local} storage for processing.
+
+Next, the statement \texttt{local s32 [lhs\_\allowbreak{}load.\allowbreak{}span] l1\_\allowbreak{}out;} defines a per-parallel-thread buffer. Note here it takes its shape from the expression \texttt{lhs\_load.span}, which represents the tiled block. The buffer is used to store the output data in the subsequent \texttt{call} statement. The \texttt{call} statement invoke the \emph{device function} named \texttt{kernel} to perform computations. Once the computation is complete, another DMA statement moves the output data from the \texttt{local} buffer back to host. This complete one iteration.
+
+In this code, each parallel thread runs \texttt{17x4} iterations, with each iteration handling a \texttt{1x1x32}-sized chunk of data. The \emph{croqtile program} terminates when all \texttt{6} parallel threads have completed their iterations. It then returns the output buffer to its caller, the host program.

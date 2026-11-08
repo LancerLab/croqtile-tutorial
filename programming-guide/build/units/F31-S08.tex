@@ -1,0 +1,23 @@
+\subsection*{Heterogeneity: Transpiling to program launch}
+
+For targets like , the \texttt{parallel-by} block not only specifies the number of parallel threads but also defines the boundary between host and device code, leveraging Croqtile's ability to manage heterogeneity. Specifically:
+
+\begin{itemize}[leftmargin=1.6em]
+\item Code \textbf{outside} the \texttt{parallel-by} block is transpiled into \textbf{host code}.
+\item Code \textbf{inside} the block is transpiled into \textbf{device code}, as illustrated below:
+\end{itemize}
+
+\begin{lstlisting}[language=croqtile,caption={Heterogeneity: Transpiling to program launch}]
+__co__ void foo(...) {
+  // Generate host code
+  // ...
+  parallel p by 6 {
+    // Generate device code
+    // ...
+  }
+  // Generate host code
+  // ...
+}
+\end{lstlisting}
+
+For those familiar with , this is analogous to a  occurring at the \texttt{parallel-by} statement. However, Croqtile abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.

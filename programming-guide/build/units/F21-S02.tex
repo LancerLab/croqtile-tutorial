@@ -1,0 +1,20 @@
+\subsection*{Quick Example}
+
+The value numbering process assigns a value number to all entities containing a list of values, including for mdspan and ituple. For example,
+
+\begin{lstlisting}[language=croqtile,caption={Quick Example}]
+mdspan a : {1, b, c + 3}
+\end{lstlisting}
+
+The value numbering process would produce values including:
+
+\begin{lstlisting}[language=croqtile,caption={Quick Example}]
+   VN #0:  const_1
+   VN #1:  b
+   VN #2:  c
+   VN #3:  const_3
+   VN #4:  +:#2:#3
+   VN #5:  #0,#1,#4
+\end{lstlisting}
+
+In this illustration, the number after "VN \#" is the value number of an expression. I either represents a constant integer value (known at compile time), a symbolic value (like variable 'a', 'b'), or composition of other value numbers. Here, value number \#0 and \#3 represents a reference to constant value, where \#1, and \#2 represents reference to the integer-typed variable "b" and "c". \#4 represents the value of an addition expression, which gives the sum of \#2 and \#3. That is the expression of 'c + 3' when dereferencing all the value numbers. And lastly, value number \#5 represents the list of values defined by mdspan 'a' symbolically. With such a definition, you may translate the indexing operations, e.g. "a(0)", results in value number \#0 and thus a constant of 1.

@@ -1,0 +1,13 @@
+\subsection*{C++ Interop: Device Functions, Inline Code, and the Preprocessor}
+
+Every high-level language needs an escape hatch to the layer below. Python has \texttt{ctypes} and C extensions. Rust has \texttt{unsafe} blocks and \texttt{extern "C"}. Java has JNI.
+
+Croqtile's interoperability story has three parts:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{\texttt{\_\_device\_\_} functions} --- The compiler passes them through unchanged.
+\item \textbf{\texttt{\_\_cpp\_\_}}
+\item \textbf{The preprocessor} --- \texttt{\#define}, \texttt{\#if}, \texttt{\#ifdef}, \texttt{\#error} for compile-time configuration, the same role \texttt{\#define} plays in C/C++ codebases.
+\end{enumerate}
+
+The preceding sections have built a stack of abstractions: tiles, parallelism, MMA, pipelines, events, TMA. That is the Croqtile you want to live in. This part of the guide is about the times you need to step outside.

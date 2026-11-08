@@ -1,0 +1,9 @@
+\subsection*{Runtime checks: \texttt{-rtc}}
+
+The compiler supports graduated runtime checking with \texttt{-rtc} (or \texttt{-\allowbreak{}-\allowbreak{}runtime-\allowbreak{}check}):
+
+\begin{lstlisting}[language={},caption={Runtime checks: -rtc}]
+croqtile kernel.co -rtc=high -o kernel
+\end{lstlisting}
+
+Levels: \texttt{none}, \texttt{entry} (default), \texttt{low}, \texttt{medium}, \texttt{high}, \texttt{all}. Each level is a superset of the previous. Use \texttt{high} or \texttt{all} during development, \texttt{none} for production.

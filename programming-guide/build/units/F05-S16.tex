@@ -1,0 +1,23 @@
+\subsection*{Host Code}
+
+The host side uses the same \texttt{make\_spandata} / \texttt{.view()} pattern from earlier chapters:
+
+\begin{lstlisting}[language=croqtile,caption={Host Code}]
+int main() {
+  auto lhs = croq::make_spandata<croq::s32>(128, 256);
+  auto rhs = croq::make_spandata<croq::s32>(256, 256);
+  lhs.fill_random(-10, 10);
+  rhs.fill_random(-10, 10);
+  auto res = matmul(lhs.view(), rhs.view());
+  for (size_t i = 0; i < res.shape()[0]; ++i)
+    for (size_t j = 0; j < res.shape()[1]; ++j) {
+      int ref = 0;
+      for (size_t k = 0; k < lhs.shape()[1]; ++k)
+        ref += lhs[i][k] * rhs[k][j];
+      croq::croq_assert(ref == res[i][j], "values are not equal.");
+    }
+  std::cout << "Test Passed\n" << std::endl;
+}
+\end{lstlisting}
+
+Nothing new here. The host program stays boring so the Croqtile function stays the star.

@@ -1,0 +1,16 @@
+\paragraph*{In short}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+\textbf{Syntax} & \textbf{What it does} & \textbf{Runs on} \\
+\midrule
+\texttt{\#\allowbreak{}define NAME value} & Object-like macro; shared across \texttt{\_\_co\_\_} and host regions & Preprocessor \\
+\texttt{\#if} / \texttt{\#ifdef} / \texttt{\#error} & Conditional compilation and compile-time assertions & Preprocessor \\
+\texttt{-DNAME=value} & Define macros from the command line for tile sweeps & Preprocessor \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Section~\ref{sec:1-9} turns to the other side of the workflow: what to do when the kernel compiles but the output is wrong --- debugging, verbose modes and systematic narrowing.

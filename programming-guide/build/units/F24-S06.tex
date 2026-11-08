@@ -1,0 +1,32 @@
+\subsection*{Trigger C++ Template Instantiation}
+
+It is possible for Croqtile code to make function call to a template function. For example:
+
+\begin{lstlisting}[language=croqtile,caption={Trigger C Template Instantiation}]
+template<int M, int N, int K>
+__device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
+__co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+  parallel p by 6 {
+    shared s32 [output.span / #p] buffer;   // shape: [16, 4]
+    lhs_load = dma.copy lhs.chunkat(p, _) => shared;
+    rhs_load = dma.copy rhs.chunkat(_, p) => shared;
+    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);
+  }
+  return output;
+}
+\end{lstlisting}
+
+In this case, it defines device function template named \texttt{matmul\_kernel}, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function \texttt{matmul\textless{}16, 4, 72\textgreater{}} for the call.
+
+So in Croqtile, calling a template function is similar to those in C++. However, \textbf{the template argument passed must be able to be inferred as compile time constant value} by Croqtile compiler. Therefore, any runtime values can result in error.
+
+\begin{lstlisting}[language=croqtile,caption={Trigger C Template Instantiation}]
+__co__ void foo(int M) {
+  parallel p by 1 {
+    call bar<M>();  // error: 'M' is a runtime value
+  }
+}
+\end{lstlisting}
+
+Croqtile compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.

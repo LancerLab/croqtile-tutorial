@@ -1,0 +1,21 @@
+\subsection*{Syntactic Sugar}
+
+\begin{lstlisting}[language=croqtile,caption={Syntactic Sugar}]
+foreach x in 128 { }
+foreach idx in [10, 20] { }
+foreach {y, z} in [8, 16] { }
+\end{lstlisting}
+
+The code above is equivalent to the following code:
+
+\begin{lstlisting}[language=croqtile,caption={Syntactic Sugar}]
+with x in 128 {
+  foreach x { }
+}
+with idx in [10, 20] {
+  foreach idx { }
+}
+with {y, z} in [8, 16] {
+  foreach y, z { }
+}
+\end{lstlisting}
