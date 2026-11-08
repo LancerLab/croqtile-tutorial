@@ -234,8 +234,8 @@
 \contentsline {lstlisting}{\numberline {3.66}Persistent scheduling and the if guard}{117}{lstlisting.3.66}%
 \contentsline {lstlisting}{\numberline {3.67}parallel.async: host-level concurrency}{119}{lstlisting.3.67}%
 \contentsline {lstlisting}{\numberline {3.68}Asynchronous program launch and Stream Binding}{119}{lstlisting.3.68}%
-\contentsline {lstlisting}{\numberline {3.69}Synchronization and Asynchronous parallel-by}{119}{lstlisting.3.69}%
-\contentsline {lstlisting}{\numberline {3.70}Synchronization and Asynchronous parallel-by}{119}{lstlisting.3.70}%
+\contentsline {lstlisting}{\numberline {3.69}An asynchronous launch}{119}{lstlisting.3.69}%
+\contentsline {lstlisting}{\numberline {3.70}The synchronous form}{119}{lstlisting.3.70}%
 \contentsline {lstlisting}{\numberline {3.71}Stream Binding}{120}{lstlisting.3.71}%
 \contentsline {lstlisting}{\numberline {3.72}Stream Binding without .async}{120}{lstlisting.3.72}%
 \contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{121}{lstlisting.3.73}%

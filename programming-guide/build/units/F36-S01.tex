@@ -2,14 +2,14 @@
 
 Similar to \texttt{inthreads}, \texttt{parallel-by} can also be made asynchronous by appending \texttt{.async}:
 
-\begin{lstlisting}[language=croqtile,caption={Synchronization and Asynchronous parallel-by}]
+\begin{lstlisting}[language=croqtile,caption={An asynchronous launch}]
 parallel.async p by 6 : block {
 }
 \end{lstlisting}
 
 Without \texttt{.async}, the host waits for the kernel to finish before continuing:
 
-\begin{lstlisting}[language=croqtile,caption={Synchronization and Asynchronous parallel-by}]
+\begin{lstlisting}[language=croqtile,caption={The synchronous form}]
 parallel p by 6 : block {
 }
 // host continues only after the kernel finishes
