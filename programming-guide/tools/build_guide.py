@@ -378,7 +378,7 @@ SLOT_INTROS = {
     '3.7.3': "Two cooperative groups can share operands and split the work between them. The tiling has to give each group a distinct part of the output, and the program shows how the indices are divided.",
     '3.7.9': "The contraction syntax is gathered here for quick reference: the four step names, the space specifiers and the layout each variant expects.",
     '3.7.10': "The four-step design makes the layout contract explicit and keeps the accumulation visible. Its limit is that loads and compute still take turns; Section~\\ref{sec:3-8} makes them overlap.",
-    '3.8': "Pipelines and persistent kernels are built from concurrent regions and events. This section explains the coordination primitives and the protocols they implement.",
+    '3.8': "Pipelines and persistent kernels are built from concurrent regions and events. A producer and a consumer agree on a buffer through wait/trigger, and the same protocol scales from one stage to a persistent scheduling loop.",
     '3.8.1': "The smallest useful pipeline has one producer and one consumer. This section establishes that pattern before adding stages.",
     '3.8.2': "A 1P1C kernel skeleton shows the producer and consumer regions in code. This section reads it in full.",
     '3.8.3': "A persistent kernel decides its own work rather than being launched once per tile. This section covers the guard and the scheduling loop.",
@@ -1260,6 +1260,11 @@ UNIT_OVERRIDES = [
     ('F06-S06', r'--- With MMA', '--- with MMA'),
     # Round 60 (3.7.9): MMA syntax summary. The reference table is unchanged.
     # Round 61 (3.7.10): design summary. The source prose is continuous.
+    # Round 62 (3.8): coordination primitives.
+    ('F35-S04', None, caption_names([
+        'A single-instance deadlock', 'A credit-count deadlock'])),
+    ('F07-S01', r'But predicated execution', 'Predicated execution'),
+    ('F34-S07', r'Note that, only the', 'Only the'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

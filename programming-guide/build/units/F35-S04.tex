@@ -4,7 +4,7 @@ By default, the event is lock-free for high-performance synchoronization between
 
 For example,
 
-\begin{lstlisting}[language=croqtile,caption={DeadLocks}]
+\begin{lstlisting}[language=croqtile,caption={A single-instance deadlock}]
 parallel p by 1 {
   shared event e;
   trigger e;   // one thread set e;
@@ -16,7 +16,7 @@ parallel p by 1 {
 
 In this code, two threads wait a single event \texttt{e}. However, since \texttt{wait} resets the event \texttt{e}, it is possible that \texttt{thread-0} resets the event before \texttt{thread-1} find the \texttt{e} has been triggered. As a result, \texttt{thread-1} is never unblocked and deadlocking happens.
 
-\begin{lstlisting}[language=croqtile,caption={DeadLocks}]
+\begin{lstlisting}[language=croqtile,caption={A credit-count deadlock}]
 qc = 2;
 parallel p by 1 {
   shared event e[qc];

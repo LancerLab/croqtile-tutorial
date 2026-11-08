@@ -6,7 +6,7 @@ On a CPU, the answer is trivial --- each core has its own program counter, so ea
 
 All threads evaluate the condition; threads where it is false are masked (deactivated); This is \textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.
 
-But predicated execution is not enough. This is not a data-dependent branch --- it is two \textbf{structurally different programs} that happen to share an address space. Trying to express this with \texttt{if} means one program pauses while the other runs. There is no overlap, no pipeline.
+Predicated execution is not enough. This is not a data-dependent branch --- it is two \textbf{structurally different programs} that happen to share an address space. Trying to express this with \texttt{if} means one program pauses while the other runs. There is no overlap, no pipeline.
 
 Croqtile introduces two additional control-flow primitives to fill this gap:
 

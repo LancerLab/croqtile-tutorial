@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1511,29 +1511,29 @@ File: figures//f07-fig1_role_comparison_light.png Graphic file (type png)
 Package pdftex.def Info: figures//f07-fig1_role_comparison_light.png  used on i
 nput line 36.
 (pdftex.def)             Requested size: 381.69853pt x 214.70541pt.
-) (./build/units/F07-S05.tex [112]) (./build/units/F08-S01.tex)
-(./build/units/F08-S09.tex [113 <./figures//f07-fig1_role_comparison_light.png>
-]
+[112]) (./build/units/F07-S05.tex) (./build/units/F08-S01.tex [113 <./figures//
+f07-fig1_role_comparison_light.png>]) (./build/units/F08-S09.tex
 <figures//f08-fig1_pipeline_timeline_light.png, id=2694, 1927.2pt x 1084.05pt>
 File: figures//f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures//f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures//f08-fig1_pipeline_timeline_light.png  used on
  input line 8.
 (pdftex.def)             Requested size: 381.69853pt x 214.70541pt.
-) (./build/units/F34-S07.tex) (./build/units/F35-S03.tex [114 <./figures//f08-f
-ig1_pipeline_timeline_light.png>]) (./build/units/F35-S04.tex) [115]
+)
+(./build/units/F34-S07.tex [114 <./figures//f08-fig1_pipeline_timeline_light.pn
+g>]) (./build/units/F35-S03.tex) (./build/units/F35-S04.tex [115])
 (./build/units/F07-S04.tex) (./build/units/F07-S08.tex [116])
 (./build/units/F07-S09.tex [117]
-<figures//f07-fig2_persistent_kernel_light.png, id=2807, 1927.2pt x 1084.05pt>
+<figures//f07-fig2_persistent_kernel_light.png, id=2799, 1927.2pt x 1084.05pt>
 File: figures//f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures//f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures//f07-fig2_persistent_kernel_light.png  used on
  input line 44.
 (pdftex.def)             Requested size: 381.69853pt x 214.70541pt.
-) (./build/units/F07-S10.tex)
-(./build/units/F07-S11.tex [118 <./figures//f07-fig2_persistent_kernel_light.pn
-g>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex)
-(./build/units/F36-S02.tex [119]) (./build/units/F36-S03.tex)
+) (./build/units/F07-S10.tex) [118 <./figures//f07-fig2_persistent_kernel_light
+.png>] (./build/units/F07-S11.tex)
+(./build/units/F31-S10.tex) (./build/units/F36-S01.tex) [119]
+(./build/units/F36-S02.tex) (./build/units/F36-S03.tex)
 (./build/units/F36-S04.tex) (./build/units/F08-S10.tex [120])
 (./build/units/F08-S11.tex [121]) (./build/units/F08-S12.tex
 <figures//f08-fig2_event_credit_flow_light.png, id=2910, 1927.2pt x 1084.05pt>
@@ -1549,11 +1549,11 @@ Underfull \hbox (badness 2894) in paragraph at lines 15--15
  []
 
 ) (./build/units/F08-S15.tex) [122 <./figures//f08-fig2_event_credit_flow_light
-.png>] (./build/units/F10-S01.tex) (./build/units/F10-S03.tex)
-(./build/units/F23-S05.tex [123]) (./build/units/F23-S06.tex)
+.png>] (./build/units/F10-S01.tex) (./build/units/F10-S03.tex) [123]
+(./build/units/F23-S05.tex) (./build/units/F23-S06.tex)
 (./build/units/F24-S05.tex) (./build/units/F24-S06.tex [124])
-(./build/units/F25-S08.tex) (./build/units/F26-S01.tex) [125]
-(./build/units/F10-S04.tex) [126] (./build/units/F10-S06.tex)
+(./build/units/F25-S08.tex) (./build/units/F26-S01.tex [125])
+(./build/units/F10-S04.tex [126]) (./build/units/F10-S06.tex)
 (./build/units/F10-S13.tex
 Underfull \hbox (badness 1478) in paragraph at lines 13--13
 []|\T1/lmr/m/n/10 (+20) Object-like macro; shared across
@@ -1605,7 +1605,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (147 pages, 3256104 bytes).
+Output written on main.pdf (147 pages, 3256535 bytes).
 PDF statistics:
  3584 PDF objects out of 4296 (max. 8388607)
  3280 compressed objects within 33 object streams

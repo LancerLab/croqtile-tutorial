@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1494,12 +1494,11 @@ t line 6.
  [113 <./figures//f06-fig4_sm86_vs_sm90_light.png>]) (./build/units/F06-S06.tex
  [114])
 (./build/units/F06-S08.tex) (./build/units/F06-S09.tex) [115]
-(./build/units/F07-S01.tex) (./build/units/F07-S03.tex
+(./build/units/F07-S01.tex) (./build/units/F07-S03.tex [116]
 Underfull \hbox (badness 2809) in paragraph at lines 26--26
 []|\T1/lmtt/b/n/10 inthreads.async \T1/lmr/bx/n/10 (+20) (struc-tured
  []
 
-[116]
 <figures//f07-fig1_role_comparison_light.png, id=2702, 1927.2pt x 1084.05pt>
 File: figures//f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures//f07-fig1_role_comparison_light.png>
@@ -1616,7 +1615,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (153 pages, 3267939 bytes).
+Output written on main-manual.pdf (153 pages, 3268058 bytes).
 PDF statistics:
  3610 PDF objects out of 4296 (max. 8388607)
  3300 compressed objects within 33 object streams

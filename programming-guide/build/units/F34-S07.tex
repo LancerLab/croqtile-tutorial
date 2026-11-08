@@ -19,4 +19,4 @@ __co__  void foo() {
 
 In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each \texttt{inthreads} block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the \texttt{sync.shared} statement established a \textbf{synchronization point} for all threads. That makes sure code for both paths get executed after this \emph{synchronization point}.
 
-Note that, only the outer \texttt{inthreads} can be declared as asynchronous. Programmers will get an compile-time error when using \texttt{inthreads.\allowbreak{}async} for any inner \texttt{inthreads} block.
+Only the outer \texttt{inthreads} can be declared as asynchronous. Programmers will get an compile-time error when using \texttt{inthreads.\allowbreak{}async} for any inner \texttt{inthreads} block.

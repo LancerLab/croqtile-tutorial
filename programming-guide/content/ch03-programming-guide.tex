@@ -378,7 +378,7 @@
 \section{Coordination, Pipelines, and Persistent Scheduling}
 \label{sec:3-8}
 
-\guideslotintro{Pipelines and persistent kernels are built from concurrent regions and events. This section explains the coordination primitives and the protocols they implement.}
+\guideslotintro{Pipelines and persistent kernels are built from concurrent regions and events. A producer and a consumer agree on a buffer through wait/trigger, and the same protocol scales from one stage to a persistent scheduling loop.}
 
 \input{build/units/F07-S01}
 

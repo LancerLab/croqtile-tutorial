@@ -227,8 +227,8 @@
 \contentsline {lstlisting}{\numberline {3.59}Inter-region signaling with events}{117}{lstlisting.3.59}%
 \contentsline {lstlisting}{\numberline {3.60}Make it Asynchronous}{119}{lstlisting.3.60}%
 \contentsline {lstlisting}{\numberline {3.61}Event Instances}{119}{lstlisting.3.61}%
-\contentsline {lstlisting}{\numberline {3.62}DeadLocks}{120}{lstlisting.3.62}%
-\contentsline {lstlisting}{\numberline {3.63}DeadLocks}{120}{lstlisting.3.63}%
+\contentsline {lstlisting}{\numberline {3.62}A single-instance deadlock}{120}{lstlisting.3.62}%
+\contentsline {lstlisting}{\numberline {3.63}A credit-count deadlock}{120}{lstlisting.3.63}%
 \contentsline {lstlisting}{\numberline {3.64}The canonical pattern: 1 producer 1 consumer}{120}{lstlisting.3.64}%
 \contentsline {lstlisting}{\numberline {3.65}A 1P1C matmul skeleton}{121}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}Persistent scheduling and the if guard}{122}{lstlisting.3.66}%
