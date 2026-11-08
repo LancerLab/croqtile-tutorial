@@ -359,7 +359,7 @@ SLOT_INTROS = {
     '3.1': "A \\file{.co} program is transpiled into host and device code. The three layers that result decide which parts the compiler rewrites and which it passes through, and the same split supports both single-source and separate-source compilation.",
     '3.2': "A Croqtile type says what a value is, how it is stored and which bounds apply to it. \\co@mdspan@ and spanned data describe shapes and buffers, integers and i-tuples describe indices, and storage and bounded qualifiers attach to each declaration.",
     '3.3': "A dimension does not have to be a literal. \\co@mdspan@ accepts anonymous dimensions filled in by the caller and symbolic dimensions evaluated by the compiler; value numbering is what lets the compiler fold the resulting expressions and still prove shapes safe.",
-    '3.4': "Parallelism in Croqtile is declared in layers. This section covers space specifiers, masking and the language rules that keep multi-level iteration well defined.",
+    '3.4': "Parallelism in Croqtile is declared in layers: a \\co@parallel@ block names independent instances, a space specifier groups them, and masking decides which instances execute a divergent branch. The rules below keep multi-level iteration well defined.",
     '3.4.1': "A tiled matrix multiplication puts the parallelism constructs to work. This section walks through the kernel and the host code that launches it.",
     '3.4.2': "Following one output element through a kernel makes the index arithmetic concrete. This section traces it step by step.",
     '3.5': "Tiling is expressed with data expressions rather than raw pointer arithmetic. This section covers the composition operator and the forms a data expression may take.",
@@ -1164,6 +1164,33 @@ UNIT_OVERRIDES = [
      "Anonymous and symbolic dimensions are the two ways Croqtile "
      "represents a shape that is not fully known when the program is "
      "written."),
+    # Round 43 (3.4): restore the if-else concept archived with a platform
+    # clause, and remove the tutorial bookends around masking.
+    ('F15-S13',
+     r'Croqtile has significant difference with C\+\+ on parallelization, loop, etc\.',
+     "Croqtile differs from C++ in how it expresses parallelization and "
+     "loops, but it follows C++ in using \\texttt{if}-\\texttt{else} blocks "
+     "to handle branches inside a program."),
+    ('F31-S01',
+     r'This section will guide you through using the \\texttt\{parallel-by\} block to implement parallel code in Croqtile\.',
+     "A \\texttt{parallel-by} block declares a set of independent "
+     "instances; the space specifier says how those instances are grouped."),
+    ('F31-S11',
+     r'In this section, you explored[^.]*\.',
+     "A \\texttt{parallel-by} block declares independent instances and a "
+     "space specifier groups them; masking then decides which of those "
+     "instances actually execute a statement."),
+    ('F31-S11',
+     r'However, while parallelism enhances efficiency, loops remain essential\. In the next section, this section introduces how to build loops in Croqtile\.',
+     "Loops remain necessary for work that has to happen in order, and "
+     "Section~\\ref{sec:2-7} introduces their Croqtile forms."),
+    ('F33-S04',
+     r'There are some code structures in Croqtile that implies implicit masking\.',
+     'Some code structures in Croqtile imply implicit masking.'),
+    ('F34-S10',
+     r'In this section, you examined the motivation for thread masking[^.]*\.',
+     "Masking is what allows divergent execution inside an otherwise "
+     "uniform parallel region."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

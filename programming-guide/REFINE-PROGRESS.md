@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **3.4** (chapters 1–2 complete; chapter 3 in progress through 3.3)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42)
+- Next section: **3.4.1** (chapters 1–2 complete; chapter 3 in progress through 3.4)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -92,7 +92,7 @@ chapter numbers; every unit stays in its registered slot.
 | 3.1 | x | round 40 | Named the two device-code listings, replaced the "This section introduces" opener with the three-layer structure, removed a dangling "Thus" and fixed "a end-to-end" |
 | 3.2 | x | round 41 | Named the four partial-type examples, removed the "However" opener and made the intro state what each value family contributes instead of announcing the section |
 | 3.3 | x | round 42 | Named the anonymous-dimension, value-numbering and simplification listings, removed the "So far / However / In this section" openers and replaced the intro with the two ways a shape can stay symbolic |
-| 3.4 | . | | |
+| 3.4 | x | round 43 | Restored the C++ if-else control-structure sentence that the coverage check flagged as lost, repaired the "implies" agreement error, and replaced three tutorial bookends with the layering/masking facts |
 | 3.4.1 | . | | |
 | 3.4.2 | . | | |
 | 3.5 | . | | |
