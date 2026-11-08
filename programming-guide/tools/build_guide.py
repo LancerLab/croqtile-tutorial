@@ -346,7 +346,7 @@ SLOT_INTROS = {
     '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result back. Each step uses a small API, and the shape attached to a buffer is what makes the call type-safe.",
     '2.4': "A shape is a value a program can name and compute with, not just an annotation on a declaration. \\co@mdspan@ defines one, arithmetic derives another from it, and an anonymous dimension leaves a size for the caller to supply.",
     '2.5': "Integers control loops and index arrays; an \\co@ituple@ groups several of them into one index. Both are declared with an initializer, both are immutable, and both are checked against the shape they are used with.",
-    '2.6': "Data in Croqtile is \\emph{spanned}: a buffer together with its shape. This section shows how spanned data is declared, stored and initialised.",
+    '2.6': "A buffer in Croqtile always arrives with its shape. Declaring one fixes the element type and the dimensions; a storage specifier says where it lives, and an initializer can fill it at the declaration site.",
     '2.7': "Iteration in Croqtile declares independence rather than a schedule. This section introduces \\co@parallel@, \\co@with-in@ and \\co@foreach@ through small programs.",
     '2.8': "A tile is a slice of a larger buffer. This section shows the ways to select one --- \\co@chunkat@, \\co@subspan@, \\co@view().from()@ --- and the compose operator \\co@#@.",
     '2.9': "Moving a tile is a statement in the language, not a library call. This section introduces the DMA statement, futures, and synchronous versus asynchronous copies.",
@@ -969,6 +969,26 @@ UNIT_OVERRIDES = [
     ('F15-S05',
      r'As described, Scalar types in Croqtile includes',
      'Scalar types in Croqtile include'),
+    # Round 30 (2.6): spanned data and storage specifiers.
+    ('F18-S03', None, caption_names([
+        'A spanned-data declaration', 'A standalone shape',
+        'A rejected fundamental type'])),
+    ('F18-S06', None, caption_names([
+        'An explicit return shape', 'A deduced return shape'])),
+    ('F37-S07', None, caption_names([
+        'A declaration without a specifier',
+        'Choosing local storage explicitly'])),
+    ('F18-S01',
+     r'In this section, you will learn related syntax\.',
+     "The declarations that follow fix an element type, a shape and, where "
+     "it matters, a storage specifier."),
+    ('F18-S08',
+     r'This section covered defining and managing data/buffers in Croqtile tileflow programs, including declaration syntax, initialization, storage specifiers, and efficient buffer lifetime management by the compiler\.',
+     "A declaration fixes the element type and shape, an initializer can "
+     "fill the buffer at that point, a storage specifier says where it "
+     "lives, and the compiler manages its lifetime from there."),
+    ('F37-S05', r'(?m)^Example:$',
+     'A \\texttt{shared} buffer follows the same declaration syntax:'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

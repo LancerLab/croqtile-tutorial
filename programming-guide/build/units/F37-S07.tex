@@ -2,13 +2,13 @@
 
 This default behavior simplifies memory management for users who do not need to explicitly define where their data should be stored, but it also means that accessing such data could incur higher latency, especially when working with large arrays or parallel processing units.
 
-\begin{lstlisting}[language=croqtile,caption={Default Behavior and Usage}]
+\begin{lstlisting}[language=croqtile,caption={A declaration without a specifier}]
 f32 [100, 100] d0;
 \end{lstlisting}
 
 If you want to place data in a different memory space (shared or local), you need to specify the appropriate storage qualifier.
 
-\begin{lstlisting}[language=croqtile,caption={Default Behavior and Usage}]
+\begin{lstlisting}[language=croqtile,caption={Choosing local storage explicitly}]
 local f32 [10, 10] d0;     // Small data, local to the thread
 shared f16 [ndims] d1;     // Intermediate data, shared between threads in a block
 \end{lstlisting}

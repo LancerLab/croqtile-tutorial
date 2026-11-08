@@ -70,18 +70,18 @@
 \contentsline {lstlisting}{\numberline {2.39}An invalid shape expression}{30}{lstlisting.2.39}%
 \contentsline {lstlisting}{\numberline {2.40}Fully-Typing}{30}{lstlisting.2.40}%
 \contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{31}{lstlisting.2.41}%
-\contentsline {lstlisting}{\numberline {2.42}Defining a Spanned Data}{31}{lstlisting.2.42}%
-\contentsline {lstlisting}{\numberline {2.43}Defining a Spanned Data}{31}{lstlisting.2.43}%
-\contentsline {lstlisting}{\numberline {2.44}Defining a Spanned Data}{32}{lstlisting.2.44}%
+\contentsline {lstlisting}{\numberline {2.42}A spanned-data declaration}{31}{lstlisting.2.42}%
+\contentsline {lstlisting}{\numberline {2.43}A standalone shape}{31}{lstlisting.2.43}%
+\contentsline {lstlisting}{\numberline {2.44}A rejected fundamental type}{32}{lstlisting.2.44}%
 \contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{32}{lstlisting.2.45}%
 \contentsline {lstlisting}{\numberline {2.46}Initialization}{32}{lstlisting.2.46}%
-\contentsline {lstlisting}{\numberline {2.47}Declaring the Parameters and Return Values}{32}{lstlisting.2.47}%
-\contentsline {lstlisting}{\numberline {2.48}Declaring the Parameters and Return Values}{33}{lstlisting.2.48}%
+\contentsline {lstlisting}{\numberline {2.47}An explicit return shape}{32}{lstlisting.2.47}%
+\contentsline {lstlisting}{\numberline {2.48}A deduced return shape}{33}{lstlisting.2.48}%
 \contentsline {lstlisting}{\numberline {2.49}1. global}{33}{lstlisting.2.49}%
 \contentsline {lstlisting}{\numberline {2.50}2. shared}{33}{lstlisting.2.50}%
 \contentsline {lstlisting}{\numberline {2.51}3. local}{33}{lstlisting.2.51}%
-\contentsline {lstlisting}{\numberline {2.52}Default Behavior and Usage}{34}{lstlisting.2.52}%
-\contentsline {lstlisting}{\numberline {2.53}Default Behavior and Usage}{34}{lstlisting.2.53}%
+\contentsline {lstlisting}{\numberline {2.52}A declaration without a specifier}{34}{lstlisting.2.52}%
+\contentsline {lstlisting}{\numberline {2.53}Choosing local storage explicitly}{34}{lstlisting.2.53}%
 \contentsline {lstlisting}{\numberline {2.54}Example Code: Using Storage Qualifiers}{34}{lstlisting.2.54}%
 \contentsline {lstlisting}{\numberline {2.55}Croqtile s Two-Layer Parallelism Model}{35}{lstlisting.2.55}%
 \contentsline {lstlisting}{\numberline {2.56}: block --- parallel blocks}{35}{lstlisting.2.56}%

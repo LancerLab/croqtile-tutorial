@@ -2,13 +2,13 @@
 
 Defining a \emph{spanned data} requires both the element type and its shape. For example,
 
-\begin{lstlisting}[language=croqtile,caption={Defining a Spanned Data}]
+\begin{lstlisting}[language=croqtile,caption={A spanned-data declaration}]
 f32 [32, 16] data;
 \end{lstlisting}
 
 This defines a buffer with a shape of \texttt{[32, 16]}, where the element type is \texttt{f32}, which is the \emph{IEEE-754} single-precision float. It is also possible to use a named \texttt{mdspan} to define the buffer:
 
-\begin{lstlisting}[language=croqtile,caption={Defining a Spanned Data}]
+\begin{lstlisting}[language=croqtile,caption={A standalone shape}]
 shape : [72, 14];
 s32 [shape] data0;              // using the named mdspan `shape`
 u32 [shape(0), shape(1)] data1; // same shape as the above
@@ -30,7 +30,7 @@ The prefixes \texttt{u} and \texttt{s} stand for "unsigned" and "signed", respec
 
 Note \texttt{s32} is different from \texttt{int}. Although they occupy the same amount of storage, in Croqtile, \texttt{s32} can not be used alone to define programming entities. For example:
 
-\begin{lstlisting}[language=croqtile,caption={Defining a Spanned Data}]
+\begin{lstlisting}[language=croqtile,caption={A rejected fundamental type}]
 s32 a;  // error: the fundamental type can not be used for variable definition alone
 \end{lstlisting}
 

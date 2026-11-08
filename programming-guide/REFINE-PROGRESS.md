@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.6** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.5)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29)
+- Next section: **2.7** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.6)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -79,7 +79,7 @@ chapter numbers; every unit stays in its registered slot.
 | 2.3 | x | round 27 | Gave the three repeated caption groups distinct names, repaired broken host-side grammar (value semantics, includes, RVO, runtime dimensions), replaced the "Nothing new here" aside with what the verification loop actually checks, and removed the meta-narration from the slot intro |
 | 2.4 | x | round 28 | Named all eight shape examples individually, replaced the "first-class citizen / in this section" opener with an account of what a shape value does, re-anchored the dangling "This comes up" sentence, and removed a "Note that" opener without losing the dimensional-arithmetic rule |
 | 2.5 | x | round 29 | Gave the ten integer/i-tuple listings distinct captions, replaced both "In this section" bookends with statements about what the constructs do, removed a dangling "However" and a dangling "As described", and converted leftover Markdown asterisks into a plain constraint sentence |
-| 2.6 | . | | |
+| 2.6 | x | round 30 | Named the repeated declaration, parameter and default-storage listings, replaced the "In this section" opening and the "This section covered" summary with the declaration/specifier facts they stood for, and turned a bare "Example:" into a lead-in for the shared qualifier |
 | 2.7 | . | | |
 | 2.8 | . | | |
 | 2.9 | . | | |
