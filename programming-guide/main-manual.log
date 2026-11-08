@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1500,7 +1500,7 @@ Underfull \hbox (badness 2809) in paragraph at lines 26--26
  []
 
 [116]
-<figures//f07-fig1_role_comparison_light.png, id=2701, 1927.2pt x 1084.05pt>
+<figures//f07-fig1_role_comparison_light.png, id=2702, 1927.2pt x 1084.05pt>
 File: figures//f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures//f07-fig1_role_comparison_light.png>
 Package pdftex.def Info: figures//f07-fig1_role_comparison_light.png  used on i
@@ -1508,7 +1508,7 @@ nput line 36.
 (pdftex.def)             Requested size: 357.23218pt x 200.9431pt.
 ) (./build/units/F07-S05.tex [117 <./figures//f07-fig1_role_comparison_light.pn
 g>]) (./build/units/F08-S01.tex) (./build/units/F08-S09.tex
-<figures//f08-fig1_pipeline_timeline_light.png, id=2710, 1927.2pt x 1084.05pt>
+<figures//f08-fig1_pipeline_timeline_light.png, id=2711, 1927.2pt x 1084.05pt>
 File: figures//f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures//f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures//f08-fig1_pipeline_timeline_light.png  used on
@@ -1519,7 +1519,7 @@ Package pdftex.def Info: figures//f08-fig1_pipeline_timeline_light.png  used on
 g>]) (./build/units/F35-S03.tex) (./build/units/F35-S04.tex [119])
 (./build/units/F07-S04.tex [120]) (./build/units/F07-S08.tex) [121]
 (./build/units/F07-S09.tex
-<figures//f07-fig2_persistent_kernel_light.png, id=2801, 1927.2pt x 1084.05pt>
+<figures//f07-fig2_persistent_kernel_light.png, id=2802, 1927.2pt x 1084.05pt>
 File: figures//f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures//f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures//f07-fig2_persistent_kernel_light.png  used on
@@ -1537,7 +1537,7 @@ p \T1/lmtt/m/n/10.95 foreach {s} in [STAGES] { trigger
  []
 
 ) [126] (./build/units/F08-S12.tex
-<figures//f08-fig2_event_credit_flow_light.png, id=2929, 1927.2pt x 1084.05pt>
+<figures//f08-fig2_event_credit_flow_light.png, id=2930, 1927.2pt x 1084.05pt>
 File: figures//f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures//f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures//f08-fig2_event_credit_flow_light.png  used on
@@ -1570,7 +1570,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 13--13
  []
 
 ) (./build/units/F09-S04.tex [132]
-<figures//f09-fig8_expressiveness_light.png, id=3036, 1927.2pt x 1084.05pt>
+<figures//f09-fig8_expressiveness_light.png, id=3037, 1927.2pt x 1084.05pt>
 File: figures//f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures//f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures//f09-fig8_expressiveness_light.png  used on in
@@ -1616,10 +1616,10 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (153 pages, 3267768 bytes).
+Output written on main-manual.pdf (153 pages, 3267939 bytes).
 PDF statistics:
- 3609 PDF objects out of 4296 (max. 8388607)
- 3299 compressed objects within 33 object streams
+ 3610 PDF objects out of 4296 (max. 8388607)
+ 3300 compressed objects within 33 object streams
  1903 named destinations out of 2073 (max. 500000)
  63882 words of extra memory for PDF output out of 74296 (max. 10000000)
 

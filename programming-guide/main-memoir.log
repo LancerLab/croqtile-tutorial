@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1770,7 +1770,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--26
 []|\T1/lmtt/b/n/10 inthreads.async \T1/lmr/bx/n/10 (+20) (struc-tured
  []
 
-<figures//f07-fig1_role_comparison_light.png, id=2792, 1927.2pt x 1084.05pt>
+<figures//f07-fig1_role_comparison_light.png, id=2793, 1927.2pt x 1084.05pt>
 File: figures//f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures//f07-fig1_role_comparison_light.png>
 Package pdftex.def Info: figures//f07-fig1_role_comparison_light.png  used on i
@@ -1779,17 +1779,17 @@ nput line 36.
 ) (./build/units/F07-S05.tex [113]) (./build/units/F08-S01.tex)
 (./build/units/F08-S09.tex [114 <./figures//f07-fig1_role_comparison_light.png>
 ]
-<figures//f08-fig1_pipeline_timeline_light.png, id=2814, 1927.2pt x 1084.05pt>
+<figures//f08-fig1_pipeline_timeline_light.png, id=2815, 1927.2pt x 1084.05pt>
 File: figures//f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures//f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures//f08-fig1_pipeline_timeline_light.png  used on
  input line 8.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
-) (./build/units/F34-S07.tex) (./build/units/F35-S03.tex [115 <./figures//f08-f
-ig1_pipeline_timeline_light.png>]) (./build/units/F35-S04.tex) [116]
+) (./build/units/F34-S07.tex) [115 <./figures//f08-fig1_pipeline_timeline_light
+.png>] (./build/units/F35-S03.tex) (./build/units/F35-S04.tex [116])
 (./build/units/F07-S04.tex) (./build/units/F07-S08.tex [117])
 (./build/units/F07-S09.tex [118]
-<figures//f07-fig2_persistent_kernel_light.png, id=2931, 1927.2pt x 1084.05pt>
+<figures//f07-fig2_persistent_kernel_light.png, id=2929, 1927.2pt x 1084.05pt>
 File: figures//f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures//f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures//f07-fig2_persistent_kernel_light.png  used on
@@ -1801,49 +1801,46 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--14
 # block_
  []
 
-) [119 <./figures//f07-fig2_persistent_kernel_light.png>]
-(./build/units/F07-S11.tex) (./build/units/F31-S10.tex)
-(./build/units/F36-S01.tex) [120] (./build/units/F36-S02.tex)
-(./build/units/F36-S03.tex) (./build/units/F36-S04.tex)
-(./build/units/F08-S10.tex [121]) (./build/units/F08-S11.tex [122])
-(./build/units/F08-S12.tex
-<figures//f08-fig2_event_credit_flow_light.png, id=3047, 1927.2pt x 1084.05pt>
+) (./build/units/F07-S11.tex [119 <./figures//f07-fig2_persistent_kernel_light.
+png>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex [120])
+(./build/units/F36-S02.tex) (./build/units/F36-S03.tex)
+(./build/units/F36-S04.tex) [121] (./build/units/F08-S10.tex [122])
+(./build/units/F08-S11.tex) (./build/units/F08-S12.tex
+<figures//f08-fig2_event_credit_flow_light.png, id=3045, 1927.2pt x 1084.05pt>
 File: figures//f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures//f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures//f08-fig2_event_credit_flow_light.png  used on
  input line 6.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
-) (./build/units/F07-S14.tex)
-(./build/units/F08-S15.tex) [123 <./figures//f08-fig2_event_credit_flow_light.p
-ng>] (./build/units/F10-S01.tex) (./build/units/F10-S03.tex) [124]
-(./build/units/F23-S05.tex) (./build/units/F23-S06.tex)
-(./build/units/F24-S05.tex) (./build/units/F24-S06.tex [125])
-(./build/units/F25-S08.tex) (./build/units/F26-S01.tex [126])
-(./build/units/F10-S04.tex [127]) (./build/units/F10-S06.tex)
-(./build/units/F10-S13.tex
+)
+(./build/units/F07-S14.tex) [123 <./figures//f08-fig2_event_credit_flow_light.p
+ng>] (./build/units/F08-S15.tex) (./build/units/F10-S01.tex)
+(./build/units/F10-S03.tex [124]) (./build/units/F23-S05.tex)
+(./build/units/F23-S06.tex) (./build/units/F24-S05.tex)
+(./build/units/F24-S06.tex [125]) (./build/units/F25-S08.tex)
+(./build/units/F26-S01.tex [126]) (./build/units/F10-S04.tex [127])
+(./build/units/F10-S06.tex) (./build/units/F10-S13.tex
 Underfull \hbox (badness 10000) in paragraph at lines 13--13
 []|\T1/lmr/m/n/10 (+20) Conditional com-pi-la-tion and
  []
 
 ) [128] (./build/units/F09-S04.tex
-<figures//f09-fig8_expressiveness_light.png, id=3173, 1927.2pt x 1084.05pt>
+<figures//f09-fig8_expressiveness_light.png, id=3174, 1927.2pt x 1084.05pt>
 File: figures//f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures//f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures//f09-fig8_expressiveness_light.png  used on in
 put line 8.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
 ) (./build/units/F13-S02.tex)
-(./build/units/F13-S03.tex) (./build/units/F13-S04.tex)
-(./build/units/F13-S05.tex) [129 <./figures//f09-fig8_expressiveness_light.png>
-] (./build/units/F40-S01.tex) (./build/units/F40-S02.tex)
-(./build/units/F40-S03.tex [130]) (./build/units/F40-S04.tex)
-(./build/units/F40-S05.tex) [131] (./build/units/F40-S06.tex)
-(./build/units/F11-S01.tex)) (./content/appendix-a-quickref.tex [132] [133
+(./build/units/F13-S03.tex) (./build/units/F13-S04.tex [129 <./figures//f09-fig
+8_expressiveness_light.png>]) (./build/units/F13-S05.tex)
+(./build/units/F40-S01.tex) (./build/units/F40-S02.tex)
+(./build/units/F40-S03.tex [130]) (./build/units/F40-S04.tex) [131]
+(./build/units/F40-S05.tex) (./build/units/F40-S06.tex)
+(./build/units/F11-S01.tex) [132]) (./content/appendix-a-quickref.tex [133]
+[134
 
-]
-[134]) (./content/backmatter.tex [135] [136
-
-] (./main-memoir.bbl)))
+] [135]) (./content/backmatter.tex [136] (./main-memoir.bbl)))
 
 Class memoir Warning: The material used in the headers is too large
 (27.2pt) for the given head height (13.6pt), it is recommended to
@@ -1851,6 +1848,7 @@ either increase the head height or redesign the header
 (in both cases you will find help in the memoir manual). on input line 8.
 
 [137
+
 
 ]
 \tf@toc=\write6
@@ -1866,7 +1864,7 @@ Package rerunfilecheck Info: File `main-memoir.out' has not changed.
 Here is how much of TeX's memory you used:
  39303 strings out of 480247
  750042 string characters out of 5896152
- 1531466 words of memory out of 5000000
+ 1525466 words of memory out of 5000000
  53159 multiletter control sequences out of 15000+600000
  589455 words of font info for 277 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1884,10 +1882,10 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3271219 bytes).
+Output written on main-memoir.pdf (149 pages, 3271854 bytes).
 PDF statistics:
- 3808 PDF objects out of 4296 (max. 8388607)
- 3500 compressed objects within 35 object streams
+ 3810 PDF objects out of 4296 (max. 8388607)
+ 3501 compressed objects within 36 object streams
  2155 named destinations out of 2487 (max. 500000)
  67794 words of extra memory for PDF output out of 74296 (max. 10000000)
 

@@ -55,8 +55,8 @@
 \contentsline {subsection}{Canonical Pattern: One Producer and One Consumer}{117}{section*.240}%
 \contentsline {subsection}{Worked Example: A 1P1C Kernel Skeleton}{117}{section*.242}%
 \contentsline {subsection}{Persistent Scheduling}{118}{section*.244}%
-\contentsline {subsection}{Host-Level Concurrency and Stream Binding}{120}{section*.246}%
-\contentsline {subsection}{Worked Example: A Full Event Pipeline}{121}{section*.252}%
+\contentsline {subsection}{Host-Level Concurrency and Stream Binding}{119}{section*.246}%
+\contentsline {subsection}{Worked Example: A Full Event Pipeline}{122}{section*.252}%
 \contentsline {subsection}{Coordination Pattern Summary}{123}{section*.256}%
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{124}{section.3.9}%
 \contentsline {subsection}{Worked Example: Calling a Device Helper}{127}{section*.266}%
@@ -64,13 +64,13 @@
 \contentsline {subsection}{Interoperability Summary}{128}{section*.270}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{129}{section.3.10}%
 \contentsline {subsection}{Worked Example: Tiled matmul}{130}{section*.278}%
-\contentsline {subsection}{Worked Example: rgb2gray}{131}{section*.282}%
+\contentsline {subsection}{Worked Example: rgb2gray}{132}{section*.282}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{132}{section.3.11}%
-\contentsline {appendix}{\chapternumberline {A}Syntax Quick Reference}{133}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Declarations and shapes}{133}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Iteration}{133}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Tile selection and movement}{133}{section.A.3}%
-\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{133}{section.A.4}%
-\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{135}{section.A.5}%
+\contentsline {appendix}{\chapternumberline {A}Syntax Quick Reference}{134}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Declarations and shapes}{134}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Iteration}{134}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Tile selection and movement}{134}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{134}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{136}{section.A.5}%
 \contentsline {chapter}{References}{137}{section*.286}%
 \contentsline {chapter}{Bibliography}{137}{appendix*.287}%

@@ -377,7 +377,7 @@ SLOT_INTROS = {
     '3.7.2': "Widening the cooperation scope changes one line of the kernel: the space specifier. The four steps, the operand layouts and the accumulation stay exactly as they were.",
     '3.7.3': "Two cooperative groups can share operands and split the work between them. The tiling has to give each group a distinct part of the output, and the program shows how the indices are divided.",
     '3.7.9': "The contraction syntax is gathered here for quick reference: the four step names, the space specifiers and the layout each variant expects.",
-    '3.7.10': "This section summarises what the four-step design achieves and where its limits are.",
+    '3.7.10': "The four-step design makes the layout contract explicit and keeps the accumulation visible. Its limit is that loads and compute still take turns; Section~\\ref{sec:3-8} makes them overlap.",
     '3.8': "Pipelines and persistent kernels are built from concurrent regions and events. This section explains the coordination primitives and the protocols they implement.",
     '3.8.1': "The smallest useful pipeline has one producer and one consumer. This section establishes that pattern before adding stages.",
     '3.8.2': "A 1P1C kernel skeleton shows the producer and consumer regions in code. This section reads it in full.",
@@ -1259,6 +1259,7 @@ UNIT_OVERRIDES = [
     # Round 59 (3.7.3): two cooperative groups.
     ('F06-S06', r'--- With MMA', '--- with MMA'),
     # Round 60 (3.7.9): MMA syntax summary. The reference table is unchanged.
+    # Round 61 (3.7.10): design summary. The source prose is continuous.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
