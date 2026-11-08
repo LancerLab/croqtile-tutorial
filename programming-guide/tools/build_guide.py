@@ -379,7 +379,7 @@ SLOT_INTROS = {
     '3.7.9': "The contraction syntax is gathered here for quick reference: the four step names, the space specifiers and the layout each variant expects.",
     '3.7.10': "The four-step design makes the layout contract explicit and keeps the accumulation visible. Its limit is that loads and compute still take turns; Section~\\ref{sec:3-8} makes them overlap.",
     '3.8': "Pipelines and persistent kernels are built from concurrent regions and events. A producer and a consumer agree on a buffer through wait/trigger, and the same protocol scales from one stage to a persistent scheduling loop.",
-    '3.8.1': "The smallest useful pipeline has one producer and one consumer. This section establishes that pattern before adding stages.",
+    '3.8.1': "The smallest useful pipeline has one producer and one consumer. Naming the two regions and the credits between them is enough to see what every larger pipeline adds.",
     '3.8.2': "A 1P1C kernel skeleton shows the producer and consumer regions in code. This section reads it in full.",
     '3.8.3': "A persistent kernel decides its own work rather than being launched once per tile. This section covers the guard and the scheduling loop.",
     '3.8.4': "Concurrency can also be expressed on the host side. This section covers \\co@parallel.async@ and stream binding.",
@@ -1265,6 +1265,8 @@ UNIT_OVERRIDES = [
         'A single-instance deadlock', 'A credit-count deadlock'])),
     ('F07-S01', r'But predicated execution', 'Predicated execution'),
     ('F34-S07', r'Note that, only the', 'Only the'),
+    # Round 63 (3.8.1): one producer, one consumer.
+    ('F07-S04', r'But sharing an address space', 'Sharing an address space'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
