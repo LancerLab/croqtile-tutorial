@@ -340,7 +340,7 @@ SLOT_INTROS = {
     '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. It is small enough to read in one sitting, and the rest of the guide grows from it.",
     '1.8': "A production \\file{.co} file is three programs in one file: device code, a tileflow \\co@__co__@ function, and the host C++ that prepares buffers and reads the result back. The boundaries between them are what the rest of this guide explains.",
     '1.9': "When a kernel compiles but the answer is wrong, the fastest path is to narrow down which layer went wrong: the commands the compiler ran, the runtime checks it can insert, the layout of the data, or the types a debugger sees. The tools below are ordered that way, from cheap checks to expensive ones.",
-    '1.10': "Reading an unfamiliar \\file{.co} file is a skill. This section gives a checklist for finding the host entry point, the kernel signature and the injected C++.",
+    '1.10': "An unfamiliar \\file{.co} file is easier to read once you know the order its parts appear in: guards and helpers, host setup, the \\co@__co__@ function, and the injected C++. The chapters that follow define each of those constructs.",
     '2.1': "Every Croqtile program has two sides: a \\co@__co__@ function describing parallel work, and ordinary C++ that prepares data and calls it. This section shows where they meet.",
     '2.2': "Take one kernel and read it line by line. This section names each part of a signature and each statement in the body, so the examples that follow become readable.",
     '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result. This section covers the API every program uses.",
@@ -723,6 +723,25 @@ UNIT_OVERRIDES = [
      'caption={Guarding debug prints}]\n#ifdef DEBUG_PRINT'),
     ('F11-S09', r'caption=\{Putting it together\}\]\ncroqtile kernel\.co',
      'caption={Debug and production builds}]\ncroqtile kernel.co'),
+    # Section 1.10: the only source content was a bare five-item checklist
+    # whose first item had no explanation.  Keep all five regions, but write
+    # them in the order a reader actually meets them in the file.
+    ('F10-S12', r'(?s)When you open a benchmark kernel.*\Z',
+     "A benchmark kernel looks dense until you know the order in which its "
+     "parts appear. Read it top down. The file opens with macros and "
+     "\\texttt{\\#error} guards that fix the conditions the rest of it is "
+     "compiled under. Below them sit \\texttt{\\_\\_device\\_\\_} functions "
+     "--- helper algorithms such as top-K, reductions and shuffle wrappers "
+     "that Croqtile passes through unchanged. Then comes the host setup, "
+     "ordinary C++ that creates buffers, chooses the launch configuration "
+     "and takes timings. The centre of the file is the "
+     "\\texttt{\\_\\_co\\_\\_} function, where the orchestration lives: "
+     "\\texttt{parallel}, \\texttt{foreach}, TMA/MMA, "
+     "\\texttt{inthreads.async} and events, each region mapping back to one "
+     "of the chapters you have just read. Last are the "
+     "\\texttt{\\_\\_cpp\\_\\_} islands, usually only a handful of lines. "
+     "Most production files follow this order, so the same five checks work "
+     "every time."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',
