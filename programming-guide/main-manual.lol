@@ -143,10 +143,10 @@
 \contentsline {lstlisting}{\numberline {2.112}Bootstrap protocol}{56}{lstlisting.2.112}%
 \contentsline {lstlisting}{\numberline {2.113}Parallel Perspective of Tileflow Programs}{57}{lstlisting.2.113}%
 \contentsline {lstlisting}{\numberline {2.114}Implicit Masking}{58}{lstlisting.2.114}%
-\contentsline {lstlisting}{\numberline {2.115}Event Basics}{58}{lstlisting.2.115}%
-\contentsline {lstlisting}{\numberline {2.116}Event Basics}{58}{lstlisting.2.116}%
-\contentsline {lstlisting}{\numberline {2.117}Event Basics}{58}{lstlisting.2.117}%
-\contentsline {lstlisting}{\numberline {2.118}Event Basics}{59}{lstlisting.2.118}%
+\contentsline {lstlisting}{\numberline {2.115}Declaring a shared event}{58}{lstlisting.2.115}%
+\contentsline {lstlisting}{\numberline {2.116}Declaring an event array}{58}{lstlisting.2.116}%
+\contentsline {lstlisting}{\numberline {2.117}Triggering an event array}{58}{lstlisting.2.117}%
+\contentsline {lstlisting}{\numberline {2.118}Waiting on an event}{59}{lstlisting.2.118}%
 \contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{59}{lstlisting.2.119}%
 \contentsline {lstlisting}{\numberline {2.120}Early return from parallel}{60}{lstlisting.2.120}%
 \contentsline {lstlisting}{\numberline {2.121}Macros inside cpp strings}{61}{lstlisting.2.121}%

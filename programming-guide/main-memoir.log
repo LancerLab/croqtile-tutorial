@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1545,8 +1545,8 @@ line 52.
 (./build/units/F23-S04.tex [61]) (./build/units/F24-S01.tex)
 (./build/units/F24-S02.tex) (./build/units/F24-S03.tex [62])
 (./build/units/F24-S04.tex) (./build/units/F24-S07.tex) [63]
-(./build/units/F11-S02.tex) (./build/units/F11-S03.tex [64])
-(./build/units/F11-S04.tex) (./build/units/F04-S25.tex)
+(./build/units/F11-S02.tex) (./build/units/F11-S03.tex)
+(./build/units/F11-S04.tex [64]) (./build/units/F04-S25.tex)
 (./build/units/F05-S18.tex) (./build/units/F07-S13.tex)
 (./build/units/F08-S14.tex) [65]) (./content/ch03-programming-guide.tex
 [66] (./build/units/F12-S02.tex) (./build/units/F14-S01.tex)
@@ -1884,7 +1884,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3268942 bytes).
+Output written on main-memoir.pdf (149 pages, 3268907 bytes).
 PDF statistics:
  3805 PDF objects out of 4296 (max. 8388607)
  3497 compressed objects within 35 object streams

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.10** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.9)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33)
+- Next section: **2.11** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.10)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -83,7 +83,7 @@ chapter numbers; every unit stays in its registered slot.
 | 2.7 | x | round 31 | Gave twenty-one repeated iteration listings distinct names, removed the "And / However / Note that" openers, and replaced both tutorial bookends with statements about what bounded variables do |
 | 2.8 | x | round 32 | Re-anchored the "Here" pointer, removed the "However" opener and the tutorial "Wish you good luck" sign-off, and replaced the section-intro/summary meta narration with what chunkat actually selects |
 | 2.9 | x | round 33 | Named the DMA syntax, future, and event listings individually, and removed the "So far / However" openers plus a duplicated "In the next section, this section introduces" phrase |
-| 2.10 | . | | |
+| 2.10 | x | round 34 | Named the four event listings, turned four "Note that / Note it / Therefore" openers into plain statements, fixed the "ochestrate" typo and removed the tutorial summary opener |
 | 2.11 | . | | |
 | 2.12 | . | | |
 | 2.13 | . | | |

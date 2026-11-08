@@ -350,7 +350,7 @@ SLOT_INTROS = {
     '2.7': "Iteration constructs state which iterations are independent, leaving the schedule to the compiler. \\co@parallel@, \\co@with-in@ and \\co@foreach@ differ in what they name and how much of the index space each instance sees.",
     '2.8': "A tile is a window onto a larger buffer. \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ choose different windows, and the compose operator \\co@#@ combines those choices without copying data.",
     '2.9': "A DMA statement moves a tile between storage levels and returns a future the program can wait on. Synchronous and asynchronous copies share one syntax; only the wait and the lifetime of the source differ.",
-    '2.10': "Concurrent regions have to agree on who may proceed. This section introduces \\co@inthreads@, events and the asynchronous forms through short examples.",
+    '2.10': "Concurrent regions need a way to agree on who may proceed. Events, \\co@inthreads@ blocks and their asynchronous forms encode that agreement in the program rather than in an implicit schedule.",
     '2.11': "Not every branch is known at compile time. This section covers runtime predicates and early return from a parallel region.",
     '2.12': "Contraction is written as four explicit steps. This section reads that syntax once, with the smallest example that shows all four.",
     '2.13': "Croqtile lives inside C++: a \\file{.co} file can call helpers, inject source text and use the preprocessor. This section covers each mechanism in turn.",
@@ -1062,6 +1062,26 @@ UNIT_OVERRIDES = [
     ('F28-S06',
      r'However, the use of simple \\textbf\{data expressions\} is rare in practice\. In the next section, this section introduces',
      'In practice, simple \\textbf{data expressions} are rare. The next section introduces'),
+    # Round 34 (2.10): events and coordination.
+    ('F35-S02', None, caption_names([
+        'Declaring a shared event', 'Declaring an event array',
+        'Triggering an event array', 'Waiting on an event'])),
+    ('F35-S02',
+     r'Note that since it is a \\texttt\{shared\} event, it can only be declared inside \\texttt\{parallel-by\} block and used for parallel threads\.',
+     "A \\texttt{shared} event can only be declared inside a "
+     "\\texttt{parallel-by} block and used by parallel threads."),
+    ('F35-S02',
+     r'Note it is allowed to use comma-separated expression to define either event and event array in a single line\.',
+     "A comma-separated expression can declare both an event and an event "
+     "array on one line."),
+    ('F35-S02',
+     r'Therefore, triggering an event is used to unblocking code for the \\emph\{wait statement\}\.',
+     "Triggering an event is what unblocks the code waiting on a "
+     "\\emph{wait statement}."),
+    ('F35-S02', r'Note that, in Croqtile semantics,', 'In Croqtile semantics,'),
+    ('F35-S05',
+     r'In this section, you learnt .event. that can ochestrate asynchronous \\texttt\{inthreads\} blocks\.',
+     "Events let asynchronous \\texttt{inthreads} blocks agree on an order."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

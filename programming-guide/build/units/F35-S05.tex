@@ -1,5 +1,5 @@
 \paragraph*{In short}
 
-In this section, you learnt 'event' that can ochestrate asynchronous \texttt{inthreads} blocks. The \texttt{trigger} statements can set events and event arrays to \emph{SET} state, while \texttt{wait} statements block execution, and reset events to \emph{UNSET} until they are triggered.
+Events let asynchronous \texttt{inthreads} blocks agree on an order. The \texttt{trigger} statements can set events and event arrays to \emph{SET} state, while \texttt{wait} statements block execution, and reset events to \emph{UNSET} until they are triggered.
 
 Programmers must be careful to use Croqtile events, or else it is possible to result in deadlocks, which is hard to debug.

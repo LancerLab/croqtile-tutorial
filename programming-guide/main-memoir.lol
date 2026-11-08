@@ -143,23 +143,23 @@
 \contentsline {lstlisting}{\numberline {2.112}Bootstrap protocol}{54}{lstlisting.2.112}%
 \contentsline {lstlisting}{\numberline {2.113}Parallel Perspective of Tileflow Programs}{55}{lstlisting.2.113}%
 \contentsline {lstlisting}{\numberline {2.114}Implicit Masking}{56}{lstlisting.2.114}%
-\contentsline {lstlisting}{\numberline {2.115}Event Basics}{56}{lstlisting.2.115}%
-\contentsline {lstlisting}{\numberline {2.116}Event Basics}{56}{lstlisting.2.116}%
-\contentsline {lstlisting}{\numberline {2.117}Event Basics}{57}{lstlisting.2.117}%
-\contentsline {lstlisting}{\numberline {2.118}Event Basics}{57}{lstlisting.2.118}%
-\contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{58}{lstlisting.2.119}%
+\contentsline {lstlisting}{\numberline {2.115}Declaring a shared event}{56}{lstlisting.2.115}%
+\contentsline {lstlisting}{\numberline {2.116}Declaring an event array}{56}{lstlisting.2.116}%
+\contentsline {lstlisting}{\numberline {2.117}Triggering an event array}{57}{lstlisting.2.117}%
+\contentsline {lstlisting}{\numberline {2.118}Waiting on an event}{57}{lstlisting.2.118}%
+\contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{57}{lstlisting.2.119}%
 \contentsline {lstlisting}{\numberline {2.120}Early return from parallel}{58}{lstlisting.2.120}%
 \contentsline {lstlisting}{\numberline {2.121}Macros inside cpp strings}{59}{lstlisting.2.121}%
 \contentsline {lstlisting}{\numberline {2.122}Macros inside cpp strings}{59}{lstlisting.2.122}%
 \contentsline {lstlisting}{\numberline {2.123}Tile geometry as macros}{60}{lstlisting.2.123}%
 \contentsline {lstlisting}{\numberline {2.124}Compile-time assertions with error}{60}{lstlisting.2.124}%
 \contentsline {lstlisting}{\numberline {2.125}Conditional code paths}{60}{lstlisting.2.125}%
-\contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{61}{lstlisting.2.126}%
+\contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{60}{lstlisting.2.126}%
 \contentsline {lstlisting}{\numberline {2.127}Object-Like Macros}{61}{lstlisting.2.127}%
 \contentsline {lstlisting}{\numberline {2.128}Object-Like Macros}{61}{lstlisting.2.128}%
-\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{62}{lstlisting.2.129}%
+\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{61}{lstlisting.2.129}%
 \contentsline {lstlisting}{\numberline {2.130}Basic Syntax of Call Statements}{62}{lstlisting.2.130}%
-\contentsline {lstlisting}{\numberline {2.131}Basic Syntax of Call Statements}{63}{lstlisting.2.131}%
+\contentsline {lstlisting}{\numberline {2.131}Basic Syntax of Call Statements}{62}{lstlisting.2.131}%
 \contentsline {lstlisting}{\numberline {2.132}The Convention: Allowed Argument Types}{63}{lstlisting.2.132}%
 \contentsline {lstlisting}{\numberline {2.133}print and println : compile-time inspection}{64}{lstlisting.2.133}%
 \contentsline {lstlisting}{\numberline {2.134}print and println : compile-time inspection}{64}{lstlisting.2.134}%
