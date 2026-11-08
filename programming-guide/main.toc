@@ -35,10 +35,10 @@
 \contentsline {subsection}{\numberline {3.4.2}Tracing One Output Element}{88}{subsection.3.4.2}%
 \contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{88}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{90}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{90}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{91}{subsection.3.5.2}%
 \contentsline {subsection}{\numberline {3.5.3}Zero-Padding with zfill}{91}{subsection.3.5.3}%
 \contentsline {subsection}{\numberline {3.5.4}Layout Reinterpretation with span\_as}{92}{subsection.3.5.4}%
-\contentsline {subsection}{\numberline {3.5.5}Tile Selection: Summary and Syntax}{92}{subsection.3.5.5}%
+\contentsline {subsection}{\numberline {3.5.5}Tile Selection: Summary and Syntax}{93}{subsection.3.5.5}%
 \contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{94}{section.3.6}%
 \contentsline {subsection}{\numberline {3.6.1}Worked Example: DMA Matmul}{98}{subsection.3.6.1}%
 \contentsline {subsection}{\numberline {3.6.2}Multi-Buffering: dma.any, swap, and rotate}{100}{subsection.3.6.2}%

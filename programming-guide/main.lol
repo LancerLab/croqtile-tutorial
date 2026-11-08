@@ -198,13 +198,13 @@
 \contentsline {lstlisting}{\numberline {3.30}A window at a constant offset}{90}{lstlisting.3.30}%
 \contentsline {lstlisting}{\numberline {3.31}A window at a runtime offset}{90}{lstlisting.3.31}%
 \contentsline {lstlisting}{\numberline {3.32}Strided tiles: .subspan, .step, and .at}{91}{lstlisting.3.32}%
-\contentsline {lstlisting}{\numberline {3.33}Zero-padding: .zfill}{91}{lstlisting.3.33}%
+\contentsline {lstlisting}{\numberline {3.33}Zero-padding: .zfill}{92}{lstlisting.3.33}%
 \contentsline {lstlisting}{\numberline {3.34}Layout reinterpretation: span as}{92}{lstlisting.3.34}%
 \contentsline {lstlisting}{\numberline {3.35}Layout reinterpretation: span as}{92}{lstlisting.3.35}%
 \contentsline {lstlisting}{\numberline {3.36}DMA vs TMA}{95}{lstlisting.3.36}%
 \contentsline {lstlisting}{\numberline {3.37}The main TMA constraint}{95}{lstlisting.3.37}%
 \contentsline {lstlisting}{\numberline {3.38}The main TMA constraint}{95}{lstlisting.3.38}%
-\contentsline {lstlisting}{\numberline {3.39}tma.copy: target tensor movement}{96}{lstlisting.3.39}%
+\contentsline {lstlisting}{\numberline {3.39}tma.copy: target tensor movement}{95}{lstlisting.3.39}%
 \contentsline {lstlisting}{\numberline {3.40}Async Operation: the DMA Statement}{97}{lstlisting.3.40}%
 \contentsline {lstlisting}{\numberline {3.41}Async Operation: the DMA Statement}{97}{lstlisting.3.41}%
 \contentsline {lstlisting}{\numberline {3.42}Operation Type}{98}{lstlisting.3.42}%

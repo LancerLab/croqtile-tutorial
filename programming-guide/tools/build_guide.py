@@ -364,7 +364,7 @@ SLOT_INTROS = {
     '3.4.2': "Following one output element fixes every index in the kernel: its global position determines the block, the thread, the tile offset and finally the address read from each operand.",
     '3.5': "A tile is described by a data expression, not by pointer arithmetic. The composition operator \\co@#@ and the window forms \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ are the pieces; the rules below say what each expression may denote.",
     '3.5.1': "A window can start at an offset that is known only at run time. \\co@view@ fixes the window size and \\co@from@ gives its origin, so the pair describes an arbitrary-offset slice without copying.",
-    '3.5.2': "Strided tiles need an explicit step. This section shows how \\co@subspan@, \\co@step@ and \\co@at@ combine.",
+    '3.5.2': "A strided tile is a window whose elements are not contiguous. \\co@subspan@ chooses the extent, \\co@step@ sets the distance between tiles and \\co@at@ picks one of them by index.",
     '3.5.3': "Partial tiles at the edge of a shape need padding. This section shows how \\co@.zfill@ supplies it.",
     '3.5.4': "A buffer can be reinterpreted under a different shape. This section shows \\co@span_as@ and the constraints on it.",
     '3.5.10': "This section collects the tile-selection syntax and the rules that govern it.",
@@ -1208,6 +1208,7 @@ UNIT_OVERRIDES = [
     ('F09-S07',
      r'This is a \\texttt\{\[16, 16\]\} slice starting at',
      'The expression selects a \\texttt{[16, 16]} slice starting at'),
+    # Round 48 (3.5.2): strided tiles. The source prose is already continuous.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
