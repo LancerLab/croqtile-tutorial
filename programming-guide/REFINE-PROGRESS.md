@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **3.4.2** (chapters 1–2 complete; chapter 3 in progress through 3.4.1)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44)
+- Next section: **3.5** (chapters 1–2 complete; chapter 3 in progress through 3.4.2)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44, 3.4.2→45)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -94,7 +94,7 @@ chapter numbers; every unit stays in its registered slot.
 | 3.3 | x | round 42 | Named the anonymous-dimension, value-numbering and simplification listings, removed the "So far / However / In this section" openers and replaced the intro with the two ways a shape can stay symbolic |
 | 3.4 | x | round 43 | Restored the C++ if-else control-structure sentence that the coverage check flagged as lost, repaired the "implies" agreement error, and replaced three tutorial bookends with the layering/masking facts |
 | 3.4.1 | x | round 44 | Replaced the meta-narration intro with the build-up order of the worked example and turned the bare "Start with just" opener into a sentence about the first version |
-| 3.4.2 | . | | |
+| 3.4.2 | x | round 45 | Replaced the meta-narration intro with the chain of indices and turned the rhetorical question into the statement it was meant to prompt |
 | 3.5 | . | | |
 | 3.5.1 | . | | |
 | 3.5.2 | . | | |

@@ -182,7 +182,7 @@
 \subsection{Tracing One Output Element}
 \label{sec:3-4-2}
 
-\guideslotintro{Following one output element through a kernel makes the index arithmetic concrete. This section traces it step by step.}
+\guideslotintro{Following one output element fixes every index in the kernel: its global position determines the block, the thread, the tile offset and finally the address read from each operand.}
 
 \input{build/units/F05-S17}
 

@@ -1,4 +1,4 @@
-Pick global position \texttt{(row=37, col=50)} in the output. Which block and thread own it?
+Pick global position \texttt{(row=37, col=50)} in the output. Working out which block and thread own it fixes the index arithmetic for the rest of the kernel.
 
 Blocks partition 128 rows into 8 tiles of 16: \texttt{px = 37 /\allowbreak{} 16 = 2}, offset \texttt{qx = 37 \% 16 = 5}. Columns partition 256 into 16 tiles of 16: \texttt{py = 50 /\allowbreak{} 16 = 3}, offset \texttt{qy = 50 \% 16 = 2}. So block \texttt{(2, 3)}, thread \texttt{(5, 2)}.
 
