@@ -4,7 +4,7 @@ The examples above use \texttt{mma.row.row} on dense FP16 tiles. The same four-s
 
 But it needs a \textbf{metadata operand} \texttt{me} that encodes which elements are nonzero:
 
-\begin{lstlisting}[language=croqtile,caption={Beyond dense FP16: what else the four steps express}]
+\begin{lstlisting}[language=croqtile,caption={A sparse contraction}]
 mma.row.row.sp mc, ma, mb, me;
 \end{lstlisting}
 
@@ -12,13 +12,13 @@ The \texttt{.sp} suffix adds the metadata operand; everything else is the same f
 
 \textbf{Quantized operands with per-tile scaling.} FP8 operands (\texttt{f8\_e4m3}, \texttt{f8\_e5m2}) need per-tile dequantization so the accumulator stays numerically accurate. Croqtile fuses the scaling into the contraction:
 
-\begin{lstlisting}[language=croqtile,caption={Beyond dense FP16: what else the four steps express}]
+\begin{lstlisting}[language=croqtile,caption={A scaled contraction}]
 mma.row.row.scale mc, ma, mb, sc_a, sc_b;
 \end{lstlisting}
 
 Each result element is scaled by \texttt{sc\_a} and \texttt{sc\_b} after the contraction --- no separate dequant kernel needed. Alternatively, scaling can be a \textbf{standalone statement} when the scale source differs from the standard fused path:
 
-\begin{lstlisting}[language=croqtile,caption={Beyond dense FP16: what else the four steps express}]
+\begin{lstlisting}[language=croqtile,caption={Another contraction layout}]
 mma.row.row mc, ma, mb;
 mma.scale mc, sc_a, sc_b;
 \end{lstlisting}

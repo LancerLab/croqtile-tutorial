@@ -215,11 +215,11 @@
 \contentsline {lstlisting}{\numberline {3.47}Example: TMA in a pipelined matmul}{107}{lstlisting.3.47}%
 \contentsline {lstlisting}{\numberline {3.48}Partial Tiles, Guarding, and .zfill}{108}{lstlisting.3.48}%
 \contentsline {lstlisting}{\numberline {3.49}.swiz N : Shared-Memory Layout for the Consumer}{109}{lstlisting.3.49}%
-\contentsline {lstlisting}{\numberline {3.50}Beyond dense FP16: what else the four steps express}{110}{lstlisting.3.50}%
-\contentsline {lstlisting}{\numberline {3.51}Beyond dense FP16: what else the four steps express}{110}{lstlisting.3.51}%
-\contentsline {lstlisting}{\numberline {3.52}Beyond dense FP16: what else the four steps express}{110}{lstlisting.3.52}%
-\contentsline {lstlisting}{\numberline {3.53}Swizzle and layout conflicts}{111}{lstlisting.3.53}%
-\contentsline {lstlisting}{\numberline {3.54}Swizzle and layout conflicts}{111}{lstlisting.3.54}%
+\contentsline {lstlisting}{\numberline {3.50}A sparse contraction}{110}{lstlisting.3.50}%
+\contentsline {lstlisting}{\numberline {3.51}A scaled contraction}{110}{lstlisting.3.51}%
+\contentsline {lstlisting}{\numberline {3.52}Another contraction layout}{110}{lstlisting.3.52}%
+\contentsline {lstlisting}{\numberline {3.53}A swizzled copy}{111}{lstlisting.3.53}%
+\contentsline {lstlisting}{\numberline {3.54}A swizzled mma load}{111}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}One group, one tile: the simplest MMA matmul}{112}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}Widening the scope: cooperative group and mma}{113}{lstlisting.3.56}%
 \contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{114}{lstlisting.3.57}%

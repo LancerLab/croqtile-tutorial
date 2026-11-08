@@ -2,14 +2,14 @@
 
 \textbf{Swizzle} applies a fixed XOR-style remapping to column indices within each row, spreading accesses across banks. Croqtile exposes it on \textbf{both DMA and TMA}, with the same syntax and the same effect:
 
-\begin{lstlisting}[language=croqtile,caption={Swizzle and layout conflicts}]
+\begin{lstlisting}[language=croqtile,caption={A swizzled copy}]
 dma.copy.swiz<3> src => dst;       // software DMA with swizzle
 tma.copy.swiz<3> src => dst;
 \end{lstlisting}
 
 The MMA read path must use the same \texttt{swiz\textless{}N\textgreater{}} so addresses match the staged layout:
 
-\begin{lstlisting}[language=croqtile,caption={Swizzle and layout conflicts}]
+\begin{lstlisting}[language=croqtile,caption={A swizzled mma load}]
 ma = mma.load.swiz<3> lhs_load_s.chunkat(_, iv_warp);
 \end{lstlisting}
 

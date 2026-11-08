@@ -372,7 +372,7 @@ SLOT_INTROS = {
     '3.6.1': "A tiled matmul with explicit copies shows where each movement statement sits. Reading the full kernel is easier once the tile it moves and the buffer it lands in are named.",
     '3.6.2': "Overlapping copies with computation needs more than one buffer. \\co@dma.any@ selects a buffer, \\co@swap@ exchanges two handles and \\co@rotate@ cycles through a ring of them.",
     '3.6.3': "A pipelined kernel combines tile selection, movement and contraction in one program. The stages, the events between them and the final drain are all visible in the listing.",
-    '3.7': "Contraction in Croqtile is a four-step contract between layout and accumulation. This section describes that contract and the variants that share it.",
+    '3.7': "A contraction is a four-step contract between layout and accumulation. The four steps stay the same across dense, sparse and scaled variants; what changes is the layout each operand must have when it is loaded.",
     '3.7.1': "This worked kernel shows one cooperative group carrying out the four steps on a single tile.",
     '3.7.2': "Widening the cooperation scope changes the kernel in a few lines. This section compares the two forms side by side.",
     '3.7.3': "Two cooperative groups can share operands. This section shows the tiling and the resulting program.",
@@ -1244,6 +1244,13 @@ UNIT_OVERRIDES = [
     ('F38-S01', r'Note that the \\textbf\{select\} expressions',
      'The \\textbf{select} expressions'),
     # Round 55 (3.6.3): pipelined kernel. The source prose is continuous.
+    # Round 56 (3.7): contraction variants and layout contracts.
+    ('F06-S07', None, caption_names([
+        'A sparse contraction', 'A scaled contraction',
+        'Another contraction layout'])),
+    ('F09-S03', None, caption_names([
+        'A swizzled copy', 'A swizzled mma load'])),
+    ('F04-S18', r'So \\texttt\{\.zfill\} is', 'The \\texttt{.zfill} form is'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

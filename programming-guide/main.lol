@@ -215,36 +215,36 @@
 \contentsline {lstlisting}{\numberline {3.47}Example: TMA in a pipelined matmul}{102}{lstlisting.3.47}%
 \contentsline {lstlisting}{\numberline {3.48}Partial Tiles, Guarding, and .zfill}{103}{lstlisting.3.48}%
 \contentsline {lstlisting}{\numberline {3.49}.swiz N : Shared-Memory Layout for the Consumer}{104}{lstlisting.3.49}%
-\contentsline {lstlisting}{\numberline {3.50}Beyond dense FP16: what else the four steps express}{106}{lstlisting.3.50}%
-\contentsline {lstlisting}{\numberline {3.51}Beyond dense FP16: what else the four steps express}{106}{lstlisting.3.51}%
-\contentsline {lstlisting}{\numberline {3.52}Beyond dense FP16: what else the four steps express}{106}{lstlisting.3.52}%
-\contentsline {lstlisting}{\numberline {3.53}Swizzle and layout conflicts}{106}{lstlisting.3.53}%
-\contentsline {lstlisting}{\numberline {3.54}Swizzle and layout conflicts}{106}{lstlisting.3.54}%
+\contentsline {lstlisting}{\numberline {3.50}A sparse contraction}{106}{lstlisting.3.50}%
+\contentsline {lstlisting}{\numberline {3.51}A scaled contraction}{106}{lstlisting.3.51}%
+\contentsline {lstlisting}{\numberline {3.52}Another contraction layout}{106}{lstlisting.3.52}%
+\contentsline {lstlisting}{\numberline {3.53}A swizzled copy}{106}{lstlisting.3.53}%
+\contentsline {lstlisting}{\numberline {3.54}A swizzled mma load}{107}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}One group, one tile: the simplest MMA matmul}{107}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}Widening the scope: cooperative group and mma}{108}{lstlisting.3.56}%
-\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{109}{lstlisting.3.57}%
+\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{110}{lstlisting.3.57}%
 \contentsline {lstlisting}{\numberline {3.58}Structured concurrent regions with inthreads.async}{112}{lstlisting.3.58}%
 \contentsline {lstlisting}{\numberline {3.59}Inter-region signaling with events}{113}{lstlisting.3.59}%
 \contentsline {lstlisting}{\numberline {3.60}Make it Asynchronous}{114}{lstlisting.3.60}%
-\contentsline {lstlisting}{\numberline {3.61}Event Instances}{114}{lstlisting.3.61}%
+\contentsline {lstlisting}{\numberline {3.61}Event Instances}{115}{lstlisting.3.61}%
 \contentsline {lstlisting}{\numberline {3.62}DeadLocks}{115}{lstlisting.3.62}%
 \contentsline {lstlisting}{\numberline {3.63}DeadLocks}{115}{lstlisting.3.63}%
 \contentsline {lstlisting}{\numberline {3.64}The canonical pattern: 1 producer 1 consumer}{116}{lstlisting.3.64}%
 \contentsline {lstlisting}{\numberline {3.65}A 1P1C matmul skeleton}{116}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}Persistent scheduling and the if guard}{117}{lstlisting.3.66}%
-\contentsline {lstlisting}{\numberline {3.67}parallel.async: host-level concurrency}{118}{lstlisting.3.67}%
+\contentsline {lstlisting}{\numberline {3.67}parallel.async: host-level concurrency}{119}{lstlisting.3.67}%
 \contentsline {lstlisting}{\numberline {3.68}Asynchronous program launch and Stream Binding}{119}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}Synchronization and Asynchronous parallel-by}{119}{lstlisting.3.69}%
 \contentsline {lstlisting}{\numberline {3.70}Synchronization and Asynchronous parallel-by}{119}{lstlisting.3.70}%
-\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{119}{lstlisting.3.71}%
+\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{120}{lstlisting.3.71}%
 \contentsline {lstlisting}{\numberline {3.72}Stream Binding without .async}{120}{lstlisting.3.72}%
-\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{120}{lstlisting.3.73}%
-\contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{123}{lstlisting.3.74}%
+\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{121}{lstlisting.3.73}%
+\contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{124}{lstlisting.3.74}%
 \contentsline {lstlisting}{\numberline {3.75}Trigger C Template Instantiation}{124}{lstlisting.3.75}%
 \contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{124}{lstlisting.3.76}%
 \contentsline {lstlisting}{\numberline {3.77}Factor Target Specific Details}{125}{lstlisting.3.77}%
 \contentsline {lstlisting}{\numberline {3.78}Factor Target Specific Details}{125}{lstlisting.3.78}%
 \contentsline {lstlisting}{\numberline {3.79}device functions: target alongside Croqtile}{126}{lstlisting.3.79}%
-\contentsline {lstlisting}{\numberline {3.80}storage hints: setmaxnreg}{126}{lstlisting.3.80}%
+\contentsline {lstlisting}{\numberline {3.80}storage hints: setmaxnreg}{127}{lstlisting.3.80}%
 \contentsline {lstlisting}{\numberline {3.81}Example Code: Matrix Multiplication with Tiling}{129}{lstlisting.3.81}%
-\contentsline {lstlisting}{\numberline {3.82}Example Code}{130}{lstlisting.3.82}%
+\contentsline {lstlisting}{\numberline {3.82}Example Code}{131}{lstlisting.3.82}%

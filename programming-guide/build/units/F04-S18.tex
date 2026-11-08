@@ -22,7 +22,7 @@ What happens when the shapes are the same:
 \item This is enough for cases like tiling a \texttt{[100]} tensor into \texttt{[64]} tiles: the last tile simply has 36 valid elements.
 \end{itemize}
 
-So \texttt{.zfill} is \textbf{not} the general mechanism for ``any partial tile.'' It is specifically for cases where the destination tile is larger than the valid source region and the extra part of the destination must be filled with zeros.
+The \texttt{.zfill} form is \textbf{not} the general mechanism for ``any partial tile.'' It is specifically for cases where the destination tile is larger than the valid source region and the extra part of the destination must be filled with zeros.
 
 Why \texttt{.zfill} matters:
 
