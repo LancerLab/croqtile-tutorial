@@ -333,7 +333,7 @@ CHAPTER_NEXT = {
 SLOT_INTROS = {
     '1.1': "Before installing anything, it is worth knowing what problem Croqtile was built for. This section begins with that problem and the single idea behind the language, then says what Croqtile is, what its constructs give you, and what you need in order to follow the examples.",
     '1.2': "Croqtile ships as source, so a working toolchain comes before the first program. This section lists what the build needs and why those versions matter; Section~\\ref{sec:1-3} gives the commands.",
-    '1.3': "The compiler is built from source with a short sequence of commands. This section walks through them and explains what each one produces.",
+    '1.3': "A checkout needs three commands before it is usable: one prepares the dependencies, one builds the compiler, and one runs the test suite. The test result is what tells you the binary is ready, and Section~\\ref{sec:1-4} gives the smallest program that confirms it end to end.",
     '1.4': "A minimal check confirms the compiler and its runtime are usable. This section gives the smallest program that does so.",
     '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
     '1.6': "Beyond compiling one file, you will want the test suite and the development helpers. This section collects the commands you will return to.",
@@ -561,6 +561,21 @@ UNIT_OVERRIDES = [
      "the versions whose generated code supports the C++ features the "
      "compiler uses. An older Bison is the usual obstacle, and it is the one "
      "the setup step resolves for you."),
+    # Section 1.3: Triton's "From Source" and TileLang's "Building from
+    # Source" name each command block and move straight on to verification.
+    # The upstream page gave all three listings the same caption.
+    ('F02-S03', r'caption=\{Build from Source\}\]\ngit clone',
+     'caption={Clone and prepare}]\ngit clone'),
+    ('F02-S03', r'caption=\{Build from Source\}\]\nmake\n',
+     'caption={Build the compiler}]\nmake\n'),
+    ('F02-S03', r'caption=\{Build from Source\}\]\nmake test\n',
+     'caption={Run the test suite}]\nmake test\n'),
+    ('F02-S03', r'Then run the test suite to confirm everything works:',
+     'Then run the test suite; it is the check that the freshly built compiler is sound:'),
+    ('F02-S03', r'Add it to your \\texttt\{PATH\} or invoke it by its full path\.',
+     "Add it to your \\texttt{PATH} or invoke it by its full path. "
+     "Section~\\ref{sec:1-4} compiles a minimal program to confirm the "
+     "installation end to end."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',
@@ -904,6 +919,8 @@ GENERIC_HEADINGS = {
     # Section 1.2 already carries a requirements table; the coding-reference
     # page repeated it under a bare "Prerequisitions" heading.
     'prerequisitions': '',
+    # Section 1.3 repeats its slot title as a subsection.
+    'build from source': '',
 }
 
 

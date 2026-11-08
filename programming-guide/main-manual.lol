@@ -1,6 +1,6 @@
-\contentsline {lstlisting}{\numberline {1.1}Build from Source}{3}{lstlisting.1.1}%
-\contentsline {lstlisting}{\numberline {1.2}Build from Source}{3}{lstlisting.1.2}%
-\contentsline {lstlisting}{\numberline {1.3}Build from Source}{3}{lstlisting.1.3}%
+\contentsline {lstlisting}{\numberline {1.1}Clone and prepare}{3}{lstlisting.1.1}%
+\contentsline {lstlisting}{\numberline {1.2}Build the compiler}{3}{lstlisting.1.2}%
+\contentsline {lstlisting}{\numberline {1.3}Run the test suite}{3}{lstlisting.1.3}%
 \contentsline {lstlisting}{\numberline {1.4}Verify the Installation}{4}{lstlisting.1.4}%
 \contentsline {lstlisting}{\numberline {1.5}Verify the Installation}{4}{lstlisting.1.5}%
 \contentsline {lstlisting}{\numberline {1.6}Compiler Usage}{4}{lstlisting.1.6}%
