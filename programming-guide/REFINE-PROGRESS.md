@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **3.2** (chapters 1–2 complete; chapter 3 in progress through 3.1)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40)
+- Next section: **3.3** (chapters 1–2 complete; chapter 3 in progress through 3.2)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -90,7 +90,7 @@ chapter numbers; every unit stays in its registered slot.
 | 2.14 | x | round 38 | Gave the compile-time and runtime print listings distinct captions and replaced the meta-narration intro with the cheap-to-expensive inspection order |
 | 2.15 | x | round 39 | Removed the "part of the guide" meta narration and the dangling "next chapter" pointer in favour of an explicit cross-reference to the contraction section |
 | 3.1 | x | round 40 | Named the two device-code listings, replaced the "This section introduces" opener with the three-layer structure, removed a dangling "Thus" and fixed "a end-to-end" |
-| 3.2 | . | | |
+| 3.2 | x | round 41 | Named the four partial-type examples, removed the "However" opener and made the intro state what each value family contributes instead of announcing the section |
 | 3.3 | . | | |
 | 3.4 | . | | |
 | 3.4.1 | . | | |

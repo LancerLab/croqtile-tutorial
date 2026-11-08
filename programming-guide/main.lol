@@ -171,10 +171,10 @@
 \contentsline {lstlisting}{\numberline {3.3}The cok wrapper for separate sources}{69}{lstlisting.3.3}%
 \contentsline {lstlisting}{\numberline {3.4}Heterogeneity: Transpiling to program launch}{69}{lstlisting.3.4}%
 \contentsline {lstlisting}{\numberline {3.5}Embedding Croqtile within C}{70}{lstlisting.3.5}%
-\contentsline {lstlisting}{\numberline {3.6}The Partial Type: mdspan}{72}{lstlisting.3.6}%
-\contentsline {lstlisting}{\numberline {3.7}The Partial Type: mdspan}{72}{lstlisting.3.7}%
-\contentsline {lstlisting}{\numberline {3.8}The Partial Type: mdspan}{72}{lstlisting.3.8}%
-\contentsline {lstlisting}{\numberline {3.9}The Partial Type: mdspan}{72}{lstlisting.3.9}%
+\contentsline {lstlisting}{\numberline {3.6}An mdspan declaration}{72}{lstlisting.3.6}%
+\contentsline {lstlisting}{\numberline {3.7}A shape literal}{72}{lstlisting.3.7}%
+\contentsline {lstlisting}{\numberline {3.8}A shape with one dimension changed}{72}{lstlisting.3.8}%
+\contentsline {lstlisting}{\numberline {3.9}The same shape again}{72}{lstlisting.3.9}%
 \contentsline {lstlisting}{\numberline {3.10}Values of Bounded Variables}{74}{lstlisting.3.10}%
 \contentsline {lstlisting}{\numberline {3.11}Improved Code Safety}{76}{lstlisting.3.11}%
 \contentsline {lstlisting}{\numberline {3.12}Improved Code Safety}{76}{lstlisting.3.12}%

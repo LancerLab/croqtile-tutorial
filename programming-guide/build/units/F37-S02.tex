@@ -2,4 +2,4 @@
 
 A \textbf{spanned type} is a composite type that includes both the fundamental data type (such as \texttt{f32}, \texttt{s32}, or \texttt{f16}) and a \textbf{multi-dimensional span (mdspan)} that describes the shape and organization of the data. The spanned type allows Croqtile to define large arrays or matrices with an efficient layout, while also enabling the programmer to manipulate the shape (i.e., dimensions) independently of the data type. This flexibility is essential for managing multi-dimensional datasets that are frequently encountered in parallel computation and machine learning workloads.
 
-However, the spanned type by itself does not allocate storage or memory for the data. Instead, it serves as a blueprint for defining how the data will be organized in memory, allowing for runtime flexibility and optimizations.
+The spanned type by itself does not allocate storage for the data. Instead, it serves as a blueprint for defining how the data will be organized in memory, allowing for runtime flexibility and optimizations.

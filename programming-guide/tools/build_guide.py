@@ -357,7 +357,7 @@ SLOT_INTROS = {
     '2.14': "A shape or a type that is wrong at compile time is cheapest to inspect with \\co@print!@; a value that is wrong at runtime needs \\co@assert@ or a print inside the kernel. The first reports what the compiler believes, the second what the program did.",
     '2.15': "The constructs introduced so far are gathered here as a compact reference, so a spelling or a meaning can be looked up without re-reading the examples.",
     '3.1': "A \\file{.co} program is transpiled into host and device code. The three layers that result decide which parts the compiler rewrites and which it passes through, and the same split supports both single-source and separate-source compilation.",
-    '3.2': "The type system has a small number of value families. This section explains how they were designed and what the storage and bounded qualifiers contribute.",
+    '3.2': "A Croqtile type says what a value is, how it is stored and which bounds apply to it. \\co@mdspan@ and spanned data describe shapes and buffers, integers and i-tuples describe indices, and storage and bounded qualifiers attach to each declaration.",
     '3.3': "Shape dimensions may be symbolic rather than literal. This section explains how the compiler evaluates them, how value numbering works, and what safety that buys.",
     '3.4': "Parallelism in Croqtile is declared in layers. This section covers space specifiers, masking and the language rules that keep multi-level iteration well defined.",
     '3.4.1': "A tiled matrix multiplication puts the parallelism constructs to work. This section walks through the kernel and the host code that launches it.",
@@ -1139,6 +1139,13 @@ UNIT_OVERRIDES = [
      "and a tileflow function, each treated differently by the compiler."),
     ('F14-S04', r'Thus, the Croqtile compiler functions as a end-to-end compiler',
      'The Croqtile compiler functions as an end-to-end compiler'),
+    # Round 41 (3.2): syntax design and the type system.
+    ('F15-S07', None, caption_names([
+        'An mdspan declaration', 'A shape literal',
+        'A shape with one dimension changed', 'The same shape again'])),
+    ('F37-S02',
+     r'However, the spanned type by itself does not allocate storage or memory for the data\.',
+     'The spanned type by itself does not allocate storage for the data.'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
