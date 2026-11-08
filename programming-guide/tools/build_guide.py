@@ -373,7 +373,7 @@ SLOT_INTROS = {
     '3.6.2': "Overlapping copies with computation needs more than one buffer. \\co@dma.any@ selects a buffer, \\co@swap@ exchanges two handles and \\co@rotate@ cycles through a ring of them.",
     '3.6.3': "A pipelined kernel combines tile selection, movement and contraction in one program. The stages, the events between them and the final drain are all visible in the listing.",
     '3.7': "A contraction is a four-step contract between layout and accumulation. The four steps stay the same across dense, sparse and scaled variants; what changes is the layout each operand must have when it is loaded.",
-    '3.7.1': "This worked kernel shows one cooperative group carrying out the four steps on a single tile.",
+    '3.7.1': "One cooperative group carries out all four steps on a single tile, so the kernel is the shortest complete contraction that can be written.",
     '3.7.2': "Widening the cooperation scope changes the kernel in a few lines. This section compares the two forms side by side.",
     '3.7.3': "Two cooperative groups can share operands. This section shows the tiling and the resulting program.",
     '3.7.9': "The contraction syntax is gathered here for quick reference.",
@@ -1251,6 +1251,9 @@ UNIT_OVERRIDES = [
     ('F09-S03', None, caption_names([
         'A swizzled copy', 'A swizzled mma load'])),
     ('F04-S18', r'So \\texttt\{\.zfill\} is', 'The \\texttt{.zfill} form is'),
+    # Round 57 (3.7.1): one cooperative group.
+    ('F06-S04', r'In Croqtile, that corresponds to \\texttt\{: group\}\.',
+     'One cooperative group is written \\texttt{: group} in Croqtile.'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
