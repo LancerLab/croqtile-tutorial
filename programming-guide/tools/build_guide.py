@@ -363,7 +363,7 @@ SLOT_INTROS = {
     '3.4.1': "A tiled matrix multiplication is easiest to read when it is built up: the first kernel uses one instance per element, the next adds tiles, and the host code stays the same throughout.",
     '3.4.2': "Following one output element fixes every index in the kernel: its global position determines the block, the thread, the tile offset and finally the address read from each operand.",
     '3.5': "A tile is described by a data expression, not by pointer arithmetic. The composition operator \\co@#@ and the window forms \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ are the pieces; the rules below say what each expression may denote.",
-    '3.5.1': "A tile sometimes starts at an offset computed at runtime. This section shows how \\co@view@ and \\co@from@ describe such a window.",
+    '3.5.1': "A window can start at an offset that is known only at run time. \\co@view@ fixes the window size and \\co@from@ gives its origin, so the pair describes an arbitrary-offset slice without copying.",
     '3.5.2': "Strided tiles need an explicit step. This section shows how \\co@subspan@, \\co@step@ and \\co@at@ combine.",
     '3.5.3': "Partial tiles at the edge of a shape need padding. This section shows how \\co@.zfill@ supplies it.",
     '3.5.4': "A buffer can be reinterpreted under a different shape. This section shows \\co@span_as@ and the constraints on it.",
@@ -1202,6 +1202,12 @@ UNIT_OVERRIDES = [
      'for the rest of the kernel.'),
     # Round 46 (3.5): data expressions.
     ('F29-S05', r'However, using the', 'Using the'),
+    # Round 47 (3.5.1): arbitrary-offset windows.
+    ('F09-S07', None, caption_names([
+        'A window at a constant offset', 'A window at a runtime offset'])),
+    ('F09-S07',
+     r'This is a \\texttt\{\[16, 16\]\} slice starting at',
+     'The expression selects a \\texttt{[16, 16]} slice starting at'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

@@ -195,8 +195,8 @@
 \contentsline {lstlisting}{\numberline {3.27}Masking for Multi-Levels}{90}{lstlisting.3.27}%
 \contentsline {lstlisting}{\numberline {3.28}Scalar Matmul (No DMA)}{91}{lstlisting.3.28}%
 \contentsline {lstlisting}{\numberline {3.29}Tile and Flow}{93}{lstlisting.3.29}%
-\contentsline {lstlisting}{\numberline {3.30}Arbitrary-offset windows: view and from}{94}{lstlisting.3.30}%
-\contentsline {lstlisting}{\numberline {3.31}Arbitrary-offset windows: view and from}{94}{lstlisting.3.31}%
+\contentsline {lstlisting}{\numberline {3.30}A window at a constant offset}{94}{lstlisting.3.30}%
+\contentsline {lstlisting}{\numberline {3.31}A window at a runtime offset}{94}{lstlisting.3.31}%
 \contentsline {lstlisting}{\numberline {3.32}Strided tiles: .subspan, .step, and .at}{95}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}Zero-padding: .zfill}{96}{lstlisting.3.33}%
 \contentsline {lstlisting}{\numberline {3.34}Layout reinterpretation: span as}{96}{lstlisting.3.34}%

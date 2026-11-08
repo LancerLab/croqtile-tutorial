@@ -2,11 +2,11 @@
 
 \texttt{view(M, N).\allowbreak{}from(row, col)} defines an \texttt{M x N} rectangle starting at any \texttt{(row, col)} --- no alignment requirement:
 
-\begin{lstlisting}[language=croqtile,caption={Arbitrary-offset windows: view and from}]
+\begin{lstlisting}[language=croqtile,caption={A window at a constant offset}]
 patch = matrix.view(16, 16).from(37, 50);
 \end{lstlisting}
 
-This is a \texttt{[16, 16]} slice starting at row 37, column 50. The origin can be any runtime value.
+The expression selects a \texttt{[16, 16]} slice starting at row 37, column 50. The origin can be any runtime value.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
@@ -14,7 +14,7 @@ This is a \texttt{[16, 16]} slice starting at row 37, column 50. The origin can 
 
 The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{tma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
 
-\begin{lstlisting}[language=croqtile,caption={Arbitrary-offset windows: view and from}]
+\begin{lstlisting}[language=croqtile,caption={A window at a runtime offset}]
 expert_lhs = lhs.view(expert_M, K).from(expert_offset, 0);
 dma.copy expert_lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => shared;
 \end{lstlisting}

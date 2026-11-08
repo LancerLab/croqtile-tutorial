@@ -206,7 +206,7 @@
 \subsection{Arbitrary-Offset Windows: view and from}
 \label{sec:3-5-1}
 
-\guideslotintro{A tile sometimes starts at an offset computed at runtime. This section shows how \texttt{view} and \texttt{from} describe such a window.}
+\guideslotintro{A window can start at an offset that is known only at run time. \texttt{view} fixes the window size and \texttt{from} gives its origin, so the pair describes an arbitrary-offset slice without copying.}
 
 \input{build/units/F09-S07}
 
