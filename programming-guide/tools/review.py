@@ -92,6 +92,7 @@ CHECKS = {
     'inline_number_emph': [r'\\emph\{\s*\d+\s*\}'],
     'heading_only': [],     # a heading with no body at all
     'merged_paragraphs': [],  # adjacent \\inputs with no blank line between
+    'preface_positioning': [],  # the reader-facing language positioning
     # 6. Target-platform vocabulary, stray conversion placeholders.
     'hardware': None,      # uses build_guide.HW
     'placeholders': [r'QZ\d{3}QZ'],
@@ -218,6 +219,33 @@ def scan():
             if line.startswith('\\input') and lines[i + 1].startswith('\\input'):
                 merged.append((p, i + 1, line.strip() + '  +  ' + lines[i + 1].strip()))
     result['merged_paragraphs'] = merged
+
+    # The Preface must argue from the background trend, to human productivity,
+    # and only then to agent-readiness.  Protect both the concepts and their
+    # order so a future rewrite cannot collapse back into an AI-only pitch.
+    preface = text.get('content/frontmatter.tex', '')
+    concepts = ('heterogeneous', 'author productivity', 'human productivity',
+                'agent-ready')
+    gaps = [('content/frontmatter.tex', 1, 'missing ' + kw)
+            for kw in concepts if kw not in preface]
+    order = [preface.find(k) for k in ('author productivity',
+                                       'human productivity', 'agent-ready')]
+    if -1 not in order and not all(a < b for a, b in zip(order, order[1:])):
+        gaps.append(('content/frontmatter.tex', 1, 'motivation out of order'))
+
+    # The argument must read as prose: several natural paragraphs rather than
+    # one wall of text, and no label-style lists of isolated words.
+    opening = preface.split('\\section*')[0]
+    paras = [p for p in re.split(r'\n\s*\n', opening)
+             if p.strip() and not p.strip().startswith(('%', '\\'))]
+    if len(paras) < 4:
+        gaps.append(('content/frontmatter.tex', 1, 'opening not segmented'))
+    for env in ('description', 'enumerate', 'itemize'):
+        if '\\begin{' + env + '}' in preface:
+            gaps.append(('content/frontmatter.tex', 1, 'fragmented list: ' + env))
+    if re.search(r'\\textbf\{[A-Z][^}]*:\}', preface):
+        gaps.append(('content/frontmatter.tex', 1, 'label-style fragments'))
+    result['preface_positioning'] = gaps
 
     chapter_text = ''.join(text[p] for p in FILES if p.startswith('content/ch0'))
     for key, (pat, expected) in NARRATIVE.items():

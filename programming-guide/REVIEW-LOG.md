@@ -25,7 +25,11 @@ is **not** considered finished merely because its score
 is zero: the loop keeps going by finding a dimension the checker does not yet
 measure and adding it. Rounds 4, 6 and 8 were opened exactly that way, after
 reading the generated prose and the compiled PDF rather than trusting the
-previous round's zero.
+previous round's zero. Rounds 11, 12 and 13 came from direct reader requests
+about the Preface: first it needed language positioning, then a proper
+argument from background trends through human productivity to agent-readiness,
+and finally natural paragraph breaks and continuous prose instead of
+label-style fragments. Each request became a regression check.
 
 The reader-facing target is TileLang's Programming Guides: the subject is the
 language, the reader is "you", every construct is introduced before it is
@@ -53,6 +57,7 @@ defined, and no sentence explains where the documentation came from.
 | `emph_ref` | A cross-reference still wrapped in link-label emphasis |
 | `tutorial_voice` | "Welcome to the tutorial", "coding reference", "Each chapter" |
 | `fragments` | `vs.`-truncated clauses, cut-off `protocols`, fused sentences |
+| `preface_positioning` | Preface argument order (background trend → human productivity → agent-ready), heterogeneous positioning, natural paragraph breaks and no label-style lists |
 | `narrative_gap` | Missing chapter roadmap / slot intro / "where to go next" |
 
 ## Rounds
@@ -70,6 +75,9 @@ defined, and no sentence explains where the documentation came from.
 | 8 | 271 | 1 stale `Ch 0:` title, 1 Markdown multiplication read as emphasis, 16 bare headings, 253 adjacent units typeset as one paragraph (independent PDF reading) | Blank line after every `\input`, empty group headings suppressed, tutorial chapter titles dropped, the empty unit given a transition, the `chunkat` paragraph rewritten, `\emergencystretch` / `\hfuzz` tuned |
 | 9 | 0 | — | All structural categories clear |
 | 10 | 0 | Final acceptance round after rebuilding all three editions | No regressions in any category |
+| 11 | 0 | Reader feedback: the Preface opened too technically, with no sense of what Croqtile is for (new `preface_positioning` check) | Replaced the opening with one sustained paragraph on heterogeneous computing and AI-native design, followed by a short paragraph on program shape; all three editions rebuilt |
+| 12 | 0 | Reader feedback: the paragraph argued from AI-native alone, with no background trend and no human-first motivation (`preface_positioning` extended to enforce concept order) | Rewrote the Preface around background trend → why high-level kernel DSLs emerged → human productivity → agent-readiness, drawing on `../croqtile-tuner-paper/paper/main.tex` and the first two ATC background slides; all three editions rebuilt |
+| 13 | 0 | Reader feedback: one paragraph was too long, and the rest of the Preface was a set of label-style fragments rather than prose (`preface_positioning` extended to enforce segmentation) | Split the opening into five natural paragraphs, merged the two overlapping reading-order sections, and rewrote audience, prerequisites, scope, chapter guide and conventions as continuous prose; all three editions rebuilt |
 
 ## Final acceptance
 

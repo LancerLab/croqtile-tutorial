@@ -103,11 +103,11 @@ generated `content/ch0*.tex` or `build/units/*.tex` by hand.
 
 ### Review loop
 
-`tools/review.py` scores the reader-facing text on 19 categories (editorial
+`tools/review.py` scores the reader-facing text on 20 categories (editorial
 metadata, point of view, narrative scaffolding, broken prose, duplicated
 headings and sentences, stale tutorial titles, empty markup, target-platform
-vocabulary, conversion placeholders, and paragraph structure). Every round is
-comparable and must not regress:
+vocabulary, conversion placeholders, paragraph structure, and the Preface's
+language positioning). Every round is comparable and must not regress:
 
 ```bash
 python3 tools/review.py --round N               # measure, or add a new check
