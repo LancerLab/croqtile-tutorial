@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.3** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.2)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26)
+- Next section: **2.4** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.3)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -76,7 +76,7 @@ chapter numbers; every unit stays in its registered slot.
 | 1.10 | x | round 24 | The only source content was a bare five-item checklist with an unexplained first item; rewrote it as continuous prose in the order a reader meets the regions in a .co file, keeping all five regions and their descriptions |
 | 2.1 | x | round 25 | Reconciled the tutorial's two-part account with the coding reference's host/device/tileflow regions; restored the translation step that had been archived with a platform name; repaired "targeting :", "an keyword from ,", "handel" and the dangling "Those familiar with" opener; distinguished the listing caption from its heading and read the three regions in call order |
 | 2.2 | x | round 26 | Four kernel fragments kept their code but gained distinct captions; replaced the empty "heart of the program" opener with the signature/structure lead-in, removed a duplicated element-type sentence, repaired the dangling "short answer" sentence, and re-anchored the misplaced s32/swap note to Sections 3.6.2 and 3.7 |
-| 2.3 | . | | |
+| 2.3 | x | round 27 | Gave the three repeated caption groups distinct names, repaired broken host-side grammar (value semantics, includes, RVO, runtime dimensions), replaced the "Nothing new here" aside with what the verification loop actually checks, and removed the meta-narration from the slot intro |
 | 2.4 | . | | |
 | 2.5 | . | | |
 | 2.6 | . | | |

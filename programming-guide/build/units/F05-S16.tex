@@ -1,6 +1,6 @@
 \subsection*{Host Code}
 
-The host side uses the same \texttt{make\_spandata} / \texttt{.view()} pattern from earlier chapters:
+The host side uses the same \texttt{make\_spandata} / \texttt{.view()} pattern used by the host code above:
 
 \begin{lstlisting}[language=croqtile,caption={Host Code}]
 int main() {
@@ -20,4 +20,4 @@ int main() {
 }
 \end{lstlisting}
 
-Nothing new here. The host program stays boring so the Croqtile function stays the star.
+The loop after the call checks every element against a plain C++ reference computation, so an incorrect result is reported before the program prints anything.

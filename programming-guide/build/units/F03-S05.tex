@@ -1,8 +1,8 @@
 \subsection*{The Host Program}
 
-The host is plain C++ with a few Croqtile API calls:
+The host side is plain C++ with two Croqtile API calls: one creates a shaped buffer from raw storage, the other hands a view of it to the kernel.
 
-\begin{lstlisting}[language=croqtile,caption={The Host Program}]
+\begin{lstlisting}[language=croqtile,caption={Creating the shaped inputs}]
 auto lhs = croq::make_spandata<croq::s32>(4, 8);
 auto rhs = croq::make_spandata<croq::s32>(4, 8);
 lhs.fill_random(-10, 10);
@@ -11,7 +11,7 @@ rhs.fill_random(-10, 10);
 
 \texttt{croq:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spandata\textless{}T\textgreater{}(dims.\allowbreak{}.\allowbreak{}.\allowbreak{})} creates an owning tensor buffer on the host. You pass the element type as a template parameter and the dimensions as arguments. \texttt{fill\_random} populates it with values in the given range.
 
-\begin{lstlisting}[language=croqtile,caption={The Host Program}]
+\begin{lstlisting}[language=croqtile,caption={Calling the kernel}]
 auto res = ele_add(lhs.view(), rhs.view());
 \end{lstlisting}
 

@@ -34,29 +34,29 @@
 \contentsline {lstlisting}{\numberline {2.3}Allocating the output}{17}{lstlisting.2.3}%
 \contentsline {lstlisting}{\numberline {2.4}The parallel body}{17}{lstlisting.2.4}%
 \contentsline {lstlisting}{\numberline {2.5}Returning the result}{18}{lstlisting.2.5}%
-\contentsline {lstlisting}{\numberline {2.6}The Host Program}{18}{lstlisting.2.6}%
-\contentsline {lstlisting}{\numberline {2.7}The Host Program}{18}{lstlisting.2.7}%
+\contentsline {lstlisting}{\numberline {2.6}Creating the shaped inputs}{18}{lstlisting.2.6}%
+\contentsline {lstlisting}{\numberline {2.7}Calling the kernel}{18}{lstlisting.2.7}%
 \contentsline {lstlisting}{\numberline {2.8}Host Code}{19}{lstlisting.2.8}%
 \contentsline {lstlisting}{\numberline {2.9}Parameters Passing between Croqtile and C Function}{19}{lstlisting.2.9}%
 \contentsline {lstlisting}{\numberline {2.10}Input Parameters}{20}{lstlisting.2.10}%
-\contentsline {lstlisting}{\numberline {2.11}C Host: Data Argument with Shape}{20}{lstlisting.2.11}%
-\contentsline {lstlisting}{\numberline {2.12}C Host: Data Argument with Shape}{20}{lstlisting.2.12}%
-\contentsline {lstlisting}{\numberline {2.13}C Host: Data Argument with Shape}{20}{lstlisting.2.13}%
+\contentsline {lstlisting}{\numberline {2.11}Passing a shaped buffer}{20}{lstlisting.2.11}%
+\contentsline {lstlisting}{\numberline {2.12}The host-side buffer wrapper}{20}{lstlisting.2.12}%
+\contentsline {lstlisting}{\numberline {2.13}A call built from runtime dimensions}{20}{lstlisting.2.13}%
 \contentsline {lstlisting}{\numberline {2.14}Return Type and Type Deduction}{21}{lstlisting.2.14}%
-\contentsline {lstlisting}{\numberline {2.15}C Host: Shape Return}{21}{lstlisting.2.15}%
-\contentsline {lstlisting}{\numberline {2.16}C Host: Shape Return}{21}{lstlisting.2.16}%
+\contentsline {lstlisting}{\numberline {2.15}Returning a shaped buffer}{21}{lstlisting.2.15}%
+\contentsline {lstlisting}{\numberline {2.16}The host-side result wrapper}{21}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{22}{lstlisting.2.17}%
-\contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{22}{lstlisting.2.18}%
+\contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{23}{lstlisting.2.18}%
 \contentsline {lstlisting}{\numberline {2.19}Defining Shapes with mdspan}{23}{lstlisting.2.19}%
 \contentsline {lstlisting}{\numberline {2.20}Defining Shapes with mdspan}{23}{lstlisting.2.20}%
 \contentsline {lstlisting}{\numberline {2.21}Deriving mdspans}{23}{lstlisting.2.21}%
-\contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{23}{lstlisting.2.22}%
+\contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{24}{lstlisting.2.22}%
 \contentsline {lstlisting}{\numberline {2.23}Deriving mdspans}{24}{lstlisting.2.23}%
 \contentsline {lstlisting}{\numberline {2.24}mdspan with Anonymous Dimension}{24}{lstlisting.2.24}%
 \contentsline {lstlisting}{\numberline {2.25}mdspan with Anonymous Dimension}{24}{lstlisting.2.25}%
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{25}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types}{25}{lstlisting.2.27}%
-\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{25}{lstlisting.2.28}%
+\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{26}{lstlisting.2.28}%
 \contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{26}{lstlisting.2.29}%
 \contentsline {lstlisting}{\numberline {2.30}Integers for Program Control}{26}{lstlisting.2.30}%
 \contentsline {lstlisting}{\numberline {2.31}Integers for Program Control}{26}{lstlisting.2.31}%

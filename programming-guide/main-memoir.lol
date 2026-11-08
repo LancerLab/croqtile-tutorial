@@ -34,17 +34,17 @@
 \contentsline {lstlisting}{\numberline {2.3}Allocating the output}{17}{lstlisting.2.3}%
 \contentsline {lstlisting}{\numberline {2.4}The parallel body}{18}{lstlisting.2.4}%
 \contentsline {lstlisting}{\numberline {2.5}Returning the result}{18}{lstlisting.2.5}%
-\contentsline {lstlisting}{\numberline {2.6}The Host Program}{18}{lstlisting.2.6}%
-\contentsline {lstlisting}{\numberline {2.7}The Host Program}{18}{lstlisting.2.7}%
+\contentsline {lstlisting}{\numberline {2.6}Creating the shaped inputs}{18}{lstlisting.2.6}%
+\contentsline {lstlisting}{\numberline {2.7}Calling the kernel}{18}{lstlisting.2.7}%
 \contentsline {lstlisting}{\numberline {2.8}Host Code}{19}{lstlisting.2.8}%
 \contentsline {lstlisting}{\numberline {2.9}Parameters Passing between Croqtile and C Function}{19}{lstlisting.2.9}%
 \contentsline {lstlisting}{\numberline {2.10}Input Parameters}{20}{lstlisting.2.10}%
-\contentsline {lstlisting}{\numberline {2.11}C Host: Data Argument with Shape}{20}{lstlisting.2.11}%
-\contentsline {lstlisting}{\numberline {2.12}C Host: Data Argument with Shape}{20}{lstlisting.2.12}%
-\contentsline {lstlisting}{\numberline {2.13}C Host: Data Argument with Shape}{21}{lstlisting.2.13}%
+\contentsline {lstlisting}{\numberline {2.11}Passing a shaped buffer}{20}{lstlisting.2.11}%
+\contentsline {lstlisting}{\numberline {2.12}The host-side buffer wrapper}{20}{lstlisting.2.12}%
+\contentsline {lstlisting}{\numberline {2.13}A call built from runtime dimensions}{20}{lstlisting.2.13}%
 \contentsline {lstlisting}{\numberline {2.14}Return Type and Type Deduction}{21}{lstlisting.2.14}%
-\contentsline {lstlisting}{\numberline {2.15}C Host: Shape Return}{21}{lstlisting.2.15}%
-\contentsline {lstlisting}{\numberline {2.16}C Host: Shape Return}{22}{lstlisting.2.16}%
+\contentsline {lstlisting}{\numberline {2.15}Returning a shaped buffer}{21}{lstlisting.2.15}%
+\contentsline {lstlisting}{\numberline {2.16}The host-side result wrapper}{22}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{22}{lstlisting.2.17}%
 \contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{23}{lstlisting.2.18}%
 \contentsline {lstlisting}{\numberline {2.19}Defining Shapes with mdspan}{23}{lstlisting.2.19}%
@@ -53,7 +53,7 @@
 \contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{24}{lstlisting.2.22}%
 \contentsline {lstlisting}{\numberline {2.23}Deriving mdspans}{24}{lstlisting.2.23}%
 \contentsline {lstlisting}{\numberline {2.24}mdspan with Anonymous Dimension}{24}{lstlisting.2.24}%
-\contentsline {lstlisting}{\numberline {2.25}mdspan with Anonymous Dimension}{25}{lstlisting.2.25}%
+\contentsline {lstlisting}{\numberline {2.25}mdspan with Anonymous Dimension}{24}{lstlisting.2.25}%
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{25}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types}{25}{lstlisting.2.27}%
 \contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{26}{lstlisting.2.28}%
@@ -69,11 +69,11 @@
 \contentsline {lstlisting}{\numberline {2.38}Operations on I-Tuples}{28}{lstlisting.2.38}%
 \contentsline {lstlisting}{\numberline {2.39}Operations on I-Tuples}{28}{lstlisting.2.39}%
 \contentsline {lstlisting}{\numberline {2.40}Fully-Typing}{29}{lstlisting.2.40}%
-\contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{30}{lstlisting.2.41}%
+\contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{29}{lstlisting.2.41}%
 \contentsline {lstlisting}{\numberline {2.42}Defining a Spanned Data}{30}{lstlisting.2.42}%
 \contentsline {lstlisting}{\numberline {2.43}Defining a Spanned Data}{30}{lstlisting.2.43}%
 \contentsline {lstlisting}{\numberline {2.44}Defining a Spanned Data}{30}{lstlisting.2.44}%
-\contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{31}{lstlisting.2.45}%
+\contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{30}{lstlisting.2.45}%
 \contentsline {lstlisting}{\numberline {2.46}Initialization}{31}{lstlisting.2.46}%
 \contentsline {lstlisting}{\numberline {2.47}Declaring the Parameters and Return Values}{31}{lstlisting.2.47}%
 \contentsline {lstlisting}{\numberline {2.48}Declaring the Parameters and Return Values}{31}{lstlisting.2.48}%
@@ -82,9 +82,9 @@
 \contentsline {lstlisting}{\numberline {2.51}3. local}{32}{lstlisting.2.51}%
 \contentsline {lstlisting}{\numberline {2.52}Default Behavior and Usage}{32}{lstlisting.2.52}%
 \contentsline {lstlisting}{\numberline {2.53}Default Behavior and Usage}{32}{lstlisting.2.53}%
-\contentsline {lstlisting}{\numberline {2.54}Example Code: Using Storage Qualifiers}{33}{lstlisting.2.54}%
+\contentsline {lstlisting}{\numberline {2.54}Example Code: Using Storage Qualifiers}{32}{lstlisting.2.54}%
 \contentsline {lstlisting}{\numberline {2.55}Croqtile s Two-Layer Parallelism Model}{33}{lstlisting.2.55}%
-\contentsline {lstlisting}{\numberline {2.56}: block --- parallel blocks}{34}{lstlisting.2.56}%
+\contentsline {lstlisting}{\numberline {2.56}: block --- parallel blocks}{33}{lstlisting.2.56}%
 \contentsline {lstlisting}{\numberline {2.57}: thread --- Threads Within a Block}{34}{lstlisting.2.57}%
 \contentsline {lstlisting}{\numberline {2.58}Nesting Specifiers}{34}{lstlisting.2.58}%
 \contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{35}{lstlisting.2.59}%
@@ -105,12 +105,12 @@
 \contentsline {lstlisting}{\numberline {2.74}Defining Bounded Variables:}{39}{lstlisting.2.74}%
 \contentsline {lstlisting}{\numberline {2.75}Basic Syntax}{39}{lstlisting.2.75}%
 \contentsline {lstlisting}{\numberline {2.76}Basic Syntax}{39}{lstlisting.2.76}%
-\contentsline {lstlisting}{\numberline {2.77}Basic Syntax}{40}{lstlisting.2.77}%
+\contentsline {lstlisting}{\numberline {2.77}Basic Syntax}{39}{lstlisting.2.77}%
 \contentsline {lstlisting}{\numberline {2.78}Basic Syntax}{40}{lstlisting.2.78}%
 \contentsline {lstlisting}{\numberline {2.79}Basic Syntax}{40}{lstlisting.2.79}%
 \contentsline {lstlisting}{\numberline {2.80}Syntactic Sugar}{40}{lstlisting.2.80}%
 \contentsline {lstlisting}{\numberline {2.81}Syntactic Sugar}{40}{lstlisting.2.81}%
-\contentsline {lstlisting}{\numberline {2.82}Deriving the Loop From a Bounded Integer}{41}{lstlisting.2.82}%
+\contentsline {lstlisting}{\numberline {2.82}Deriving the Loop From a Bounded Integer}{40}{lstlisting.2.82}%
 \contentsline {lstlisting}{\numberline {2.83}Deriving the Loop From a Bounded Integer}{41}{lstlisting.2.83}%
 \contentsline {lstlisting}{\numberline {2.84}Deriving the Loop From a Bounded Integer}{41}{lstlisting.2.84}%
 \contentsline {lstlisting}{\numberline {2.85}chunkat(...): equal partitioning}{42}{lstlisting.2.85}%
@@ -127,39 +127,39 @@
 \contentsline {lstlisting}{\numberline {2.96}First Example: Tiled Addition Through shared storage}{47}{lstlisting.2.96}%
 \contentsline {lstlisting}{\numberline {2.97}Futures, .data, and .span}{48}{lstlisting.2.97}%
 \contentsline {lstlisting}{\numberline {2.98}Futures, .data, and .span}{48}{lstlisting.2.98}%
-\contentsline {lstlisting}{\numberline {2.99}Synchronous and Asynchronous Copies}{49}{lstlisting.2.99}%
+\contentsline {lstlisting}{\numberline {2.99}Synchronous and Asynchronous Copies}{48}{lstlisting.2.99}%
 \contentsline {lstlisting}{\numberline {2.100}Synchronous and Asynchronous Copies}{49}{lstlisting.2.100}%
 \contentsline {lstlisting}{\numberline {2.101}Synchronous and Asynchronous Copies}{49}{lstlisting.2.101}%
 \contentsline {lstlisting}{\numberline {2.102}dma.transp ...}{49}{lstlisting.2.102}%
-\contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{50}{lstlisting.2.103}%
+\contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{49}{lstlisting.2.103}%
 \contentsline {lstlisting}{\numberline {2.104}Tileflow Program: Orchestrating the Data Movement}{50}{lstlisting.2.104}%
 \contentsline {lstlisting}{\numberline {2.105}Tileflow Program: Orchestrating the Data Movement}{50}{lstlisting.2.105}%
 \contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{52}{lstlisting.2.106}%
 \contentsline {lstlisting}{\numberline {2.107}Synchronous and Asynchronous}{52}{lstlisting.2.107}%
 \contentsline {lstlisting}{\numberline {2.108}Data Expression}{53}{lstlisting.2.108}%
 \contentsline {lstlisting}{\numberline {2.109}Future and Wait}{53}{lstlisting.2.109}%
-\contentsline {lstlisting}{\numberline {2.110}Future and Wait}{54}{lstlisting.2.110}%
+\contentsline {lstlisting}{\numberline {2.110}Future and Wait}{53}{lstlisting.2.110}%
 \contentsline {lstlisting}{\numberline {2.111}Event arrays for multi-stage pipelines}{54}{lstlisting.2.111}%
 \contentsline {lstlisting}{\numberline {2.112}Bootstrap protocol}{54}{lstlisting.2.112}%
 \contentsline {lstlisting}{\numberline {2.113}Parallel Perspective of Tileflow Programs}{55}{lstlisting.2.113}%
 \contentsline {lstlisting}{\numberline {2.114}Implicit Masking}{56}{lstlisting.2.114}%
 \contentsline {lstlisting}{\numberline {2.115}Event Basics}{56}{lstlisting.2.115}%
 \contentsline {lstlisting}{\numberline {2.116}Event Basics}{56}{lstlisting.2.116}%
-\contentsline {lstlisting}{\numberline {2.117}Event Basics}{57}{lstlisting.2.117}%
+\contentsline {lstlisting}{\numberline {2.117}Event Basics}{56}{lstlisting.2.117}%
 \contentsline {lstlisting}{\numberline {2.118}Event Basics}{57}{lstlisting.2.118}%
-\contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{58}{lstlisting.2.119}%
+\contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{57}{lstlisting.2.119}%
 \contentsline {lstlisting}{\numberline {2.120}Early return from parallel}{58}{lstlisting.2.120}%
 \contentsline {lstlisting}{\numberline {2.121}Macros inside cpp strings}{59}{lstlisting.2.121}%
 \contentsline {lstlisting}{\numberline {2.122}Macros inside cpp strings}{59}{lstlisting.2.122}%
 \contentsline {lstlisting}{\numberline {2.123}Tile geometry as macros}{60}{lstlisting.2.123}%
 \contentsline {lstlisting}{\numberline {2.124}Compile-time assertions with error}{60}{lstlisting.2.124}%
 \contentsline {lstlisting}{\numberline {2.125}Conditional code paths}{60}{lstlisting.2.125}%
-\contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{61}{lstlisting.2.126}%
+\contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{60}{lstlisting.2.126}%
 \contentsline {lstlisting}{\numberline {2.127}Object-Like Macros}{61}{lstlisting.2.127}%
 \contentsline {lstlisting}{\numberline {2.128}Object-Like Macros}{61}{lstlisting.2.128}%
-\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{62}{lstlisting.2.129}%
+\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{61}{lstlisting.2.129}%
 \contentsline {lstlisting}{\numberline {2.130}Basic Syntax of Call Statements}{62}{lstlisting.2.130}%
-\contentsline {lstlisting}{\numberline {2.131}Basic Syntax of Call Statements}{63}{lstlisting.2.131}%
+\contentsline {lstlisting}{\numberline {2.131}Basic Syntax of Call Statements}{62}{lstlisting.2.131}%
 \contentsline {lstlisting}{\numberline {2.132}The Convention: Allowed Argument Types}{63}{lstlisting.2.132}%
 \contentsline {lstlisting}{\numberline {2.133}print and println : compile-time inspection}{64}{lstlisting.2.133}%
 \contentsline {lstlisting}{\numberline {2.134}print and println : compile-time inspection}{64}{lstlisting.2.134}%

@@ -20,8 +20,8 @@
 \contentsline {section}{\numberline {2.5}Integers, I-Tuples, and Bounded Values}{25}{section.2.5}%
 \contentsline {section}{\numberline {2.6}Spanned Data and Storage Specifiers}{29}{section.2.6}%
 \contentsline {section}{\numberline {2.7}Iteration: parallel-by, with-in, and foreach}{33}{section.2.7}%
-\contentsline {section}{\numberline {2.8}Tile Selection: chunkat, subspan, and view/from}{42}{section.2.8}%
-\contentsline {section}{\numberline {2.9}Data Movement: the DMA Statement and Futures}{47}{section.2.9}%
+\contentsline {section}{\numberline {2.8}Tile Selection: chunkat, subspan, and view/from}{41}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Data Movement: the DMA Statement and Futures}{46}{section.2.9}%
 \contentsline {section}{\numberline {2.10}Coordination: inthreads, Events, and Async Blocks}{54}{section.2.10}%
 \contentsline {section}{\numberline {2.11}Branching and Early Return}{57}{section.2.11}%
 \contentsline {section}{\numberline {2.12}The Four-Step MMA Syntax}{58}{section.2.12}%

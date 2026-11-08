@@ -2,9 +2,9 @@
 
 One obvious gap between C/C++ pointers/arrays and Croqtile \emph{spanned data} is that \emph{spanned data} is shaped. Therefore, to call a Croqtile function, it is necessary to convert pointers or arrays.
 
-One direct method is to use the Croqtile API provided in \texttt{croqtile.h}. Though programs does not necessary to explicitly include \texttt{croqtile.h} in Croqtile compilation environment, it is included for every Croqtile programs.
+One direct method is to use the Croqtile API provided in \texttt{croqtile.h}. A program does not have to include \texttt{croqtile.h} explicitly in a Croqtile compilation environment; the compiler includes it for every Croqtile program.
 
-\begin{lstlisting}[language=croqtile,caption={C Host: Data Argument with Shape}]
+\begin{lstlisting}[language=croqtile,caption={Passing a shaped buffer}]
 __co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
 void entry(float * input, float* output) {
   // foo(input, output); <-- result in error since missing shape
@@ -13,9 +13,9 @@ void entry(float * input, float* output) {
 }
 \end{lstlisting}
 
-In the above example, you make use of \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanned} function template, providing the rank as template parameter, and typed pointer together with shape list as the function parameters. In this way, a shape is attached with the pointer, which makes a valid Croqtile function parameter. As you may figure out from \texttt{croqtile.h}, it results in \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} object, which simply wraps the C/C++ pointer/array and the array-based list. To make it easy to understand, you list simplified definition is like:
+In the above example, you make use of \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanned} function template, providing the rank as template parameter, and typed pointer together with shape list as the function parameters. In this way, a shape is attached with the pointer, which makes a valid Croqtile function parameter. As you may figure out from \texttt{croqtile.h}, it results in \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} object, which simply wraps the C/C++ pointer/array and the array-based list. Its simplified definition is:
 
-\begin{lstlisting}[language={},caption={C Host: Data Argument with Shape}]
+\begin{lstlisting}[language={},caption={The host-side buffer wrapper}]
 template <typename T, size_t Rank>
 class spanned_view {
   T* ptr;                 // typed pointer to the data
@@ -23,9 +23,9 @@ class spanned_view {
 };
 \end{lstlisting}
 
-It is also possible to have variable as dimensions to construct the shaped data, like following:
+Dimensions do not have to be constants; runtime values work as well:
 
-\begin{lstlisting}[language=croqtile,caption={C Host: Data Argument with Shape}]
+\begin{lstlisting}[language=croqtile,caption={A call built from runtime dimensions}]
 __co__ void foo(f32 [7, 16] input) {...}
 void entry(float * input, float* output, int M, int N) {
   foo(croqtile::make_spanned<2>(input, {M, N})),

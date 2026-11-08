@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1177,8 +1177,8 @@ Chapter 2.
 (./build/units/F03-S05.tex) (./build/units/F05-S16.tex [18])
 (./build/units/F15-S21.tex) (./build/units/F25-S01.tex)
 (./build/units/F25-S02.tex) (./build/units/F25-S03.tex [19])
-(./build/units/F25-S04.tex) (./build/units/F25-S05.tex)
-(./build/units/F25-S06.tex [20]) (./build/units/F25-S07.tex) [21]
+(./build/units/F25-S04.tex [20]) (./build/units/F25-S05.tex)
+(./build/units/F25-S06.tex) (./build/units/F25-S07.tex [21])
 (./build/units/F04-S16.tex
 <figures//f04-fig_span_light.png, id=1358, 1927.2pt x 1084.05pt>
 File: figures//f04-fig_span_light.png Graphic file (type png)
@@ -1191,8 +1191,8 @@ Package pdftex.def Info: figures//f04-fig_span_light.png  used on input line 12
 (./build/units/F16-S04.tex
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <12> not available
 (Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 1.
- [23]) (./build/units/F19-S03.tex)
-(./build/units/F19-S04.tex [24]) (./build/units/F15-S05.tex)
+ [23]) (./build/units/F19-S03.tex [24])
+(./build/units/F19-S04.tex) (./build/units/F15-S05.tex)
 (./build/units/F15-S10.tex [25]) (./build/units/F15-S11.tex)
 (./build/units/F17-S01.tex) (./build/units/F17-S02.tex [26])
 (./build/units/F17-S04.tex) (./build/units/F17-S05.tex)
@@ -1603,7 +1603,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (145 pages, 3249613 bytes).
+Output written on main.pdf (145 pages, 3249952 bytes).
 PDF statistics:
  3570 PDF objects out of 3580 (max. 8388607)
  3268 compressed objects within 33 object streams

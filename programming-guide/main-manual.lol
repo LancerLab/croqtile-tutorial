@@ -34,17 +34,17 @@
 \contentsline {lstlisting}{\numberline {2.3}Allocating the output}{18}{lstlisting.2.3}%
 \contentsline {lstlisting}{\numberline {2.4}The parallel body}{19}{lstlisting.2.4}%
 \contentsline {lstlisting}{\numberline {2.5}Returning the result}{19}{lstlisting.2.5}%
-\contentsline {lstlisting}{\numberline {2.6}The Host Program}{19}{lstlisting.2.6}%
-\contentsline {lstlisting}{\numberline {2.7}The Host Program}{20}{lstlisting.2.7}%
+\contentsline {lstlisting}{\numberline {2.6}Creating the shaped inputs}{19}{lstlisting.2.6}%
+\contentsline {lstlisting}{\numberline {2.7}Calling the kernel}{20}{lstlisting.2.7}%
 \contentsline {lstlisting}{\numberline {2.8}Host Code}{20}{lstlisting.2.8}%
 \contentsline {lstlisting}{\numberline {2.9}Parameters Passing between Croqtile and C Function}{20}{lstlisting.2.9}%
 \contentsline {lstlisting}{\numberline {2.10}Input Parameters}{21}{lstlisting.2.10}%
-\contentsline {lstlisting}{\numberline {2.11}C Host: Data Argument with Shape}{21}{lstlisting.2.11}%
-\contentsline {lstlisting}{\numberline {2.12}C Host: Data Argument with Shape}{21}{lstlisting.2.12}%
-\contentsline {lstlisting}{\numberline {2.13}C Host: Data Argument with Shape}{22}{lstlisting.2.13}%
+\contentsline {lstlisting}{\numberline {2.11}Passing a shaped buffer}{21}{lstlisting.2.11}%
+\contentsline {lstlisting}{\numberline {2.12}The host-side buffer wrapper}{22}{lstlisting.2.12}%
+\contentsline {lstlisting}{\numberline {2.13}A call built from runtime dimensions}{22}{lstlisting.2.13}%
 \contentsline {lstlisting}{\numberline {2.14}Return Type and Type Deduction}{22}{lstlisting.2.14}%
-\contentsline {lstlisting}{\numberline {2.15}C Host: Shape Return}{22}{lstlisting.2.15}%
-\contentsline {lstlisting}{\numberline {2.16}C Host: Shape Return}{23}{lstlisting.2.16}%
+\contentsline {lstlisting}{\numberline {2.15}Returning a shaped buffer}{22}{lstlisting.2.15}%
+\contentsline {lstlisting}{\numberline {2.16}The host-side result wrapper}{23}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{23}{lstlisting.2.17}%
 \contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{24}{lstlisting.2.18}%
 \contentsline {lstlisting}{\numberline {2.19}Defining Shapes with mdspan}{24}{lstlisting.2.19}%

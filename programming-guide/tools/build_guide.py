@@ -343,7 +343,7 @@ SLOT_INTROS = {
     '1.10': "An unfamiliar \\file{.co} file is easier to read once you know the order its parts appear in: guards and helpers, host setup, the \\co@__co__@ function, and the injected C++. The chapters that follow define each of those constructs.",
     '2.1': "A \\file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \\co@__co__@ prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.",
     '2.2': "An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.",
-    '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result. This section covers the API every program uses.",
+    '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result back. Each step uses a small API, and the shape attached to a buffer is what makes the call type-safe.",
     '2.4': "Shapes are part of a Croqtile type, not metadata discovered at runtime. This section shows how \\co@mdspan@ shapes are written, derived and evaluated.",
     '2.5': "Loop bounds and indices are compile-time values with types of their own. This section covers integers, I-tuples and bounded values.",
     '2.6': "Data in Croqtile is \\emph{spanned}: a buffer together with its shape. This section shows how spanned data is declared, stored and initialised.",
@@ -866,6 +866,57 @@ UNIT_OVERRIDES = [
      "mechanism (Section~\\ref{sec:3-6-2}); the same return-type deduction "
      "applies to the FP16/MMA kernels in Section~\\ref{sec:3-7}.}"
      "\\end{center}"),
+    # Round 27 (2.3): host buffers keep their shape across the call.
+    ('F03-S05', None, caption_names([
+        'Creating the shaped inputs', 'Calling the kernel'])),
+    ('F25-S04', None, caption_names([
+        'Passing a shaped buffer', 'The host-side buffer wrapper',
+        'A call built from runtime dimensions'])),
+    ('F25-S07', None, caption_names([
+        'Returning a shaped buffer', 'The host-side result wrapper'])),
+    ('F03-S05',
+     r'The host is plain C\+\+ with a few Croqtile API calls:',
+     "The host side is plain C++ with two Croqtile API calls: one creates a "
+     "shaped buffer from raw storage, the other hands a view of it to the "
+     "kernel."),
+    ('F05-S16', r'from earlier chapters:', 'used by the host code above:'),
+    ('F05-S16',
+     r'Nothing new here\. The host program stays boring so the Croqtile function stays the star\.',
+     "The loop after the call checks every element against a plain C++ "
+     "reference computation, so an incorrect result is reported before the "
+     "program prints anything."),
+    ('F15-S21',
+     r'Passing arguments to Croqtile or opposite requires inclusion of Croqtile header file: croqtile\.h\.',
+     "Passing arguments between Croqtile and C++ requires the "
+     "\\texttt{croqtile.h} header."),
+    ('F25-S03',
+     r'For a Croqtile function, it only accepts two types of input parameters: the \\emph\{spanned data\}, and the \\emph\{integer\}\.',
+     "A Croqtile function accepts only two kinds of input parameter, the "
+     "\\emph{spanned data} and the \\emph{integer}."),
+    ('F25-S04',
+     r'Though programs does not necessary to explicitly include \\texttt\{croqtile\.h\} in Croqtile compilation environment, it is included for every Croqtile programs\.',
+     "A program does not have to include \\texttt{croqtile.h} explicitly in a "
+     "Croqtile compilation environment; the compiler includes it for every "
+     "Croqtile program."),
+    ('F25-S04',
+     r'To make it easy to understand, you list simplified definition is like:',
+     'Its simplified definition is:'),
+    ('F25-S04',
+     r'It is also possible to have variable as dimensions to construct the shaped data, like following:',
+     "Dimensions do not have to be constants; runtime values work as well:"),
+    ('F25-S07',
+     r'Semantics, the return must be copied than reference, or else it returns a reference to an object allocated in the called function\.',
+     "The return has value semantics: the caller receives the buffer itself, "
+     "not a reference to an object allocated inside the called function."),
+    ('F25-S07', r'In contrary to', 'In contrast to'),
+    ('F25-S07',
+     r'no copy actually happen when returning',
+     'no copy actually happens when returning'),
+    ('F25-S07', r"In compiler's term,", 'In compiler terminology,'),
+    ('F25-S07',
+     r'This allows you able to work without knowing the too much detail about Croqtile function\.',
+     "It lets the host work with the result without knowing the details of "
+     "the Croqtile function that produced it."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
