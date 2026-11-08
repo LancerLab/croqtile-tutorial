@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1622,7 +1622,7 @@ ut line 17.
  [87]) (./build/units/F05-S17.tex) [88 <./figures//f05-fig5_scalar_matmul_light
 .png>] (./build/units/F04-S04.tex)
 (./build/units/F04-S13.tex) (./build/units/F09-S06.tex)
-(./build/units/F29-S05.tex) (./build/units/F40-S07.tex [89])
+(./build/units/F29-S05.tex) [89] (./build/units/F40-S07.tex)
 (./build/units/F09-S07.tex
 <figures//f09-fig4_view_from_light.png, id=2377, 1927.2pt x 1084.05pt>
 File: figures//f09-fig4_view_from_light.png Graphic file (type png)
@@ -1884,7 +1884,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3270669 bytes).
+Output written on main-memoir.pdf (149 pages, 3270774 bytes).
 PDF statistics:
  3807 PDF objects out of 4296 (max. 8388607)
  3499 compressed objects within 35 object streams

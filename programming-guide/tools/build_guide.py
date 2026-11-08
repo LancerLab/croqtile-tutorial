@@ -362,7 +362,7 @@ SLOT_INTROS = {
     '3.4': "Parallelism in Croqtile is declared in layers: a \\co@parallel@ block names independent instances, a space specifier groups them, and masking decides which instances execute a divergent branch. The rules below keep multi-level iteration well defined.",
     '3.4.1': "A tiled matrix multiplication is easiest to read when it is built up: the first kernel uses one instance per element, the next adds tiles, and the host code stays the same throughout.",
     '3.4.2': "Following one output element fixes every index in the kernel: its global position determines the block, the thread, the tile offset and finally the address read from each operand.",
-    '3.5': "Tiling is expressed with data expressions rather than raw pointer arithmetic. This section covers the composition operator and the forms a data expression may take.",
+    '3.5': "A tile is described by a data expression, not by pointer arithmetic. The composition operator \\co@#@ and the window forms \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ are the pieces; the rules below say what each expression may denote.",
     '3.5.1': "A tile sometimes starts at an offset computed at runtime. This section shows how \\co@view@ and \\co@from@ describe such a window.",
     '3.5.2': "Strided tiles need an explicit step. This section shows how \\co@subspan@, \\co@step@ and \\co@at@ combine.",
     '3.5.3': "Partial tiles at the edge of a shape need padding. This section shows how \\co@.zfill@ supplies it.",
@@ -1200,6 +1200,8 @@ UNIT_OVERRIDES = [
     ('F05-S17', r'Which block and thread own it\?',
      'Working out which block and thread own it fixes the index arithmetic '
      'for the rest of the kernel.'),
+    # Round 46 (3.5): data expressions.
+    ('F29-S05', r'However, using the', 'Using the'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
