@@ -230,7 +230,7 @@
 \subsection{Layout Reinterpretation with span\_as}
 \label{sec:3-5-4}
 
-\guideslotintro{A buffer can be reinterpreted under a different shape. This section shows \texttt{span\_as} and the constraints on it.}
+\guideslotintro{A buffer can be read under a different shape without copying it. \texttt{span\_as} reinterprets the layout, but the element count has to agree with the new shape and the movement statement still sees one contiguous span.}
 
 \input{build/units/F09-S10}
 

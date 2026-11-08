@@ -41,12 +41,12 @@
 \contentsline {subsection}{Zero-Padding with zfill}{92}{section*.189}%
 \contentsline {subsection}{Layout Reinterpretation with span\_as}{92}{section*.191}%
 \contentsline {subsection}{Tile Selection: Summary and Syntax}{93}{section*.193}%
-\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{94}{section.3.6}%
+\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{93}{section.3.6}%
 \contentsline {subsection}{Worked Example: DMA Matmul}{99}{section*.206}%
 \contentsline {subsection}{Multi-Buffering: dma.any, swap, and rotate}{100}{section*.208}%
 \contentsline {subsection}{Worked Example: A Pipelined Kernel}{103}{section*.214}%
 \contentsline {section}{\numberline {3.7}Contraction and Layout Contracts}{104}{section.3.7}%
-\contentsline {subsection}{Worked Example: One Cooperative Group}{107}{section*.222}%
+\contentsline {subsection}{Worked Example: One Cooperative Group}{108}{section*.222}%
 \contentsline {subsection}{Worked Example: Widening the Cooperation Scope}{109}{section*.224}%
 \contentsline {subsection}{Worked Example: Two Cooperative Groups}{110}{section*.226}%
 \contentsline {subsection}{MMA Syntax Summary}{111}{section*.228}%
@@ -59,7 +59,7 @@
 \contentsline {subsection}{Worked Example: A Full Event Pipeline}{121}{section*.252}%
 \contentsline {subsection}{Coordination Pattern Summary}{123}{section*.256}%
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{124}{section.3.9}%
-\contentsline {subsection}{Worked Example: Calling a Device Helper}{126}{section*.266}%
+\contentsline {subsection}{Worked Example: Calling a Device Helper}{127}{section*.266}%
 \contentsline {subsection}{Verbatim C++ Injection}{128}{section*.268}%
 \contentsline {subsection}{Interoperability Summary}{128}{section*.270}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{128}{section.3.10}%

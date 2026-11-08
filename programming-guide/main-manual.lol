@@ -199,8 +199,8 @@
 \contentsline {lstlisting}{\numberline {3.31}A window at a runtime offset}{94}{lstlisting.3.31}%
 \contentsline {lstlisting}{\numberline {3.32}Strided tiles: .subspan, .step, and .at}{95}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}Zero-padding: .zfill}{96}{lstlisting.3.33}%
-\contentsline {lstlisting}{\numberline {3.34}Layout reinterpretation: span as}{96}{lstlisting.3.34}%
-\contentsline {lstlisting}{\numberline {3.35}Layout reinterpretation: span as}{96}{lstlisting.3.35}%
+\contentsline {lstlisting}{\numberline {3.34}A flat strip reinterpreted as a matrix}{96}{lstlisting.3.34}%
+\contentsline {lstlisting}{\numberline {3.35}A movement statement using the reinterpretation}{96}{lstlisting.3.35}%
 \contentsline {lstlisting}{\numberline {3.36}DMA vs TMA}{99}{lstlisting.3.36}%
 \contentsline {lstlisting}{\numberline {3.37}The main TMA constraint}{99}{lstlisting.3.37}%
 \contentsline {lstlisting}{\numberline {3.38}The main TMA constraint}{99}{lstlisting.3.38}%

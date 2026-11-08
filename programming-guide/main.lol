@@ -199,17 +199,17 @@
 \contentsline {lstlisting}{\numberline {3.31}A window at a runtime offset}{90}{lstlisting.3.31}%
 \contentsline {lstlisting}{\numberline {3.32}Strided tiles: .subspan, .step, and .at}{91}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}Zero-padding: .zfill}{92}{lstlisting.3.33}%
-\contentsline {lstlisting}{\numberline {3.34}Layout reinterpretation: span as}{92}{lstlisting.3.34}%
-\contentsline {lstlisting}{\numberline {3.35}Layout reinterpretation: span as}{92}{lstlisting.3.35}%
+\contentsline {lstlisting}{\numberline {3.34}A flat strip reinterpreted as a matrix}{92}{lstlisting.3.34}%
+\contentsline {lstlisting}{\numberline {3.35}A movement statement using the reinterpretation}{92}{lstlisting.3.35}%
 \contentsline {lstlisting}{\numberline {3.36}DMA vs TMA}{95}{lstlisting.3.36}%
 \contentsline {lstlisting}{\numberline {3.37}The main TMA constraint}{95}{lstlisting.3.37}%
 \contentsline {lstlisting}{\numberline {3.38}The main TMA constraint}{95}{lstlisting.3.38}%
 \contentsline {lstlisting}{\numberline {3.39}tma.copy: target tensor movement}{95}{lstlisting.3.39}%
-\contentsline {lstlisting}{\numberline {3.40}Async Operation: the DMA Statement}{97}{lstlisting.3.40}%
+\contentsline {lstlisting}{\numberline {3.40}Async Operation: the DMA Statement}{96}{lstlisting.3.40}%
 \contentsline {lstlisting}{\numberline {3.41}Async Operation: the DMA Statement}{97}{lstlisting.3.41}%
-\contentsline {lstlisting}{\numberline {3.42}Operation Type}{98}{lstlisting.3.42}%
+\contentsline {lstlisting}{\numberline {3.42}Operation Type}{97}{lstlisting.3.42}%
 \contentsline {lstlisting}{\numberline {3.43}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{98}{lstlisting.3.43}%
-\contentsline {lstlisting}{\numberline {3.44}DMA Matmul: Tiles in shared storage}{99}{lstlisting.3.44}%
+\contentsline {lstlisting}{\numberline {3.44}DMA Matmul: Tiles in shared storage}{98}{lstlisting.3.44}%
 \contentsline {lstlisting}{\numberline {3.45}Double buffering with swap}{100}{lstlisting.3.45}%
 \contentsline {lstlisting}{\numberline {3.46}Multi-Buffering Optimization with Croqtile}{101}{lstlisting.3.46}%
 \contentsline {lstlisting}{\numberline {3.47}Example: TMA in a pipelined matmul}{102}{lstlisting.3.47}%
@@ -219,32 +219,32 @@
 \contentsline {lstlisting}{\numberline {3.51}Beyond dense FP16: what else the four steps express}{106}{lstlisting.3.51}%
 \contentsline {lstlisting}{\numberline {3.52}Beyond dense FP16: what else the four steps express}{106}{lstlisting.3.52}%
 \contentsline {lstlisting}{\numberline {3.53}Swizzle and layout conflicts}{106}{lstlisting.3.53}%
-\contentsline {lstlisting}{\numberline {3.54}Swizzle and layout conflicts}{107}{lstlisting.3.54}%
+\contentsline {lstlisting}{\numberline {3.54}Swizzle and layout conflicts}{106}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}One group, one tile: the simplest MMA matmul}{107}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}Widening the scope: cooperative group and mma}{108}{lstlisting.3.56}%
-\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{110}{lstlisting.3.57}%
+\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{109}{lstlisting.3.57}%
 \contentsline {lstlisting}{\numberline {3.58}Structured concurrent regions with inthreads.async}{112}{lstlisting.3.58}%
 \contentsline {lstlisting}{\numberline {3.59}Inter-region signaling with events}{113}{lstlisting.3.59}%
 \contentsline {lstlisting}{\numberline {3.60}Make it Asynchronous}{114}{lstlisting.3.60}%
-\contentsline {lstlisting}{\numberline {3.61}Event Instances}{115}{lstlisting.3.61}%
+\contentsline {lstlisting}{\numberline {3.61}Event Instances}{114}{lstlisting.3.61}%
 \contentsline {lstlisting}{\numberline {3.62}DeadLocks}{115}{lstlisting.3.62}%
 \contentsline {lstlisting}{\numberline {3.63}DeadLocks}{115}{lstlisting.3.63}%
 \contentsline {lstlisting}{\numberline {3.64}The canonical pattern: 1 producer 1 consumer}{116}{lstlisting.3.64}%
 \contentsline {lstlisting}{\numberline {3.65}A 1P1C matmul skeleton}{116}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}Persistent scheduling and the if guard}{117}{lstlisting.3.66}%
-\contentsline {lstlisting}{\numberline {3.67}parallel.async: host-level concurrency}{119}{lstlisting.3.67}%
+\contentsline {lstlisting}{\numberline {3.67}parallel.async: host-level concurrency}{118}{lstlisting.3.67}%
 \contentsline {lstlisting}{\numberline {3.68}Asynchronous program launch and Stream Binding}{119}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}Synchronization and Asynchronous parallel-by}{119}{lstlisting.3.69}%
 \contentsline {lstlisting}{\numberline {3.70}Synchronization and Asynchronous parallel-by}{119}{lstlisting.3.70}%
-\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{120}{lstlisting.3.71}%
+\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{119}{lstlisting.3.71}%
 \contentsline {lstlisting}{\numberline {3.72}Stream Binding without .async}{120}{lstlisting.3.72}%
-\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{121}{lstlisting.3.73}%
-\contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{124}{lstlisting.3.74}%
+\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{120}{lstlisting.3.73}%
+\contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{123}{lstlisting.3.74}%
 \contentsline {lstlisting}{\numberline {3.75}Trigger C Template Instantiation}{124}{lstlisting.3.75}%
 \contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{124}{lstlisting.3.76}%
 \contentsline {lstlisting}{\numberline {3.77}Factor Target Specific Details}{125}{lstlisting.3.77}%
 \contentsline {lstlisting}{\numberline {3.78}Factor Target Specific Details}{125}{lstlisting.3.78}%
 \contentsline {lstlisting}{\numberline {3.79}device functions: target alongside Croqtile}{126}{lstlisting.3.79}%
-\contentsline {lstlisting}{\numberline {3.80}storage hints: setmaxnreg}{127}{lstlisting.3.80}%
+\contentsline {lstlisting}{\numberline {3.80}storage hints: setmaxnreg}{126}{lstlisting.3.80}%
 \contentsline {lstlisting}{\numberline {3.81}Example Code: Matrix Multiplication with Tiling}{129}{lstlisting.3.81}%
-\contentsline {lstlisting}{\numberline {3.82}Example Code}{131}{lstlisting.3.82}%
+\contentsline {lstlisting}{\numberline {3.82}Example Code}{130}{lstlisting.3.82}%

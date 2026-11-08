@@ -2,13 +2,13 @@
 
 Some kernels load data as a flat 1D strip but need to feed it to MMA as a 2D matrix. A naive approach would copy the data into a reshaped buffer --- \texttt{span\_as} avoids this by reinterpreting the existing buffer's shape in place:
 
-\begin{lstlisting}[language=croqtile,caption={Layout reinterpretation: span as}]
+\begin{lstlisting}[language=croqtile,caption={A flat strip reinterpreted as a matrix}]
 flat_buffer.span_as([rows, cols])
 \end{lstlisting}
 
 Element count is preserved; only the logical rank changes. No data is moved.
 
-\begin{lstlisting}[language=croqtile,caption={Layout reinterpretation: span as}]
+\begin{lstlisting}[language=croqtile,caption={A movement statement using the reinterpretation}]
 strip_load = dma.copy data.chunkat(tile) => shared;
 tile_2d = strip_load.data.span_as([tile_m, tile_k]);
 ma = mma.load tile_2d.chunkat(_, iv_warp);
