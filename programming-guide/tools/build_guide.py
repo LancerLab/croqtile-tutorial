@@ -392,7 +392,7 @@ SLOT_INTROS = {
     '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. A tiled matmul and an rgb2gray kernel use the same composition operator on very different shapes.",
     '3.10.1': "A tiled matmul shows how bounded variables, \\co@chunkat@ and movement statements compose into one program. The host code stays ordinary C++ throughout.",
     '3.10.2': "An rgb2gray kernel applies the same composition operator to a three-channel image. The shape is different, the tiling is simpler, and the movement statements are the same ones the matmul used.",
-    '3.11': "Diagnostics are part of using a language well. This section collects the methodology behind compile-time inspection, verbose builds and runtime checks.",
+    '3.11': "Diagnostics are part of using a language well. The cheapest checks are compile-time ones, then targeted runtime probes, then verbose builds; narrowing the search in that order saves the most time.",
 }
 
 def caption_names(names):
@@ -1314,6 +1314,7 @@ UNIT_OVERRIDES = [
      r'This example shows how physical parallelism work together with virtual parallelism\.',
      "It shows how physical parallelism works together with virtual "
      "parallelism."),
+    # Round 76 (3.11): diagnostics methodology. Source prose is continuous.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
