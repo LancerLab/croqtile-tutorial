@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1806,7 +1806,7 @@ png>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex [120])
 (./build/units/F36-S02.tex) (./build/units/F36-S03.tex)
 (./build/units/F36-S04.tex) [121] (./build/units/F08-S10.tex [122])
 (./build/units/F08-S11.tex) (./build/units/F08-S12.tex
-<figures//f08-fig2_event_credit_flow_light.png, id=3046, 1927.2pt x 1084.05pt>
+<figures//f08-fig2_event_credit_flow_light.png, id=3045, 1927.2pt x 1084.05pt>
 File: figures//f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures//f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures//f08-fig2_event_credit_flow_light.png  used on
@@ -1864,7 +1864,7 @@ Package rerunfilecheck Info: File `main-memoir.out' has not changed.
 Here is how much of TeX's memory you used:
  39303 strings out of 480247
  750044 string characters out of 5896152
- 1525466 words of memory out of 5000000
+ 1521466 words of memory out of 5000000
  53159 multiletter control sequences out of 15000+600000
  589491 words of font info for 277 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1882,7 +1882,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3272075 bytes).
+Output written on main-memoir.pdf (149 pages, 3272160 bytes).
 PDF statistics:
  3811 PDF objects out of 4296 (max. 8388607)
  3502 compressed objects within 36 object streams
