@@ -21,7 +21,7 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 \includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f05-fig6_dma_matmul_light.png}
 \end{figure}
 
-What changed from the scalar version:
+The scalar version indexed one element at a time. The tiled version first copies a tile into shared storage, then computes on that tile:
 
 \begin{enumerate}[leftmargin=1.6em]
 \item The outer \texttt{parallel} now uses \texttt{: block} with brace-form indices \texttt{\{px, py\}}. An 8 \(\times\) 16 grid of blocks covers the output.

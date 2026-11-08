@@ -221,12 +221,12 @@
 \contentsline {lstlisting}{\numberline {3.53}Swizzle and layout conflicts}{107}{lstlisting.3.53}%
 \contentsline {lstlisting}{\numberline {3.54}Swizzle and layout conflicts}{107}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}One group, one tile: the simplest MMA matmul}{108}{lstlisting.3.55}%
-\contentsline {lstlisting}{\numberline {3.56}Widening the scope: cooperative group and mma}{110}{lstlisting.3.56}%
-\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{110}{lstlisting.3.57}%
+\contentsline {lstlisting}{\numberline {3.56}Widening the scope: cooperative group and mma}{109}{lstlisting.3.56}%
+\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative group sharing operands}{111}{lstlisting.3.57}%
 \contentsline {lstlisting}{\numberline {3.58}Structured concurrent regions with inthreads.async}{113}{lstlisting.3.58}%
-\contentsline {lstlisting}{\numberline {3.59}Inter-region signaling with events}{113}{lstlisting.3.59}%
+\contentsline {lstlisting}{\numberline {3.59}Inter-region signaling with events}{114}{lstlisting.3.59}%
 \contentsline {lstlisting}{\numberline {3.60}Make it Asynchronous}{115}{lstlisting.3.60}%
-\contentsline {lstlisting}{\numberline {3.61}Event Instances}{115}{lstlisting.3.61}%
+\contentsline {lstlisting}{\numberline {3.61}Event Instances}{116}{lstlisting.3.61}%
 \contentsline {lstlisting}{\numberline {3.62}DeadLocks}{116}{lstlisting.3.62}%
 \contentsline {lstlisting}{\numberline {3.63}DeadLocks}{116}{lstlisting.3.63}%
 \contentsline {lstlisting}{\numberline {3.64}The canonical pattern: 1 producer 1 consumer}{117}{lstlisting.3.64}%
@@ -236,12 +236,12 @@
 \contentsline {lstlisting}{\numberline {3.68}Asynchronous program launch and Stream Binding}{120}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}Synchronization and Asynchronous parallel-by}{120}{lstlisting.3.69}%
 \contentsline {lstlisting}{\numberline {3.70}Synchronization and Asynchronous parallel-by}{120}{lstlisting.3.70}%
-\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{120}{lstlisting.3.71}%
+\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{121}{lstlisting.3.71}%
 \contentsline {lstlisting}{\numberline {3.72}Stream Binding without .async}{121}{lstlisting.3.72}%
-\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{121}{lstlisting.3.73}%
+\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{122}{lstlisting.3.73}%
 \contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{125}{lstlisting.3.74}%
 \contentsline {lstlisting}{\numberline {3.75}Trigger C Template Instantiation}{125}{lstlisting.3.75}%
-\contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{125}{lstlisting.3.76}%
+\contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{126}{lstlisting.3.76}%
 \contentsline {lstlisting}{\numberline {3.77}Factor Target Specific Details}{126}{lstlisting.3.77}%
 \contentsline {lstlisting}{\numberline {3.78}Factor Target Specific Details}{126}{lstlisting.3.78}%
 \contentsline {lstlisting}{\numberline {3.79}device functions: target alongside Croqtile}{127}{lstlisting.3.79}%
