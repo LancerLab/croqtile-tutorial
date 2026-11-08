@@ -371,7 +371,7 @@ SLOT_INTROS = {
     '3.6': "Data movement has a small grammar: an operation, a configuration and a future. Asynchronous forms add ordering constraints, and the chapter works from one copy up to a full non-blocking chain.",
     '3.6.1': "A tiled matmul with explicit copies shows where each movement statement sits. Reading the full kernel is easier once the tile it moves and the buffer it lands in are named.",
     '3.6.2': "Overlapping copies with computation needs more than one buffer. \\co@dma.any@ selects a buffer, \\co@swap@ exchanges two handles and \\co@rotate@ cycles through a ring of them.",
-    '3.6.3': "A pipelined kernel combines tile selection, movement and contraction. This section presents one complete program.",
+    '3.6.3': "A pipelined kernel combines tile selection, movement and contraction in one program. The stages, the events between them and the final drain are all visible in the listing.",
     '3.7': "Contraction in Croqtile is a four-step contract between layout and accumulation. This section describes that contract and the variants that share it.",
     '3.7.1': "This worked kernel shows one cooperative group carrying out the four steps on a single tile.",
     '3.7.2': "Widening the cooperation scope changes the kernel in a few lines. This section compares the two forms side by side.",
@@ -1243,6 +1243,7 @@ UNIT_OVERRIDES = [
     # Round 54 (3.6.2): multi-buffering.
     ('F38-S01', r'Note that the \\textbf\{select\} expressions',
      'The \\textbf{select} expressions'),
+    # Round 55 (3.6.3): pipelined kernel. The source prose is continuous.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
