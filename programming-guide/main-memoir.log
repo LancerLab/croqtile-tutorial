@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1365,7 +1365,7 @@ line 22.
 (./build/units/F10-S02.tex
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1.
-<figures//f10-fig1_compilation_flow_light.png, id=996, 1927.2pt x 1084.05pt>
+<figures//f10-fig1_compilation_flow_light.png, id=1000, 1927.2pt x 1084.05pt>
 File: figures//f10-fig1_compilation_flow_light.png Graphic file (type png)
 <use figures//f10-fig1_compilation_flow_light.png>
 Package pdftex.def Info: figures//f10-fig1_compilation_flow_light.png  used on 
@@ -1373,7 +1373,7 @@ input line 24.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 30.
-) [9] (./build/units/F14-S05.tex [10 <./figures//f10-fig1_compilation_flow_ligh
+) (./build/units/F14-S05.tex [9] [10 <./figures//f10-fig1_compilation_flow_ligh
 t.png>]) (./build/units/F14-S06.tex [11])
 Underfull \hbox (badness 2326) in paragraph at lines 53--98
 []\T1/lmr/m/n/10.95 (+20) Similarly, the most sig-nif-i-cant di-men-sion is lis
@@ -1407,15 +1407,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\T1/lmtt/m/n/10 .data[] \T1/lmr/m/n/10 (+20) (val-ues),
  []
 
-[13]) (./build/units/F11-S09.tex
-<figures//f11-fig1_debug_workflow_light.png, id=1123, 1927.2pt x 1084.05pt>
+) [13] (./build/units/F11-S09.tex
+<figures//f11-fig1_debug_workflow_light.png, id=1128, 1927.2pt x 1084.05pt>
 File: figures//f11-fig1_debug_workflow_light.png Graphic file (type png)
 <use figures//f11-fig1_debug_workflow_light.png>
 Package pdftex.def Info: figures//f11-fig1_debug_workflow_light.png  used on in
 put line 4.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
-) (./build/units/F11-S10.tex) [14 <./figures//f11-fig1_debug_workflow_light.png
->] (./build/units/F10-S12.tex))
+) (./build/units/F11-S10.tex [14 <./figures//f11-fig1_debug_workflow_light.png>
+]) (./build/units/F10-S12.tex))
 (./content/ch02-language-basics.tex [15] (./build/units/F03-S02.tex)
 (./build/units/F14-S03.tex [16
 
@@ -1865,7 +1865,7 @@ Package rerunfilecheck Info: File `main-memoir.out' has not changed.
 Here is how much of TeX's memory you used:
  39315 strings out of 480247
  750147 string characters out of 5896152
- 1557408 words of memory out of 5000000
+ 1557409 words of memory out of 5000000
  53159 multiletter control sequences out of 15000+600000
  589704 words of font info for 279 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1883,7 +1883,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3265389 bytes).
+Output written on main-memoir.pdf (149 pages, 3265864 bytes).
 PDF statistics:
  3815 PDF objects out of 4296 (max. 8388607)
  3506 compressed objects within 36 object streams

@@ -336,7 +336,7 @@ SLOT_INTROS = {
     '1.3': "A checkout needs three commands before it is usable: one prepares the dependencies, one builds the compiler, and one runs the test suite. The test result is what tells you the binary is ready, and Section~\\ref{sec:1-4} gives the smallest program that confirms it end to end.",
     '1.4': "A four-element copy is enough to exercise the whole chain: the compiler parses the program, the generated code compiles and links, and the host program reads back the result. Section~\\ref{sec:1-5} looks at what else the command line can do.",
     '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
-    '1.6': "Beyond compiling one file, you will want the test suite and the development helpers. This section collects the commands you will return to.",
+    '1.6': "Beyond compiling one file, the build tree offers its own test targets and shortcuts. They are worth knowing before the first real program, because every example that follows can be checked with them.",
     '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. This section builds and runs it end to end.",
     '1.8': "A production \\file{.co} file separates host, device and tileflow code. This section reads one such program in full, from buffers to results.",
     '1.9': "When a program surprises you, Croqtile offers compile-time and runtime inspection. This section assembles those tools into a debugging workflow.",
@@ -630,6 +630,55 @@ UNIT_OVERRIDES = [
      'caption={Compiling a first program}]\ncroqtile ele_add.co'),
     ('F03-S06', r'caption=\{Build and Compile\}\]\ncroqtile --help',
      'caption={Listing the options}]\ncroqtile --help'),
+    # Section 1.6: the Part III "Environment" page interleaves six command
+    # blocks with sentence fragments, and both units list the same shortcuts.
+    # Keep every command, rewrite the connective prose, and name each listing.
+    ('F22-S04', r'(?s)To streamline the configuration.*\Z',
+     "The build tree has its own set of shortcuts, and \\texttt{make help} is "
+     "the index to them:\n\n"
+     "\\begin{lstlisting}[language={},caption={Listing Makefile targets}]\n"
+     "make help\n"
+     "\\end{lstlisting}\n\n"
+     "A fresh checkout is prepared with \\texttt{make setup}. It fetches the "
+     "tools the build and test steps need --- Flex, Bison 3.8 or newer, "
+     "FileCheck and the GoogleTest sources --- so the result does not depend "
+     "on which versions the system already has:\n\n"
+     "\\begin{lstlisting}[language={},caption={Preparing a fresh checkout}]\n"
+     "make setup\n"
+     "\\end{lstlisting}\n\n"
+     "Once the environment is configured, the compiler is built with:\n\n"
+     "\\begin{lstlisting}[language={},caption={Building the configured tree}]\n"
+     "make\n"
+     "\\end{lstlisting}\n\n"
+     "Croqtile is still in development, so the unit tests are the check that "
+     "the binary is sound. A failing run stops and reports the error rather "
+     "than leaving a build that only breaks later:\n\n"
+     "\\begin{lstlisting}[language={},caption={Running the unit tests}]\n"
+     "make test\n"
+     "\\end{lstlisting}\n\n"
+     "The sample operators can be tested as a whole family, or narrowed to a "
+     "single one. The first command runs every sample:\n\n"
+     "\\begin{lstlisting}[language={},caption={All sample operator tests}]\n"
+     "make sample-test\n"
+     "\\end{lstlisting}\n\n"
+     "The second selects one operator --- \\texttt{add}, \\texttt{mul}, "
+     "\\texttt{relu}, \\texttt{sigmoid}, \\texttt{softmax} or \\texttt{tanh}:\n\n"
+     "\\begin{lstlisting}[language={},caption={One sample operator}]\n"
+     "make sample-test-operator OPERATOR=add\n"
+     "\\end{lstlisting}"),
+    ('F02-S06', r'(?s)The Makefile includes shortcuts.*\Z',
+     "When you change Croqtile itself, three shortcuts are enough to narrow a "
+     "failure from the whole suite down to one operator family:\n\n"
+     "\\begin{lstlisting}[language={},caption={Everyday development shortcuts}]\n"
+     "make help                              # list all available targets\n"
+     "make sample-test                       # run all sample operator tests\n"
+     "make sample-test-operator OPERATOR=add # test a specific operator\n"
+     "\\end{lstlisting}\n\n"
+     "They are the commands to reach for when a build passes but an operator "
+     "does not, or when a change to the compiler needs checking against the "
+     "samples.\n\n"
+     "With the compiler installed and verified, you are ready to write your "
+     "first real Croqtile program in Section~\\ref{sec:1-7}."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',

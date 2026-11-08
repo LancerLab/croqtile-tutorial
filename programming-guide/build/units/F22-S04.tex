@@ -1,43 +1,37 @@
 \subsection*{Environment}
 
-To streamline the configuration of the Croqtile build environment, developers can currently utilize the following command:
+The build tree has its own set of shortcuts, and \texttt{make help} is the index to them:
 
-\begin{lstlisting}[language=croqtile,caption={Environment}]
-make setup
-\end{lstlisting}
-
-This command retrieves the essential software prerequisites, such as the flex executable, bison executable (version 3.8 or higher), FileCheck utility, and gtest source code, among others. This process enables the building and testing of Croqtile.
-
-Once the environment configuration is complete, Croqtile can be built using the command:
-
-\begin{lstlisting}[language=croqtile,caption={Environment}]
-make
-\end{lstlisting}
-
-Given that Croqtile is still in development, running unit tests is crucial to prevent using corrupted version:
-
-\begin{lstlisting}[language=croqtile,caption={Environment}]
-make test
-\end{lstlisting}
-
-In the event of any issues, the test should halt and report errors.
-
-For development and testing purposes, the Makefile provides additional utilities:
-
-\begin{lstlisting}[language=croqtile,caption={Environment}]
+\begin{lstlisting}[language={},caption={Listing Makefile targets}]
 make help
 \end{lstlisting}
 
-displays available build and test targets. To test elementwise operators in the samples:
+A fresh checkout is prepared with \texttt{make setup}. It fetches the tools the build and test steps need --- Flex, Bison 3.8 or newer, FileCheck and the GoogleTest sources --- so the result does not depend on which versions the system already has:
 
-\begin{lstlisting}[language=croqtile,caption={Environment}]
+\begin{lstlisting}[language={},caption={Preparing a fresh checkout}]
+make setup
+\end{lstlisting}
+
+Once the environment is configured, the compiler is built with:
+
+\begin{lstlisting}[language={},caption={Building the configured tree}]
+make
+\end{lstlisting}
+
+Croqtile is still in development, so the unit tests are the check that the binary is sound. A failing run stops and reports the error rather than leaving a build that only breaks later:
+
+\begin{lstlisting}[language={},caption={Running the unit tests}]
+make test
+\end{lstlisting}
+
+The sample operators can be tested as a whole family, or narrowed to a single one. The first command runs every sample:
+
+\begin{lstlisting}[language={},caption={All sample operator tests}]
 make sample-test
 \end{lstlisting}
 
-runs all elementwise operator tests, while:
+The second selects one operator --- \texttt{add}, \texttt{mul}, \texttt{relu}, \texttt{sigmoid}, \texttt{softmax} or \texttt{tanh}:
 
-\begin{lstlisting}[language=croqtile,caption={Environment}]
+\begin{lstlisting}[language={},caption={One sample operator}]
 make sample-test-operator OPERATOR=add
 \end{lstlisting}
-
-tests a specific operator (e.g., add, mul, relu, sigmoid, softmax, tanh).

@@ -9,13 +9,13 @@
 \contentsline {lstlisting}{\numberline {1.9}Default invocation}{6}{lstlisting.1.9}%
 \contentsline {lstlisting}{\numberline {1.10}Emitting lowered source}{6}{lstlisting.1.10}%
 \contentsline {lstlisting}{\numberline {1.11}Full option list}{6}{lstlisting.1.11}%
-\contentsline {lstlisting}{\numberline {1.12}Development Utilities}{7}{lstlisting.1.12}%
-\contentsline {lstlisting}{\numberline {1.13}Environment}{7}{lstlisting.1.13}%
-\contentsline {lstlisting}{\numberline {1.14}Environment}{8}{lstlisting.1.14}%
-\contentsline {lstlisting}{\numberline {1.15}Environment}{8}{lstlisting.1.15}%
-\contentsline {lstlisting}{\numberline {1.16}Environment}{8}{lstlisting.1.16}%
-\contentsline {lstlisting}{\numberline {1.17}Environment}{8}{lstlisting.1.17}%
-\contentsline {lstlisting}{\numberline {1.18}Environment}{8}{lstlisting.1.18}%
+\contentsline {lstlisting}{\numberline {1.12}Everyday development shortcuts}{7}{lstlisting.1.12}%
+\contentsline {lstlisting}{\numberline {1.13}Listing Makefile targets}{7}{lstlisting.1.13}%
+\contentsline {lstlisting}{\numberline {1.14}Preparing a fresh checkout}{8}{lstlisting.1.14}%
+\contentsline {lstlisting}{\numberline {1.15}Building the configured tree}{8}{lstlisting.1.15}%
+\contentsline {lstlisting}{\numberline {1.16}Running the unit tests}{8}{lstlisting.1.16}%
+\contentsline {lstlisting}{\numberline {1.17}All sample operator tests}{8}{lstlisting.1.17}%
+\contentsline {lstlisting}{\numberline {1.18}One sample operator}{8}{lstlisting.1.18}%
 \contentsline {lstlisting}{\numberline {1.19}A Complete Example: Element-Wise Addition}{9}{lstlisting.1.19}%
 \contentsline {lstlisting}{\numberline {1.20}A Complete Example: Element-Wise Addition}{9}{lstlisting.1.20}%
 \contentsline {lstlisting}{\numberline {1.21}How .co files compile}{9}{lstlisting.1.21}%
