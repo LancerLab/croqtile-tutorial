@@ -388,7 +388,7 @@ SLOT_INTROS = {
     '3.9': "Croqtile does not replace C++; it sits inside it. Device helpers, verbatim source text and preprocessor macros cross that boundary, and each arrives at a different stage of compilation.",
     '3.9.1': "Calling a device helper from a \\co@__co__@ function is where the argument conventions become concrete: a shaped span arrives as a pointer plus a size, and the helper itself is passed through unchanged.",
     '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. \\co@__cpp__@ islands, guards and template instantiation are the forms it takes, and the compiler checks nothing inside them.",
-    '3.9.10': "The interoperability mechanisms and their rules are collected here.",
+    '3.9.10': "The interoperability mechanisms and their rules are collected here: what is passed through, what is injected, and where the preprocessor runs relative to the C++ one.",
     '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. This section presents two worked examples and the reasoning they illustrate.",
     '3.10.1': "A tiled matmul shows how bounded variables, \\co@chunkat@ and movement statements compose into one program.",
     '3.10.2': "An rgb2gray kernel shows the same composition operator on a different shape.",
@@ -1290,6 +1290,14 @@ UNIT_OVERRIDES = [
      'Croqtile preprocessing runs much earlier than'),
     # Round 70 (3.9.1): calling a device helper. Source prose is continuous.
     # Round 71 (3.9.2): verbatim C++ injection.
+    # Round 72 (3.9.10): interoperability summary.
+    ('F10-S13',
+     r'(?s)Section~\\ref\{sec:1-9\} turns to the other side.*\Z',
+     "Section~\\ref{sec:3-11} turns to the other side of the workflow: what "
+     "to do when the kernel compiles but the output is wrong --- debugging, "
+     "verbose modes and systematic narrowing. The two worked programs in "
+     "Section~\\ref{sec:3-10} put the interoperability mechanisms into "
+     "context."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

@@ -60,7 +60,7 @@
 \contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{131}{subsection.3.9.1}%
 \contentsline {subsection}{\numberline {3.9.2}Verbatim C++ Injection}{132}{subsection.3.9.2}%
 \contentsline {subsection}{\numberline {3.9.3}Interoperability Summary}{132}{subsection.3.9.3}%
-\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{132}{section.3.10}%
+\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{133}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{134}{subsection.3.10.1}%
 \contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{135}{subsection.3.10.2}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{136}{section.3.11}%
