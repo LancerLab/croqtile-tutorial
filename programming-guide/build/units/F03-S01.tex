@@ -1,3 +1,1 @@
-\subsection*{Hello Croqtile: From Zero to Running Kernel}
-
-You are about to write, compile, and run a complete Croqtile program --- an element-wise addition of two small matrices. It deliberately does nothing clever: no tiling, no DMA, no fancy thread hierarchy. All of that comes later. Right now the only goal is to see the moving parts of a Croqtile program and how they connect.
+The shortest program that shows the shape of the language is an element-wise addition of two small matrices. It has no tiling, no explicit data movement and no coordination between regions; those are the constructs every later example adds. What it does have is the full skeleton of a Croqtile program: a \co@__co__@ function that describes the parallel work, and an ordinary C++ \co@main()@ that prepares the inputs, calls it and checks the result. Every program in the guide is built from these two halves.

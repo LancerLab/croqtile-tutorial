@@ -2,7 +2,7 @@
 
 Here is the full program. It adds two \texttt{[4, 8]} matrices of 32-bit integers element by element:
 
-\begin{lstlisting}[language=croqtile,caption={A Complete Example: Element-Wise Addition}]
+\begin{lstlisting}[language=croqtile,caption={A complete element-wise addition}]
 __co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {
   s32 [lhs.span] output;
   parallel {i, j} by [4, 8]
@@ -25,9 +25,9 @@ int main() {
 
 Save this as \texttt{ele\_add.co}, compile, and run:
 
-\begin{lstlisting}[language={},caption={A Complete Example: Element-Wise Addition}]
+\begin{lstlisting}[language={},caption={Compile and run the example}]
 croqtile ele_add.co -o ele_add
 ./ele_add
 \end{lstlisting}
 
-You should see \texttt{Test Passed}. Now for a closer look at each part.
+You should see \texttt{Test Passed}. The chapters that follow take this same program apart, one construct at a time.

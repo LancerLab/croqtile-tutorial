@@ -337,7 +337,7 @@ SLOT_INTROS = {
     '1.4': "A four-element copy is enough to exercise the whole chain: the compiler parses the program, the generated code compiles and links, and the host program reads back the result. Section~\\ref{sec:1-5} looks at what else the command line can do.",
     '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
     '1.6': "Beyond compiling one file, the build tree offers its own test targets and shortcuts. They are worth knowing before the first real program, because every example that follows can be checked with them.",
-    '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. This section builds and runs it end to end.",
+    '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. It is small enough to read in one sitting, and the rest of the guide grows from it.",
     '1.8': "A production \\file{.co} file separates host, device and tileflow code. This section reads one such program in full, from buffers to results.",
     '1.9': "When a program surprises you, Croqtile offers compile-time and runtime inspection. This section assembles those tools into a debugging workflow.",
     '1.10': "Reading an unfamiliar \\file{.co} file is a skill. This section gives a checklist for finding the host entry point, the kernel signature and the injected C++.",
@@ -679,6 +679,29 @@ UNIT_OVERRIDES = [
      "samples.\n\n"
      "With the compiler installed and verified, you are ready to write your "
      "first real Croqtile program in Section~\\ref{sec:1-7}."),
+    # Section 1.7: a first program should say what it deliberately leaves out
+    # and what skeleton it shows, then hand the reader on.  Upstream used a
+    # tutorial slogan, a casual "no fancy thread hierarchy", two identical
+    # captions and a vague "closer look".
+    ('F03-S01', r'(?s)You are about to write.*\Z',
+     "The shortest program that shows the shape of the language is an "
+     "element-wise addition of two small matrices. It has no tiling, no "
+     "explicit data movement and no coordination between regions; those are "
+     "the constructs every later example adds. What it does have is the full "
+     "skeleton of a Croqtile program: a \\co@__co__@ function that describes "
+     "the parallel work, and an ordinary C++ \\co@main()@ that prepares the "
+     "inputs, calls it and checks the result. Every program in the guide is "
+     "built from these two halves."),
+    ('F03-S03',
+     r'caption=\{A Complete Example: Element-Wise Addition\}\]\n__co__',
+     'caption={A complete element-wise addition}]\n__co__'),
+    ('F03-S03',
+     r'caption=\{A Complete Example: Element-Wise Addition\}\]\ncroqtile ele_add\.co',
+     'caption={Compile and run the example}]\ncroqtile ele_add.co'),
+    ('F03-S03',
+     r'You should see \\texttt\{Test Passed\}\. Now for a closer look at each part\.',
+     "You should see \\texttt{Test Passed}. The chapters that follow take this "
+     "same program apart, one construct at a time."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',
@@ -1026,6 +1049,8 @@ GENERIC_HEADINGS = {
     'build from source': '',
     # Section 1.4 repeats its slot title as a subsection.
     'verify the installation': '',
+    # Section 1.7 opens with the old tutorial's chapter slogan.
+    'hello croqtile: from zero to running kernel': '',
 }
 
 

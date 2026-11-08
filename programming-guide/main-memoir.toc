@@ -33,38 +33,38 @@
 \contentsline {section}{\numberline {3.2}Syntax Design and the Type System}{70}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Symbolic Shapes, Shape Evaluation, and Value Numbering}{75}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Parallelism, Space Specifiers, and Masking}{82}{section.3.4}%
-\contentsline {subsection}{Worked Example: Tiled Matrix Multiplication}{87}{section*.180}%
-\contentsline {subsection}{Tracing One Output Element}{88}{section*.182}%
+\contentsline {subsection}{Worked Example: Tiled Matrix Multiplication}{87}{section*.179}%
+\contentsline {subsection}{Tracing One Output Element}{88}{section*.181}%
 \contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{89}{section.3.5}%
-\contentsline {subsection}{Arbitrary-Offset Windows: view and from}{90}{section*.188}%
-\contentsline {subsection}{Strided Tiles: subspan, step, and at}{91}{section*.189}%
-\contentsline {subsection}{Zero-Padding with zfill}{92}{section*.190}%
-\contentsline {subsection}{Layout Reinterpretation with span\_as}{92}{section*.192}%
-\contentsline {subsection}{Tile Selection: Summary and Syntax}{93}{section*.194}%
+\contentsline {subsection}{Arbitrary-Offset Windows: view and from}{90}{section*.187}%
+\contentsline {subsection}{Strided Tiles: subspan, step, and at}{91}{section*.188}%
+\contentsline {subsection}{Zero-Padding with zfill}{92}{section*.189}%
+\contentsline {subsection}{Layout Reinterpretation with span\_as}{92}{section*.191}%
+\contentsline {subsection}{Tile Selection: Summary and Syntax}{93}{section*.193}%
 \contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{94}{section.3.6}%
-\contentsline {subsection}{Worked Example: DMA Matmul}{99}{section*.207}%
-\contentsline {subsection}{Multi-Buffering: dma.any, swap, and rotate}{100}{section*.209}%
-\contentsline {subsection}{Worked Example: A Pipelined Kernel}{103}{section*.215}%
+\contentsline {subsection}{Worked Example: DMA Matmul}{99}{section*.206}%
+\contentsline {subsection}{Multi-Buffering: dma.any, swap, and rotate}{100}{section*.208}%
+\contentsline {subsection}{Worked Example: A Pipelined Kernel}{103}{section*.214}%
 \contentsline {section}{\numberline {3.7}Contraction and Layout Contracts}{104}{section.3.7}%
-\contentsline {subsection}{Worked Example: One Cooperative Group}{107}{section*.223}%
-\contentsline {subsection}{Worked Example: Widening the Cooperation Scope}{109}{section*.225}%
-\contentsline {subsection}{Worked Example: Two Cooperative Groups}{110}{section*.227}%
-\contentsline {subsection}{MMA Syntax Summary}{111}{section*.229}%
-\contentsline {subsection}{MMA Design Summary}{111}{section*.231}%
+\contentsline {subsection}{Worked Example: One Cooperative Group}{107}{section*.222}%
+\contentsline {subsection}{Worked Example: Widening the Cooperation Scope}{109}{section*.224}%
+\contentsline {subsection}{Worked Example: Two Cooperative Groups}{110}{section*.226}%
+\contentsline {subsection}{MMA Syntax Summary}{111}{section*.228}%
+\contentsline {subsection}{MMA Design Summary}{111}{section*.230}%
 \contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{112}{section.3.8}%
-\contentsline {subsection}{Canonical Pattern: One Producer and One Consumer}{116}{section*.241}%
-\contentsline {subsection}{Worked Example: A 1P1C Kernel Skeleton}{117}{section*.243}%
-\contentsline {subsection}{Persistent Scheduling}{118}{section*.245}%
-\contentsline {subsection}{Host-Level Concurrency and Stream Binding}{119}{section*.247}%
-\contentsline {subsection}{Worked Example: A Full Event Pipeline}{121}{section*.253}%
-\contentsline {subsection}{Coordination Pattern Summary}{123}{section*.257}%
+\contentsline {subsection}{Canonical Pattern: One Producer and One Consumer}{116}{section*.240}%
+\contentsline {subsection}{Worked Example: A 1P1C Kernel Skeleton}{117}{section*.242}%
+\contentsline {subsection}{Persistent Scheduling}{118}{section*.244}%
+\contentsline {subsection}{Host-Level Concurrency and Stream Binding}{119}{section*.246}%
+\contentsline {subsection}{Worked Example: A Full Event Pipeline}{121}{section*.252}%
+\contentsline {subsection}{Coordination Pattern Summary}{123}{section*.256}%
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{124}{section.3.9}%
-\contentsline {subsection}{Worked Example: Calling a Device Helper}{126}{section*.267}%
-\contentsline {subsection}{Verbatim C++ Injection}{128}{section*.269}%
-\contentsline {subsection}{Interoperability Summary}{128}{section*.271}%
+\contentsline {subsection}{Worked Example: Calling a Device Helper}{126}{section*.266}%
+\contentsline {subsection}{Verbatim C++ Injection}{128}{section*.268}%
+\contentsline {subsection}{Interoperability Summary}{128}{section*.270}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{128}{section.3.10}%
-\contentsline {subsection}{Worked Example: Tiled matmul}{130}{section*.279}%
-\contentsline {subsection}{Worked Example: rgb2gray}{131}{section*.283}%
+\contentsline {subsection}{Worked Example: Tiled matmul}{130}{section*.278}%
+\contentsline {subsection}{Worked Example: rgb2gray}{131}{section*.282}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{132}{section.3.11}%
 \contentsline {appendix}{\chapternumberline {A}Syntax Quick Reference}{133}{appendix.A}%
 \contentsline {section}{\numberline {A.1}Declarations and shapes}{133}{section.A.1}%
@@ -72,5 +72,5 @@
 \contentsline {section}{\numberline {A.3}Tile selection and movement}{133}{section.A.3}%
 \contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{133}{section.A.4}%
 \contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{135}{section.A.5}%
-\contentsline {chapter}{References}{137}{section*.287}%
-\contentsline {chapter}{Bibliography}{137}{appendix*.288}%
+\contentsline {chapter}{References}{137}{section*.286}%
+\contentsline {chapter}{Bibliography}{137}{appendix*.287}%

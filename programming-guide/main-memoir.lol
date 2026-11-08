@@ -16,8 +16,8 @@
 \contentsline {lstlisting}{\numberline {1.16}Running the unit tests}{8}{lstlisting.1.16}%
 \contentsline {lstlisting}{\numberline {1.17}All sample operator tests}{8}{lstlisting.1.17}%
 \contentsline {lstlisting}{\numberline {1.18}One sample operator}{8}{lstlisting.1.18}%
-\contentsline {lstlisting}{\numberline {1.19}A Complete Example: Element-Wise Addition}{8}{lstlisting.1.19}%
-\contentsline {lstlisting}{\numberline {1.20}A Complete Example: Element-Wise Addition}{9}{lstlisting.1.20}%
+\contentsline {lstlisting}{\numberline {1.19}A complete element-wise addition}{8}{lstlisting.1.19}%
+\contentsline {lstlisting}{\numberline {1.20}Compile and run the example}{9}{lstlisting.1.20}%
 \contentsline {lstlisting}{\numberline {1.21}How .co files compile}{9}{lstlisting.1.21}%
 \contentsline {lstlisting}{\numberline {1.22}A Full Croqtile-target C Code Example}{10}{lstlisting.1.22}%
 \contentsline {lstlisting}{\numberline {1.23}Host Program - the Control Center}{11}{lstlisting.1.23}%
