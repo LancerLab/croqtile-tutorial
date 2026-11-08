@@ -8,7 +8,7 @@
 \section{The Two Parts of a Croqtile Program}
 \label{sec:2-1}
 
-\guideslotintro{Every Croqtile program has two sides: a \texttt{\_\_co\_\_} function describing parallel work, and ordinary C++ that prepares data and calls it. This section shows where they meet.}
+\guideslotintro{A \file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \texttt{\_\_co\_\_} prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.}
 
 \input{build/units/F03-S02}
 

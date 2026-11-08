@@ -1,8 +1,1 @@
-Every Croqtile program has exactly two parts:
-
-\begin{enumerate}[leftmargin=1.6em]
-\item \textbf{Croqtile Function} (\texttt{\_\_co\_\_}) --- the kernel logic, marked with the \texttt{\_\_co\_\_} prefix. It describes computation on shaped tensors.
-\item \textbf{Host Program} --- standard C++ that prepares data, calls the Croqtile function, and checks results.
-\end{enumerate}
-
-Both parts live in a single \texttt{.co} file. The compiler tells them apart by the \texttt{\_\_co\_\_} prefix.
+At its simplest a program has two parts. A \texttt{\_\_co\_\_} function describes computation on shaped tensors, and the compiler translates that function into target code. The host program is standard C++ that prepares the data, calls the function and checks the result. Both live in a single \file{.co} file, and the \texttt{\_\_co\_\_} prefix is all the compiler needs to tell them apart.

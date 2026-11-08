@@ -1,8 +1,8 @@
 \subsection*{Host, Device and Tileflow}
 
-The code below showcases a \emph{Croqtile} program targeting :
+Both of those parts are present here, but the ordinary C++ side is worth splitting once more: a \file{.co} file may also carry a \texttt{\_\_device\_\_} helper. The listing is written from the inside out --- a device helper, the \texttt{\_\_co\_\_} function that calls it, and the host \texttt{main()} that calls the \texttt{\_\_co\_\_} function.
 
-\begin{lstlisting}[language=croqtile,caption={Host, Device and Tileflow}]
+\begin{lstlisting}[language=croqtile,caption={The three regions of one source file}]
 __device__ void device_function(...) {
   // High-performance device kernel implementation
 }
@@ -20,12 +20,8 @@ void main() {
 }
 \end{lstlisting}
 
-Let's briefly review each part:
+Execution starts at the bottom of the listing, in the host program. Written in standard C++ and run on the CPU, it is the entry point of the module and the caller of the Tileflow program --- the \texttt{\_\_co\_\_} functions --- and it manages the overall workflow of the heterogeneous application. A typical host body prepares the input data, invokes a Croqtile function, handles its return value and advances to the next step.
 
-The \emph{Host Program} serves as the entry point of the \emph{Croqtile} module/program and is the caller of the \emph{Tileflow} Program (Croqtile Functions). Written in standard C++, it runs on the CPU and manages the overall workflow of the heterogeneous application.
+The Tileflow program called from there is the part Croqtile adds. Built from \texttt{\_\_co\_\_} functions, it is the core of a \file{.co} program: it orchestrates data movement between host and device and between storage levels within a single device. A typical Tileflow body moves data into a buffer at the appropriate storage level, calls a device function to compute on it, and moves the result back to the host. It is the only region the compiler translates.
 
-In a simple high-performance kernel implementation, programmers typically prepare the necessary data in the host program to invoke \emph{Croqtile functions} and handel their return values to advance further steps.
-
-The \emph{Device Program} defines computation-intensive operations executed on the target device. In the example above, the device function is prefixed with \texttt{\_\_device\_\_}, which is an keyword from , indicating it runs exclusively on the heterogeneous device. Similar to the \emph{host program}, any device program is not altered in Croqtile compilation process.
-
-Those familiar with  may already be acquainted with host programs and device programs. However, the \emph{Tileflow Program}, composed of \emph{Croqtile functions} (prefixed with \texttt{\_\_co\_\_}), is the core of \emph{Croqtile} programs. It orchestrates data movement among different hosts/devices and among different storage levels within a single device. In a typical workflow, the Tileflow program moves data to an appropriate storage location (as buffer) and calls \emph{device programs} to perform computations. Once the work is complete, it moves the results back to the host.
+Device functions sit at the other end of that call chain. A \texttt{\_\_device\_\_} function defines computation-intensive operations that run on the target device; the prefix marks it as device code. Like the host program, it passes through Croqtile compilation unchanged. The compiler leaves both sides of ordinary C++ alone; only the \texttt{\_\_co\_\_} function between them is rewritten.

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.1** (chapter 1 complete: 1.1–1.10)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24)
+- Next section: **2.2** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -74,7 +74,7 @@ chapter numbers; every unit stays in its registered slot.
 | 1.8 | x | round 22 | All 5 listings and the figure survived (the second source image is its dark/light variant); replaced both placeholder openings with sentences that name what the listing demonstrates and why the host code is shown twice, and rewrote the slot intro around the three-part structure |
 | 1.9 | x | round 23 | All 6 listings, 2 tables and the workflow figure survived; rewrote the intro as a cheap-to-expensive debugging chain, bridged the isolated imported "Debugging tip" into that chain, and gave the workflow page's two listings distinct captions |
 | 1.10 | x | round 24 | The only source content was a bare five-item checklist with an unexplained first item; rewrote it as continuous prose in the order a reader meets the regions in a .co file, keeping all five regions and their descriptions |
-| 2.1 | . | | |
+| 2.1 | x | round 25 | Reconciled the tutorial's two-part account with the coding reference's host/device/tileflow regions; restored the translation step that had been archived with a platform name; repaired "targeting :", "an keyword from ,", "handel" and the dangling "Those familiar with" opener; distinguished the listing caption from its heading and read the three regions in call order |
 | 2.2 | . | | |
 | 2.3 | . | | |
 | 2.4 | . | | |

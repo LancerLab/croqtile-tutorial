@@ -29,7 +29,7 @@
 \contentsline {lstlisting}{\numberline {1.29}Debug RTTI and debugger}{14}{lstlisting.1.29}%
 \contentsline {lstlisting}{\numberline {1.30}Guarding debug prints}{14}{lstlisting.1.30}%
 \contentsline {lstlisting}{\numberline {1.31}Debug and production builds}{14}{lstlisting.1.31}%
-\contentsline {lstlisting}{\numberline {2.1}Host, Device and Tileflow}{17}{lstlisting.2.1}%
+\contentsline {lstlisting}{\numberline {2.1}The three regions of one source file}{17}{lstlisting.2.1}%
 \contentsline {lstlisting}{\numberline {2.2}The Croqtile Function}{18}{lstlisting.2.2}%
 \contentsline {lstlisting}{\numberline {2.3}The Croqtile Function}{18}{lstlisting.2.3}%
 \contentsline {lstlisting}{\numberline {2.4}The Croqtile Function}{19}{lstlisting.2.4}%

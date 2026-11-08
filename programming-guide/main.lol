@@ -29,10 +29,10 @@
 \contentsline {lstlisting}{\numberline {1.29}Debug RTTI and debugger}{13}{lstlisting.1.29}%
 \contentsline {lstlisting}{\numberline {1.30}Guarding debug prints}{14}{lstlisting.1.30}%
 \contentsline {lstlisting}{\numberline {1.31}Debug and production builds}{14}{lstlisting.1.31}%
-\contentsline {lstlisting}{\numberline {2.1}Host, Device and Tileflow}{16}{lstlisting.2.1}%
+\contentsline {lstlisting}{\numberline {2.1}The three regions of one source file}{16}{lstlisting.2.1}%
 \contentsline {lstlisting}{\numberline {2.2}The Croqtile Function}{17}{lstlisting.2.2}%
 \contentsline {lstlisting}{\numberline {2.3}The Croqtile Function}{17}{lstlisting.2.3}%
-\contentsline {lstlisting}{\numberline {2.4}The Croqtile Function}{18}{lstlisting.2.4}%
+\contentsline {lstlisting}{\numberline {2.4}The Croqtile Function}{17}{lstlisting.2.4}%
 \contentsline {lstlisting}{\numberline {2.5}The Croqtile Function}{18}{lstlisting.2.5}%
 \contentsline {lstlisting}{\numberline {2.6}The Host Program}{18}{lstlisting.2.6}%
 \contentsline {lstlisting}{\numberline {2.7}The Host Program}{18}{lstlisting.2.7}%
@@ -46,17 +46,17 @@
 \contentsline {lstlisting}{\numberline {2.15}C Host: Shape Return}{21}{lstlisting.2.15}%
 \contentsline {lstlisting}{\numberline {2.16}C Host: Shape Return}{21}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{22}{lstlisting.2.17}%
-\contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{23}{lstlisting.2.18}%
+\contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{22}{lstlisting.2.18}%
 \contentsline {lstlisting}{\numberline {2.19}Defining Shapes with mdspan}{23}{lstlisting.2.19}%
 \contentsline {lstlisting}{\numberline {2.20}Defining Shapes with mdspan}{23}{lstlisting.2.20}%
 \contentsline {lstlisting}{\numberline {2.21}Deriving mdspans}{23}{lstlisting.2.21}%
-\contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{24}{lstlisting.2.22}%
+\contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{23}{lstlisting.2.22}%
 \contentsline {lstlisting}{\numberline {2.23}Deriving mdspans}{24}{lstlisting.2.23}%
 \contentsline {lstlisting}{\numberline {2.24}mdspan with Anonymous Dimension}{24}{lstlisting.2.24}%
 \contentsline {lstlisting}{\numberline {2.25}mdspan with Anonymous Dimension}{24}{lstlisting.2.25}%
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{25}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types}{25}{lstlisting.2.27}%
-\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{26}{lstlisting.2.28}%
+\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{25}{lstlisting.2.28}%
 \contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{26}{lstlisting.2.29}%
 \contentsline {lstlisting}{\numberline {2.30}Integers for Program Control}{26}{lstlisting.2.30}%
 \contentsline {lstlisting}{\numberline {2.31}Integers for Program Control}{26}{lstlisting.2.31}%

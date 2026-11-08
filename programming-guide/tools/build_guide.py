@@ -341,7 +341,7 @@ SLOT_INTROS = {
     '1.8': "A production \\file{.co} file is three programs in one file: device code, a tileflow \\co@__co__@ function, and the host C++ that prepares buffers and reads the result back. The boundaries between them are what the rest of this guide explains.",
     '1.9': "When a kernel compiles but the answer is wrong, the fastest path is to narrow down which layer went wrong: the commands the compiler ran, the runtime checks it can insert, the layout of the data, or the types a debugger sees. The tools below are ordered that way, from cheap checks to expensive ones.",
     '1.10': "An unfamiliar \\file{.co} file is easier to read once you know the order its parts appear in: guards and helpers, host setup, the \\co@__co__@ function, and the injected C++. The chapters that follow define each of those constructs.",
-    '2.1': "Every Croqtile program has two sides: a \\co@__co__@ function describing parallel work, and ordinary C++ that prepares data and calls it. This section shows where they meet.",
+    '2.1': "A \\file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \\co@__co__@ prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.",
     '2.2': "Take one kernel and read it line by line. This section names each part of a signature and each statement in the body, so the examples that follow become readable.",
     '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result. This section covers the API every program uses.",
     '2.4': "Shapes are part of a Croqtile type, not metadata discovered at runtime. This section shows how \\co@mdspan@ shapes are written, derived and evaluated.",
@@ -771,6 +771,52 @@ UNIT_OVERRIDES = [
      "arrives is the same in both cases."),
     ('F09-S03', r'the pairing it is a correctness invariant',
      'the pairing --- it is a correctness invariant'),
+    # Round 25 (2.1): the tutorial speaks of two parts, the coding reference
+    # of host / device / tileflow regions.  Reconcile the two accounts, put
+    # back the translation step that was archived with a platform name, and
+    # repair the debris that names left behind.
+    ('F03-S02',
+     r'(?s)Every Croqtile program has exactly two parts:.*\Z',
+     "At its simplest a program has two parts. A \\texttt{\\_\\_co\\_\\_} "
+     "function describes computation on shaped tensors, and the compiler "
+     "translates that function into target code. The host program is "
+     "standard C++ that prepares the data, calls the function and checks "
+     "the result. Both live in a single \\file{.co} file, and the "
+     "\\texttt{\\_\\_co\\_\\_} prefix is all the compiler needs to tell "
+     "them apart."),
+    ('F14-S03',
+     r'caption=\{Host, Device and Tileflow\}',
+     'caption={The three regions of one source file}'),
+    ('F14-S03',
+     r'The code below showcases a \\emph\{Croqtile\} program targeting :',
+     "Both of those parts are present here, but the ordinary C++ side is "
+     "worth splitting once more: a \\file{.co} file may also carry a "
+     "\\texttt{\\_\\_device\\_\\_} helper. The listing is written from the "
+     "inside out --- a device helper, the \\texttt{\\_\\_co\\_\\_} function "
+     "that calls it, and the host \\texttt{main()} that calls the "
+     "\\texttt{\\_\\_co\\_\\_} function."),
+    ('F14-S03',
+     r"(?s)Let's briefly review each part:.*\Z",
+     "Execution starts at the bottom of the listing, in the host program. "
+     "Written in standard C++ and run on the CPU, it is the entry point of "
+     "the module and the caller of the Tileflow program --- the "
+     "\\texttt{\\_\\_co\\_\\_} functions --- and it manages the overall "
+     "workflow of the heterogeneous application. A typical host body prepares "
+     "the input data, invokes a Croqtile function, handles its return value "
+     "and advances to the next step.\n\n"
+     "The Tileflow program called from there is the part Croqtile adds. Built "
+     "from \\texttt{\\_\\_co\\_\\_} functions, it is the core of a "
+     "\\file{.co} program: it orchestrates data movement between host and "
+     "device and between storage levels within a single device. A typical "
+     "Tileflow body moves data into a buffer at the appropriate storage "
+     "level, calls a device function to compute on it, and moves the result "
+     "back to the host. It is the only region the compiler translates.\n\n"
+     "Device functions sit at the other end of that call chain. A "
+     "\\texttt{\\_\\_device\\_\\_} function defines computation-intensive "
+     "operations that run on the target device; the prefix marks it as device "
+     "code. Like the host program, it passes through Croqtile compilation "
+     "unchanged. The compiler leaves both sides of ordinary C++ alone; only "
+     "the \\texttt{\\_\\_co\\_\\_} function between them is rewritten."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
