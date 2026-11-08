@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1663,20 +1663,10 @@ Underfull \hbox (badness 3635) in paragraph at lines 16--16
 []|\T1/lmr/m/n/10 (+20) Zero-copy re-shape for stag-ing
  []
 
-) (./build/units/F09-S12.tex) (./build/units/F03-S07.tex
-
-Class memoir Warning: The material used in the headers is too large
-(27.2pt) for the given head height (13.6pt), it is recommended to
-either increase the head height or redesign the header
-(in both cases you will find help in the memoir manual). on input line 1.
-
-
-Overfull \vbox (13.59999pt too high) has occurred while \output is active []
-
-
-[93 <./figures//f09-fig6_zfill_light.png>] [94 <./figures//f09-fig7_span_as_lig
-ht.png>]) (./build/units/F04-S01.tex
-<figures//f04-fig1_element_vs_block_light.png, id=2429, 1927.2pt x 1084.05pt>
+) (./build/units/F09-S12.tex) [93 <./figures//f09-fig6_zfill_light.png>]
+[94 <./figures//f09-fig7_span_as_light.png>] (./build/units/F03-S07.tex)
+(./build/units/F04-S01.tex
+<figures//f04-fig1_element_vs_block_light.png, id=2430, 1927.2pt x 1084.05pt>
 File: figures//f04-fig1_element_vs_block_light.png Graphic file (type png)
 <use figures//f04-fig1_element_vs_block_light.png>
 Package pdftex.def Info: figures//f04-fig1_element_vs_block_light.png  used on 
@@ -1684,6 +1674,13 @@ input line 16.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
 ) (./build/units/F04-S10.tex)
 (./build/units/F04-S20.tex
+
+Class memoir Warning: The material used in the headers is too large
+(27.2pt) for the given head height (13.6pt), it is recommended to
+either increase the head height or redesign the header
+(in both cases you will find help in the memoir manual). on input line 15.
+
+
 Overfull \vbox (13.59999pt too high) has occurred while \output is active []
 
 
@@ -1717,7 +1714,7 @@ Overfull \vbox (13.59999pt too high) has occurred while \output is active []
 
 
 [99]
-<figures//f05-fig6_dma_matmul_light.png, id=2501, 1927.2pt x 1084.05pt>
+<figures//f05-fig6_dma_matmul_light.png, id=2502, 1927.2pt x 1084.05pt>
 File: figures//f05-fig6_dma_matmul_light.png Graphic file (type png)
 <use figures//f05-fig6_dma_matmul_light.png>
 Package pdftex.def Info: figures//f05-fig6_dma_matmul_light.png  used on input 
@@ -1735,13 +1732,13 @@ Overfull \vbox (13.59999pt too high) has occurred while \output is active []
 
 [103]) (./build/units/F04-S18.tex [104]) (./build/units/F04-S19.tex)
 (./build/units/F06-S01.tex [105]
-<figures//f06-fig2_register_loading_light.png, id=2647, 1927.2pt x 1084.05pt>
+<figures//f06-fig2_register_loading_light.png, id=2648, 1927.2pt x 1084.05pt>
 File: figures//f06-fig2_register_loading_light.png Graphic file (type png)
 <use figures//f06-fig2_register_loading_light.png>
 Package pdftex.def Info: figures//f06-fig2_register_loading_light.png  used on 
 input line 12.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
-<figures//f06-fig3_mma_syntax_light.png, id=2648, 1927.2pt x 1084.05pt>
+<figures//f06-fig3_mma_syntax_light.png, id=2649, 1927.2pt x 1084.05pt>
 File: figures//f06-fig3_mma_syntax_light.png Graphic file (type png)
 <use figures//f06-fig3_mma_syntax_light.png>
 Package pdftex.def Info: figures//f06-fig3_mma_syntax_light.png  used on input 
@@ -1751,7 +1748,7 @@ line 18.
 (./build/units/F06-S07.tex [106 <./figures//f06-fig2_register_loading_light.png
 > <./figures//f06-fig3_mma_syntax_light.png>]) (./build/units/F09-S03.tex
 [107]
-<figures//f09-fig2_swizzle_light.png, id=2671, 1927.2pt x 1084.05pt>
+<figures//f09-fig2_swizzle_light.png, id=2672, 1927.2pt x 1084.05pt>
 File: figures//f09-fig2_swizzle_light.png Graphic file (type png)
 <use figures//f09-fig2_swizzle_light.png>
 Package pdftex.def Info: figures//f09-fig2_swizzle_light.png  used on input lin
@@ -1759,7 +1756,7 @@ e 23.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
 ) (./build/units/F06-S04.tex [108 <./figures//f09-fig2_swizzle_light.png>]) (./
 build/units/F06-S05.tex
-<figures//f06-fig4_sm86_vs_sm90_light.png, id=2699, 1927.2pt x 1084.05pt>
+<figures//f06-fig4_sm86_vs_sm90_light.png, id=2700, 1927.2pt x 1084.05pt>
 File: figures//f06-fig4_sm86_vs_sm90_light.png Graphic file (type png)
 <use figures//f06-fig4_sm86_vs_sm90_light.png>
 Package pdftex.def Info: figures//f06-fig4_sm86_vs_sm90_light.png  used on inpu
@@ -1773,7 +1770,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--26
 []|\T1/lmtt/b/n/10 inthreads.async \T1/lmr/bx/n/10 (+20) (struc-tured
  []
 
-<figures//f07-fig1_role_comparison_light.png, id=2791, 1927.2pt x 1084.05pt>
+<figures//f07-fig1_role_comparison_light.png, id=2792, 1927.2pt x 1084.05pt>
 File: figures//f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures//f07-fig1_role_comparison_light.png>
 Package pdftex.def Info: figures//f07-fig1_role_comparison_light.png  used on i
@@ -1781,7 +1778,7 @@ nput line 36.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
 ) (./build/units/F07-S05.tex [113]) (./build/units/F08-S01.tex)
 (./build/units/F08-S09.tex
-<figures//f08-fig1_pipeline_timeline_light.png, id=2807, 1927.2pt x 1084.05pt>
+<figures//f08-fig1_pipeline_timeline_light.png, id=2808, 1927.2pt x 1084.05pt>
 File: figures//f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures//f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures//f08-fig1_pipeline_timeline_light.png  used on
@@ -1792,7 +1789,7 @@ g>]) (./build/units/F35-S03.tex [115 <./figures//f08-fig1_pipeline_timeline_lig
 ht.png>]) (./build/units/F35-S04.tex)
 (./build/units/F07-S04.tex [116]) (./build/units/F07-S08.tex [117])
 (./build/units/F07-S09.tex [118]
-<figures//f07-fig2_persistent_kernel_light.png, id=2938, 1927.2pt x 1084.05pt>
+<figures//f07-fig2_persistent_kernel_light.png, id=2939, 1927.2pt x 1084.05pt>
 File: figures//f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures//f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures//f07-fig2_persistent_kernel_light.png  used on
@@ -1809,7 +1806,7 @@ png>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex)
 (./build/units/F36-S02.tex [120]) (./build/units/F36-S03.tex)
 (./build/units/F36-S04.tex) (./build/units/F08-S10.tex [121])
 (./build/units/F08-S11.tex [122]) (./build/units/F08-S12.tex
-<figures//f08-fig2_event_credit_flow_light.png, id=3047, 1927.2pt x 1084.05pt>
+<figures//f08-fig2_event_credit_flow_light.png, id=3048, 1927.2pt x 1084.05pt>
 File: figures//f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures//f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures//f08-fig2_event_credit_flow_light.png  used on
@@ -1828,7 +1825,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 13--13
  []
 
 ) (./build/units/F09-S04.tex [128]
-<figures//f09-fig8_expressiveness_light.png, id=3172, 1927.2pt x 1084.05pt>
+<figures//f09-fig8_expressiveness_light.png, id=3173, 1927.2pt x 1084.05pt>
 File: figures//f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures//f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures//f09-fig8_expressiveness_light.png  used on in
@@ -1886,10 +1883,10 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3269190 bytes).
+Output written on main-memoir.pdf (149 pages, 3269503 bytes).
 PDF statistics:
- 3807 PDF objects out of 4296 (max. 8388607)
- 3499 compressed objects within 35 object streams
+ 3808 PDF objects out of 4296 (max. 8388607)
+ 3500 compressed objects within 35 object streams
  2155 named destinations out of 2487 (max. 500000)
  67794 words of extra memory for PDF output out of 74296 (max. 10000000)
 

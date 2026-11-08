@@ -367,7 +367,7 @@ SLOT_INTROS = {
     '3.5.2': "A strided tile is a window whose elements are not contiguous. \\co@subspan@ chooses the extent, \\co@step@ sets the distance between tiles and \\co@at@ picks one of them by index.",
     '3.5.3': "When a dimension is not a multiple of the tile size, the last tile is partial. \\co@.zfill@ pads such a tile at the destination, so the movement statement keeps a full tile shape.",
     '3.5.4': "A buffer can be read under a different shape without copying it. \\co@span_as@ reinterprets the layout, but the element count has to agree with the new shape and the movement statement still sees one contiguous span.",
-    '3.5.10': "This section collects the tile-selection syntax and the rules that govern it.",
+    '3.5.10': "The tile-selection forms and their rules are collected here, so a spelling can be checked without going back through the worked examples.",
     '3.6': "Data movement has a small grammar of operations, configurations and futures. This section describes that grammar and the asynchronous patterns built on it.",
     '3.6.1': "A tiled matmul with explicit copies puts the movement statements in context. This section reads the full kernel.",
     '3.6.2': "Overlapping copies with computation needs more than one buffer. This section covers \\co@dma.any@, \\co@swap@ and \\co@rotate@.",
@@ -1214,6 +1214,14 @@ UNIT_OVERRIDES = [
     ('F09-S10', None, caption_names([
         'A flat strip reinterpreted as a matrix',
         'A movement statement using the reinterpretation'])),
+    # Round 51 (3.5.10): summary and hand-off.
+    ('F09-S12',
+     r'(?s)Section~\\ref\{sec:2-13\} covers C\+\+ interop:.*\Z',
+     "Section~\\ref{sec:3-6} takes the tile expressions above and uses them "
+     "as the source and destination of movement statements. For the cases "
+     "where a program needs plain C++, Section~\\ref{sec:2-13} collects the "
+     "\\texttt{\\_\\_device\\_\\_} functions, preprocessor guards and "
+     "injected source text."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

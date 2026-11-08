@@ -41,7 +41,7 @@
 \contentsline {subsection}{Zero-Padding with zfill}{92}{section*.189}%
 \contentsline {subsection}{Layout Reinterpretation with span\_as}{92}{section*.191}%
 \contentsline {subsection}{Tile Selection: Summary and Syntax}{93}{section*.193}%
-\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{93}{section.3.6}%
+\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{95}{section.3.6}%
 \contentsline {subsection}{Worked Example: DMA Matmul}{99}{section*.206}%
 \contentsline {subsection}{Multi-Buffering: dma.any, swap, and rotate}{100}{section*.208}%
 \contentsline {subsection}{Worked Example: A Pipelined Kernel}{103}{section*.214}%
