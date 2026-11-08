@@ -83,9 +83,20 @@ defined, and no sentence explains where the documentation came from.
 | 14 | 0 | Reader feedback: 1.1 still opened too deep, inside the language's own machinery; asked for the tone of Triton's Introduction (new `section_1_1_framing` check) | Rebuilt 1.1 around an observable problem → a single premise → a one-sentence definition → a concrete tile-size comparison → an honest account of the compiler's burden; refreshed the chapter roadmap, slot intro, prerequisites and transition; all three editions rebuilt |
 | 15 | 0 | Reader feedback: even against the original tutorial, 1.1 lacked the repo's own material (`section_1_1_framing` extended to guard the source concepts) | Restored the four language properties from the Part I front page (zero-cost abstractions, compile-time safety checks, dynamic/symbolic shapes, AI-tuning-friendly design), the construct inventory from the Part III coding reference, and the simplest-kernel → matmul-variants → working-program path from the tutorial index; kept the Triton-style arc; all three editions rebuilt |
 
+## Section-by-section refinement (rounds 16–77)
+
+Every one of the 62 slots was refined in its own commit, following the
+reader's protocol: compare the Part I / Part III source for information loss,
+consult the Triton / TileLang style baseline, rewrite only that slot, review,
+and commit. Repeated listing captions were made distinct, dangling openers and
+tutorial meta-narration were replaced with statements of what the construct
+does, and sentences archived together with target-platform names were restored
+(source-to-source translation in 1.5, the `if-else` control structure in 3.4).
+Round 77 is the final full-document review: `TOTAL 0`, stable at zero.
+
 ## Final acceptance
 
-- Editions A / B / C: **145 / 153 / 149 pages**; 0 LaTeX errors,
+- Editions A / B / C: **147 / 153 / 149 pages**; 0 LaTeX errors,
   0 overfull boxes, 0 undefined references.
 - `pdftotext`: 0 target-platform / tuning terms, 0 conversion placeholders,
   0 editorial metadata, 0 "we / our" phrasing, 0 tutorial voice,

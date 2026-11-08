@@ -52,7 +52,7 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **none (all sections complete)** (chapters 1–2 complete; chapter 3 in progress through 3.11)
+- Next section: **none — all 62 sections complete** (chapters 1, 2 and 3 refined; rounds 16–77)
 - Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44, 3.4.2→45, 3.5→46, 3.5.1→47, 3.5.2→48, 3.5.3→49, 3.5.4→50, 3.5.10→51, 3.6→52, 3.6.1→53, 3.6.2→54, 3.6.3→55, 3.7→56, 3.7.1→57, 3.7.2→58, 3.7.3→59, 3.7.9→60, 3.7.10→61, 3.8→62, 3.8.1→63, 3.8.2→64, 3.8.3→65, 3.8.4→66, 3.8.5→67, 3.8.10→68, 3.9→69, 3.9.1→70, 3.9.2→71, 3.9.10→72, 3.10→73, 3.10.1→74, 3.10.2→75, 3.11→76)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
@@ -126,3 +126,15 @@ chapter numbers; every unit stays in its registered slot.
 | 3.10.1 | x | round 74 | Removed the "This example demonstrates" meta narration from the opener and made the intro name the constructs that compose |
 | 3.10.2 | x | round 75 | Removed the repeated "The algorithm" phrasing, fixed "parallelism work" and replaced the meta-narration intro with what carrying the pattern to a new shape shows |
 | 3.11 | x | round 76 | No source information lost and no repeated captions; replaced the meta-narration intro with the cheap-to-expensive diagnostic order the section follows |
+
+## Final acceptance (round 77)
+
+- All 62 slots are `x` in the ledger; each has its own commit.
+- `review.py --round 77 --compare`: `TOTAL 0`, stable at zero.
+- Coverage sweep over all 62 slots: 0 archived clauses without a target term;
+  27 weak-coverage hits, each verified as a paraphrase of a source sentence or
+  a replaced piece of tutorial meta-narration (no information lost). The 3.4
+  `if-else` control-structure sentence that had been archived is back.
+- Editions A / B / C: 147 / 153 / 149 pages; 0 LaTeX errors, 0 undefined
+  references, 0 overfull hboxes; `pdftotext` forbidden-term count 0 in all
+  three editions.

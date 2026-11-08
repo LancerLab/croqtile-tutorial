@@ -11,7 +11,7 @@ those sections into LaTeX fragments and assembles the chapters, and
 `HARDWARE-NOTES.md` archives the passages moved out because they describe
 target platforms or tuning rather than the Croqtile language.
 `tools/review.py` drives a repeatable review → fix loop (see
-`REVIEW-LOG.md`). Current output is 145 / 153 / 149 pages for A / B / C.
+`REVIEW-LOG.md`). Current output is 147 / 153 / 149 pages for A / B / C.
 
 Built with **pdfLaTeX + BibTeX only** (no Tectonic, no `latexmk`), following the
 directory and build conventions of `../gemm_sp_paper/camera-ready`,
