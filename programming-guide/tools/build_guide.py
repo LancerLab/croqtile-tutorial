@@ -332,7 +332,7 @@ CHAPTER_NEXT = {
 
 SLOT_INTROS = {
     '1.1': "Before installing anything, it is worth knowing what problem Croqtile was built for. This section begins with that problem and the single idea behind the language, then says what Croqtile is, what its constructs give you, and what you need in order to follow the examples.",
-    '1.2': "Building a Croqtile program needs a C++ toolchain and the compiler sources. This section lists the prerequisites in the order you will meet them.",
+    '1.2': "Croqtile ships as source, so a working toolchain comes before the first program. This section lists what the build needs and why those versions matter; Section~\\ref{sec:1-3} gives the commands.",
     '1.3': "The compiler is built from source with a short sequence of commands. This section walks through them and explains what each one produces.",
     '1.4': "A minimal check confirms the compiler and its runtime are usable. This section gives the smallest program that does so.",
     '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
@@ -530,6 +530,37 @@ UNIT_OVERRIDES = [
      "each of those programs can be run rather than only read. "
      "Section~\\ref{sec:1-2} lists what you need, and "
      "Section~\\ref{sec:1-3} walks through the build."),
+    # Section 1.2: Part I lists the toolchain in a table, Part III repeats it
+    # as a bare list.  Keep the table, turn the duplicate into the missing
+    # explanation of the version floor, and point the fallback at the real
+    # setup section (Triton/TileLang installation pages hand off this way).
+    ('F02-S01',
+     r'(?s)Before writing your first kernel.*?\Z',
+     "Croqtile is built from source rather than installed as a prebuilt "
+     "package. The compiler is itself a C++ program whose parser is generated "
+     "from a grammar, so the first thing to check is the toolchain that "
+     "builds it. The table below gives the versions that are known to work: a "
+     "C++17-capable compiler and two parser-generator tools."),
+    # Fold the table's one-line lead-in into the paragraph above it so the
+    # table never leaves a dangling sentence at the foot of a page.
+    ('F02-S02', r'You need a C\+\+17-capable compiler and two parser-generator tools:', ''),
+    # This table has no caption or label, so a float would strand it on the
+    # next page between two halves of the same explanation.
+    ('F02-S02', r'\\begin\{table\}\[htbp\]', r'\begin{center}'),
+    ('F02-S02', r'\\end\{table\}', r'\end{center}'),
+    ('F02-S02',
+     r'(?s)Most Linux distributions.*\Z',
+     "Most Linux distributions ship Flex but an older Bison. If the Bison on "
+     "your system is below 3.8, the setup step described in "
+     "Section~\\ref{sec:1-3} fetches a compatible version on its own, so the "
+     "distribution package does not have to be replaced by hand."),
+    ('F22-S03',
+     r'(?s)\\begin\{itemize\}.*?\\end\{itemize\}',
+     "The version floor is not arbitrary. GCC 8.1 and Clang 6 are the first "
+     "releases with complete C++17 support, and Bison 3.8 and Flex 2.6.4 are "
+     "the versions whose generated code supports the C++ features the "
+     "compiler uses. An older Bison is the usual obstacle, and it is the one "
+     "the setup step resolves for you."),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',
@@ -870,6 +901,9 @@ GENERIC_HEADINGS = {
     # Titles that name the old tutorial rather than a language construct.
     'chapters': '', 'croqtile tutorial': '', 'croqtile coding reference': '',
     'what is good in croqtile?': '',
+    # Section 1.2 already carries a requirements table; the coding-reference
+    # page repeated it under a bare "Prerequisitions" heading.
+    'prerequisitions': '',
 }
 
 

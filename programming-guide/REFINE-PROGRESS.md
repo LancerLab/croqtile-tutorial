@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **1.2**
-- Review rounds: from 16 onward (one `--compare` round per section)
+- Next section: **1.3**
+- Review rounds: from 16 onward (one `--compare` round per section; 1.2 used round 16)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -65,7 +65,7 @@ chapter numbers; every unit stays in its registered slot.
 | Slot | State | Commit | Note |
 |---|---|---|---|
 | 1.1 | x | baseline | Triton-style arc + Part I/III substance (rounds 14-15) |
-| 1.2 | . | | |
+| 1.2 | x | round 16 | Part I table + Part III duplicate list merged; version rationale restored; table set in place to avoid a stranded lead-in |
 | 1.3 | . | | |
 | 1.4 | . | | |
 | 1.5 | . | | |
