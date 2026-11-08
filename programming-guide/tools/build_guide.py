@@ -376,7 +376,7 @@ SLOT_INTROS = {
     '3.7.1': "One cooperative group carries out all four steps on a single tile, so the kernel is the shortest complete contraction that can be written.",
     '3.7.2': "Widening the cooperation scope changes one line of the kernel: the space specifier. The four steps, the operand layouts and the accumulation stay exactly as they were.",
     '3.7.3': "Two cooperative groups can share operands and split the work between them. The tiling has to give each group a distinct part of the output, and the program shows how the indices are divided.",
-    '3.7.9': "The contraction syntax is gathered here for quick reference.",
+    '3.7.9': "The contraction syntax is gathered here for quick reference: the four step names, the space specifiers and the layout each variant expects.",
     '3.7.10': "This section summarises what the four-step design achieves and where its limits are.",
     '3.8': "Pipelines and persistent kernels are built from concurrent regions and events. This section explains the coordination primitives and the protocols they implement.",
     '3.8.1': "The smallest useful pipeline has one producer and one consumer. This section establishes that pattern before adding stages.",
@@ -1258,6 +1258,7 @@ UNIT_OVERRIDES = [
     ('F06-S05', r'But the four-step syntax', 'The four-step syntax'),
     # Round 59 (3.7.3): two cooperative groups.
     ('F06-S06', r'--- With MMA', '--- with MMA'),
+    # Round 60 (3.7.9): MMA syntax summary. The reference table is unchanged.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
