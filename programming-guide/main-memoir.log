@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1789,7 +1789,7 @@ Package pdftex.def Info: figures//f08-fig1_pipeline_timeline_light.png  used on
 .png>] (./build/units/F35-S03.tex) (./build/units/F35-S04.tex [116])
 (./build/units/F07-S04.tex) (./build/units/F07-S08.tex [117])
 (./build/units/F07-S09.tex [118]
-<figures//f07-fig2_persistent_kernel_light.png, id=2929, 1927.2pt x 1084.05pt>
+<figures//f07-fig2_persistent_kernel_light.png, id=2930, 1927.2pt x 1084.05pt>
 File: figures//f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures//f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures//f07-fig2_persistent_kernel_light.png  used on
@@ -1806,7 +1806,7 @@ png>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex [120])
 (./build/units/F36-S02.tex) (./build/units/F36-S03.tex)
 (./build/units/F36-S04.tex) [121] (./build/units/F08-S10.tex [122])
 (./build/units/F08-S11.tex) (./build/units/F08-S12.tex
-<figures//f08-fig2_event_credit_flow_light.png, id=3045, 1927.2pt x 1084.05pt>
+<figures//f08-fig2_event_credit_flow_light.png, id=3046, 1927.2pt x 1084.05pt>
 File: figures//f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures//f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures//f08-fig2_event_credit_flow_light.png  used on
@@ -1825,7 +1825,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 13--13
  []
 
 ) [128] (./build/units/F09-S04.tex
-<figures//f09-fig8_expressiveness_light.png, id=3174, 1927.2pt x 1084.05pt>
+<figures//f09-fig8_expressiveness_light.png, id=3175, 1927.2pt x 1084.05pt>
 File: figures//f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures//f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures//f09-fig8_expressiveness_light.png  used on in
@@ -1882,10 +1882,10 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3272009 bytes).
+Output written on main-memoir.pdf (149 pages, 3272042 bytes).
 PDF statistics:
- 3810 PDF objects out of 4296 (max. 8388607)
- 3501 compressed objects within 36 object streams
+ 3811 PDF objects out of 4296 (max. 8388607)
+ 3502 compressed objects within 36 object streams
  2155 named destinations out of 2487 (max. 500000)
  67794 words of extra memory for PDF output out of 74296 (max. 10000000)
 
