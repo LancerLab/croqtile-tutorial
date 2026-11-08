@@ -4,7 +4,7 @@ In practical coding, it is common to derive a new shape from an existing one. Fo
 
 In Croqtile, such shape derivations can be easily accomplished using arithmetic operations on \emph{mdspan}. The following code showcases an example:
 
-\begin{lstlisting}[language=croqtile,caption={Deriving mdspans}]
+\begin{lstlisting}[language=croqtile,caption={The original shape}]
 shape : [128, 64]; // initial shape
 new-shape0 : shape [(0) / 2, (1) / 4, 1];  // tile and reshape: [1, 64, 16]
 new-shape1 : shape [(1) + 2, (0) / 16];    // pad and reshape: [66, 8]
@@ -14,7 +14,7 @@ In this example, the \texttt{new-shape0} is derived from \texttt{shape}, with di
 
 In Croqtile, the definition of \texttt{new-shape0} is equivalent to:
 
-\begin{lstlisting}[language=croqtile,caption={Deriving mdspans}]
+\begin{lstlisting}[language=croqtile,caption={A derived shape}]
 new-shape0: [shape(0) / 2, shape(1) / 4, 1];
 \end{lstlisting}
 
@@ -24,7 +24,7 @@ In the code example, \texttt{new-shape1} is also derived from \texttt{shape}, it
 
 Furthermore, you may use the \texttt{mdspan} as a whole for derivations:
 
-\begin{lstlisting}[language=croqtile,caption={Deriving mdspans}]
+\begin{lstlisting}[language=croqtile,caption={Rebinding a shape}]
 shape : [32, 72]
 new-shape0 : shape;  // [32, 72]
 new-shape1 : shape + 1;  // [33, 73]
@@ -32,7 +32,7 @@ new-shape2 : shape / 4;  // [8, 18]
 new-shape3 : [shape, 6]; // [32, 72, 6]
 \end{lstlisting}
 
-Note that arithmetic operations on an \emph{mdspan} variable are applied dimensionally. Thus, the statement
+Arithmetic operations on an \emph{mdspan} variable are applied dimensionally. Thus, the statement
 
 \texttt{new-\allowbreak{}shape1 :\allowbreak{} shape + 1;}
 

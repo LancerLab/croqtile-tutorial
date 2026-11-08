@@ -4,7 +4,7 @@ In Croqtile, shapes can be defined with the \texttt{mdspan} keyword, which stand
 
 You can explicitly define \texttt{mdspan} variables as follows:
 
-\begin{lstlisting}[language=croqtile,caption={Defining Shapes with mdspan}]
+\begin{lstlisting}[language=croqtile,caption={Declaring a shape}]
 mdspan s0 : [7, 8]; // Defines a 2D shape with dimensions [7, 8]
 mdspan<1> s1 : [3]; // Defines a 1D shape with dimensions [3]
 \end{lstlisting}
@@ -13,13 +13,13 @@ In this example, the leading keyword \texttt{mdspan} indicates the declaration o
 
 It is possible to optionally specify the \textbf{rank} of an \emph{mdspan} variable by placing \texttt{\textless{}\textgreater{}} after the \texttt{mdspan} keyword. If the rank is explicitly specified, it informs the Croqtile compiler to check for rank consistency. If the rank value differs from the corresponding \emph{initialization expression}, it triggers a failure at compilation. Here is an example:
 
-\begin{lstlisting}[language=croqtile,caption={Defining Shapes with mdspan}]
+\begin{lstlisting}[language=croqtile,caption={A rank mismatch}]
 mdspan<3> s2 : [64, 32]; // error: the rank of mdspan is inconsistent
 \end{lstlisting}
 
 In addition to explicit mdspan declarations, the Croqtile compiler can infer the type of \texttt{mdspan} variable from its \emph{initialization expression}, eliminating the need for the explicit \texttt{mdspan} keyword:
 
-\begin{lstlisting}[language=croqtile,caption={Defining Shapes with mdspan}]
+\begin{lstlisting}[language=croqtile,caption={Omitting the mdspan keyword}]
 s3 : [7, 8, 9]
 \end{lstlisting}
 

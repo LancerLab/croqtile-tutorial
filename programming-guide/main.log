@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1195,8 +1195,8 @@ LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <12> not available
 (./build/units/F19-S04.tex) (./build/units/F15-S05.tex)
 (./build/units/F15-S10.tex [25]) (./build/units/F15-S11.tex)
 (./build/units/F17-S01.tex) (./build/units/F17-S02.tex [26])
-(./build/units/F17-S04.tex) (./build/units/F17-S05.tex)
-(./build/units/F17-S06.tex [27]) (./build/units/F17-S09.tex)
+(./build/units/F17-S04.tex) (./build/units/F17-S05.tex [27])
+(./build/units/F17-S06.tex) (./build/units/F17-S09.tex)
 (./build/units/F15-S08.tex [28]) (./build/units/F15-S09.tex)
 (./build/units/F18-S01.tex) (./build/units/F18-S03.tex [29])
 (./build/units/F18-S04.tex) (./build/units/F18-S05.tex [30])
@@ -1603,7 +1603,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (145 pages, 3249952 bytes).
+Output written on main.pdf (145 pages, 3250403 bytes).
 PDF statistics:
  3570 PDF objects out of 3580 (max. 8388607)
  3268 compressed objects within 33 object streams

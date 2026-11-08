@@ -344,7 +344,7 @@ SLOT_INTROS = {
     '2.1': "A \\file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \\co@__co__@ prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.",
     '2.2': "An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.",
     '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result back. Each step uses a small API, and the shape attached to a buffer is what makes the call type-safe.",
-    '2.4': "Shapes are part of a Croqtile type, not metadata discovered at runtime. This section shows how \\co@mdspan@ shapes are written, derived and evaluated.",
+    '2.4': "A shape is a value a program can name and compute with, not just an annotation on a declaration. \\co@mdspan@ defines one, arithmetic derives another from it, and an anonymous dimension leaves a size for the caller to supply.",
     '2.5': "Loop bounds and indices are compile-time values with types of their own. This section covers integers, I-tuples and bounded values.",
     '2.6': "Data in Croqtile is \\emph{spanned}: a buffer together with its shape. This section shows how spanned data is declared, stored and initialised.",
     '2.7': "Iteration in Croqtile declares independence rather than a schedule. This section introduces \\co@parallel@, \\co@with-in@ and \\co@foreach@ through small programs.",
@@ -917,6 +917,27 @@ UNIT_OVERRIDES = [
      r'This allows you able to work without knowing the too much detail about Croqtile function\.',
      "It lets the host work with the result without knowing the details of "
      "the Croqtile function that produced it."),
+    # Round 28 (2.4): a shape is a value; name each shape example.
+    ('F16-S03', None, caption_names([
+        'Declaring a shape', 'A rank mismatch',
+        'Omitting the mdspan keyword'])),
+    ('F16-S04', None, caption_names([
+        'The original shape', 'A derived shape', 'Rebinding a shape'])),
+    ('F19-S03', None, caption_names([
+        'A kernel with an unknown dimension',
+        'The caller supplying that dimension'])),
+    ('F16-S01',
+     r'In Croqtile, shape is a first-class citizen\. In this section, you will learn how to program shapes in Croqtile code\.',
+     "A shape in Croqtile is a value a program can name and compute with, "
+     "not just an annotation on a declaration. The examples below define "
+     "one, derive another from it, and leave a dimension open for the "
+     "caller to fill in."),
+    ('F04-S16',
+     r'This comes up constantly in data movement code because',
+     'Deriving one shape from another comes up constantly in data movement code, because'),
+    ('F16-S04',
+     r'Note that arithmetic operations on an \\emph\{mdspan\} variable',
+     'Arithmetic operations on an \\emph{mdspan} variable'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

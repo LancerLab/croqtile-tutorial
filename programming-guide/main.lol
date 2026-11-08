@@ -46,25 +46,25 @@
 \contentsline {lstlisting}{\numberline {2.15}Returning a shaped buffer}{21}{lstlisting.2.15}%
 \contentsline {lstlisting}{\numberline {2.16}The host-side result wrapper}{21}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{22}{lstlisting.2.17}%
-\contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{23}{lstlisting.2.18}%
-\contentsline {lstlisting}{\numberline {2.19}Defining Shapes with mdspan}{23}{lstlisting.2.19}%
-\contentsline {lstlisting}{\numberline {2.20}Defining Shapes with mdspan}{23}{lstlisting.2.20}%
-\contentsline {lstlisting}{\numberline {2.21}Deriving mdspans}{23}{lstlisting.2.21}%
-\contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{24}{lstlisting.2.22}%
-\contentsline {lstlisting}{\numberline {2.23}Deriving mdspans}{24}{lstlisting.2.23}%
-\contentsline {lstlisting}{\numberline {2.24}mdspan with Anonymous Dimension}{24}{lstlisting.2.24}%
-\contentsline {lstlisting}{\numberline {2.25}mdspan with Anonymous Dimension}{24}{lstlisting.2.25}%
+\contentsline {lstlisting}{\numberline {2.18}Declaring a shape}{23}{lstlisting.2.18}%
+\contentsline {lstlisting}{\numberline {2.19}A rank mismatch}{23}{lstlisting.2.19}%
+\contentsline {lstlisting}{\numberline {2.20}Omitting the mdspan keyword}{23}{lstlisting.2.20}%
+\contentsline {lstlisting}{\numberline {2.21}The original shape}{23}{lstlisting.2.21}%
+\contentsline {lstlisting}{\numberline {2.22}A derived shape}{24}{lstlisting.2.22}%
+\contentsline {lstlisting}{\numberline {2.23}Rebinding a shape}{24}{lstlisting.2.23}%
+\contentsline {lstlisting}{\numberline {2.24}A kernel with an unknown dimension}{24}{lstlisting.2.24}%
+\contentsline {lstlisting}{\numberline {2.25}The caller supplying that dimension}{24}{lstlisting.2.25}%
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{25}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types}{25}{lstlisting.2.27}%
 \contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{26}{lstlisting.2.28}%
 \contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{26}{lstlisting.2.29}%
 \contentsline {lstlisting}{\numberline {2.30}Integers for Program Control}{26}{lstlisting.2.30}%
-\contentsline {lstlisting}{\numberline {2.31}Integers for Program Control}{26}{lstlisting.2.31}%
+\contentsline {lstlisting}{\numberline {2.31}Integers for Program Control}{27}{lstlisting.2.31}%
 \contentsline {lstlisting}{\numberline {2.32}Integers for Program Control}{27}{lstlisting.2.32}%
 \contentsline {lstlisting}{\numberline {2.33}Integers for Program Control}{27}{lstlisting.2.33}%
 \contentsline {lstlisting}{\numberline {2.34}Integers for Program Control}{27}{lstlisting.2.34}%
 \contentsline {lstlisting}{\numberline {2.35}Defining I-Tuples}{27}{lstlisting.2.35}%
-\contentsline {lstlisting}{\numberline {2.36}Defining I-Tuples}{27}{lstlisting.2.36}%
+\contentsline {lstlisting}{\numberline {2.36}Defining I-Tuples}{28}{lstlisting.2.36}%
 \contentsline {lstlisting}{\numberline {2.37}Operations on I-Tuples}{28}{lstlisting.2.37}%
 \contentsline {lstlisting}{\numberline {2.38}Operations on I-Tuples}{28}{lstlisting.2.38}%
 \contentsline {lstlisting}{\numberline {2.39}Operations on I-Tuples}{28}{lstlisting.2.39}%

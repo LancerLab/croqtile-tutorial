@@ -46,14 +46,14 @@
 \contentsline {lstlisting}{\numberline {2.15}Returning a shaped buffer}{22}{lstlisting.2.15}%
 \contentsline {lstlisting}{\numberline {2.16}The host-side result wrapper}{23}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{23}{lstlisting.2.17}%
-\contentsline {lstlisting}{\numberline {2.18}Defining Shapes with mdspan}{24}{lstlisting.2.18}%
-\contentsline {lstlisting}{\numberline {2.19}Defining Shapes with mdspan}{24}{lstlisting.2.19}%
-\contentsline {lstlisting}{\numberline {2.20}Defining Shapes with mdspan}{24}{lstlisting.2.20}%
-\contentsline {lstlisting}{\numberline {2.21}Deriving mdspans}{25}{lstlisting.2.21}%
-\contentsline {lstlisting}{\numberline {2.22}Deriving mdspans}{25}{lstlisting.2.22}%
-\contentsline {lstlisting}{\numberline {2.23}Deriving mdspans}{25}{lstlisting.2.23}%
-\contentsline {lstlisting}{\numberline {2.24}mdspan with Anonymous Dimension}{26}{lstlisting.2.24}%
-\contentsline {lstlisting}{\numberline {2.25}mdspan with Anonymous Dimension}{26}{lstlisting.2.25}%
+\contentsline {lstlisting}{\numberline {2.18}Declaring a shape}{24}{lstlisting.2.18}%
+\contentsline {lstlisting}{\numberline {2.19}A rank mismatch}{24}{lstlisting.2.19}%
+\contentsline {lstlisting}{\numberline {2.20}Omitting the mdspan keyword}{24}{lstlisting.2.20}%
+\contentsline {lstlisting}{\numberline {2.21}The original shape}{25}{lstlisting.2.21}%
+\contentsline {lstlisting}{\numberline {2.22}A derived shape}{25}{lstlisting.2.22}%
+\contentsline {lstlisting}{\numberline {2.23}Rebinding a shape}{25}{lstlisting.2.23}%
+\contentsline {lstlisting}{\numberline {2.24}A kernel with an unknown dimension}{26}{lstlisting.2.24}%
+\contentsline {lstlisting}{\numberline {2.25}The caller supplying that dimension}{26}{lstlisting.2.25}%
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{26}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types}{27}{lstlisting.2.27}%
 \contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{27}{lstlisting.2.28}%
