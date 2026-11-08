@@ -592,6 +592,44 @@ UNIT_OVERRIDES = [
      "You should see \\texttt{OK}. If you do, the compiler, linker, and "
      "runtime are all working. Section~\\ref{sec:1-5} lists the options that "
      "change what the command produces."),
+    # Section 1.5: the Part III page opened with "However" because its first
+    # sentence --- the source-to-source translation model --- was archived
+    # with the vendor names.  Restore the concept in neutral wording, repair
+    # the fused/broken sentences, and give the three overlapping units
+    # distinct roles and distinct listing captions.
+    ('F22-S05', r'(?s)However, since Croqtile integrates.*?properly configured\.',
+     "Croqtile is a source-to-source translator: it turns a \\file{.co} "
+     "program into C++ source that a downstream compiler consumes. With that "
+     "compiler in place the chain behaves like an end-to-end compiler, so the "
+     "command line can offer the usual output forms."),
+    ('F22-S05',
+     r'Therefore, Once Croqtile is built, developers can compile Croqtile programs into various output forms, including:',
+     "Once the compiler is built, a program can be lowered into several output forms:"),
+    ('F22-S05', r'(?s)Species except for .*?support and limitations\.',
+     "All but the first and last are the familiar forms from a C++ toolchain. "
+     "Which of them a build can produce depends on what the downstream "
+     "compiler supports."),
+    ('F22-S05',
+     r'The usage of the Croqtile compiler is similar to that of \\texttt\{gcc\} or \\texttt\{clang\}\. For example:',
+     "The command itself has the usual shape:"),
+    ('F22-S05', r'without performing the .target compilation\*\.',
+     'without performing the downstream compilation.'),
+    ('F22-S05', r'Here is a example output of', 'Here is an example of the output of'),
+    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\ncroqtile your_program\.co',
+     'caption={Default invocation}]\ncroqtile your_program.co'),
+    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\ncroqtile -t target',
+     'caption={Emitting lowered source}]\ncroqtile -t target'),
+    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\n// --help',
+     'caption={Full option list}]\n// --help'),
+    ('F03-S06',
+     r'Croqtile files use the \\texttt\{\.co\} extension\. The compiler works like \\texttt\{gcc\} or \\texttt\{clang\}:',
+     "For a first program the same command is enough. Files use the "
+     "\\file{.co} extension, and the default invocation produces "
+     "\\texttt{a.out}:"),
+    ('F03-S06', r'caption=\{Build and Compile\}\]\ncroqtile ele_add\.co',
+     'caption={Compiling a first program}]\ncroqtile ele_add.co'),
+    ('F03-S06', r'caption=\{Build and Compile\}\]\ncroqtile --help',
+     'caption={Listing the options}]\ncroqtile --help'),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',

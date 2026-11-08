@@ -4,11 +4,11 @@
 \contentsline {lstlisting}{\numberline {1.4}A minimal Croqtile program}{4}{lstlisting.1.4}%
 \contentsline {lstlisting}{\numberline {1.5}Compile and run the check}{4}{lstlisting.1.5}%
 \contentsline {lstlisting}{\numberline {1.6}Compiler Usage}{4}{lstlisting.1.6}%
-\contentsline {lstlisting}{\numberline {1.7}Build and Compile}{5}{lstlisting.1.7}%
-\contentsline {lstlisting}{\numberline {1.8}Build and Compile}{5}{lstlisting.1.8}%
-\contentsline {lstlisting}{\numberline {1.9}Compile Croqtile Program}{6}{lstlisting.1.9}%
-\contentsline {lstlisting}{\numberline {1.10}Compile Croqtile Program}{6}{lstlisting.1.10}%
-\contentsline {lstlisting}{\numberline {1.11}Compile Croqtile Program}{6}{lstlisting.1.11}%
+\contentsline {lstlisting}{\numberline {1.7}Compiling a first program}{5}{lstlisting.1.7}%
+\contentsline {lstlisting}{\numberline {1.8}Listing the options}{5}{lstlisting.1.8}%
+\contentsline {lstlisting}{\numberline {1.9}Default invocation}{6}{lstlisting.1.9}%
+\contentsline {lstlisting}{\numberline {1.10}Emitting lowered source}{6}{lstlisting.1.10}%
+\contentsline {lstlisting}{\numberline {1.11}Full option list}{6}{lstlisting.1.11}%
 \contentsline {lstlisting}{\numberline {1.12}Development Utilities}{7}{lstlisting.1.12}%
 \contentsline {lstlisting}{\numberline {1.13}Environment}{7}{lstlisting.1.13}%
 \contentsline {lstlisting}{\numberline {1.14}Environment}{8}{lstlisting.1.14}%

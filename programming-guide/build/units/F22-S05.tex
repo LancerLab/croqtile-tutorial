@@ -1,8 +1,8 @@
 \subsection*{Compile Croqtile Program}
 
-However, since Croqtile integrates lower-level \emph{target compiler} in its compilation process, it appears as an \textbf{end-to-end compiler} when the vendor-provided device-level C++ compiler is properly configured.
+Croqtile is a source-to-source translator: it turns a \file{.co} program into C++ source that a downstream compiler consumes. With that compiler in place the chain behaves like an end-to-end compiler, so the command line can offer the usual output forms.
 
-Therefore, Once Croqtile is built, developers can compile Croqtile programs into various output forms, including:
+Once the compiler is built, a program can be lowered into several output forms:
 
 \begin{itemize}[leftmargin=1.6em]
 \item Target source code
@@ -12,19 +12,19 @@ Therefore, Once Croqtile is built, developers can compile Croqtile programs into
 \item Work-script
 \end{itemize}
 
-Species except for \emph{target source code} and \emph{work-script} (introduced later) are similar to those of \texttt{gcc} and \texttt{clang}. However, the availability of these output forms depends on the target platform's support and limitations.
+All but the first and last are the familiar forms from a C++ toolchain. Which of them a build can produce depends on what the downstream compiler supports.
 
-The usage of the Croqtile compiler is similar to that of \texttt{gcc} or \texttt{clang}. For example:
+The command itself has the usual shape:
 
-\begin{lstlisting}[language=croqtile,caption={Compile Croqtile Program}]
+\begin{lstlisting}[language=croqtile,caption={Default invocation}]
 croqtile your_program.co
 \end{lstlisting}
 
 This command generates an \texttt{a.out} executable file. The \texttt{-\allowbreak{}o \textless{}filename\textgreater{}} option can be used to specify the output filename when needed. Compiler options like \texttt{-c} and \texttt{-S} work similarly to those in C++ compilers, provided they are supported by the target platform.
 
-The \texttt{-\allowbreak{}t \textless{}platform\textgreater{}} option allows you to specify the target platform for the compilation. Additionally, the \texttt{-es} option generates \emph{target source code} without performing the "target compilation*. For instance:
+The \texttt{-\allowbreak{}t \textless{}platform\textgreater{}} option allows you to specify the target platform for the compilation. Additionally, the \texttt{-es} option generates \emph{target source code} without performing the downstream compilation. For instance:
 
-\begin{lstlisting}[language={},caption={Compile Croqtile Program}]
+\begin{lstlisting}[language={},caption={Emitting lowered source}]
 croqtile -t target your_program.co -es -o target_source.co
 \end{lstlisting}
 
@@ -34,9 +34,9 @@ Furthermore, in development scenarios, Croqtile can generate \emph{work-script} 
 
 Lastly, options \texttt{--help} and \texttt{--help-hidden} are available for listing the full option set. Programmers and users can check the list to find their appropriate usage.
 
-Here is a example output of \texttt{--help}:
+Here is an example of the output of \texttt{--help}:
 
-\begin{lstlisting}[language={},caption={Compile Croqtile Program}]
+\begin{lstlisting}[language={},caption={Full option list}]
 // --help
 Usage: croqtile [options] file...
 Options:

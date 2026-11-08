@@ -1,8 +1,8 @@
 \subsection*{Build and Compile}
 
-Croqtile files use the \texttt{.co} extension. The compiler works like \texttt{gcc} or \texttt{clang}:
+For a first program the same command is enough. Files use the \file{.co} extension, and the default invocation produces \texttt{a.out}:
 
-\begin{lstlisting}[language={},caption={Build and Compile}]
+\begin{lstlisting}[language={},caption={Compiling a first program}]
 croqtile ele_add.co                          # produces a.out
 croqtile ele_add.co -o ele_add               # specify output name
 croqtile -es -t target ele_add.co -o out.cu    # emit target source only
@@ -12,7 +12,7 @@ The \texttt{-t} flag selects the target platform.
 
 To see all available options, run \texttt{croqtile -\allowbreak{}-\allowbreak{}help}:
 
-\begin{lstlisting}[language={},caption={Build and Compile}]
+\begin{lstlisting}[language={},caption={Listing the options}]
 croqtile --help
 \end{lstlisting}
 
