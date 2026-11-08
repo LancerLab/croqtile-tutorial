@@ -387,7 +387,7 @@ SLOT_INTROS = {
     '3.8.10': "The coordination patterns and their syntax are collected here, from the 1P1C skeleton to the multi-stage event pipeline.",
     '3.9': "Croqtile does not replace C++; it sits inside it. Device helpers, verbatim source text and preprocessor macros cross that boundary, and each arrives at a different stage of compilation.",
     '3.9.1': "Calling a device helper from a \\co@__co__@ function is where the argument conventions become concrete: a shaped span arrives as a pointer plus a size, and the helper itself is passed through unchanged.",
-    '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. This section shows the forms it takes.",
+    '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. \\co@__cpp__@ islands, guards and template instantiation are the forms it takes, and the compiler checks nothing inside them.",
     '3.9.10': "The interoperability mechanisms and their rules are collected here.",
     '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. This section presents two worked examples and the reasoning they illustrate.",
     '3.10.1': "A tiled matmul shows how bounded variables, \\co@chunkat@ and movement statements compose into one program.",
@@ -1289,6 +1289,7 @@ UNIT_OVERRIDES = [
      r'One important notices about croqtile preprocessing is that it is triggered much earlier than',
      'Croqtile preprocessing runs much earlier than'),
     # Round 70 (3.9.1): calling a device helper. Source prose is continuous.
+    # Round 71 (3.9.2): verbatim C++ injection.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

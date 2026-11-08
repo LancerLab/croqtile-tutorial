@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **3.9.2** (chapters 1–2 complete; chapter 3 in progress through 3.9.1)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44, 3.4.2→45, 3.5→46, 3.5.1→47, 3.5.2→48, 3.5.3→49, 3.5.4→50, 3.5.10→51, 3.6→52, 3.6.1→53, 3.6.2→54, 3.6.3→55, 3.7→56, 3.7.1→57, 3.7.2→58, 3.7.3→59, 3.7.9→60, 3.7.10→61, 3.8→62, 3.8.1→63, 3.8.2→64, 3.8.3→65, 3.8.4→66, 3.8.5→67, 3.8.10→68, 3.9→69, 3.9.1→70)
+- Next section: **3.9.10** (chapters 1–2 complete; chapter 3 in progress through 3.9.2)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44, 3.4.2→45, 3.5→46, 3.5.1→47, 3.5.2→48, 3.5.3→49, 3.5.4→50, 3.5.10→51, 3.6→52, 3.6.1→53, 3.6.2→54, 3.6.3→55, 3.7→56, 3.7.1→57, 3.7.2→58, 3.7.3→59, 3.7.9→60, 3.7.10→61, 3.8→62, 3.8.1→63, 3.8.2→64, 3.8.3→65, 3.8.4→66, 3.8.5→67, 3.8.10→68, 3.9→69, 3.9.1→70, 3.9.2→71)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -120,7 +120,7 @@ chapter numbers; every unit stays in its registered slot.
 | 3.8.10 | x | round 68 | No source information lost and no repeated captions; made the intro name the range of patterns the summary covers |
 | 3.9 | x | round 69 | Named the repeated template-instantiation and cok listings, removed the "However / Note that" openers, fixed the "One important notices" grammar and replaced the meta-narration intro with the compilation-stage boundary |
 | 3.9.1 | x | round 70 | No source information lost and no repeated captions; made the intro state the argument convention the worked helper demonstrates |
-| 3.9.2 | . | | |
+| 3.9.2 | x | round 71 | No source information lost and no repeated captions; replaced the meta-narration intro with the three injection forms and the checking boundary |
 | 3.9.10 | . | | |
 | 3.10 | . | | |
 | 3.10.1 | . | | |

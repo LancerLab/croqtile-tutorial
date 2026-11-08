@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1568,7 +1568,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 13--13
 []|\T1/lmr/m/n/10 (+20) Conditional com-pi-la-tion and
  []
 
-) (./build/units/F09-S04.tex [132]
+) [132] (./build/units/F09-S04.tex
 <figures//f09-fig8_expressiveness_light.png, id=3038, 1927.2pt x 1084.05pt>
 File: figures//f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures//f09-fig8_expressiveness_light.png>
@@ -1577,8 +1577,8 @@ put line 8.
 (pdftex.def)             Requested size: 357.23218pt x 200.9431pt.
 ) (./build/units/F13-S02.tex)
 (./build/units/F13-S03.tex) (./build/units/F13-S04.tex)
-(./build/units/F13-S05.tex) (./build/units/F40-S01.tex) [133 <./figures//f09-fi
-g8_expressiveness_light.png>] (./build/units/F40-S02.tex)
+(./build/units/F13-S05.tex) (./build/units/F40-S01.tex [133 <./figures//f09-fig
+8_expressiveness_light.png>]) (./build/units/F40-S02.tex)
 (./build/units/F40-S03.tex [134]) (./build/units/F40-S04.tex)
 (./build/units/F40-S05.tex) (./build/units/F40-S06.tex [135])
 (./build/units/F11-S01.tex)) (./content/appendix-a-quickref.tex [136]
@@ -1615,7 +1615,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (153 pages, 3268842 bytes).
+Output written on main-manual.pdf (153 pages, 3268948 bytes).
 PDF statistics:
  3612 PDF objects out of 4296 (max. 8388607)
  3301 compressed objects within 34 object streams
