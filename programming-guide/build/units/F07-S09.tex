@@ -1,4 +1,4 @@
-In Chapters 3--4, the grid grew with the problem: roughly one block per output tile. For large matrices that means large launch counts, and the last wave of blocks often leaves SMs partially idle --- \textbf{tail underutilization}.
+In the earlier kernels, the grid grew with the problem: roughly one block per output tile. For large matrices that means large launch counts, and the last wave of blocks often leaves SMs partially idle --- \textbf{tail underutilization}.
 
 A \textbf{persistent kernel} fixes the launch size (often near the SM count) and lets each block iterate over multiple tiles:
 

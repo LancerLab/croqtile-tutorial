@@ -416,7 +416,7 @@
 \subsection{Persistent Scheduling}
 \label{sec:3-8-3}
 
-\guideslotintro{A persistent kernel decides its own work rather than being launched once per tile. This section covers the guard and the scheduling loop.}
+\guideslotintro{A persistent kernel decides its own work instead of being launched once per tile. A guard bounds the scheduling loop, and the loop reuses one set of buffers for many tiles.}
 
 \input{build/units/F07-S09}
 
