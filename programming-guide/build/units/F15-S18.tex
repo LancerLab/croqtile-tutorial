@@ -6,7 +6,7 @@ Conceptually, a DMA statement is executed asynchronously with the SPMD code. It 
 
 The below code showcases one basic DMA statement.
 
-\begin{lstlisting}[language=croqtile,caption={Async Operation: the DMA Statement}]
+\begin{lstlisting}[language=croqtile,caption={An asynchronous DMA declaration}]
 global f32 [10] g_data;
 local f32 [10] l_data;
 f = dma.copy.async g_data => l_data;
@@ -18,7 +18,7 @@ You might observe the assignment of 'f'. This is the handler for the asynchronou
 
 At times, programmers may find it tedious to explicitly define temporal data. Croqtile offers an even simpler syntax:
 
-\begin{lstlisting}[language=croqtile,caption={Async Operation: the DMA Statement}]
+\begin{lstlisting}[language=croqtile,caption={The same declaration with storage}]
 global f32 [10] data;
 f = dma.copy data => local;
 ... f.data;  // retrieve the 'local' data from the future

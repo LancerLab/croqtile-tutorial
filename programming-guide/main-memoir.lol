@@ -202,11 +202,11 @@
 \contentsline {lstlisting}{\numberline {3.34}A flat strip reinterpreted as a matrix}{93}{lstlisting.3.34}%
 \contentsline {lstlisting}{\numberline {3.35}A movement statement using the reinterpretation}{93}{lstlisting.3.35}%
 \contentsline {lstlisting}{\numberline {3.36}DMA vs TMA}{96}{lstlisting.3.36}%
-\contentsline {lstlisting}{\numberline {3.37}The main TMA constraint}{96}{lstlisting.3.37}%
-\contentsline {lstlisting}{\numberline {3.38}The main TMA constraint}{96}{lstlisting.3.38}%
+\contentsline {lstlisting}{\numberline {3.37}A host-computable tile shape}{96}{lstlisting.3.37}%
+\contentsline {lstlisting}{\numberline {3.38}A runtime tile index that is rejected}{96}{lstlisting.3.38}%
 \contentsline {lstlisting}{\numberline {3.39}tma.copy: target tensor movement}{96}{lstlisting.3.39}%
-\contentsline {lstlisting}{\numberline {3.40}Async Operation: the DMA Statement}{97}{lstlisting.3.40}%
-\contentsline {lstlisting}{\numberline {3.41}Async Operation: the DMA Statement}{98}{lstlisting.3.41}%
+\contentsline {lstlisting}{\numberline {3.40}An asynchronous DMA declaration}{97}{lstlisting.3.40}%
+\contentsline {lstlisting}{\numberline {3.41}The same declaration with storage}{98}{lstlisting.3.41}%
 \contentsline {lstlisting}{\numberline {3.42}Operation Type}{98}{lstlisting.3.42}%
 \contentsline {lstlisting}{\numberline {3.43}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{99}{lstlisting.3.43}%
 \contentsline {lstlisting}{\numberline {3.44}DMA Matmul: Tiles in shared storage}{99}{lstlisting.3.44}%

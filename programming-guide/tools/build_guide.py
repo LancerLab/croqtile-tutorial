@@ -368,7 +368,7 @@ SLOT_INTROS = {
     '3.5.3': "When a dimension is not a multiple of the tile size, the last tile is partial. \\co@.zfill@ pads such a tile at the destination, so the movement statement keeps a full tile shape.",
     '3.5.4': "A buffer can be read under a different shape without copying it. \\co@span_as@ reinterprets the layout, but the element count has to agree with the new shape and the movement statement still sees one contiguous span.",
     '3.5.10': "The tile-selection forms and their rules are collected here, so a spelling can be checked without going back through the worked examples.",
-    '3.6': "Data movement has a small grammar of operations, configurations and futures. This section describes that grammar and the asynchronous patterns built on it.",
+    '3.6': "Data movement has a small grammar: an operation, a configuration and a future. Asynchronous forms add ordering constraints, and the chapter works from one copy up to a full non-blocking chain.",
     '3.6.1': "A tiled matmul with explicit copies puts the movement statements in context. This section reads the full kernel.",
     '3.6.2': "Overlapping copies with computation needs more than one buffer. This section covers \\co@dma.any@, \\co@swap@ and \\co@rotate@.",
     '3.6.3': "A pipelined kernel combines tile selection, movement and contraction. This section presents one complete program.",
@@ -1222,6 +1222,20 @@ UNIT_OVERRIDES = [
      "where a program needs plain C++, Section~\\ref{sec:2-13} collects the "
      "\\texttt{\\_\\_device\\_\\_} functions, preprocessor guards and "
      "injected source text."),
+    # Round 52 (3.6): DMA grammar and async patterns.
+    ('F04-S21', None, caption_names([
+        'A host-computable tile shape',
+        'A runtime tile index that is rejected'])),
+    ('F15-S18', None, caption_names([
+        'An asynchronous DMA declaration',
+        'The same declaration with storage'])),
+    ('F03-S07',
+     r'The skeleton of every Croqtile program is now in your hands:',
+     'The constructs introduced so far assemble into one skeleton:'),
+    ('F39-S01',
+     r'In this section, you will learn more advanced syntax of \\emph\{DMA statements\}[^.]*\.',
+     "The \\emph{DMA statement} has a form for each of those levels, from a "
+     "single copy to a chained non-blocking transfer."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
