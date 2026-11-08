@@ -62,12 +62,12 @@
 \contentsline {subsection}{\numberline {3.9.3}Interoperability Summary}{127}{subsection.3.9.3}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{128}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{129}{subsection.3.10.1}%
-\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{130}{subsection.3.10.2}%
+\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{131}{subsection.3.10.2}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{131}{section.3.11}%
-\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{132}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Declarations and shapes}{132}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Iteration}{132}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Tile selection and movement}{132}{section.A.3}%
-\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{132}{section.A.4}%
-\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{133}{section.A.5}%
+\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{133}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Declarations and shapes}{133}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Iteration}{133}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Tile selection and movement}{133}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{133}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{134}{section.A.5}%
 \contentsline {chapter}{References}{135}{section*.4}%

@@ -389,7 +389,7 @@ SLOT_INTROS = {
     '3.9.1': "Calling a device helper from a \\co@__co__@ function is where the argument conventions become concrete: a shaped span arrives as a pointer plus a size, and the helper itself is passed through unchanged.",
     '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. \\co@__cpp__@ islands, guards and template instantiation are the forms it takes, and the compiler checks nothing inside them.",
     '3.9.10': "The interoperability mechanisms and their rules are collected here: what is passed through, what is injected, and where the preprocessor runs relative to the C++ one.",
-    '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. This section presents two worked examples and the reasoning they illustrate.",
+    '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. A tiled matmul and an rgb2gray kernel use the same composition operator on very different shapes.",
     '3.10.1': "A tiled matmul shows how bounded variables, \\co@chunkat@ and movement statements compose into one program.",
     '3.10.2': "An rgb2gray kernel shows the same composition operator on a different shape.",
     '3.11': "Diagnostics are part of using a language well. This section collects the methodology behind compile-time inspection, verbose builds and runtime checks.",
@@ -1298,6 +1298,13 @@ UNIT_OVERRIDES = [
      "verbose modes and systematic narrowing. The two worked programs in "
      "Section~\\ref{sec:3-10} put the interoperability mechanisms into "
      "context."),
+    # Round 73 (3.10): tileflow patterns.
+    ('F40-S01',
+     r'This section will extend your discussion on tiling optimization in Croqtile by examining some practical examples\.',
+     "Two complete programs are enough to see why the tiling constructs are "
+     "shaped the way they are."),
+    ('F09-S04', r'This flexibility is a double-edged sword\.',
+     'That flexibility has a cost.'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
