@@ -72,7 +72,7 @@
 \section{Symbolic Shapes, Shape Evaluation, and Value Numbering}
 \label{sec:3-3}
 
-\guideslotintro{Shape dimensions may be symbolic rather than literal. This section explains how the compiler evaluates them, how value numbering works, and what safety that buys.}
+\guideslotintro{A dimension does not have to be a literal. \texttt{mdspan} accepts anonymous dimensions filled in by the caller and symbolic dimensions evaluated by the compiler; value numbering is what lets the compiler fold the resulting expressions and still prove shapes safe.}
 
 \input{build/units/F16-S02}
 

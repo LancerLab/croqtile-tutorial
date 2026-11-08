@@ -358,7 +358,7 @@ SLOT_INTROS = {
     '2.15': "The constructs introduced so far are gathered here as a compact reference, so a spelling or a meaning can be looked up without re-reading the examples.",
     '3.1': "A \\file{.co} program is transpiled into host and device code. The three layers that result decide which parts the compiler rewrites and which it passes through, and the same split supports both single-source and separate-source compilation.",
     '3.2': "A Croqtile type says what a value is, how it is stored and which bounds apply to it. \\co@mdspan@ and spanned data describe shapes and buffers, integers and i-tuples describe indices, and storage and bounded qualifiers attach to each declaration.",
-    '3.3': "Shape dimensions may be symbolic rather than literal. This section explains how the compiler evaluates them, how value numbering works, and what safety that buys.",
+    '3.3': "A dimension does not have to be a literal. \\co@mdspan@ accepts anonymous dimensions filled in by the caller and symbolic dimensions evaluated by the compiler; value numbering is what lets the compiler fold the resulting expressions and still prove shapes safe.",
     '3.4': "Parallelism in Croqtile is declared in layers. This section covers space specifiers, masking and the language rules that keep multi-level iteration well defined.",
     '3.4.1': "A tiled matrix multiplication puts the parallelism constructs to work. This section walks through the kernel and the host code that launches it.",
     '3.4.2': "Following one output element through a kernel makes the index arithmetic concrete. This section traces it step by step.",
@@ -1146,6 +1146,24 @@ UNIT_OVERRIDES = [
     ('F37-S02',
      r'However, the spanned type by itself does not allocate storage or memory for the data\.',
      'The spanned type by itself does not allocate storage for the data.'),
+    # Round 42 (3.3): symbolic shapes and value numbering.
+    ('F19-S05', None, caption_names([
+        'A kernel with anonymous dimensions',
+        'The transpiled signature', 'The generated shape check'])),
+    ('F21-S02', None, caption_names([
+        'A shape expression', 'Its value-number graph'])),
+    ('F21-S05', None, caption_names([
+        'A constant expression', 'The simplified graph',
+        'The folded graph'])),
+    ('F16-S05', r'So far, you have seen mdspan with constant values, which is sufficient',
+     'An mdspan with constant values is sufficient'),
+    ('F16-S05', r'However, in some scenarios, a runtime shape',
+     'In some scenarios, a runtime shape'),
+    ('F19-S07',
+     r'In this section, you discussed \\emph\{anonymous dimension\} and \\emph\{symbolic dimension\} in Croqtile, which support dynamic shapes required in certain scenarios\.',
+     "Anonymous and symbolic dimensions are the two ways Croqtile "
+     "represents a shape that is not fully known when the program is "
+     "written."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

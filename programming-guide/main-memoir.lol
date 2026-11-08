@@ -176,18 +176,18 @@
 \contentsline {lstlisting}{\numberline {3.8}A shape with one dimension changed}{72}{lstlisting.3.8}%
 \contentsline {lstlisting}{\numberline {3.9}The same shape again}{72}{lstlisting.3.9}%
 \contentsline {lstlisting}{\numberline {3.10}Values of Bounded Variables}{75}{lstlisting.3.10}%
-\contentsline {lstlisting}{\numberline {3.11}Improved Code Safety}{76}{lstlisting.3.11}%
-\contentsline {lstlisting}{\numberline {3.12}Improved Code Safety}{77}{lstlisting.3.12}%
-\contentsline {lstlisting}{\numberline {3.13}Improved Code Safety}{77}{lstlisting.3.13}%
+\contentsline {lstlisting}{\numberline {3.11}A kernel with anonymous dimensions}{76}{lstlisting.3.11}%
+\contentsline {lstlisting}{\numberline {3.12}The transpiled signature}{77}{lstlisting.3.12}%
+\contentsline {lstlisting}{\numberline {3.13}The generated shape check}{77}{lstlisting.3.13}%
 \contentsline {lstlisting}{\numberline {3.14}Cost and Limitations}{78}{lstlisting.3.14}%
 \contentsline {lstlisting}{\numberline {3.15}a. Improved Readability and Clarity}{78}{lstlisting.3.15}%
 \contentsline {lstlisting}{\numberline {3.16}b. Type Safety and Compile-Time Checking}{78}{lstlisting.3.16}%
 \contentsline {lstlisting}{\numberline {3.17}c. Expressiveness and Flexibility}{79}{lstlisting.3.17}%
-\contentsline {lstlisting}{\numberline {3.18}Quick Example}{80}{lstlisting.3.18}%
-\contentsline {lstlisting}{\numberline {3.19}Quick Example}{80}{lstlisting.3.19}%
-\contentsline {lstlisting}{\numberline {3.20}Simplifications}{81}{lstlisting.3.20}%
-\contentsline {lstlisting}{\numberline {3.21}Simplifications}{81}{lstlisting.3.21}%
-\contentsline {lstlisting}{\numberline {3.22}Simplifications}{81}{lstlisting.3.22}%
+\contentsline {lstlisting}{\numberline {3.18}A shape expression}{80}{lstlisting.3.18}%
+\contentsline {lstlisting}{\numberline {3.19}Its value-number graph}{80}{lstlisting.3.19}%
+\contentsline {lstlisting}{\numberline {3.20}A constant expression}{81}{lstlisting.3.20}%
+\contentsline {lstlisting}{\numberline {3.21}The simplified graph}{81}{lstlisting.3.21}%
+\contentsline {lstlisting}{\numberline {3.22}The folded graph}{81}{lstlisting.3.22}%
 \contentsline {lstlisting}{\numberline {3.23}: group-4 --- cooperative group}{83}{lstlisting.3.23}%
 \contentsline {lstlisting}{\numberline {3.24}Explicit Masking/Condition}{84}{lstlisting.3.24}%
 \contentsline {lstlisting}{\numberline {3.25}Implicit Masking}{84}{lstlisting.3.25}%

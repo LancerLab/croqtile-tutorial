@@ -2,13 +2,13 @@
 
 The value numbering process assigns a value number to all entities containing a list of values, including for mdspan and ituple. For example,
 
-\begin{lstlisting}[language=croqtile,caption={Quick Example}]
+\begin{lstlisting}[language=croqtile,caption={A shape expression}]
 mdspan a : {1, b, c + 3}
 \end{lstlisting}
 
 The value numbering process would produce values including:
 
-\begin{lstlisting}[language=croqtile,caption={Quick Example}]
+\begin{lstlisting}[language=croqtile,caption={Its value-number graph}]
    VN #0:  const_1
    VN #1:  b
    VN #2:  c
