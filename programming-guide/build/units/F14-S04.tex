@@ -8,7 +8,7 @@ The Croqtile compilation process typically involves three major steps: \textbf{P
 
 As shown in the figure, immediately after \emph{pre-processing}, Croqtile \emph{transpiles} (\emph{source-to-source} compilation) the \emph{tileflow program} into target code, leaving the user-provided \emph{host program} and \emph{device program} unchanged. The \emph{tileflow program} is \emph{transpiled} into host and device source code, which you refer to as \emph{croqtile-generated code}. The compiler then combines the user-provided code and \emph{croqtile-generated} code to perform the \emph{target compilation} process. This process can generate various outputs, such as transpiled source code, workscripts, target modules, target assembly, and executables.
 
-Thus, the Croqtile compiler functions as a end-to-end compiler, with the key step being the transpilation of the \emph{tileflow program} into \emph{croqtile-generated code}.
+The Croqtile compiler functions as an end-to-end compiler, with the key step being the transpilation of the \emph{tileflow program} into \emph{croqtile-generated code}.
 
 One notable feature of Croqtile compilation is its support for both:
 

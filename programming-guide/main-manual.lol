@@ -167,8 +167,8 @@
 \contentsline {lstlisting}{\numberline {2.136}A print inside a parallel block}{66}{lstlisting.2.136}%
 \contentsline {lstlisting}{\numberline {2.137}assert: runtime invariant checks}{67}{lstlisting.2.137}%
 \contentsline {lstlisting}{\numberline {3.1}Transpilation and Compilation}{71}{lstlisting.3.1}%
-\contentsline {lstlisting}{\numberline {3.2}Device Program: Parallel Computation}{72}{lstlisting.3.2}%
-\contentsline {lstlisting}{\numberline {3.3}Device Program: Parallel Computation}{72}{lstlisting.3.3}%
+\contentsline {lstlisting}{\numberline {3.2}A device helper called from tileflow}{72}{lstlisting.3.2}%
+\contentsline {lstlisting}{\numberline {3.3}The cok wrapper for separate sources}{72}{lstlisting.3.3}%
 \contentsline {lstlisting}{\numberline {3.4}Heterogeneity: Transpiling to program launch}{73}{lstlisting.3.4}%
 \contentsline {lstlisting}{\numberline {3.5}Embedding Croqtile within C}{74}{lstlisting.3.5}%
 \contentsline {lstlisting}{\numberline {3.6}The Partial Type: mdspan}{75}{lstlisting.3.6}%

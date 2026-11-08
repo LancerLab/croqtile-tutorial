@@ -4,7 +4,7 @@ The kernel is designed to operate on input data, process it in parallel, and gen
 
 You repeat the code as below:
 
-\begin{lstlisting}[language=croqtile,caption={Device Program: Parallel Computation}]
+\begin{lstlisting}[language=croqtile,caption={A device helper called from tileflow}]
 __device__ void kernel(int * a, int * b, int * c, int n) {
   for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
 }
@@ -12,7 +12,7 @@ __device__ void kernel(int * a, int * b, int * c, int n) {
 
 For targets that only support the \_Separated Source Programming Model\_, the code may need to be wrapped within a \texttt{\_\allowbreak{}\_\allowbreak{}cok\_\allowbreak{}\_\allowbreak{} \{\}} block. The equivalent  code is shown below:
 
-\begin{lstlisting}[language=croqtile,caption={Device Program: Parallel Computation}]
+\begin{lstlisting}[language=croqtile,caption={The cok wrapper for separate sources}]
 __cok__ {
   extern "C" void kernel(int * a, int * b, int * c, int n) {
     for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
