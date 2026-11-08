@@ -385,7 +385,7 @@ SLOT_INTROS = {
     '3.8.4': "Concurrency can also be expressed on the host side: \\co@parallel.async@ launches a grid without waiting, and stream binding decides which launches may overlap.",
     '3.8.5': "A full event pipeline combines the coordination primitives: bootstrap credits, producer and consumer stages, and a final drain. Reading its stages in order shows where each credit is returned.",
     '3.8.10': "The coordination patterns and their syntax are collected here, from the 1P1C skeleton to the multi-stage event pipeline.",
-    '3.9': "Croqtile does not replace C++; it sits inside it. This section covers the boundary between the two, including calls, injected source and template instantiation.",
+    '3.9': "Croqtile does not replace C++; it sits inside it. Device helpers, verbatim source text and preprocessor macros cross that boundary, and each arrives at a different stage of compilation.",
     '3.9.1': "A device helper called from a \\co@__co__@ function shows the argument conventions in practice.",
     '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. This section shows the forms it takes.",
     '3.9.10': "The interoperability mechanisms and their rules are collected here.",
@@ -1276,6 +1276,18 @@ UNIT_OVERRIDES = [
         'An asynchronous launch', 'The synchronous form'])),
     # Round 67 (3.8.5): full event pipeline. The source prose is continuous.
     # Round 68 (3.8.10): coordination summary. The source table is unchanged.
+    # Round 69 (3.9): C++ interoperability boundary.
+    ('F24-S06', None, caption_names([
+        'A templated device helper', 'A call that instantiates it'])),
+    ('F26-S01', None, caption_names([
+        'A cok block around device code',
+        'The block after factoring target-specific details'])),
+    ('F25-S08', r'However, there are some features yet to support:',
+     'Some features are not supported yet:'),
+    ('F25-S08', r'Note that \\textbf', '\\textbf'),
+    ('F23-S05',
+     r'One important notices about croqtile preprocessing is that it is triggered much earlier than',
+     'Croqtile preprocessing runs much earlier than'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

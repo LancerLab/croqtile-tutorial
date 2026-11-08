@@ -240,10 +240,10 @@
 \contentsline {lstlisting}{\numberline {3.72}Stream Binding without .async}{121}{lstlisting.3.72}%
 \contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{122}{lstlisting.3.73}%
 \contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{125}{lstlisting.3.74}%
-\contentsline {lstlisting}{\numberline {3.75}Trigger C Template Instantiation}{125}{lstlisting.3.75}%
-\contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{126}{lstlisting.3.76}%
-\contentsline {lstlisting}{\numberline {3.77}Factor Target Specific Details}{126}{lstlisting.3.77}%
-\contentsline {lstlisting}{\numberline {3.78}Factor Target Specific Details}{126}{lstlisting.3.78}%
+\contentsline {lstlisting}{\numberline {3.75}A templated device helper}{125}{lstlisting.3.75}%
+\contentsline {lstlisting}{\numberline {3.76}A call that instantiates it}{126}{lstlisting.3.76}%
+\contentsline {lstlisting}{\numberline {3.77}A cok block around device code}{126}{lstlisting.3.77}%
+\contentsline {lstlisting}{\numberline {3.78}The block after factoring target-specific details}{126}{lstlisting.3.78}%
 \contentsline {lstlisting}{\numberline {3.79}device functions: target alongside Croqtile}{127}{lstlisting.3.79}%
 \contentsline {lstlisting}{\numberline {3.80}storage hints: setmaxnreg}{128}{lstlisting.3.80}%
 \contentsline {lstlisting}{\numberline {3.81}Example Code: Matrix Multiplication with Tiling}{130}{lstlisting.3.81}%

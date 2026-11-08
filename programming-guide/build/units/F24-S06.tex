@@ -2,7 +2,7 @@
 
 It is possible for Croqtile code to make function call to a template function. For example:
 
-\begin{lstlisting}[language=croqtile,caption={Trigger C Template Instantiation}]
+\begin{lstlisting}[language=croqtile,caption={A templated device helper}]
 template<int M, int N, int K>
 __device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
 __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
@@ -21,7 +21,7 @@ In this case, it defines device function template named \texttt{matmul\_kernel},
 
 So in Croqtile, calling a template function is similar to those in C++. However, \textbf{the template argument passed must be able to be inferred as compile time constant value} by Croqtile compiler. Therefore, any runtime values can result in error.
 
-\begin{lstlisting}[language=croqtile,caption={Trigger C Template Instantiation}]
+\begin{lstlisting}[language=croqtile,caption={A call that instantiates it}]
 __co__ void foo(int M) {
   parallel p by 1 {
     call bar<M>();  // error: 'M' is a runtime value

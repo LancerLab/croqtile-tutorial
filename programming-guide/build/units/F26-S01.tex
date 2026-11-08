@@ -2,7 +2,7 @@
 
 In some target like \emph{factor}, it requires the device function to follow C-linkage, where the device functions must be prefixed with \texttt{extern "C"}. Since template functions can not be applies to functions with C-linkage, Croqtile has some wrapper tricks to enable it. For example:
 
-\begin{lstlisting}[language=croqtile,caption={Factor Target Specific Details}]
+\begin{lstlisting}[language=croqtile,caption={A cok block around device code}]
 __cok__ {
 extern "C" void bar(int v) {};  // v is a compile-time constant
 }
@@ -13,7 +13,7 @@ __co__ void foo() {
 
 Programmers can turn \texttt{bar} into a function template, like following:
 
-\begin{lstlisting}[language=croqtile,caption={Factor Target Specific Details}]
+\begin{lstlisting}[language=croqtile,caption={The block after factoring target-specific details}]
 __cok__ {
 template <int v> void bar() {};
 // compiler generate a explicit function template specialization:
