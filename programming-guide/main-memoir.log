@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1813,8 +1813,8 @@ Package pdftex.def Info: figures//f08-fig2_event_credit_flow_light.png  used on
  input line 6.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
 )
-(./build/units/F07-S14.tex) [123 <./figures//f08-fig2_event_credit_flow_light.p
-ng>] (./build/units/F08-S15.tex) (./build/units/F10-S01.tex)
+(./build/units/F07-S14.tex [123 <./figures//f08-fig2_event_credit_flow_light.pn
+g>]) (./build/units/F08-S15.tex) (./build/units/F10-S01.tex)
 (./build/units/F10-S03.tex [124]) (./build/units/F23-S05.tex)
 (./build/units/F23-S06.tex) (./build/units/F24-S05.tex)
 (./build/units/F24-S06.tex [125]) (./build/units/F25-S08.tex)
@@ -1882,7 +1882,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3272160 bytes).
+Output written on main-memoir.pdf (149 pages, 3272207 bytes).
 PDF statistics:
  3811 PDF objects out of 4296 (max. 8388607)
  3502 compressed objects within 36 object streams

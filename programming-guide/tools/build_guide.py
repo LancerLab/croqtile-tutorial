@@ -384,7 +384,7 @@ SLOT_INTROS = {
     '3.8.3': "A persistent kernel decides its own work instead of being launched once per tile. A guard bounds the scheduling loop, and the loop reuses one set of buffers for many tiles.",
     '3.8.4': "Concurrency can also be expressed on the host side: \\co@parallel.async@ launches a grid without waiting, and stream binding decides which launches may overlap.",
     '3.8.5': "A full event pipeline combines the coordination primitives: bootstrap credits, producer and consumer stages, and a final drain. Reading its stages in order shows where each credit is returned.",
-    '3.8.10': "The coordination patterns and their syntax are collected here.",
+    '3.8.10': "The coordination patterns and their syntax are collected here, from the 1P1C skeleton to the multi-stage event pipeline.",
     '3.9': "Croqtile does not replace C++; it sits inside it. This section covers the boundary between the two, including calls, injected source and template instantiation.",
     '3.9.1': "A device helper called from a \\co@__co__@ function shows the argument conventions in practice.",
     '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. This section shows the forms it takes.",
@@ -1275,6 +1275,7 @@ UNIT_OVERRIDES = [
     ('F36-S01', None, caption_names([
         'An asynchronous launch', 'The synchronous form'])),
     # Round 67 (3.8.5): full event pipeline. The source prose is continuous.
+    # Round 68 (3.8.10): coordination summary. The source table is unchanged.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

@@ -241,7 +241,7 @@
 \contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{121}{lstlisting.3.73}%
 \contentsline {lstlisting}{\numberline {3.74}Difference with C pre-processing}{124}{lstlisting.3.74}%
 \contentsline {lstlisting}{\numberline {3.75}Trigger C Template Instantiation}{124}{lstlisting.3.75}%
-\contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{124}{lstlisting.3.76}%
+\contentsline {lstlisting}{\numberline {3.76}Trigger C Template Instantiation}{125}{lstlisting.3.76}%
 \contentsline {lstlisting}{\numberline {3.77}Factor Target Specific Details}{125}{lstlisting.3.77}%
 \contentsline {lstlisting}{\numberline {3.78}Factor Target Specific Details}{125}{lstlisting.3.78}%
 \contentsline {lstlisting}{\numberline {3.79}device functions: target alongside Croqtile}{126}{lstlisting.3.79}%
