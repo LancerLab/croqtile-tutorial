@@ -2,7 +2,7 @@
 
 The result of a DMA or TMA statement is a future-like handle:
 
-\begin{lstlisting}[language=croqtile,caption={Futures, .data, and .span}]
+\begin{lstlisting}[language=croqtile,caption={A future from a copy}]
 f = dma.copy input => shared;
 \end{lstlisting}
 
@@ -15,7 +15,7 @@ That handle gives you two important things:
 
 Example:
 
-\begin{lstlisting}[language=croqtile,caption={Futures, .data, and .span}]
+\begin{lstlisting}[language=croqtile,caption={Reading data and span}]
 f = dma.copy input => shared;
 foreach idx in [f.span]
   output.at(idx) = f.data.at(idx);

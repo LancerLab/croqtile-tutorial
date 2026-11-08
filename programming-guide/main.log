@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 14:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1273,34 +1273,37 @@ line 27.
 ) (./build/units/F04-S09.tex [48 <./figures//f04-fig_future_data_light.png>]) (
 ./build/units/F04-S11.tex)
 (./build/units/F04-S12.tex) (./build/units/F14-S08.tex [49]
-<figures//f14-chunkat-6-17-4.drawio.png, id=1781, 628.3475pt x 495.8525pt>
+<figures//f14-chunkat-6-17-4.drawio.png, id=1779, 628.3475pt x 495.8525pt>
 File: figures//f14-chunkat-6-17-4.drawio.png Graphic file (type png)
 <use figures//f14-chunkat-6-17-4.drawio.png>
 Package pdftex.def Info: figures//f14-chunkat-6-17-4.drawio.png  used on input 
 line 52.
 (pdftex.def)             Requested size: 367.9797pt x 290.38654pt.
-) [50]
+ [50])
 (./build/units/F28-S01.tex) (./build/units/F28-S03.tex)
-(./build/units/F28-S04.tex [51 <./figures//f14-chunkat-6-17-4.drawio.png>])
-(./build/units/F28-S06.tex) (./build/units/F28-S07.tex [52])
-(./build/units/F28-S08.tex) (./build/units/F07-S06.tex)
-(./build/units/F07-S07.tex [53]) (./build/units/F34-S06.tex [54])
-(./build/units/F34-S09.tex) (./build/units/F35-S01.tex)
-(./build/units/F35-S02.tex [55]) (./build/units/F35-S05.tex) [56]
-(./build/units/F07-S02.tex) (./build/units/F07-S12.tex)
-(./build/units/F06-S02.tex [57]) (./build/units/F10-S05.tex)
-(./build/units/F10-S07.tex) (./build/units/F10-S08.tex)
-(./build/units/F10-S09.tex [58]) (./build/units/F10-S10.tex)
-(./build/units/F10-S11.tex) (./build/units/F15-S20.tex [59])
-(./build/units/F23-S01.tex) (./build/units/F23-S02.tex)
-(./build/units/F23-S03.tex) (./build/units/F23-S04.tex [60])
-(./build/units/F24-S01.tex) (./build/units/F24-S02.tex)
-(./build/units/F24-S03.tex [61]) (./build/units/F24-S04.tex)
-(./build/units/F24-S07.tex) [62] (./build/units/F11-S02.tex)
-(./build/units/F11-S03.tex) (./build/units/F11-S04.tex [63])
-(./build/units/F04-S25.tex) (./build/units/F05-S18.tex)
-(./build/units/F07-S13.tex) (./build/units/F08-S14.tex) [64] [65])
-(./content/ch03-programming-guide.tex [66]
+(./build/units/F28-S04.tex
+Underfull \vbox (badness 1688) has occurred while \output is active []
+
+ [51 <./figures//f14-chunkat-6-17-4.drawio.png>]) (./build/units/F28-S06.tex)
+(./build/units/F28-S07.tex [52]) (./build/units/F28-S08.tex)
+(./build/units/F07-S06.tex) (./build/units/F07-S07.tex [53])
+(./build/units/F34-S06.tex [54]) (./build/units/F34-S09.tex)
+(./build/units/F35-S01.tex) (./build/units/F35-S02.tex [55])
+(./build/units/F35-S05.tex) [56] (./build/units/F07-S02.tex)
+(./build/units/F07-S12.tex) (./build/units/F06-S02.tex [57])
+(./build/units/F10-S05.tex) (./build/units/F10-S07.tex)
+(./build/units/F10-S08.tex) (./build/units/F10-S09.tex [58])
+(./build/units/F10-S10.tex) (./build/units/F10-S11.tex)
+(./build/units/F15-S20.tex [59]) (./build/units/F23-S01.tex)
+(./build/units/F23-S02.tex) (./build/units/F23-S03.tex)
+(./build/units/F23-S04.tex [60]) (./build/units/F24-S01.tex)
+(./build/units/F24-S02.tex) (./build/units/F24-S03.tex [61])
+(./build/units/F24-S04.tex) (./build/units/F24-S07.tex) [62]
+(./build/units/F11-S02.tex) (./build/units/F11-S03.tex)
+(./build/units/F11-S04.tex [63]) (./build/units/F04-S25.tex)
+(./build/units/F05-S18.tex) (./build/units/F07-S13.tex)
+(./build/units/F08-S14.tex) [64] [65]) (./content/ch03-programming-guide.tex
+[66]
 Chapter 3.
 (./build/units/F12-S02.tex) (./build/units/F14-S01.tex)
 (./build/units/F14-S02.tex) (./build/units/F14-S04.tex [67
@@ -1604,7 +1607,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (147 pages, 3252725 bytes).
+Output written on main.pdf (147 pages, 3252824 bytes).
 PDF statistics:
  3580 PDF objects out of 3580 (max. 8388607)
  3276 compressed objects within 33 object streams

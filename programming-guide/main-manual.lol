@@ -122,23 +122,23 @@
 \contentsline {lstlisting}{\numberline {2.91}Ubound Operation}{46}{lstlisting.2.91}%
 \contentsline {lstlisting}{\numberline {2.92}Use chunkat Expression to Tile Data}{47}{lstlisting.2.92}%
 \contentsline {lstlisting}{\numberline {2.93}Use Multiple Bounded Variables}{48}{lstlisting.2.93}%
-\contentsline {lstlisting}{\numberline {2.94}The DMA Statement Family}{48}{lstlisting.2.94}%
-\contentsline {lstlisting}{\numberline {2.95}The DMA Statement Family}{49}{lstlisting.2.95}%
+\contentsline {lstlisting}{\numberline {2.94}The general DMA form}{48}{lstlisting.2.94}%
+\contentsline {lstlisting}{\numberline {2.95}A concrete copy}{49}{lstlisting.2.95}%
 \contentsline {lstlisting}{\numberline {2.96}First Example: Tiled Addition Through shared storage}{49}{lstlisting.2.96}%
-\contentsline {lstlisting}{\numberline {2.97}Futures, .data, and .span}{49}{lstlisting.2.97}%
-\contentsline {lstlisting}{\numberline {2.98}Futures, .data, and .span}{50}{lstlisting.2.98}%
-\contentsline {lstlisting}{\numberline {2.99}Synchronous and Asynchronous Copies}{51}{lstlisting.2.99}%
-\contentsline {lstlisting}{\numberline {2.100}Synchronous and Asynchronous Copies}{51}{lstlisting.2.100}%
-\contentsline {lstlisting}{\numberline {2.101}Synchronous and Asynchronous Copies}{51}{lstlisting.2.101}%
+\contentsline {lstlisting}{\numberline {2.97}A future from a copy}{49}{lstlisting.2.97}%
+\contentsline {lstlisting}{\numberline {2.98}Reading data and span}{50}{lstlisting.2.98}%
+\contentsline {lstlisting}{\numberline {2.99}A synchronous copy}{51}{lstlisting.2.99}%
+\contentsline {lstlisting}{\numberline {2.100}An asynchronous copy}{51}{lstlisting.2.100}%
+\contentsline {lstlisting}{\numberline {2.101}An asynchronous tma copy}{51}{lstlisting.2.101}%
 \contentsline {lstlisting}{\numberline {2.102}dma.transp ...}{51}{lstlisting.2.102}%
 \contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{51}{lstlisting.2.103}%
-\contentsline {lstlisting}{\numberline {2.104}Tileflow Program: Orchestrating the Data Movement}{52}{lstlisting.2.104}%
-\contentsline {lstlisting}{\numberline {2.105}Tileflow Program: Orchestrating the Data Movement}{52}{lstlisting.2.105}%
+\contentsline {lstlisting}{\numberline {2.104}The tileflow program}{52}{lstlisting.2.104}%
+\contentsline {lstlisting}{\numberline {2.105}The equivalent C++ loop}{52}{lstlisting.2.105}%
 \contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{54}{lstlisting.2.106}%
 \contentsline {lstlisting}{\numberline {2.107}Synchronous and Asynchronous}{54}{lstlisting.2.107}%
 \contentsline {lstlisting}{\numberline {2.108}Data Expression}{55}{lstlisting.2.108}%
-\contentsline {lstlisting}{\numberline {2.109}Future and Wait}{55}{lstlisting.2.109}%
-\contentsline {lstlisting}{\numberline {2.110}Future and Wait}{55}{lstlisting.2.110}%
+\contentsline {lstlisting}{\numberline {2.109}Two asynchronous copies}{55}{lstlisting.2.109}%
+\contentsline {lstlisting}{\numberline {2.110}Waiting on both futures}{55}{lstlisting.2.110}%
 \contentsline {lstlisting}{\numberline {2.111}Event arrays for multi-stage pipelines}{56}{lstlisting.2.111}%
 \contentsline {lstlisting}{\numberline {2.112}Bootstrap protocol}{56}{lstlisting.2.112}%
 \contentsline {lstlisting}{\numberline {2.113}Parallel Perspective of Tileflow Programs}{57}{lstlisting.2.113}%

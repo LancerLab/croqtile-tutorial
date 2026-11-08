@@ -4,7 +4,7 @@ The \emph{Tileflow Program} consists of \emph{Croqtile functions}. As described 
 
 For convenience, let's revisit the code:
 
-\begin{lstlisting}[language=croqtile,caption={Tileflow Program: Orchestrating the Data Movement}]
+\begin{lstlisting}[language=croqtile,caption={The tileflow program}]
 __co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
   s32 [lhs.span] output; // Use same shape as lhs
   parallel p by 6 {
@@ -32,7 +32,7 @@ Inside the \texttt{parallel-by} block, a \texttt{with-in} block binds the symbol
 
 The \texttt{foreach index \{.\allowbreak{}.\allowbreak{}.\allowbreak{}\}} statement is equivalent to the following C code:
 
-\begin{lstlisting}[language={},caption={Tileflow Program: Orchestrating the Data Movement}]
+\begin{lstlisting}[language={},caption={The equivalent C++ loop}]
 for (int x = 0; x < 17; x++)  // assume 'x' represents the 1st element of 'index'
   for (int y = 0; y < 4; y++) { ... }  // and 'y' represents the 2nd element of 'index'
 \end{lstlisting}

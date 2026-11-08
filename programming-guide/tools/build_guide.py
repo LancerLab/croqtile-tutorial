@@ -349,7 +349,7 @@ SLOT_INTROS = {
     '2.6': "A buffer in Croqtile always arrives with its shape. Declaring one fixes the element type and the dimensions; a storage specifier says where it lives, and an initializer can fill it at the declaration site.",
     '2.7': "Iteration constructs state which iterations are independent, leaving the schedule to the compiler. \\co@parallel@, \\co@with-in@ and \\co@foreach@ differ in what they name and how much of the index space each instance sees.",
     '2.8': "A tile is a window onto a larger buffer. \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ choose different windows, and the compose operator \\co@#@ combines those choices without copying data.",
-    '2.9': "Moving a tile is a statement in the language, not a library call. This section introduces the DMA statement, futures, and synchronous versus asynchronous copies.",
+    '2.9': "A DMA statement moves a tile between storage levels and returns a future the program can wait on. Synchronous and asynchronous copies share one syntax; only the wait and the lifetime of the source differ.",
     '2.10': "Concurrent regions have to agree on who may proceed. This section introduces \\co@inthreads@, events and the asynchronous forms through short examples.",
     '2.11': "Not every branch is known at compile time. This section covers runtime predicates and early return from a parallel region.",
     '2.12': "Contraction is written as four explicit steps. This section reads that syntax once, with the smallest example that shows all four.",
@@ -1044,6 +1044,24 @@ UNIT_OVERRIDES = [
     ('F29-S06', r'Wish you good luck!',
      'Section~\\ref{sec:3-6-1} puts the pieces together into a complete '
      'tileflow program.'),
+    # Round 33 (2.9): DMA statements and futures.
+    ('F04-S02', None, caption_names([
+        'The general DMA form', 'A concrete copy'])),
+    ('F04-S08', None, caption_names([
+        'A future from a copy', 'Reading data and span'])),
+    ('F04-S09', None, caption_names([
+        'A synchronous copy', 'An asynchronous copy',
+        'An asynchronous tma copy'])),
+    ('F14-S08', None, caption_names([
+        'The tileflow program', 'The equivalent C++ loop'])),
+    ('F28-S07', None, caption_names([
+        'Two asynchronous copies', 'Waiting on both futures'])),
+    ('F28-S06',
+     r'So far, you have only used simple data expressions, either',
+     'The data expressions used so far have been simple, either'),
+    ('F28-S06',
+     r'However, the use of simple \\textbf\{data expressions\} is rare in practice\. In the next section, this section introduces',
+     'In practice, simple \\textbf{data expressions} are rare. The next section introduces'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

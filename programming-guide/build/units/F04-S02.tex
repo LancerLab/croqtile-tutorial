@@ -2,7 +2,7 @@
 
 All of Croqtile's tile-movement operations use the same basic form:
 
-\begin{lstlisting}[language=croqtile,caption={The DMA Statement Family}]
+\begin{lstlisting}[language=croqtile,caption={The general DMA form}]
 future = engine.operation.modifiers source => destination;
 \end{lstlisting}
 
@@ -24,7 +24,7 @@ The important pieces are:
 
 Minimal examples:
 
-\begin{lstlisting}[language=croqtile,caption={The DMA Statement Family}]
+\begin{lstlisting}[language=croqtile,caption={A concrete copy}]
 f = dma.copy input.chunkat(block) => shared;
 g = dma.transp<1, 0> matrix => local;
 h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;

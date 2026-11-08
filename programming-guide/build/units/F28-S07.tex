@@ -4,7 +4,7 @@ Both \emph{Sync-DMA} and \emph{Async-DMA} operations can be used to define a \em
 
 Croqtile allows the \texttt{wait} statement to take multiple \emph{future}s. However, using a \emph{future} from a \textbf{Sync-DMA} in a \texttt{wait} statement will result in an error. The following code provides an example:
 
-\begin{lstlisting}[language=croqtile,caption={Future and Wait}]
+\begin{lstlisting}[language=croqtile,caption={Two asynchronous copies}]
 f0 = dma.copy.async input0 => shared;
 f1 = dma.copy.async input1 => shared;
 f2 = dma.copy input2 => shared;
@@ -22,7 +22,7 @@ In Croqtile, another use of a \emph{future} is to retrieve the destination buffe
 
 For example:
 
-\begin{lstlisting}[language=croqtile,caption={Future and Wait}]
+\begin{lstlisting}[language=croqtile,caption={Waiting on both futures}]
 f0 = dma.copy.async input0 => shared;
 f1 = dma.copy input2 => shared;
 ...

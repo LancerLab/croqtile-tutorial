@@ -2,14 +2,14 @@
 
 By default, copies are synchronous:
 
-\begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous Copies}]
+\begin{lstlisting}[language=croqtile,caption={A synchronous copy}]
 f = dma.copy input => shared;
 dma.copy f.data => output;
 \end{lstlisting}
 
 Add \texttt{.async} when you want the transfer to proceed in the background:
 
-\begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous Copies}]
+\begin{lstlisting}[language=croqtile,caption={An asynchronous copy}]
 f = dma.copy.async input => shared;
 wait f;
 dma.copy f.data => output;
@@ -17,7 +17,7 @@ dma.copy f.data => output;
 
 The same pattern applies to TMA:
 
-\begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous Copies}]
+\begin{lstlisting}[language=croqtile,caption={An asynchronous tma copy}]
 f = tma.copy.async input => shared;
 wait f;
 tma.copy f.data => output;
