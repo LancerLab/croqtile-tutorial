@@ -345,7 +345,7 @@ SLOT_INTROS = {
     '2.2': "An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.",
     '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result back. Each step uses a small API, and the shape attached to a buffer is what makes the call type-safe.",
     '2.4': "A shape is a value a program can name and compute with, not just an annotation on a declaration. \\co@mdspan@ defines one, arithmetic derives another from it, and an anonymous dimension leaves a size for the caller to supply.",
-    '2.5': "Loop bounds and indices are compile-time values with types of their own. This section covers integers, I-tuples and bounded values.",
+    '2.5': "Integers control loops and index arrays; an \\co@ituple@ groups several of them into one index. Both are declared with an initializer, both are immutable, and both are checked against the shape they are used with.",
     '2.6': "Data in Croqtile is \\emph{spanned}: a buffer together with its shape. This section shows how spanned data is declared, stored and initialised.",
     '2.7': "Iteration in Croqtile declares independence rather than a schedule. This section introduces \\co@parallel@, \\co@with-in@ and \\co@foreach@ through small programs.",
     '2.8': "A tile is a slice of a larger buffer. This section shows the ways to select one --- \\co@chunkat@, \\co@subspan@, \\co@view().from()@ --- and the compose operator \\co@#@.",
@@ -938,6 +938,37 @@ UNIT_OVERRIDES = [
     ('F16-S04',
      r'Note that arithmetic operations on an \\emph\{mdspan\} variable',
      'Arithmetic operations on an \\emph{mdspan} variable'),
+    # Round 29 (2.5): integers and i-tuples.
+    ('F17-S02', None, caption_names([
+        'An initialized integer', 'Assignment to an integer',
+        'Several integers at once', 'An integer parameter',
+        'A declaration without initialization'])),
+    ('F17-S05', None, caption_names([
+        'An i-tuple literal', 'An inconsistent rank'])),
+    ('F17-S06', None, caption_names([
+        'Assigning a new tuple', 'Indexing an mdspan with an i-tuple',
+        'An invalid shape expression'])),
+    ('F17-S01',
+     r'In this section, you will learn how to define \\emph\{integer\}s and integer-tuples \(\\emph\{i-tuple\}s\) in Croqtile code and understand their usage\.',
+     "Integers in a kernel control loops and index arrays, and an "
+     "\\emph{i-tuple} groups several of them into one index. Both are "
+     "declared with an initializer and both are checked against the shape "
+     "they are used with."),
+    ('F17-S02',
+     r'However, since Croqtile can infer the type from the \\emph\{initialization expression\}, you can also define an integer variable in another style:',
+     "Croqtile can also infer the type from the \\emph{initialization "
+     "expression}, so an integer variable can be declared in another style:"),
+    ('F17-S06',
+     r'Note that, similar to \\emph\{integer\} and \\emph\{mdspan\}, \*\*an \\emph\{ituple\} variable must be initialized and cannot be reassigned\*\*\.',
+     "Similar to \\emph{integer} and \\emph{mdspan}, an \\emph{ituple} "
+     "variable must be initialized and cannot be reassigned."),
+    ('F17-S09',
+     r'In this section, you learned how to define \\emph\{integer\}s and \\emph\{i-tuple\}s in Croqtile\.',
+     "Integers and i-tuples are the two scalar-shaped values a kernel "
+     "declares."),
+    ('F15-S05',
+     r'As described, Scalar types in Croqtile includes',
+     'Scalar types in Croqtile include'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

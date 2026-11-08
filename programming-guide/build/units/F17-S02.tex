@@ -4,26 +4,26 @@ In high-performance computation kernels, integers are typically used for program
 
 In Croqtile, an \textbf{integer}-typed variable is defined similar to C/C++:
 
-\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+\begin{lstlisting}[language=croqtile,caption={An initialized integer}]
 int a = 1;
 \end{lstlisting}
 
-However, since Croqtile can infer the type from the \emph{initialization expression}, you can also define an integer variable in another style:
+Croqtile can also infer the type from the \emph{initialization expression}, so an integer variable can be declared in another style:
 
-\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+\begin{lstlisting}[language=croqtile,caption={Assignment to an integer}]
 a = 1;
 \end{lstlisting}
 
 Similar to C/C++, you can define multiple integers in a single line:
 
-\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+\begin{lstlisting}[language=croqtile,caption={Several integers at once}]
 int a = 1, b = 2, c = 3;
 d = 4, e = 5;
 \end{lstlisting}
 
 In Croqtile, the \emph{mdspan}-typed shape can not be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:
 
-\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+\begin{lstlisting}[language=croqtile,caption={An integer parameter}]
 __co__ void foo(int a) {
   // ...
   call kernel(a, 3);
@@ -32,7 +32,7 @@ __co__ void foo(int a) {
 
 Unlike C/C++, Croqtile does not allow the declaration of integers without initialization or the reassignment of an integer. For example:
 
-\begin{lstlisting}[language=croqtile,caption={Integers for Program Control}]
+\begin{lstlisting}[language=croqtile,caption={A declaration without initialization}]
 int a;  // error: declaration without initialization
 int b = 1;
 b = 3;  // error: re-assignment

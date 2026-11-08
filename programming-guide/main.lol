@@ -58,16 +58,16 @@
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types}{25}{lstlisting.2.27}%
 \contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{26}{lstlisting.2.28}%
 \contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{26}{lstlisting.2.29}%
-\contentsline {lstlisting}{\numberline {2.30}Integers for Program Control}{26}{lstlisting.2.30}%
-\contentsline {lstlisting}{\numberline {2.31}Integers for Program Control}{27}{lstlisting.2.31}%
-\contentsline {lstlisting}{\numberline {2.32}Integers for Program Control}{27}{lstlisting.2.32}%
-\contentsline {lstlisting}{\numberline {2.33}Integers for Program Control}{27}{lstlisting.2.33}%
-\contentsline {lstlisting}{\numberline {2.34}Integers for Program Control}{27}{lstlisting.2.34}%
-\contentsline {lstlisting}{\numberline {2.35}Defining I-Tuples}{27}{lstlisting.2.35}%
-\contentsline {lstlisting}{\numberline {2.36}Defining I-Tuples}{28}{lstlisting.2.36}%
-\contentsline {lstlisting}{\numberline {2.37}Operations on I-Tuples}{28}{lstlisting.2.37}%
-\contentsline {lstlisting}{\numberline {2.38}Operations on I-Tuples}{28}{lstlisting.2.38}%
-\contentsline {lstlisting}{\numberline {2.39}Operations on I-Tuples}{28}{lstlisting.2.39}%
+\contentsline {lstlisting}{\numberline {2.30}An initialized integer}{26}{lstlisting.2.30}%
+\contentsline {lstlisting}{\numberline {2.31}Assignment to an integer}{27}{lstlisting.2.31}%
+\contentsline {lstlisting}{\numberline {2.32}Several integers at once}{27}{lstlisting.2.32}%
+\contentsline {lstlisting}{\numberline {2.33}An integer parameter}{27}{lstlisting.2.33}%
+\contentsline {lstlisting}{\numberline {2.34}A declaration without initialization}{27}{lstlisting.2.34}%
+\contentsline {lstlisting}{\numberline {2.35}An i-tuple literal}{27}{lstlisting.2.35}%
+\contentsline {lstlisting}{\numberline {2.36}An inconsistent rank}{28}{lstlisting.2.36}%
+\contentsline {lstlisting}{\numberline {2.37}Assigning a new tuple}{28}{lstlisting.2.37}%
+\contentsline {lstlisting}{\numberline {2.38}Indexing an mdspan with an i-tuple}{28}{lstlisting.2.38}%
+\contentsline {lstlisting}{\numberline {2.39}An invalid shape expression}{28}{lstlisting.2.39}%
 \contentsline {lstlisting}{\numberline {2.40}Fully-Typing}{29}{lstlisting.2.40}%
 \contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{29}{lstlisting.2.41}%
 \contentsline {lstlisting}{\numberline {2.42}Defining a Spanned Data}{29}{lstlisting.2.42}%

@@ -2,7 +2,7 @@
 
 In Croqtile, multiple integers can be grouped into an \textbf{integer-tuple}, or \textbf{i-tuple} (or \textbf{ituple}). The keyword \texttt{ituple} can be used to define an \emph{i-tuple}. The below code showcases the usage:
 
-\begin{lstlisting}[language=croqtile,caption={Defining I-Tuples}]
+\begin{lstlisting}[language=croqtile,caption={An i-tuple literal}]
 ituple a = {1, 2, 3};
 b = {4, 5, 6};  // utilize the type inference
 \end{lstlisting}
@@ -16,6 +16,6 @@ Since Croqtile can infer types from the \emph{initialization expression}, progra
 
 Similar to \texttt{mdspan}, you may enforce rank check for \emph{ituple}s at compile time:
 
-\begin{lstlisting}[language=croqtile,caption={Defining I-Tuples}]
+\begin{lstlisting}[language=croqtile,caption={An inconsistent rank}]
 ituple<3> a = {1, 2};  // error: inconsistent rank
 \end{lstlisting}

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **2.5** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.4)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28)
+- Next section: **2.6** (chapter 1 complete: 1.1–1.10; chapter 2 in progress: 2.1–2.5)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -78,7 +78,7 @@ chapter numbers; every unit stays in its registered slot.
 | 2.2 | x | round 26 | Four kernel fragments kept their code but gained distinct captions; replaced the empty "heart of the program" opener with the signature/structure lead-in, removed a duplicated element-type sentence, repaired the dangling "short answer" sentence, and re-anchored the misplaced s32/swap note to Sections 3.6.2 and 3.7 |
 | 2.3 | x | round 27 | Gave the three repeated caption groups distinct names, repaired broken host-side grammar (value semantics, includes, RVO, runtime dimensions), replaced the "Nothing new here" aside with what the verification loop actually checks, and removed the meta-narration from the slot intro |
 | 2.4 | x | round 28 | Named all eight shape examples individually, replaced the "first-class citizen / in this section" opener with an account of what a shape value does, re-anchored the dangling "This comes up" sentence, and removed a "Note that" opener without losing the dimensional-arithmetic rule |
-| 2.5 | . | | |
+| 2.5 | x | round 29 | Gave the ten integer/i-tuple listings distinct captions, replaced both "In this section" bookends with statements about what the constructs do, removed a dangling "However" and a dangling "As described", and converted leftover Markdown asterisks into a plain constraint sentence |
 | 2.6 | . | | |
 | 2.7 | . | | |
 | 2.8 | . | | |

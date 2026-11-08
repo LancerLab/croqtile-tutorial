@@ -1,5 +1,5 @@
 \paragraph*{In short}
 
-In this section, you learned how to define \emph{integer}s and \emph{i-tuple}s in Croqtile. The \emph{Integer}s follow C/C++ syntax. \emph{i-tuples} follow a syntax similar to \emph{mdspan}, but they can operate on \emph{mdspan} to derive new values.
+Integers and i-tuples are the two scalar-shaped values a kernel declares. The \emph{Integer}s follow C/C++ syntax. \emph{i-tuples} follow a syntax similar to \emph{mdspan}, but they can operate on \emph{mdspan} to derive new values.
 
 Both types \textbf{require an \_initialization expression\_ and cannot be reassigned}, making them appear as \textbf{constant} or \textbf{immutable} values. In fact, all variables defined in Croqtile tileflow programs are immutable, except for those of specific types. Therefore, \textbf{the assignment operator \texttt{=} is used for variable initialization in most cases}, which programs must be aware of.
