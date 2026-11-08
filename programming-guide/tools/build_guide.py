@@ -395,6 +395,29 @@ SLOT_INTROS = {
     '3.11': "Diagnostics are part of using a language well. This section collects the methodology behind compile-time inspection, verbose builds and runtime checks.",
 }
 
+def caption_names(names):
+    """Build a transform that names a unit's listing captions in order.
+
+    Upstream pages reuse one section title as the caption of every code block
+    in that section.  A unit-level transform keeps the rewrite local to one
+    content unit, so refining one section never touches another.
+    """
+    ordered = tuple(names)
+
+    def transform(frag):
+        it = iter(ordered)
+
+        def sub(m):
+            try:
+                return 'caption={%s}' % next(it)
+            except StopIteration:
+                return m.group(0)
+
+        return re.sub(r'caption=\{[^}]*\}', sub, frag)
+
+    return transform
+
+
 # A very small number of source units are meta-narrative about the old
 # tutorial (its chapter list).  They are replaced, not summarised.
 UNIT_OVERRIDES = [
@@ -1471,7 +1494,10 @@ def main():
             frag = convert_body(body, uid, rel, fid, title)
             for ouid, pat, repl in UNIT_OVERRIDES:
                 if ouid in (uid, '*'):
-                    frag = re.sub(pat, lambda m, t=repl: t, frag)
+                    if callable(repl):
+                        frag = repl(frag)
+                    else:
+                        frag = re.sub(pat, lambda m, t=repl: t, frag)
             frag = clean_fragment(frag)
             # An empty registered group heading contributes no heading at all;
             # otherwise the PDF shows a title with nothing beneath it.
