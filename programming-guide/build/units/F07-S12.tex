@@ -1,6 +1,6 @@
 \subsection*{Early return from \texttt{parallel}}
 
-Sometimes you need to early return from a \texttt{parallel} block. The \texttt{yield} keyword will simply generate a \texttt{return;} instruction to get out of device code.
+Sometimes you need to early return from a \texttt{parallel} block. The \texttt{yield} keyword generates a \texttt{return;} instruction that leaves the device code for that instance.
 
 \begin{lstlisting}[language=croqtile,caption={Early return from parallel}]
 parallel p by BLK_CNT: block {

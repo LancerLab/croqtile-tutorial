@@ -351,7 +351,7 @@ SLOT_INTROS = {
     '2.8': "A tile is a window onto a larger buffer. \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ choose different windows, and the compose operator \\co@#@ combines those choices without copying data.",
     '2.9': "A DMA statement moves a tile between storage levels and returns a future the program can wait on. Synchronous and asynchronous copies share one syntax; only the wait and the lifetime of the source differ.",
     '2.10': "Concurrent regions need a way to agree on who may proceed. Events, \\co@inthreads@ blocks and their asynchronous forms encode that agreement in the program rather than in an implicit schedule.",
-    '2.11': "Not every branch is known at compile time. This section covers runtime predicates and early return from a parallel region.",
+    '2.11': "A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.",
     '2.12': "Contraction is written as four explicit steps. This section reads that syntax once, with the smallest example that shows all four.",
     '2.13': "Croqtile lives inside C++: a \\file{.co} file can call helpers, inject source text and use the preprocessor. This section covers each mechanism in turn.",
     '2.14': "The language has its own print and assert forms, at compile time and at runtime. This section shows what each one reports and when to reach for it.",
@@ -1082,6 +1082,11 @@ UNIT_OVERRIDES = [
     ('F35-S05',
      r'In this section, you learnt .event. that can ochestrate asynchronous \\texttt\{inthreads\} blocks\.',
      "Events let asynchronous \\texttt{inthreads} blocks agree on an order."),
+    # Round 35 (2.11): branching and early return keep their source prose.
+    ('F07-S12',
+     r'The \\texttt\{yield\} keyword will simply generate a \\texttt\{return;\} instruction to get out of device code\.',
+     "The \\texttt{yield} keyword generates a \\texttt{return;} instruction "
+     "that leaves the device code for that instance."),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

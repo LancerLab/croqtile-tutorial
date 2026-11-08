@@ -256,7 +256,7 @@
 \section{Branching and Early Return}
 \label{sec:2-11}
 
-\guideslotintro{Not every branch is known at compile time. This section covers runtime predicates and early return from a parallel region.}
+\guideslotintro{A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.}
 
 \input{build/units/F07-S02}
 
