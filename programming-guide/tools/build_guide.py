@@ -370,7 +370,7 @@ SLOT_INTROS = {
     '3.5.10': "The tile-selection forms and their rules are collected here, so a spelling can be checked without going back through the worked examples.",
     '3.6': "Data movement has a small grammar: an operation, a configuration and a future. Asynchronous forms add ordering constraints, and the chapter works from one copy up to a full non-blocking chain.",
     '3.6.1': "A tiled matmul with explicit copies shows where each movement statement sits. Reading the full kernel is easier once the tile it moves and the buffer it lands in are named.",
-    '3.6.2': "Overlapping copies with computation needs more than one buffer. This section covers \\co@dma.any@, \\co@swap@ and \\co@rotate@.",
+    '3.6.2': "Overlapping copies with computation needs more than one buffer. \\co@dma.any@ selects a buffer, \\co@swap@ exchanges two handles and \\co@rotate@ cycles through a ring of them.",
     '3.6.3': "A pipelined kernel combines tile selection, movement and contraction. This section presents one complete program.",
     '3.7': "Contraction in Croqtile is a four-step contract between layout and accumulation. This section describes that contract and the variants that share it.",
     '3.7.1': "This worked kernel shows one cooperative group carrying out the four steps on a single tile.",
@@ -1240,6 +1240,9 @@ UNIT_OVERRIDES = [
     ('F05-S14', r'What changed from the scalar version:',
      "The scalar version indexed one element at a time. The tiled version "
      "first copies a tile into shared storage, then computes on that tile:"),
+    # Round 54 (3.6.2): multi-buffering.
+    ('F38-S01', r'Note that the \\textbf\{select\} expressions',
+     'The \\textbf{select} expressions'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

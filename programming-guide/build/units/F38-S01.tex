@@ -53,6 +53,6 @@ The \textbf{swap} statements at lines 18-19 exchange futures to ensure the \text
 
 In line 25, the expression \texttt{y(-1)} retrieves the 'last value' of 'y' within its bound.
 
-Note that the \textbf{select} expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk.
+The \textbf{select} expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk.
 
 If the programmer want to enable more than two buffers, \textbf{rotate} statements is required to replace \textbf{swap}.
