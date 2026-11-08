@@ -222,7 +222,7 @@
 \subsection{Zero-Padding with zfill}
 \label{sec:3-5-3}
 
-\guideslotintro{Partial tiles at the edge of a shape need padding. This section shows how \texttt{.zfill} supplies it.}
+\guideslotintro{When a dimension is not a multiple of the tile size, the last tile is partial. \texttt{.zfill} pads such a tile at the destination, so the movement statement keeps a full tile shape.}
 
 \input{build/units/F09-S09}
 

@@ -52,8 +52,8 @@ chapter numbers; every unit stays in its registered slot.
 
 ## Current position
 
-- Next section: **3.5.3** (chapters 1–2 complete; chapter 3 in progress through 3.5.2)
-- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44, 3.4.2→45, 3.5→46, 3.5.1→47, 3.5.2→48)
+- Next section: **3.5.4** (chapters 1–2 complete; chapter 3 in progress through 3.5.3)
+- Review rounds: from 16 onward (1.2→16 … 1.10→24, 2.1→25, 2.2→26, 2.3→27, 2.4→28, 2.5→29, 2.6→30, 2.7→31, 2.8→32, 2.9→33, 2.10→34, 2.11→35, 2.12→36, 2.13→37, 2.14→38, 2.15→39, 3.1→40, 3.2→41, 3.3→42, 3.4→43, 3.4.1→44, 3.4.2→45, 3.5→46, 3.5.1→47, 3.5.2→48, 3.5.3→49)
 - Baseline commit: `98bc7e1` (plus the pending 1.1 substance pass, committed
   with the infrastructure)
 
@@ -98,7 +98,7 @@ chapter numbers; every unit stays in its registered slot.
 | 3.5 | x | round 46 | Removed the dangling "However" opener in the DMA destination discussion and replaced the meta-narration intro with the data-expression pieces |
 | 3.5.1 | x | round 47 | Gave the two offset-window listings distinct captions, re-anchored the dangling "This is" opener and replaced the meta-narration intro with the view/from division of labour |
 | 3.5.2 | x | round 48 | No source information lost and no repeated captions; replaced the meta-narration intro with the extent/stride/index roles of subspan, step and at |
-| 3.5.3 | . | | |
+| 3.5.3 | x | round 49 | No source information lost and no repeated captions; replaced the meta-narration intro with the partial-tile case and what zfill preserves |
 | 3.5.4 | . | | |
 | 3.5.10 | . | | |
 | 3.6 | . | | |
