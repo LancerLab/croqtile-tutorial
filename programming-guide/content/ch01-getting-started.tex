@@ -88,7 +88,7 @@
 \section{A Complete Program, End to End}
 \label{sec:1-8}
 
-\guideslotintro{A production \file{.co} file separates host, device and tileflow code. This section reads one such program in full, from buffers to results.}
+\guideslotintro{A production \file{.co} file is three programs in one file: device code, a tileflow \texttt{\_\_co\_\_} function, and the host C++ that prepares buffers and reads the result back. The boundaries between them are what the rest of this guide explains.}
 
 \input{build/units/F10-S02}
 

@@ -22,9 +22,9 @@
 \contentsline {lstlisting}{\numberline {1.22}A Full Croqtile-target C Code Example}{10}{lstlisting.1.22}%
 \contentsline {lstlisting}{\numberline {1.23}Host Program - the Control Center}{11}{lstlisting.1.23}%
 \contentsline {lstlisting}{\numberline {1.24}Host Program - the Control Center}{11}{lstlisting.1.24}%
-\contentsline {lstlisting}{\numberline {1.25}Host Program - the Control Center}{11}{lstlisting.1.25}%
+\contentsline {lstlisting}{\numberline {1.25}Host Program - the Control Center}{12}{lstlisting.1.25}%
 \contentsline {lstlisting}{\numberline {1.26}Verbose mode: -v}{12}{lstlisting.1.26}%
-\contentsline {lstlisting}{\numberline {1.27}Runtime checks: -rtc}{12}{lstlisting.1.27}%
+\contentsline {lstlisting}{\numberline {1.27}Runtime checks: -rtc}{13}{lstlisting.1.27}%
 \contentsline {lstlisting}{\numberline {1.28}Debug RTTI and debugger}{13}{lstlisting.1.28}%
 \contentsline {lstlisting}{\numberline {1.29}Debug RTTI and debugger}{13}{lstlisting.1.29}%
 \contentsline {lstlisting}{\numberline {1.30}Putting it together}{14}{lstlisting.1.30}%

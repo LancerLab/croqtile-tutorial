@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1123,13 +1123,13 @@ File: figures//f10-fig1_compilation_flow_light.png Graphic file (type png)
 Package pdftex.def Info: figures//f10-fig1_compilation_flow_light.png  used on 
 input line 24.
 (pdftex.def)             Requested size: 381.69853pt x 214.70541pt.
- [9 <./figures//f10-fig1_compilation_flow_light.png>]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 30.
-) (./build/units/F14-S05.tex [10])
-(./build/units/F14-S06.tex [11]) (./build/units/F08-S13.tex)
-(./build/units/F11-S05.tex) (./build/units/F11-S06.tex)
-(./build/units/F11-S07.tex [12]) (./build/units/F11-S08.tex
+)
+(./build/units/F14-S05.tex [9] [10 <./figures//f10-fig1_compilation_flow_light.
+png>]) (./build/units/F14-S06.tex [11]) (./build/units/F08-S13.tex)
+(./build/units/F11-S05.tex) (./build/units/F11-S06.tex [12])
+(./build/units/F11-S07.tex) (./build/units/F11-S08.tex
 Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\T1/lmtt/m/n/10 croq::rtti::spanned<int,
  []
@@ -1159,15 +1159,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\T1/lmtt/m/n/10 .data[] \T1/lmr/m/n/10 (+20) (val-ues),
  []
 
-) (./build/units/F11-S09.tex
-<figures//f11-fig1_debug_workflow_light.png, id=1209, 1927.2pt x 1084.05pt>
+) [13] (./build/units/F11-S09.tex
+<figures//f11-fig1_debug_workflow_light.png, id=1226, 1927.2pt x 1084.05pt>
 File: figures//f11-fig1_debug_workflow_light.png Graphic file (type png)
 <use figures//f11-fig1_debug_workflow_light.png>
 Package pdftex.def Info: figures//f11-fig1_debug_workflow_light.png  used on in
 put line 4.
 (pdftex.def)             Requested size: 381.69853pt x 214.70541pt.
- [13]) (./build/units/F11-S10.tex) [14 <./figures//f11-fig1_debug_workflow_ligh
-t.png>] (./build/units/F10-S12.tex))
+) (./build/units/F11-S10.tex [14 <./figures//f11-fig1_debug_workflow_light.png>
+]) (./build/units/F10-S12.tex))
 (./content/ch02-language-basics.tex [15]
 Chapter 2.
 (./build/units/F03-S02.tex) (./build/units/F14-S03.tex [16
@@ -1583,11 +1583,11 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 50F2D1052A392E96FDA0DC544450968B;18316.
  ) 
 Here is how much of TeX's memory you used:
- 36386 strings out of 480247
- 709709 string characters out of 5896152
+ 36384 strings out of 480247
+ 709685 string characters out of 5896152
  1467791 words of memory out of 5000000
  50514 multiletter control sequences out of 15000+600000
- 582052 words of font info for 266 fonts, out of 8000000 for 9000
+ 581958 words of font info for 265 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  105i,17n,113p,1074b,2026s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/en
@@ -1603,7 +1603,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (145 pages, 3248731 bytes).
+Output written on main.pdf (145 pages, 3248873 bytes).
 PDF statistics:
  3577 PDF objects out of 3580 (max. 8388607)
  3275 compressed objects within 33 object streams

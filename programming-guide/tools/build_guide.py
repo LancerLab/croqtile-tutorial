@@ -338,7 +338,7 @@ SLOT_INTROS = {
     '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
     '1.6': "Beyond compiling one file, the build tree offers its own test targets and shortcuts. They are worth knowing before the first real program, because every example that follows can be checked with them.",
     '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. It is small enough to read in one sitting, and the rest of the guide grows from it.",
-    '1.8': "A production \\file{.co} file separates host, device and tileflow code. This section reads one such program in full, from buffers to results.",
+    '1.8': "A production \\file{.co} file is three programs in one file: device code, a tileflow \\co@__co__@ function, and the host C++ that prepares buffers and reads the result back. The boundaries between them are what the rest of this guide explains.",
     '1.9': "When a program surprises you, Croqtile offers compile-time and runtime inspection. This section assembles those tools into a debugging workflow.",
     '1.10': "Reading an unfamiliar \\file{.co} file is a skill. This section gives a checklist for finding the host entry point, the kernel signature and the injected C++.",
     '2.1': "Every Croqtile program has two sides: a \\co@__co__@ function describing parallel work, and ordinary C++ that prepares data and calls it. This section shows where they meet.",
@@ -702,6 +702,18 @@ UNIT_OVERRIDES = [
      r'You should see \\texttt\{Test Passed\}\. Now for a closer look at each part\.',
      "You should see \\texttt{Test Passed}. The chapters that follow take this "
      "same program apart, one construct at a time."),
+    # Section 1.8: both Part III openings were placeholders ("Below is a
+    # complete  code example", "As introduced ... here is the code again")
+    # that did not say what the listing demonstrates or why it is repeated.
+    ('F14-S05',
+     r'Below is a complete  code example that performs element-wise addition on two arrays of the same size and element type:',
+     "Here is a complete example that adds two arrays of the same shape and "
+     "element type. Its three parts are labelled in the listing: a device "
+     "helper, the tileflow function and the host program that calls it:"),
+    ('F14-S06', r'(?s)As introduced, the .*?here is the code again:',
+     "The host program is where the data is created and where the result is "
+     "checked. It is shown again here with the surrounding calls so that the "
+     "boundary between ordinary C++ and the tileflow function is visible:"),
     # Markdown read "6 * 10 * 10" as emphasis, and the source grammar was off.
     ('F15-S19',
      r'(?s)The above example showcases.*?\Z',

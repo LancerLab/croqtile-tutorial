@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.9.7)  8 NOV 2026 12:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1380,8 +1380,8 @@ Underfull \hbox (badness 2326) in paragraph at lines 53--98
 ted first in this shape ar-ray
  []
 
-(./build/units/F08-S13.tex) (./build/units/F11-S05.tex)
-(./build/units/F11-S06.tex [12]) (./build/units/F11-S07.tex)
+(./build/units/F08-S13.tex) (./build/units/F11-S05.tex) [12]
+(./build/units/F11-S06.tex) (./build/units/F11-S07.tex)
 (./build/units/F11-S08.tex
 Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\T1/lmtt/m/n/10 croq::rtti::spanned<int,
@@ -1407,15 +1407,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\T1/lmtt/m/n/10 .data[] \T1/lmr/m/n/10 (+20) (val-ues),
  []
 
-) [13] (./build/units/F11-S09.tex
-<figures//f11-fig1_debug_workflow_light.png, id=1127, 1927.2pt x 1084.05pt>
+[13]) (./build/units/F11-S09.tex
+<figures//f11-fig1_debug_workflow_light.png, id=1122, 1927.2pt x 1084.05pt>
 File: figures//f11-fig1_debug_workflow_light.png Graphic file (type png)
 <use figures//f11-fig1_debug_workflow_light.png>
 Package pdftex.def Info: figures//f11-fig1_debug_workflow_light.png  used on in
 put line 4.
 (pdftex.def)             Requested size: 371.93552pt x 209.21373pt.
-) (./build/units/F11-S10.tex [14 <./figures//f11-fig1_debug_workflow_light.png>
-]) (./build/units/F10-S12.tex))
+) (./build/units/F11-S10.tex) [14 <./figures//f11-fig1_debug_workflow_light.png
+>] (./build/units/F10-S12.tex))
 (./content/ch02-language-basics.tex [15] (./build/units/F03-S02.tex)
 (./build/units/F14-S03.tex [16
 
@@ -1883,7 +1883,7 @@ texmf/fonts/type1/public/lm/lmssbo10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/l
 mtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (149 pages, 3266113 bytes).
+Output written on main-memoir.pdf (149 pages, 3266300 bytes).
 PDF statistics:
  3814 PDF objects out of 4296 (max. 8388607)
  3505 compressed objects within 36 object streams
