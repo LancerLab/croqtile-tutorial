@@ -114,16 +114,16 @@
 \contentsline {lstlisting}{\numberline {2.83}The derived C++ loop}{42}{lstlisting.2.83}%
 \contentsline {lstlisting}{\numberline {2.84}The bounded-variable syntax}{42}{lstlisting.2.84}%
 \contentsline {lstlisting}{\numberline {2.85}chunkat(...): equal partitioning}{43}{lstlisting.2.85}%
-\contentsline {lstlisting}{\numberline {2.86}subspan(...).at(...): explicit tile extents on a tile grid}{43}{lstlisting.2.86}%
+\contentsline {lstlisting}{\numberline {2.86}subspan(...).at(...): explicit tile extents on a tile grid}{44}{lstlisting.2.86}%
 \contentsline {lstlisting}{\numberline {2.87}view(...).from(...): explicit tile extents with explicit element offsets}{44}{lstlisting.2.87}%
-\contentsline {lstlisting}{\numberline {2.88}Compose: outer inner}{44}{lstlisting.2.88}%
+\contentsline {lstlisting}{\numberline {2.88}Compose: outer inner}{45}{lstlisting.2.88}%
 \contentsline {lstlisting}{\numberline {2.89}Extent: name}{45}{lstlisting.2.89}%
-\contentsline {lstlisting}{\numberline {2.90}Bounded-ituple/integer and chunkat Operation}{46}{lstlisting.2.90}%
+\contentsline {lstlisting}{\numberline {2.90}Bounded-ituple/integer and chunkat Operation}{45}{lstlisting.2.90}%
 \contentsline {lstlisting}{\numberline {2.91}Ubound Operation}{46}{lstlisting.2.91}%
 \contentsline {lstlisting}{\numberline {2.92}Use chunkat Expression to Tile Data}{47}{lstlisting.2.92}%
-\contentsline {lstlisting}{\numberline {2.93}Use Multiple Bounded Variables}{47}{lstlisting.2.93}%
+\contentsline {lstlisting}{\numberline {2.93}Use Multiple Bounded Variables}{48}{lstlisting.2.93}%
 \contentsline {lstlisting}{\numberline {2.94}The DMA Statement Family}{48}{lstlisting.2.94}%
-\contentsline {lstlisting}{\numberline {2.95}The DMA Statement Family}{48}{lstlisting.2.95}%
+\contentsline {lstlisting}{\numberline {2.95}The DMA Statement Family}{49}{lstlisting.2.95}%
 \contentsline {lstlisting}{\numberline {2.96}First Example: Tiled Addition Through shared storage}{49}{lstlisting.2.96}%
 \contentsline {lstlisting}{\numberline {2.97}Futures, .data, and .span}{49}{lstlisting.2.97}%
 \contentsline {lstlisting}{\numberline {2.98}Futures, .data, and .span}{50}{lstlisting.2.98}%
@@ -136,13 +136,13 @@
 \contentsline {lstlisting}{\numberline {2.105}Tileflow Program: Orchestrating the Data Movement}{52}{lstlisting.2.105}%
 \contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{54}{lstlisting.2.106}%
 \contentsline {lstlisting}{\numberline {2.107}Synchronous and Asynchronous}{54}{lstlisting.2.107}%
-\contentsline {lstlisting}{\numberline {2.108}Data Expression}{54}{lstlisting.2.108}%
+\contentsline {lstlisting}{\numberline {2.108}Data Expression}{55}{lstlisting.2.108}%
 \contentsline {lstlisting}{\numberline {2.109}Future and Wait}{55}{lstlisting.2.109}%
 \contentsline {lstlisting}{\numberline {2.110}Future and Wait}{55}{lstlisting.2.110}%
 \contentsline {lstlisting}{\numberline {2.111}Event arrays for multi-stage pipelines}{56}{lstlisting.2.111}%
 \contentsline {lstlisting}{\numberline {2.112}Bootstrap protocol}{56}{lstlisting.2.112}%
-\contentsline {lstlisting}{\numberline {2.113}Parallel Perspective of Tileflow Programs}{56}{lstlisting.2.113}%
-\contentsline {lstlisting}{\numberline {2.114}Implicit Masking}{57}{lstlisting.2.114}%
+\contentsline {lstlisting}{\numberline {2.113}Parallel Perspective of Tileflow Programs}{57}{lstlisting.2.113}%
+\contentsline {lstlisting}{\numberline {2.114}Implicit Masking}{58}{lstlisting.2.114}%
 \contentsline {lstlisting}{\numberline {2.115}Event Basics}{58}{lstlisting.2.115}%
 \contentsline {lstlisting}{\numberline {2.116}Event Basics}{58}{lstlisting.2.116}%
 \contentsline {lstlisting}{\numberline {2.117}Event Basics}{58}{lstlisting.2.117}%
@@ -151,7 +151,7 @@
 \contentsline {lstlisting}{\numberline {2.120}Early return from parallel}{60}{lstlisting.2.120}%
 \contentsline {lstlisting}{\numberline {2.121}Macros inside cpp strings}{61}{lstlisting.2.121}%
 \contentsline {lstlisting}{\numberline {2.122}Macros inside cpp strings}{61}{lstlisting.2.122}%
-\contentsline {lstlisting}{\numberline {2.123}Tile geometry as macros}{61}{lstlisting.2.123}%
+\contentsline {lstlisting}{\numberline {2.123}Tile geometry as macros}{62}{lstlisting.2.123}%
 \contentsline {lstlisting}{\numberline {2.124}Compile-time assertions with error}{62}{lstlisting.2.124}%
 \contentsline {lstlisting}{\numberline {2.125}Conditional code paths}{62}{lstlisting.2.125}%
 \contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{62}{lstlisting.2.126}%

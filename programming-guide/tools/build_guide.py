@@ -348,7 +348,7 @@ SLOT_INTROS = {
     '2.5': "Integers control loops and index arrays; an \\co@ituple@ groups several of them into one index. Both are declared with an initializer, both are immutable, and both are checked against the shape they are used with.",
     '2.6': "A buffer in Croqtile always arrives with its shape. Declaring one fixes the element type and the dimensions; a storage specifier says where it lives, and an initializer can fill it at the declaration site.",
     '2.7': "Iteration constructs state which iterations are independent, leaving the schedule to the compiler. \\co@parallel@, \\co@with-in@ and \\co@foreach@ differ in what they name and how much of the index space each instance sees.",
-    '2.8': "A tile is a slice of a larger buffer. This section shows the ways to select one --- \\co@chunkat@, \\co@subspan@, \\co@view().from()@ --- and the compose operator \\co@#@.",
+    '2.8': "A tile is a window onto a larger buffer. \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ choose different windows, and the compose operator \\co@#@ combines those choices without copying data.",
     '2.9': "Moving a tile is a statement in the language, not a library call. This section introduces the DMA statement, futures, and synchronous versus asynchronous copies.",
     '2.10': "Concurrent regions have to agree on who may proceed. This section introduces \\co@inthreads@, events and the asynchronous forms through short examples.",
     '2.11': "Not every branch is known at compile time. This section covers runtime predicates and early return from a parallel region.",
@@ -1024,6 +1024,26 @@ UNIT_OVERRIDES = [
      r'In this section, you explain the use of \\texttt\{with-in\} and \\texttt\{foreach\} statements in Croqtile to define and iterate over \\emph\{bounded variable\}s, which are essential for data movement tasks\.',
      "Bounded variables and the loops derived from them are what data "
      "movement code is built from."),
+    # Round 32 (2.8): tile selection.
+    ('F04-S15', r'(?m)^Here \\texttt', 'The notation \\texttt'),
+    ('F29-S01',
+     r'This section introduces the \\emph\{chunkat expression\} for the DMA statement, which is the core concept of Croqtile that simplifies data movement coding\.',
+     "A \\emph{chunkat expression} names one tile of a larger buffer in a "
+     "DMA statement, so the movement code never has to compute an offset "
+     "by hand."),
+    ('F29-S02', r'However, in Croqtile, you can use the',
+     'In Croqtile, a program can use the'),
+    ('F29-S04',
+     r'The following code showcases an example that utilizes multiple bounded variables:',
+     'The example below uses several bounded variables at once:'),
+    ('F29-S06',
+     r'In this section, you learned about using the \\texttt\{chunkat\} expression in Croqtile for tiling data in DMA statements, which allows dividing data into smaller chunks for efficient processing\.',
+     "The \\texttt{chunkat} expression divides a buffer into smaller chunks "
+     "for a DMA statement, and the shape of each chunk follows from the "
+     "bound used to select it."),
+    ('F29-S06', r'Wish you good luck!',
+     'Section~\\ref{sec:3-6-1} puts the pieces together into a complete '
+     'tileflow program.'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

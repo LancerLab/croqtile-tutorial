@@ -176,7 +176,7 @@
 \section{Tile Selection: chunkat, subspan, and view/from}
 \label{sec:2-8}
 
-\guideslotintro{A tile is a slice of a larger buffer. This section shows the ways to select one --- \texttt{chunkat}, \texttt{subspan}, \texttt{view().from()} --- and the compose operator \texttt{\#}.}
+\guideslotintro{A tile is a window onto a larger buffer. \texttt{chunkat}, \texttt{subspan} and \texttt{view().from()} choose different windows, and the compose operator \texttt{\#} combines those choices without copying data.}
 
 \input{build/units/F04-S05}
 

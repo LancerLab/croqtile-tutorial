@@ -23,7 +23,7 @@
 \contentsline {section}{\numberline {2.10}Coordination: inthreads, Events, and Async Blocks}{56}{section.2.10}%
 \contentsline {section}{\numberline {2.11}Branching and Early Return}{59}{section.2.11}%
 \contentsline {section}{\numberline {2.12}The Four-Step MMA Syntax}{60}{section.2.12}%
-\contentsline {section}{\numberline {2.13}C++ Embedding, Calls, Macros, and the Preprocessor}{60}{section.2.13}%
+\contentsline {section}{\numberline {2.13}C++ Embedding, Calls, Macros, and the Preprocessor}{61}{section.2.13}%
 \contentsline {section}{\numberline {2.14}Printing, Assertions, and Compile-Time Inspection}{66}{section.2.14}%
 \contentsline {section}{\numberline {2.15}Syntax Quick Reference}{67}{section.2.15}%
 \contentsline {chapter}{\numberline {3}Programming Guide}{70}{chapter.3}%
