@@ -386,7 +386,7 @@ SLOT_INTROS = {
     '3.8.5': "A full event pipeline combines the coordination primitives: bootstrap credits, producer and consumer stages, and a final drain. Reading its stages in order shows where each credit is returned.",
     '3.8.10': "The coordination patterns and their syntax are collected here, from the 1P1C skeleton to the multi-stage event pipeline.",
     '3.9': "Croqtile does not replace C++; it sits inside it. Device helpers, verbatim source text and preprocessor macros cross that boundary, and each arrives at a different stage of compilation.",
-    '3.9.1': "A device helper called from a \\co@__co__@ function shows the argument conventions in practice.",
+    '3.9.1': "Calling a device helper from a \\co@__co__@ function is where the argument conventions become concrete: a shaped span arrives as a pointer plus a size, and the helper itself is passed through unchanged.",
     '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. This section shows the forms it takes.",
     '3.9.10': "The interoperability mechanisms and their rules are collected here.",
     '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. This section presents two worked examples and the reasoning they illustrate.",
@@ -1288,6 +1288,7 @@ UNIT_OVERRIDES = [
     ('F23-S05',
      r'One important notices about croqtile preprocessing is that it is triggered much earlier than',
      'Croqtile preprocessing runs much earlier than'),
+    # Round 70 (3.9.1): calling a device helper. Source prose is continuous.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
