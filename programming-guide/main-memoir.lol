@@ -154,12 +154,12 @@
 \contentsline {lstlisting}{\numberline {2.123}Tile geometry as macros}{60}{lstlisting.2.123}%
 \contentsline {lstlisting}{\numberline {2.124}Compile-time assertions with error}{60}{lstlisting.2.124}%
 \contentsline {lstlisting}{\numberline {2.125}Conditional code paths}{60}{lstlisting.2.125}%
-\contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{60}{lstlisting.2.126}%
+\contentsline {lstlisting}{\numberline {2.126}Function Calls and Call Croqtile Function}{61}{lstlisting.2.126}%
 \contentsline {lstlisting}{\numberline {2.127}Object-Like Macros}{61}{lstlisting.2.127}%
 \contentsline {lstlisting}{\numberline {2.128}Object-Like Macros}{61}{lstlisting.2.128}%
-\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{61}{lstlisting.2.129}%
+\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{62}{lstlisting.2.129}%
 \contentsline {lstlisting}{\numberline {2.130}Basic Syntax of Call Statements}{62}{lstlisting.2.130}%
-\contentsline {lstlisting}{\numberline {2.131}Basic Syntax of Call Statements}{62}{lstlisting.2.131}%
+\contentsline {lstlisting}{\numberline {2.131}Basic Syntax of Call Statements}{63}{lstlisting.2.131}%
 \contentsline {lstlisting}{\numberline {2.132}The Convention: Allowed Argument Types}{63}{lstlisting.2.132}%
 \contentsline {lstlisting}{\numberline {2.133}print and println : compile-time inspection}{64}{lstlisting.2.133}%
 \contentsline {lstlisting}{\numberline {2.134}print and println : compile-time inspection}{64}{lstlisting.2.134}%

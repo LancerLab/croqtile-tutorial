@@ -352,7 +352,7 @@ SLOT_INTROS = {
     '2.9': "A DMA statement moves a tile between storage levels and returns a future the program can wait on. Synchronous and asynchronous copies share one syntax; only the wait and the lifetime of the source differ.",
     '2.10': "Concurrent regions need a way to agree on who may proceed. Events, \\co@inthreads@ blocks and their asynchronous forms encode that agreement in the program rather than in an implicit schedule.",
     '2.11': "A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.",
-    '2.12': "Contraction is written as four explicit steps. This section reads that syntax once, with the smallest example that shows all four.",
+    '2.12': "A contraction is not one instruction but four: load the operands, compute, accumulate and store. The four-step spelling makes each step visible, so the smallest kernel that uses all of them is enough to read the rest.",
     '2.13': "Croqtile lives inside C++: a \\file{.co} file can call helpers, inject source text and use the preprocessor. This section covers each mechanism in turn.",
     '2.14': "The language has its own print and assert forms, at compile time and at runtime. This section shows what each one reports and when to reach for it.",
     '2.15': "The constructs introduced so far are gathered here as a compact reference, for looking up a spelling or a meaning without re-reading the examples.",
@@ -1087,6 +1087,11 @@ UNIT_OVERRIDES = [
      r'The \\texttt\{yield\} keyword will simply generate a \\texttt\{return;\} instruction to get out of device code\.',
      "The \\texttt{yield} keyword generates a \\texttt{return;} instruction "
      "that leaves the device code for that instance."),
+    # Round 36 (2.12): the four contraction steps.
+    ('F06-S02',
+     r'Every tensor-contraction kernel follows the same rhythm:',
+     "Every contraction kernel follows the same rhythm, and the spelling "
+     "makes each step visible:"),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

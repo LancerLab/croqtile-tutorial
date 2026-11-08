@@ -1,0 +1,32 @@
+{
+  "round": 36,
+  "counts": {
+    "meta": 0,
+    "pov": 0,
+    "generic_headings": 0,
+    "typos": 0,
+    "broken": 0,
+    "dangling_refs": 0,
+    "dup_headings": 0,
+    "repeated_sentences": 0,
+    "stale_titles": 0,
+    "inline_number_emph": 0,
+    "heading_only": 0,
+    "merged_paragraphs": 0,
+    "preface_positioning": 0,
+    "section_1_1_framing": 0,
+    "hardware": 0,
+    "placeholders": 0,
+    "empty_markup": 0,
+    "emph_ref": 0,
+    "tutorial_voice": 0,
+    "fragments": 0,
+    "narrative_gap": 0
+  },
+  "total": 0,
+  "narrative": {
+    "chapter_intro": 3,
+    "slot_intro": 62,
+    "where_next": 3
+  }
+}
