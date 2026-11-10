@@ -21,97 +21,88 @@
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 
-Over the last few years the shape of the performance problem has changed.
-Model families have converged on a small number of designs, yet the number of
-operators that have to run well keeps multiplying. With the layer fixed,
-every remaining variation has to live in the kernel: the same mathematics
-appears with different sparsity, different positional encodings, different
-quantisation and different dataflow, and each variant wants a kernel of its
-own. At the same time the range of machines a program must serve keeps
-widening, and each new generation changes the programming interface enough
-that a kernel written for the previous one has to be re-derived rather than
-simply recompiled. Fused operators have become ordinary, because at scale a
-small efficiency gap is worth real money. The result is that the operator ---
-not the model --- is where effort concentrates, and writing one well remains
-among the most labour-intensive tasks in systems work: tile sizes, pipeline
-depths, cooperation between parallel regions and staging all interact, and
-the right combination changes with the shape of the data.
+As large models have become widely used, efficient operator implementations
+have become a growing part of the development work. Model architectures may
+share a few common designs, but the computations within them continue to
+vary. Attention mechanisms, sparsity patterns, positional encodings and
+quantisation schemes all introduce new implementation requirements. Even
+the same operator may need different kernels for different input shapes or
+numerical formats. A shared model design therefore leaves substantial
+work to be done at the operator level.
 
-This is why a ladder of higher-level kernel languages has appeared in quick
-succession, nearly all of them in the last few years. They promise one
-program that can be reasoned about independently of the machine it runs on,
-and each rung trades some measure of control for author productivity: a
-program becomes shorter and easier to write, read and revise, because the
-language takes over decisions the author used to spell out by hand. The
-trade has a ceiling, though. The decisions that are easiest to hide are
-often the ones that separate a merely correct kernel from a fast one, so an
-abstraction that removes them makes the easy programs easier but caps what
-an expert can express.
+That work also grows with the variety of computing platforms. A program may
+need to run on several kinds of machine, each with its own memory organisation
+and execution model. Within a single family of machines, new instructions and
+programming interfaces can require an existing kernel to be reconsidered
+and retuned. Operator fusion adds another source of variation: combining
+several operations can reduce intermediate data transfers and launch costs,
+but each combination brings its own implementation choices. Supporting these
+workloads calls for a continuing supply of kernels and the means to develop
+them efficiently.
 
-Croqtile, a new-generation language for high-performance heterogeneous
-computing, was designed around that tension, and its first motivation was
-human productivity. Rather than raising the level of abstraction by
-concealing the machine, it compresses the programming abstraction: shapes
-and movement are first-class constructs, a complete kernel fits in a few
-dozen lines, and a structural decision changes in one or two statements
-instead of five scattered places. Symbolic dimensions let one program serve
-many input sizes. The compiler checks shapes and indices while the program
-is built and reports a violation in terms a person can act on. An engineer
-can therefore hold the whole kernel in view, change one idea at a time, and
-get a precise answer before running anything.
+Writing those kernels is demanding because performance depends on decisions
+that interact: tile sizes, data layouts, memory staging, pipeline depth and
+cooperation between parallel regions. A change in one can require changes
+in several others. Higher-level kernel languages have emerged to improve
+author productivity by expressing more of this work with less code. Their
+central challenge is to simplify programming while keeping the decisions
+needed to reach high performance available to the programmer. When an
+abstraction hides those decisions, it also limits the implementations that
+can be explored.
 
-Only then does the second motivation come into play. As language models
-began to write and revise kernels, the same properties turned out to be what
-an automated agent needs: a compact program fits in a context window
-alongside many previous attempts, decoupled primitives make the space of
-structural variants enumerable instead of demanding coordinated rewrites,
-and compile-time rejection with structured diagnostics makes every failed
-attempt informative rather than silent. In that sense Croqtile is
-agent-ready --- and AI-native --- as a consequence of being a good language
-for a person to work in, not as a substitute for that goal.
+Croqtile is a language for high-performance heterogeneous computing built
+around this challenge, with human productivity as its starting point.
+It gives shapes, tile selection, data movement and coordination direct
+language forms, so a programmer can describe how a kernel works in one
+compact program. Related sizes and indices are derived from shaped data,
+reducing the bookkeeping that otherwise accompanies a structural change.
+Symbolic dimensions allow the same source to handle different input sizes,
+while compile-time checks identify inconsistent shapes and indices before
+execution. These abstractions add no runtime overhead. Together, they make
+kernels easier to read and revise while leaving performance decisions
+explicit.
 
-Croqtile is embedded in C++: in a \file{.co} file, ordinary C++ prepares
-shaped buffers and calls a \co@__co__@ function, whose body names the
-iterations, the tiles, the movement statements and the events that order
-them. The rest of this guide takes those constructs apart, explains what
-each one means, and puts them back together in complete programs.
+The same design also supports AI-assisted kernel development and tuning.
+Compact source leaves room in an agent's context for profiling results and
+previous attempts. Independently expressed operations let the agent change
+a pipeline or a parallel arrangement through a small number of edits, and
+compiler diagnostics help it locate and correct invalid combinations.
+Croqtile is agent-ready in this practical sense: the language supports
+repeated cycles of proposing a change, checking it and measuring its effect.
+Its AI-native design carries the goal of efficient kernel development into
+an automated workflow.
 
-\section*{Who this guide is for}
+Croqtile is embedded in C++. In a \file{.co} file, ordinary C++ prepares
+shaped buffers and calls a \co@__co__@ function; that function describes
+the iterations, tiles, data movement and coordination of the parallel work.
+This guide introduces those constructs through examples and shows how to
+combine them into complete programs.
 
-This guide is written for developers who write or read Croqtile programs.
-It asks for C++ at the level of functions, pointers and arrays, and for the
-idea of a shaped tensor. No previous Croqtile experience is needed, nor any
-knowledge of a particular machine. It is not a book about compiler
-construction or about one specific platform. Its subject is the language:
-program structure, shapes and types, iteration and tile selection, data
-movement, coordination, C++ interoperability and diagnostics. By the end
-you will be able to build and run a \file{.co} file, read a kernel line by
-line, express tiling, movement and contraction in your own programs, and
-follow how the compiler reasons about shapes and parallel regions.
+\section*{Reading guide}
 
-\section*{How to read this guide}
+This guide is for developers who want to read and write Croqtile kernels.
+It assumes familiarity with C++ functions, pointers and arrays, and with
+the shape of a tensor. The examples begin with basic language constructs
+and show how to organise parallel computation, select and move tiles, and
+coordinate execution. Working through them will help you read a
+\file{.co} program and combine these constructs into kernels of your own.
 
-The three chapters approach the same language from different directions.
-Chapter~\ref{ch:getting-started} takes you from an empty directory to a
-running program: building the compiler, using the command line, compiling
-and running a first example, working through a complete program, and
-following a debugging workflow. Chapter~\ref{ch:language-basics} is built
-from short, program-shaped examples that say what each construct means ---
-signatures and shapes, the host API, iteration, tile selection, movement,
-coordination, branching, contraction, C++ embedding and diagnostics.
-Chapter~\ref{ch:programming-guide} organises the language by function:
-program structure and compilation models, the type system, symbolic shapes,
-parallelism, tile selection, movement, contraction, coordination,
-interoperability and the reasoning behind them. Its sections open with the
-problem each one solves, so the chapter also works as a reference.
+If you are new to Croqtile, begin with Chapter~\ref{ch:getting-started} to
+build the compiler and run a first program. Then read
+Chapter~\ref{ch:language-basics} in order. Its short examples start with
+function declarations and shapes, then introduce iteration, tiling, data
+movement and coordination. Look first at the structure of each program,
+then use the explanation to understand the role of each statement. Focus
+on how the data is divided, moved and used in computation.
 
-If this is your first Croqtile program, begin with the first chapter and
-work forward. Once you can read existing \file{.co} files with confidence,
-the third chapter can be taken in any order: its sections are independent,
-and each keeps the worked kernels next to the feature it demonstrates.
-Appendix~\ref{app:quickref} collects the syntax in one place, for looking
-up a spelling or a meaning without re-reading an example. It is worth
-consulting whenever the exact form of a construct escapes you.
+Once you are comfortable with the basic syntax, consult
+Chapter~\ref{ch:programming-guide} as needed. It groups the language by
+function and explains the semantics, constraints and design choices behind
+the constructs. Complete kernels appear alongside the features they use,
+so you can study a particular topic or return to it while writing a
+program. Appendix~\ref{app:quickref} collects the syntax for quick lookup;
+the corresponding sections explain the meaning of a construct and the
+conditions for using it.
 
 \section*{Conventions}
 

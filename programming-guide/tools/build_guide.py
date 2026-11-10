@@ -226,15 +226,11 @@ SPECIAL = {
 }
 
 SLOT_TITLES = {
-    '1.1': 'What is Croqtile', '1.2': 'System Requirements',
-    '1.3': 'Building the Compiler from Source',
-    '1.4': 'Verifying the Installation',
-    '1.5': 'The croqtile Command Line',
-    '1.6': 'Development and Test Utilities',
-    '1.7': 'Your First Program',
-    '1.8': 'A Complete Program, End to End',
-    '1.9': 'Inspecting and Debugging a Build',
-    '1.10': 'Reading a Production .co File',
+    '1.1': 'What is Croqtile',
+    '1.2': 'Setting Up: Requirements, Build, and Verification',
+    '1.3': 'The Toolchain: Command Line and Build Utilities',
+    '1.4': 'Your First Programs',
+    '1.5': 'Inspecting and Debugging a Build',
     '2.1': 'The Two Parts of a Croqtile Program',
     '2.2': 'Reading a Kernel Line by Line',
     '2.3': 'The Host-Side API: Inputs and Outputs',
@@ -305,11 +301,12 @@ CHAPTER_INTRO = {
           "variants, and the toolchain needed to build and inspect each one. "
           "By the end you will be able to reproduce the output of a simple "
           "program on your own."),
-    '2': ("This chapter introduces the core Croqtile DSL you use to write "
-          "programs: how a \\co@__co__@ function is declared, how shaped data is "
-          "described, how iteration and tile selection are expressed, how tiles "
-          "move, and how concurrent regions coordinate. It stays with short, "
-          "readable programs and asks only what each construct means."),
+    '2': ("You will learn to read and write Croqtile programs by working "
+          "through short examples. Start with the structure of a complete "
+          "program and the roles of its functions, then follow how shapes, "
+          "iteration, tile selection, data movement and coordination are "
+          "expressed. Each example adds a construct and explains its role, "
+          "so you can build up a working understanding of the syntax."),
     '3': ("This chapter organises the same language by function. It explains the "
           "structure of a Croqtile program, its type system, symbolic shapes, "
           "parallelism, tile selection, data movement, contraction and "
@@ -330,70 +327,9 @@ CHAPTER_NEXT = {
           "compiler design behind the language, see \\citep{croqtileCompiler}."),
 }
 
-SLOT_INTROS = {
-    '1.1': "Before installing anything, it is worth knowing what problem Croqtile was built for. This section begins with that problem and the single idea behind the language, then says what Croqtile is, what its constructs give you, and what you need in order to follow the examples.",
-    '1.2': "Croqtile ships as source, so a working toolchain comes before the first program. This section lists what the build needs and why those versions matter; Section~\\ref{sec:1-3} gives the commands.",
-    '1.3': "A checkout needs three commands before it is usable: one prepares the dependencies, one builds the compiler, and one runs the test suite. The test result is what tells you the binary is ready, and Section~\\ref{sec:1-4} gives the smallest program that confirms it end to end.",
-    '1.4': "A four-element copy is enough to exercise the whole chain: the compiler parses the program, the generated code compiles and links, and the host program reads back the result. Section~\\ref{sec:1-5} looks at what else the command line can do.",
-    '1.5': "The \\co@croqtile@ command turns a \\file{.co} file into a runnable program. This section maps each option to the stage it controls.",
-    '1.6': "Beyond compiling one file, the build tree offers its own test targets and shortcuts. They are worth knowing before the first real program, because every example that follows can be checked with them.",
-    '1.7': "Your first Croqtile program is a complete unit: a \\co@__co__@ function and an ordinary C++ \\co@main()@. It is small enough to read in one sitting, and the rest of the guide grows from it.",
-    '1.8': "A production \\file{.co} file is three programs in one file: device code, a tileflow \\co@__co__@ function, and the host C++ that prepares buffers and reads the result back. The boundaries between them are what the rest of this guide explains.",
-    '1.9': "When a kernel compiles but the answer is wrong, the fastest path is to narrow down which layer went wrong: the commands the compiler ran, the runtime checks it can insert, the layout of the data, or the types a debugger sees. The tools below are ordered that way, from cheap checks to expensive ones.",
-    '1.10': "An unfamiliar \\file{.co} file is easier to read once you know the order its parts appear in: guards and helpers, host setup, the \\co@__co__@ function, and the injected C++. The chapters that follow define each of those constructs.",
-    '2.1': "A \\file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \\co@__co__@ prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.",
-    '2.2': "An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.",
-    '2.3': "The host creates shaped buffers, passes them to a \\co@__co__@ function and receives a result back. Each step uses a small API, and the shape attached to a buffer is what makes the call type-safe.",
-    '2.4': "A shape is a value a program can name and compute with, not just an annotation on a declaration. \\co@mdspan@ defines one, arithmetic derives another from it, and an anonymous dimension leaves a size for the caller to supply.",
-    '2.5': "Integers control loops and index arrays; an \\co@ituple@ groups several of them into one index. Both are declared with an initializer, both are immutable, and both are checked against the shape they are used with.",
-    '2.6': "A buffer in Croqtile always arrives with its shape. Declaring one fixes the element type and the dimensions; a storage specifier says where it lives, and an initializer can fill it at the declaration site.",
-    '2.7': "Iteration constructs state which iterations are independent, leaving the schedule to the compiler. \\co@parallel@, \\co@with-in@ and \\co@foreach@ differ in what they name and how much of the index space each instance sees.",
-    '2.8': "A tile is a window onto a larger buffer. \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ choose different windows, and the compose operator \\co@#@ combines those choices without copying data.",
-    '2.9': "A DMA statement moves a tile between storage levels and returns a future the program can wait on. Synchronous and asynchronous copies share one syntax; only the wait and the lifetime of the source differ.",
-    '2.10': "Concurrent regions need a way to agree on who may proceed. Events, \\co@inthreads@ blocks and their asynchronous forms encode that agreement in the program rather than in an implicit schedule.",
-    '2.11': "A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.",
-    '2.12': "A contraction is not one instruction but four: load the operands, compute, accumulate and store. The four-step spelling makes each step visible, so the smallest kernel that uses all of them is enough to read the rest.",
-    '2.13': "Croqtile lives inside C++: a \\file{.co} file can call device helpers, inject source text and use the preprocessor. Each mechanism has its own boundary, and the compiler checks nothing across that boundary.",
-    '2.14': "A shape or a type that is wrong at compile time is cheapest to inspect with \\co@print!@; a value that is wrong at runtime needs \\co@assert@ or a print inside the kernel. The first reports what the compiler believes, the second what the program did.",
-    '2.15': "The constructs introduced so far are gathered here as a compact reference, so a spelling or a meaning can be looked up without re-reading the examples.",
-    '3.1': "A \\file{.co} program is transpiled into host and device code. The three layers that result decide which parts the compiler rewrites and which it passes through, and the same split supports both single-source and separate-source compilation.",
-    '3.2': "A Croqtile type says what a value is, how it is stored and which bounds apply to it. \\co@mdspan@ and spanned data describe shapes and buffers, integers and i-tuples describe indices, and storage and bounded qualifiers attach to each declaration.",
-    '3.3': "A dimension does not have to be a literal. \\co@mdspan@ accepts anonymous dimensions filled in by the caller and symbolic dimensions evaluated by the compiler; value numbering is what lets the compiler fold the resulting expressions and still prove shapes safe.",
-    '3.4': "Parallelism in Croqtile is declared in layers: a \\co@parallel@ block names independent instances, a space specifier groups them, and masking decides which instances execute a divergent branch. The rules below keep multi-level iteration well defined.",
-    '3.4.1': "A tiled matrix multiplication is easiest to read when it is built up: the first kernel uses one instance per element, the next adds tiles, and the host code stays the same throughout.",
-    '3.4.2': "Following one output element fixes every index in the kernel: its global position determines the block, the thread, the tile offset and finally the address read from each operand.",
-    '3.5': "A tile is described by a data expression, not by pointer arithmetic. The composition operator \\co@#@ and the window forms \\co@chunkat@, \\co@subspan@ and \\co@view().from()@ are the pieces; the rules below say what each expression may denote.",
-    '3.5.1': "A window can start at an offset that is known only at run time. \\co@view@ fixes the window size and \\co@from@ gives its origin, so the pair describes an arbitrary-offset slice without copying.",
-    '3.5.2': "A strided tile is a window whose elements are not contiguous. \\co@subspan@ chooses the extent, \\co@step@ sets the distance between tiles and \\co@at@ picks one of them by index.",
-    '3.5.3': "When a dimension is not a multiple of the tile size, the last tile is partial. \\co@.zfill@ pads such a tile at the destination, so the movement statement keeps a full tile shape.",
-    '3.5.4': "A buffer can be read under a different shape without copying it. \\co@span_as@ reinterprets the layout, but the element count has to agree with the new shape and the movement statement still sees one contiguous span.",
-    '3.5.10': "The tile-selection forms and their rules are collected here, so a spelling can be checked without going back through the worked examples.",
-    '3.6': "Data movement has a small grammar: an operation, a configuration and a future. Asynchronous forms add ordering constraints, and the chapter works from one copy up to a full non-blocking chain.",
-    '3.6.1': "A tiled matmul with explicit copies shows where each movement statement sits. Reading the full kernel is easier once the tile it moves and the buffer it lands in are named.",
-    '3.6.2': "Overlapping copies with computation needs more than one buffer. \\co@dma.any@ selects a buffer, \\co@swap@ exchanges two handles and \\co@rotate@ cycles through a ring of them.",
-    '3.6.3': "A pipelined kernel combines tile selection, movement and contraction in one program. The stages, the events between them and the final drain are all visible in the listing.",
-    '3.7': "A contraction is a four-step contract between layout and accumulation. The four steps stay the same across dense, sparse and scaled variants; what changes is the layout each operand must have when it is loaded.",
-    '3.7.1': "One cooperative group carries out all four steps on a single tile, so the kernel is the shortest complete contraction that can be written.",
-    '3.7.2': "Widening the cooperation scope changes one line of the kernel: the space specifier. The four steps, the operand layouts and the accumulation stay exactly as they were.",
-    '3.7.3': "Two cooperative groups can share operands and split the work between them. The tiling has to give each group a distinct part of the output, and the program shows how the indices are divided.",
-    '3.7.9': "The contraction syntax is gathered here for quick reference: the four step names, the space specifiers and the layout each variant expects.",
-    '3.7.10': "The four-step design makes the layout contract explicit and keeps the accumulation visible. Its limit is that loads and compute still take turns; Section~\\ref{sec:3-8} makes them overlap.",
-    '3.8': "Pipelines and persistent kernels are built from concurrent regions and events. A producer and a consumer agree on a buffer through wait/trigger, and the same protocol scales from one stage to a persistent scheduling loop.",
-    '3.8.1': "The smallest useful pipeline has one producer and one consumer. Naming the two regions and the credits between them is enough to see what every larger pipeline adds.",
-    '3.8.2': "The 1P1C skeleton leaves the event protocol out, so the producer and consumer regions can be read on their own. The full protocol is added in Section~\\ref{sec:3-8-5}.",
-    '3.8.3': "A persistent kernel decides its own work instead of being launched once per tile. A guard bounds the scheduling loop, and the loop reuses one set of buffers for many tiles.",
-    '3.8.4': "Concurrency can also be expressed on the host side: \\co@parallel.async@ launches a grid without waiting, and stream binding decides which launches may overlap.",
-    '3.8.5': "A full event pipeline combines the coordination primitives: bootstrap credits, producer and consumer stages, and a final drain. Reading its stages in order shows where each credit is returned.",
-    '3.8.10': "The coordination patterns and their syntax are collected here, from the 1P1C skeleton to the multi-stage event pipeline.",
-    '3.9': "Croqtile does not replace C++; it sits inside it. Device helpers, verbatim source text and preprocessor macros cross that boundary, and each arrives at a different stage of compilation.",
-    '3.9.1': "Calling a device helper from a \\co@__co__@ function is where the argument conventions become concrete: a shaped span arrives as a pointer plus a size, and the helper itself is passed through unchanged.",
-    '3.9.2': "Verbatim C++ injection lets a program carry target-specific snippets. \\co@__cpp__@ islands, guards and template instantiation are the forms it takes, and the compiler checks nothing inside them.",
-    '3.9.10': "The interoperability mechanisms and their rules are collected here: what is passed through, what is injected, and where the preprocessor runs relative to the C++ one.",
-    '3.10': "Tileflow patterns and the design decisions behind the language are easiest to see in complete programs. A tiled matmul and an rgb2gray kernel use the same composition operator on very different shapes.",
-    '3.10.1': "A tiled matmul shows how bounded variables, \\co@chunkat@ and movement statements compose into one program. The host code stays ordinary C++ throughout.",
-    '3.10.2': "An rgb2gray kernel applies the same composition operator to a three-channel image. The shape is different, the tiling is simpler, and the movement statements are the same ones the matmul used.",
-    '3.11': "Diagnostics are part of using a language well. The cheapest checks are compile-time ones, then targeted runtime probes, then verbose builds; narrowing the search in that order saves the most time.",
-}
+# Section-level lead-ins were removed: they repeated the section headings
+# and created cross-references only needed because the sections were split too finely.
+SLOT_INTROS = {}
 
 def caption_names(names):
     """Build a transform that names a unit's listing captions in order.
@@ -434,9 +370,6 @@ UNIT_OVERRIDES = [
      "explains why the constructs are defined this way, and "
      "Appendix~\\ref{app:quickref} lets you look up any spelling."),
     # Tutorial navigation links pointed at chapters that no longer exist.
-    ('F01-S01',
-     r'For detailed syntax design and language reference, see the \\emph\{Coding Reference\}\.',
-     "For detailed syntax design, see Chapter~\\ref{ch:programming-guide}."),
     ('F03-S07',
      r'The \\emph\{next chapter\} introduces',
      "Section~\\ref{sec:2-9} introduces"),
@@ -459,100 +392,7 @@ UNIT_OVERRIDES = [
     ('F31-S10',
      r'This is covered in detail in the \\emph\{Asynchronous parallel-by\} section\.',
      "Section~\\ref{sec:3-8-4} covers this in detail."),
-    # Round 15: 1.1 keeps the Triton-style arc (observable phenomenon, one
-    # premise, one-sentence definition, concrete comparison, honest difficulty)
-    # but carries the substance of the repo's own Part I tutorial and Part III
-    # coding reference: the four language properties, the matmul-based running
-    # example, and the construct inventory.
-    ('F01-S01',
-     r'Welcome to the Croqtile tutorial\.',
-     "The programs at the centre of modern workloads are often short. A matrix "
-     "multiplication, a normalization step, an attention block: each is a few "
-     "lines of mathematics. Yet turning those lines into a program that runs "
-     "well has become a specialist's job, and one that has to be done again "
-     "whenever a shape, a dataflow or a machine changes. The reason is rarely "
-     "the arithmetic. It is that the same small computation also has to say "
-     "where its data lives, how it is divided into tiles, in what order those "
-     "tiles become available, and how concurrent regions agree on progress. "
-     "In most settings those decisions are scattered across library calls, "
-     "build options and code a reader has to infer, so changing one of them "
-     "quietly changes several others. A single family of matrix "
-     "multiplications already produces a long series of variants, each with "
-     "its own tiling, movement and coordination; keeping them consistent is "
-     "where most of the effort goes."),
-    ('F01-S01',
-     r'(?s)Each chapter introduces.*?\Z',
-     "Croqtile begins with a single premise: if those decisions were part of "
-     "the language itself, a person could state them once, in one place, and "
-     "let the compiler check them together before producing the program that "
-     "runs. Croqtile is a C++ embedded DSL for high-performance kernel "
-     "programming, designed from the ground up around four properties: an "
-     "easy-to-use syntax whose abstractions cost nothing at run time, "
-     "comprehensive compile-time safety checks, first-class dynamic shapes "
-     "and symbolic dimensions, and a form that AI tuning tools can work with. "
-     "A program states the shapes, iterations, tiles, movement and "
-     "coordination it needs; the compiler turns that description into "
-     "runnable code. The examples in this guide grow by one idea at a time, "
-     "so a later listing usually differs from an earlier one only by the "
-     "construct that section introduces."),
-    ('F01-S02',
-     r'(?s)\\begin\{enumerate\}.*?\\end\{enumerate\}',
-     "Consider what happens when a computation needs a different tile size. "
-     "In a program where tiling, copying and coordination are written "
-     "separately, that one change reaches into the loop bounds, the address "
-     "arithmetic, the staging buffers and the coordination points. In Croqtile "
-     "the iteration declares the tile, the tile selects the data, and a "
-     "movement statement says when it is ready; the change stays local, and "
-     "the compiler rejects the combinations that do not fit. That is the key "
-     "benefit of making tiles part of the language: the person writing the "
-     "program keeps the decisions, while the compiler takes on the bookkeeping "
-     "that used to tie them together. It also means a complete kernel is short "
-     "enough to read in one sitting, which is how the examples here are built."
-     "\n\n"
-     "The vocabulary follows the way a kernel is put together. A "
-     "\\co@__co__@ function describes the parallel work and sits beside the "
-     "ordinary C++ that prepares buffers through the host API. Shaped types "
-     "built on MDSpan and spanned data carry symbolic dimensions that need "
-     "not be fixed until the program runs. Iteration constructs declare "
-     "independent regions and loop over tiles, DMA statements and "
-     "\\texttt{chunkat} select and move those tiles, and events order the "
-     "regions that share them. Where plain C++ is needed again, "
-     "\\co@__cpp__@ blocks, macros and the preprocessor are available in the "
-     "same file. Appendix~\\ref{app:quickref} collects the exact spelling of "
-     "each form, and the chapters that follow put them to work in complete "
-     "programs."),
-    ('F01-S03',
-     r'\\item Basic C\+\+ knowledge \(functions, pointers, arrays\)',
-     "\\item Basic C++ (functions, pointers and arrays) and the idea of a "
-     "shaped tensor\n"
-     "\\item Some familiarity with parallel programs: independent work items, "
-     "tiles, and coordination between concurrent regions"),
-    ('F01-S03', r'A working Croqtile compiler',
-     'A machine on which you can build the compiler'),
-    ('F12-S01',
-     r'(?s)Welcome to the Croqtile coding reference\..*?\Z',
-     "Of course, putting those decisions in the language does not make writing "
-     "a kernel trivial; it moves the difficulty into the compiler, where it "
-     "can be discharged once instead of rediscovered by every program. The "
-     "compile-time safety checks have to decide shapes and indices before "
-     "anything runs. Symbolic dimensions have to survive until the program "
-     "runs, so one source serves many input sizes. The abstractions have to "
-     "stay zero-cost, and the constructs have to stay few enough that a person "
-     "can hold all of them in mind. Those constraints shape almost every rule "
-     "in the following chapters; giving you a sense of how the compiler meets "
-     "them is one of the purposes of this guide."),
     ('F10-S01', r'So far the tutorial has built', 'The preceding sections have built'),
-    # An upstream page whose entire body was target-platform material would
-    # otherwise leave a bare heading behind.  Give it a transition instead.
-    ('F13-S01', r'\A\s*\Z',
-     "From here the path is step by step. The chapters that follow start with "
-     "the smallest kernel that compiles and evolve a single running example "
-     "through progressively richer matmul variants, so each new idea appears "
-     "in a concrete, working program and every major construct is met before "
-     "the end. The next step is a practical one: build the compiler so that "
-     "each of those programs can be run rather than only read. "
-     "Section~\\ref{sec:1-2} lists what you need, and "
-     "Section~\\ref{sec:1-3} walks through the build."),
     # Section 1.2: Part I lists the toolchain in a table, Part III repeats it
     # as a bare list.  Keep the table, turn the duplicate into the missing
     # explanation of the version floor, and point the fallback at the real
@@ -1314,6 +1154,35 @@ UNIT_OVERRIDES = [
      r'This example shows how physical parallelism work together with virtual parallelism\.',
      "It shows how physical parallelism works together with virtual "
      "parallelism."),
+    # High-level purpose and development benefits for the opening section.
+    ('F01-S01',
+     '(?s)\\A.*\\Z',
+     'Much of the development effort in a high-performance kernel goes into organising the '
+     'computation. Beyond implementing the arithmetic, the programmer has to arrange data '
+     'storage, divide parallel work and coordinate execution. These choices interact, so a '
+     'change can require updates in several places. Different input sizes or target '
+     'machines call for another round of validation and tuning. Implementing, maintaining '
+     'and revising these arrangements accounts for much of the cost.'),
+    ('F01-S02',
+     '(?s)\\A.*\\Z',
+     'Croqtile is a C++ embedded DSL for high-performance kernel programming, designed to '
+     'make this work easier while preserving control over performance. It provides a '
+     'direct way to describe the organisation of computation, data movement and '
+     'coordination in a compact program. The programmer chooses how the kernel works; the '
+     'compiler derives related information, checks consistency and generates the '
+     'underlying code. This reduces the repetitive work involved in expressing and '
+     'maintaining those choices.'),
+    ('F01-S03',
+     '(?s)\\A.*\\Z',
+     'The resulting programs are easier to read as a whole and revise as requirements '
+     'change. They can accommodate different input sizes, and the abstractions introduce '
+     'no additional runtime overhead. Compact source and useful compiler feedback also '
+     'make the same process accessible to AI-assisted development and tuning.'),
+    ('F12-S01', '(?s)\\A.*\\Z', ''),
+    ('F13-S01', '(?s)\\A.*\\Z', ''),
+    # Standalone inline-code paragraphs need a prose prefix for translation.
+    ('F08-S07', '(?m)^\\\\texttt\\{\\(1:', 'The slice \\texttt{(1:'),
+    ('F16-S04', '(?m)^\\\\texttt\\{new', 'The expression \\texttt{new'),
     # Round 76 (3.11): diagnostics methodology. Source prose is continuous.
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
@@ -1321,6 +1190,7 @@ UNIT_OVERRIDES = [
     ('*', r'\bturns The\b', 'turns. The'),
     ('*', r'\s+,\s*,\s+', ', '),
     ('*', r'\s+,\s+\.', '.'),
+
 ]
 
 CHAPTERS = [
@@ -1645,6 +1515,8 @@ def norm_head(s):
 
 def heading_for(title, uid, slot):
     """Normalise a source section title to one level under the slot heading."""
+    if uid == 'F01-S03':
+        return ''  # Its former prerequisites list is now continuous opening prose.
     plain = re.sub(r'`([^`]+)`', r'\1', title)
     plain = re.sub(r'\*+', '', plain).strip()
     low = plain.lower().rstrip('.:')

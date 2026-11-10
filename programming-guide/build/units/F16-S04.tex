@@ -34,18 +34,18 @@ new-shape3 : [shape, 6]; // [32, 72, 6]
 
 Arithmetic operations on an \emph{mdspan} variable are applied dimensionally. Thus, the statement
 
-\texttt{new-\allowbreak{}shape1 :\allowbreak{} shape + 1;}
+The expression \texttt{new-\allowbreak{}shape1 :\allowbreak{} shape + 1;}
 
 is equivalent to
 
-\texttt{new-\allowbreak{}shape1 :\allowbreak{} shape [(0) + 1, (1) + 1];}
+The expression \texttt{new-\allowbreak{}shape1 :\allowbreak{} shape [(0) + 1, (1) + 1];}
 
 The derived definition of \texttt{new-shape3} demonstrates that using an \emph{mdspan} variable in an \emph{mdspan initialization expression} results in \textbf{concatenation} behavior. Thus, the declaration
 
-\texttt{new-\allowbreak{}shape3 :\allowbreak{} [shape, 6];}
+The expression \texttt{new-\allowbreak{}shape3 :\allowbreak{} [shape, 6];}
 
 is equivalent to
 
-\texttt{new-\allowbreak{}shape3 :\allowbreak{} shape [(0), (1), 6];}
+The expression \texttt{new-\allowbreak{}shape3 :\allowbreak{} shape [(0), (1), 6];}
 
 The prior version can be as well deemed as a \emph{syntactical sugar} of a complete definition.

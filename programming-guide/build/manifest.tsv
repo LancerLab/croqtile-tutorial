@@ -2,18 +2,18 @@ uid	source	slot	status	heading
 F01-S01	tutorial/index.md	1.1	kept	Croqtile Tutorial
 F01-S02	tutorial/index.md	1.1	kept	Chapters
 F01-S03	tutorial/index.md	1.1	kept	Prerequisites
+F12-S01	documentation/index.md	1.1	kept	Croqtile Coding Reference
+F13-S01	documentation/what-is-choreo.md	1.1	kept	What is Good in CroqTile?
 F02-S01	tutorial/ch00-installation.md	1.2	kept	Ch 0: Installing Croqtile
 F02-S02	tutorial/ch00-installation.md	1.2	kept	System Requirements
-F02-S03	tutorial/ch00-installation.md	1.3	kept	Build from Source
-F02-S04	tutorial/ch00-installation.md	1.4	kept	Verify the Installation
-F02-S05	tutorial/ch00-installation.md	1.5	kept	Compiler Usage
-F02-S06	tutorial/ch00-installation.md	1.6	kept	Development Utilities
-F03-S01	tutorial/ch01-hello-croqtile.md	1.7	kept	Hello Croqtile: From Zero to Running Kernel
+F22-S01	documentation/getting-started-with-choreo.src.md	1.2	kept	Build Choreo From Source Code and Compile Choreo Program
+F22-S03	documentation/getting-started-with-choreo.src.md	1.2	kept	Prerequisitions
+F02-S03	tutorial/ch00-installation.md	1.2	kept	Build from Source
 F03-S02	tutorial/ch01-hello-croqtile.md	2.1	kept	The Two Parts of a Croqtile Program
-F03-S03	tutorial/ch01-hello-croqtile.md	1.7	kept	A Complete Example: Element-Wise Addition
+F22-S02	documentation/getting-started-with-choreo.src.md	1.2	kept	Build Choreo from Scratch
 F03-S04	tutorial/ch01-hello-croqtile.md	2.2	kept	The Croqtile Function
 F03-S05	tutorial/ch01-hello-croqtile.md	2.3	kept	The Host Program
-F03-S06	tutorial/ch01-hello-croqtile.md	1.5	kept	Build and Compile
+F02-S04	tutorial/ch00-installation.md	1.2	kept	Verify the Installation
 F03-S07	tutorial/ch01-hello-croqtile.md	3.6	kept	What You Have So Far
 F04-S01	tutorial/ch02-data-movement.md	3.6	kept	Data Movement: The Tile Movement Engine
 F04-S02	tutorial/ch02-data-movement.md	2.9	kept	The DMA Statement Family
@@ -89,11 +89,11 @@ F08-S05	tutorial/ch06-synchronization.md	2.7	kept	`with tile_k in 16`
 F08-S06	tutorial/ch06-synchronization.md	3.6.2	kept	`dma.any`: placeholder futures
 F08-S07	tutorial/ch06-synchronization.md	2.7	kept	`foreach tile_k(1:)`: sliced iteration
 F08-S08	tutorial/ch06-synchronization.md	2.2	kept	`__co__ auto` return type
-F08-S09	tutorial/ch06-synchronization.md	3.8	kept	Why you cannot "just overlap" without events
+F08-S09	tutorial/ch06-synchronization.md	3.8	kept	"Why you cannot ""just overlap"" without events"
 F08-S10	tutorial/ch06-synchronization.md	3.8.5	kept	The full 1P1C event pipeline
 F08-S11	tutorial/ch06-synchronization.md	3.8.5	kept	Walking through the kernel
 F08-S12	tutorial/ch06-synchronization.md	3.8.5	kept	Credit flow for one stage
-F08-S13	tutorial/ch06-synchronization.md	1.9	kept	Debugging tip
+F02-S05	tutorial/ch00-installation.md	1.3	kept	Compiler Usage
 F08-S14	tutorial/ch06-synchronization.md	2.15	kept	New syntax
 F08-S15	tutorial/ch06-synchronization.md	3.8.10	kept	Summary
 F09-S01	tutorial/ch07-advanced-movement.md	X	moved	
@@ -109,7 +109,7 @@ F09-S10	tutorial/ch07-advanced-movement.md	3.5.4	kept	Layout reinterpretation: `
 F09-S11	tutorial/ch07-advanced-movement.md	3.5.10	kept	Chapter summary
 F09-S12	tutorial/ch07-advanced-movement.md	3.5.10	kept	New syntax
 F10-S01	tutorial/ch08-cpp-interop.md	3.9	kept	C++ Interop: Device Functions, Inline Code, and the Preprocessor
-F10-S02	tutorial/ch08-cpp-interop.md	1.8	kept	How `.co` files compile
+F03-S06	tutorial/ch01-hello-croqtile.md	1.3	kept	Build and Compile
 F10-S03	tutorial/ch08-cpp-interop.md	3.9	kept	`__device__` vs ordinary C++ inline
 F10-S04	tutorial/ch08-cpp-interop.md	3.9.1	kept	`__device__` functions: CUDA alongside Croqtile
 F10-S05	tutorial/ch08-cpp-interop.md	2.13	kept	`__cpp__`: verbatim C++ injection
@@ -119,21 +119,21 @@ F10-S08	tutorial/ch08-cpp-interop.md	2.13	kept	The preprocessor
 F10-S09	tutorial/ch08-cpp-interop.md	2.13	kept	Tile geometry as macros
 F10-S10	tutorial/ch08-cpp-interop.md	2.13	kept	Compile-time assertions with `#error`
 F10-S11	tutorial/ch08-cpp-interop.md	2.13	kept	Conditional code paths
-F10-S12	tutorial/ch08-cpp-interop.md	1.10	kept	Reading a production `.co` file
+F22-S05	documentation/getting-started-with-choreo.src.md	1.3	kept	Compile Choreo-C++ Program
 F10-S13	tutorial/ch08-cpp-interop.md	3.9.10	kept	Chapter summary
 F11-S01	tutorial/ch09-debug-verbose.md	3.11	kept	Debug and Verbose: Printing, Assertions, and GDB
 F11-S02	tutorial/ch09-debug-verbose.md	2.14	kept	`print!` and `println!`: compile-time inspection
 F11-S03	tutorial/ch09-debug-verbose.md	2.14	kept	`print` and `println`: runtime device output
 F11-S04	tutorial/ch09-debug-verbose.md	2.14	kept	`assert`: runtime invariant checks
-F11-S05	tutorial/ch09-debug-verbose.md	1.9	kept	Verbose mode: `-v`
-F11-S06	tutorial/ch09-debug-verbose.md	1.9	kept	Runtime checks: `-rtc`
-F11-S07	tutorial/ch09-debug-verbose.md	1.9	kept	Debugging MMA-heavy kernels
-F11-S08	tutorial/ch09-debug-verbose.md	1.9	kept	Debug RTTI and `cuda-gdb`
-F11-S09	tutorial/ch09-debug-verbose.md	1.9	kept	Putting it together
-F11-S10	tutorial/ch09-debug-verbose.md	1.9	kept	Summary
-F12-S01	documentation/index.md	1.1	kept	Croqtile Coding Reference
+F02-S06	tutorial/ch00-installation.md	1.3	kept	Development Utilities
+F22-S04	documentation/getting-started-with-choreo.src.md	1.3	kept	Environment
+F03-S01	tutorial/ch01-hello-croqtile.md	1.4	kept	Hello Croqtile: From Zero to Running Kernel
+F03-S03	tutorial/ch01-hello-croqtile.md	1.4	kept	A Complete Example: Element-Wise Addition
+F10-S02	tutorial/ch08-cpp-interop.md	1.4	kept	How `.co` files compile
+F14-S05	documentation/choreo-program-structure.md	1.4	kept	A Full Choreo-Cute C++ Code Example
+F14-S06	documentation/choreo-program-structure.md	1.4	kept	Host Program - the Control Center
 F12-S02	documentation/index.md	3.1	kept	What You Will Find Here
-F13-S01	documentation/what-is-choreo.md	1.1	kept	What is Good in CroqTile?
+F10-S12	tutorial/ch08-cpp-interop.md	1.4	kept	Reading a production `.co` file
 F13-S02	documentation/what-is-choreo.md	3.10	kept	Easy to Use
 F13-S03	documentation/what-is-choreo.md	3.10	kept	Compile-Time Safety
 F13-S04	documentation/what-is-choreo.md	3.10	kept	Dynamic Shapes
@@ -142,8 +142,8 @@ F14-S01	documentation/choreo-program-structure.md	3.1	kept	Overview
 F14-S02	documentation/choreo-program-structure.md	3.1	kept	Construct a Choreo-C++ Program
 F14-S03	documentation/choreo-program-structure.md	2.1	kept	Host, Device and Tileflow
 F14-S04	documentation/choreo-program-structure.md	3.1	kept	Transpilation and Compilation
-F14-S05	documentation/choreo-program-structure.md	1.8	kept	A Full Choreo-Cute C++ Code Example
-F14-S06	documentation/choreo-program-structure.md	1.8	kept	Host Program - the Control Center
+F08-S13	tutorial/ch06-synchronization.md	1.5	kept	Debugging tip
+F11-S05	tutorial/ch09-debug-verbose.md	1.5	kept	Verbose mode: `-v`
 F14-S07	documentation/choreo-program-structure.md	3.1	kept	Device Program: Parallel Computation
 F14-S08	documentation/choreo-program-structure.md	2.9	kept	Tileflow Program: Orchestrating the Data Movement
 F14-S09	documentation/choreo-program-structure.md	3.1	kept	Quick Summary
@@ -213,11 +213,11 @@ F21-S07	documentation/value-numbering.md	3.3	kept	Design Considerations
 F21-S08	documentation/value-numbering.md	3.3	kept	Lexical Scopes and Restriction
 F21-S09	documentation/value-numbering.md	3.3	kept	Limitations
 F21-S10	documentation/value-numbering.md	3.3	kept	Reference
-F22-S01	documentation/getting-started-with-choreo.src.md	1.2	kept	Build Choreo From Source Code and Compile Choreo Program
-F22-S02	documentation/getting-started-with-choreo.src.md	1.3	kept	Build Choreo from Scratch
-F22-S03	documentation/getting-started-with-choreo.src.md	1.2	kept	Prerequisitions
-F22-S04	documentation/getting-started-with-choreo.src.md	1.6	kept	Environment
-F22-S05	documentation/getting-started-with-choreo.src.md	1.5	kept	Compile Choreo-C++ Program
+F11-S06	tutorial/ch09-debug-verbose.md	1.5	kept	Runtime checks: `-rtc`
+F11-S07	tutorial/ch09-debug-verbose.md	1.5	kept	Debugging MMA-heavy kernels
+F11-S08	tutorial/ch09-debug-verbose.md	1.5	kept	Debug RTTI and `cuda-gdb`
+F11-S09	tutorial/ch09-debug-verbose.md	1.5	kept	Putting it together
+F11-S10	tutorial/ch09-debug-verbose.md	1.5	kept	Summary
 F23-S01	documentation/macro-in-choreo.md	2.13	kept	Overview
 F23-S02	documentation/macro-in-choreo.md	2.13	kept	Object-Like Macros
 F23-S03	documentation/macro-in-choreo.md	2.13	kept	Comments

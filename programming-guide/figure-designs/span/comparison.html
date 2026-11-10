@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第一张 span 图：三个设计方案</title><style>
+* { box-sizing: border-box; } body { margin: 28px; font-family: "Noto Sans CJK SC", sans-serif; color: #24323d; background: white; }
+h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; } p { color:#63717b; }
+.compare { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin-top:30px; }
+section { min-width:0; } h2 { font-size:19px; margin-bottom:8px; } section p { font-size:14px; }
+img { display:block; width:100%; height:auto; } a { color:#245e8a; } .full { display:block; margin-top:12px; }
+details { margin-top:38px; border-top:1px solid #dbe2e6; padding-top:18px; } summary { cursor:pointer; }
+details img { max-width:1000px; margin:20px auto; }
+@media(max-width:850px){ .compare { grid-template-columns:1fr; } }
+</style><h1>第一张 span 图 · 三个设计方案</h1>
+<p>正文已恢复原图；三份方案均保留完整形状、单维大小和三条代码示例。点击图片查看原尺寸。</p>
+<div class="compare">
+<section><h2>A · 保留原图结构</h2><p>矩阵 + 维度大括号 + 代码示例</p><a href="span-a.png"><img src="span-a.png" alt="A · 保留原图结构"></a><a class="full" href="span-a.png">打开 A 原尺寸图</a></section>
+<section><h2>B · 三种表达式对照</h2><p>完整形状、行数、列数并排阅读</p><a href="span-b.png"><img src="span-b.png" alt="B · 三种表达式对照"></a><a class="full" href="span-b.png">打开 B 原尺寸图</a></section>
+<section><h2>C · 形状分量连线</h2><p>矩阵维度直接对应 [4, 8] 的分量</p><a href="span-c.png"><img src="span-c.png" alt="C · 形状分量连线"></a><a class="full" href="span-c.png">打开 C 原尺寸图</a></section>
+</div><p><a href="comparison.pdf">下载三页 PDF</a> · <a href="comparison.png">打开并排比较图</a></p>
+<details><summary>对照：已经恢复到正文的原图</summary><img src="../../figures/f04-fig_span_light.png" alt="原始 span 图"></details></html>

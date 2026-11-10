@@ -191,3 +191,4 @@ programming-guide/
   licence text are in `templates/ebook-book/`.
 - Edition B is modelled on Overleaf's Technical Document Template (LPPL-1.3c).
 - Template sources and preview links were verified November 2026.
+

@@ -1,0 +1,81 @@
+This is LuaHBTeX, Version 1.14.0 (TeX Live 2022/dev/Debian)  (format=lualatex 2026.9.7)  8 NOV 2026 22:55
+ restricted system commands enabled.
+**build/zh-test.tex
+(./build/zh-test.tex
+LaTeX2e <2021-11-15> patch level 1
+[\directlua]:1: module 'luaotfload-main' not found:
+	no field package.preload['luaotfload-main']
+	[kpse lua searcher] file not found: 'luaotfload-main'
+Error in luaotfload: reverting to OT1 L3 programming layer <2022-01-21>
+Inserting `tracingstacklevels' at position 1 in `input_level_string'.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 5
+4.
+
+(/usr/share/texmf/tex/latex/lm/ot1lmr.fd
+File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+))
+\c@part=\count183
+\c@section=\count184
+\c@subsect
+! Font \TU/lmr/m/n/10.95=[lmroman10-regular]:+tlig; at 10.95pt not loadable: me
+tric data not found or bad.
+<to be read again> 
+relax 
+l.112 ...lt\familydefault\seriesdefault\shapedefault
+                                                  
+ 351 words of node memory still in use:
+   2 hlist, 1 rule, 1 dir, 48 glue_spec, 5 if_stack, 1 write nodes
+   avail lists: 2:8,3:2,4:1,5:1,7:2,9:3
+!  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on zh-test.log.
+-dist/tex/latex/l3backend/l3backend-luatex.def
+File: l3backend-luatex.def 2022-01-12 L3 backend support: PDF output (LuaTeX)
+\l__color_backend_stack_int=\count191
+\l__pdf_internal_box=\box50
+))
+Package: xparse 2022-01-12 L3 Experimental document command parser
+)
+Package: fontspec 2022/01/15 v2.8a Font selection for XeLaTeX and LuaLaTeX
+Lua module: fontspec 2022/01/15 2.8a Font selection for XeLaTeX and LuaLaTeX
+(/usr/share/texlive/texmf-dist/tex/latex/fontspec/fontspec-luatex.sty
+Package: fontspec-luatex 2022/01/15 v2.8a Font selection for XeLaTeX and LuaLaT
+eX
+\l__fontspec_script_int=\count192
+\l__fontspec_language_int=\count193
+\l__fontspec_strnum_int=\count194
+\l__fontspec_tmp_int=\count195
+\l__fontspec_tmpa_int=\count196
+\l__fontspec_tmpb_int=\count197
+\l__fontspec_tmpc_int=\count198
+\l__fontspec_em_int=\count199
+\l__fontspec_emdef_int=\count266
+\l__fontspec_strong_int=\count267
+\l__fontspec_strongdef_int=\count268
+\l__fontspec_tmpa_dim=\dimen138
+\l__fontspec_tmpb_dim=\dimen139
+\l__fontspec_tmpc_dim=\dimen140
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+
+! Font \TU/lmr/m/n/10.95=[lmroman10-regular]:+tlig; at 10.95pt not loadable: met
+ric data not found or bad.
+<to be read again> 
+relax 
+l.112 ...lt\familydefault\seriesdefault\shapedefault
+                                                  
+
+Here is how much of LuaTeX's memory you used:
+ 1047 strings out of 477805
+ 100000,383344 words of node,token memory allocated
+ 351 words of node memory still in use:
+   2 hlist, 1 rule, 1 dir, 48 glue_spec, 5 if_stack, 1 write nodes
+   avail lists: 2:8,3:2,4:1,5:1,7:2,9:3
+ 21784 multiletter control sequences out of 65536+600000
+ 15 fonts using 633403 bytes
+ 68i,0n,73p,245b,82s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!

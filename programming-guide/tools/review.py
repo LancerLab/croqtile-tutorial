@@ -248,20 +248,19 @@ def scan():
         gaps.append(('content/frontmatter.tex', 1, 'label-style fragments'))
     result['preface_positioning'] = gaps
 
-    # Section 1.1 should read like Triton's Introduction: an observable
-    # problem, one premise, a one-sentence definition, then the honest
-    # difficulties.  It must not open by classifying the language internals.
+    # Section 1.1 introduces the purpose of the language: costly development
+    # work and how the design reduces it. Syntax and implementation details
+    # belong in the sections that follow.
     s11 = ''.join(text.get('build/units/%s.tex' % u, '')
                   for u in ('F01-S01', 'F01-S02', 'F01-S03',
                             'F12-S01', 'F13-S01'))
     framing = [('content/ch01-getting-started.tex', 1, 'missing ' + kw)
-               for kw in ('premise', 'Croqtile is a', 'key benefit', 'Of course',
-                          'zero-cost', 'compile-time safety',
-                          'symbolic dimensions', 'MDSpan', 'matmul variants',
-                          'DMA statements', 'running example')
+               for kw in ('Croqtile is a', 'development effort', 'parallel work',
+                          'data movement', 'compiler', 'performance')
                if kw not in s11]
     for phrase in ('three families', 'three promises',
-                   'three descriptions in sync'):
+                   'three descriptions in sync', 'MDSpan', 'chunkat',
+                   'DMA statements', '__cpp__', '16 to 32'):
         if phrase in s11:
             framing.append(('content/ch01-getting-started.tex', 1,
                             'opens too deep: ' + phrase))

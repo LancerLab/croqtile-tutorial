@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>中文排版测试</title>
+<style>
+@page { size: A4; margin: 2.4cm 2.2cm; }
+body { font-family: "Noto Serif CJK SC", serif; font-size: 10.5pt; line-height: 1.75; text-align: justify; }
+h1,h2 { font-family: "Noto Sans CJK SC", sans-serif; }
+code, pre { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 9pt; }
+pre { background:#f6f8fa; border:1px solid #ddd; padding:8px; white-space:pre-wrap; }
+</style></head><body>
+<h1>中文排版测试</h1>
+<p>核函数（kernel）在设备（device）上执行，主机（host）负责准备数据。分块（tile）是较大缓冲区的一个窗口，编译器通过源到源翻译（transpilation）把 <code>__co__</code> 函数转换成下游 C++ 源码，再由下游编译器完成编译。形状（shape）与秩（rank）在编译时检查，符号维度（symbolic dimension）允许一个程序服务于多种输入尺寸；零开销抽象（zero-cost abstraction）、事件（event）、流水线（pipeline）、协作组（cooperative group）和有界变量（bounded variable）都是本指南的常用术语。</p>
+<pre><code>__co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) { ... }</code></pre>
+<p>这一段故意写得比较长，用来观察中文在行末是否能够正确断行，避免出现无法断行导致的排版溢出，同时确认标点不会出现在行首而破坏中文排版的基本禁则处理效果；另外还要检查英文术语与代码混排时的间距，以及列表、表格、图题等结构在中文版式中是否依然清晰可辨。</p>
+</body></html>

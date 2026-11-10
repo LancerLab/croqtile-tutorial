@@ -3,12 +3,11 @@
 \chapter{Language Basics}
 \label{ch:language-basics}
 
-\guidechapterintro{This chapter introduces the core Croqtile DSL you use to write programs: how a \texttt{\_\_co\_\_} function is declared, how shaped data is described, how iteration and tile selection are expressed, how tiles move, and how concurrent regions coordinate. It stays with short, readable programs and asks only what each construct means.}
+\guidechapterintro{You will learn to read and write Croqtile programs by working through short examples. Start with the structure of a complete program and the roles of its functions, then follow how shapes, iteration, tile selection, data movement and coordination are expressed. Each example adds a construct and explains its role, so you can build up a working understanding of the syntax.}
 
 \section{The Two Parts of a Croqtile Program}
 \label{sec:2-1}
 
-\guideslotintro{A \file{.co} file reads like one C++ program, but the compiler does not treat every function in it the same way. The \texttt{\_\_co\_\_} prefix marks the functions Croqtile rewrites; the rest reaches the downstream compiler as ordinary C++. That split is the first thing to look for when reading an unfamiliar kernel.}
 
 \input{build/units/F03-S02}
 
@@ -18,7 +17,6 @@
 \section{Reading a Kernel Line by Line}
 \label{sec:2-2}
 
-\guideslotintro{An element-wise kernel is four lines long: a signature, an output allocation, one parallel statement and a return. Reading them one at a time shows why the shape in the signature matters --- it is what lets the compiler check every indexing operation that follows.}
 
 \input{build/units/F03-S04}
 
@@ -28,7 +26,6 @@
 \section{The Host-Side API: Inputs and Outputs}
 \label{sec:2-3}
 
-\guideslotintro{The host creates shaped buffers, passes them to a \texttt{\_\_co\_\_} function and receives a result back. Each step uses a small API, and the shape attached to a buffer is what makes the call type-safe.}
 
 \input{build/units/F03-S05}
 
@@ -54,7 +51,6 @@
 \section{Shapes and mdspan}
 \label{sec:2-4}
 
-\guideslotintro{A shape is a value a program can name and compute with, not just an annotation on a declaration. \texttt{mdspan} defines one, arithmetic derives another from it, and an anonymous dimension leaves a size for the caller to supply.}
 
 \input{build/units/F04-S16}
 
@@ -72,7 +68,6 @@
 \section{Integers, I-Tuples, and Bounded Values}
 \label{sec:2-5}
 
-\guideslotintro{Integers control loops and index arrays; an \texttt{ituple} groups several of them into one index. Both are declared with an initializer, both are immutable, and both are checked against the shape they are used with.}
 
 \input{build/units/F15-S05}
 
@@ -96,7 +91,6 @@
 \section{Spanned Data and Storage Specifiers}
 \label{sec:2-6}
 
-\guideslotintro{A buffer in Croqtile always arrives with its shape. Declaring one fixes the element type and the dimensions; a storage specifier says where it lives, and an initializer can fill it at the declaration site.}
 
 \input{build/units/F15-S08}
 
@@ -128,7 +122,6 @@
 \section{Iteration: parallel-by, with-in, and foreach}
 \label{sec:2-7}
 
-\guideslotintro{Iteration constructs state which iterations are independent, leaving the schedule to the compiler. \texttt{parallel}, \texttt{with-in} and \texttt{foreach} differ in what they name and how much of the index space each instance sees.}
 
 \input{build/units/F05-S03}
 
@@ -176,7 +169,6 @@
 \section{Tile Selection: chunkat, subspan, and view/from}
 \label{sec:2-8}
 
-\guideslotintro{A tile is a window onto a larger buffer. \texttt{chunkat}, \texttt{subspan} and \texttt{view().from()} choose different windows, and the compose operator \texttt{\#} combines those choices without copying data.}
 
 \input{build/units/F04-S05}
 
@@ -204,7 +196,6 @@
 \section{Data Movement: the DMA Statement and Futures}
 \label{sec:2-9}
 
-\guideslotintro{A DMA statement moves a tile between storage levels and returns a future the program can wait on. Synchronous and asynchronous copies share one syntax; only the wait and the lifetime of the source differ.}
 
 \input{build/units/F04-S02}
 
@@ -236,7 +227,6 @@
 \section{Coordination: inthreads, Events, and Async Blocks}
 \label{sec:2-10}
 
-\guideslotintro{Concurrent regions need a way to agree on who may proceed. Events, \texttt{inthreads} blocks and their asynchronous forms encode that agreement in the program rather than in an implicit schedule.}
 
 \input{build/units/F07-S06}
 
@@ -256,7 +246,6 @@
 \section{Branching and Early Return}
 \label{sec:2-11}
 
-\guideslotintro{A predicate inside a parallel region is a runtime decision, and an early return leaves the region before its last statement. Both use ordinary control-flow keywords, but they mean different things to the generated code.}
 
 \input{build/units/F07-S02}
 
@@ -266,7 +255,6 @@
 \section{The Four-Step MMA Syntax}
 \label{sec:2-12}
 
-\guideslotintro{A contraction is not one instruction but four: load the operands, compute, accumulate and store. The four-step spelling makes each step visible, so the smallest kernel that uses all of them is enough to read the rest.}
 
 \input{build/units/F06-S02}
 
@@ -274,7 +262,6 @@
 \section{C++ Embedding, Calls, Macros, and the Preprocessor}
 \label{sec:2-13}
 
-\guideslotintro{Croqtile lives inside C++: a \file{.co} file can call device helpers, inject source text and use the preprocessor. Each mechanism has its own boundary, and the compiler checks nothing across that boundary.}
 
 \input{build/units/F10-S05}
 
@@ -312,7 +299,6 @@
 \section{Printing, Assertions, and Compile-Time Inspection}
 \label{sec:2-14}
 
-\guideslotintro{A shape or a type that is wrong at compile time is cheapest to inspect with \texttt{print!}; a value that is wrong at runtime needs \texttt{assert} or a print inside the kernel. The first reports what the compiler believes, the second what the program did.}
 
 \input{build/units/F11-S02}
 
@@ -324,7 +310,6 @@
 \section{Syntax Quick Reference}
 \label{sec:2-15}
 
-\guideslotintro{The constructs introduced so far are gathered here as a compact reference, so a spelling or a meaning can be looked up without re-reading the examples.}
 
 \input{build/units/F04-S25}
 

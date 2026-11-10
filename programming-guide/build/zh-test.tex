@@ -1,0 +1,15 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{Noto Serif CJK SC}
+\setsansfont{Noto Sans CJK SC}
+\setmonofont{Noto Sans Mono CJK SC}
+\begin{document}
+\section*{中文排版测试}
+核函数（kernel）在设备上执行，主机（host）负责准备数据。分块（tile）是较大缓冲区的一个窗口，
+编译器通过源到源翻译（transpilation）把 \texttt{\_\_co\_\_} 函数转换成下游 C++ 源码，
+再由下游编译器完成编译。形状（shape）与秩（rank）在编译时检查，符号维度（symbolic dimension）
+允许一个程序服务于多种输入尺寸；零开销抽象（zero-cost abstraction）、事件（event）、
+流水线（pipeline）、协作组（cooperative group）和有界变量（bounded variable）都是本指南的常用术语。
+这一段故意写得比较长，用来观察中文在行末是否能够正确断行，避免出现无法断行导致的溢出盒子，
+同时确认标点不会出现在行首而破坏中文排版的基本禁则处理效果。
+\end{document}
