@@ -1,6 +1,6 @@
 \subsection*{DMA vs TMA}
 
-Both engines move shaped tiles. The difference is how they do it and what constraints they require.
+DMA and TMA use similar source and destination expressions, but their implementations impose different constraints. The DMA path uses cooperating threads to move the tile. TMA describes a tensor transfer to an engine through a descriptor, so the compiler must be able to construct that description before the kernel uses it.
 
 \begin{table}[htbp]
 \centering\small

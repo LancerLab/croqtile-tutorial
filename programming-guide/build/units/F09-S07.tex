@@ -1,6 +1,6 @@
-\texttt{chunkat} divides a tensor into a regular grid of equal-sized tiles. But what if the slice you need does not start on a tile boundary? Consider a mixture-of-experts (MoE) kernel: each expert processes a different number of tokens, so the starting row for each expert's operand is determined at runtime. You cannot precompute a fixed tile grid.
+A mixture-of-experts kernel often packs different numbers of tokens for different experts. Each expert's data begins at an offset known only at runtime, so a fixed tile grid may not describe the required slice. A window gives that slice its own origin before the inner tiling begins.
 
-\texttt{view(M, N).\allowbreak{}from(row, col)} defines an \texttt{M x N} rectangle starting at any \texttt{(row, col)} --- no alignment requirement:
+The expression \co@view(M, N).from(row, col)@ describes an M by N rectangle beginning at the supplied element coordinates. The selection need not begin on a tile-grid boundary. A transfer using that view must still satisfy its own alignment and shape requirements:
 
 \begin{lstlisting}[language=croqtile,caption={A window at a constant offset}]
 patch = matrix.view(16, 16).from(37, 50);
@@ -9,7 +9,8 @@ patch = matrix.view(16, 16).from(37, 50);
 The expression selects a \texttt{[16, 16]} slice starting at row 37, column 50. The origin can be any runtime value.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
+\caption{The small example uses a [4, 4] window from (2, 3); the same rule selects the [16, 16] window from (37, 50) in the code.}
 \end{figure}
 
 The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{tma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
@@ -21,4 +22,4 @@ dma.copy expert_lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => shared;
 
 In an MoE stack, each expert's token batch starts at a dynamic row \texttt{expert\_offset}. The \texttt{view} / \texttt{from} call rewires the operand at the top of the pipeline; everything below --- DMA, staging, MMA loop --- runs the same code for every expert.
 
-\textbf{When to use it.} Prefer \texttt{chunkat} when the tensor divides evenly into tiles at compile time. Use \texttt{view} / \texttt{from} when the window's origin or extent is determined at runtime, or when the geometry does not align to the tile grid.
+Use \co@chunkat@ when the partition counts already describe the desired region. Use \co@view@ and \co@from@ when the origin is an explicit element offset, then apply any regular tiling within that window. This keeps the irregular outer selection separate from the repeated inner work.

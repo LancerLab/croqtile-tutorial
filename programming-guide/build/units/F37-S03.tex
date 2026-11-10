@@ -1,3 +1,3 @@
 \subsection*{Storage Qualifiers in Croqtile}
 
-In Croqtile, \textbf{storage qualifiers} annotate the memory allocation and specify which memory region the data will reside in. Croqtile defines three primary storage qualifiers:
+The storage specifiers \co@global@, \co@shared@, and \co@local@ distinguish device-wide storage, storage shared within a block, and thread-private storage on the targets used here. Section 2.6 gives declaration examples. Choose a location from the intended readers and writers of the buffer, then arrange transfers between locations as needed.

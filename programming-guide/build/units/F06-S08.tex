@@ -8,7 +8,7 @@
 \midrule
 \texttt{mc = mma.\allowbreak{}fill 0.\allowbreak{}0} & Initialize accumulator tile to zero \\
 \texttt{mma.\allowbreak{}fill.\allowbreak{}f16 0.\allowbreak{}0f} / \texttt{mma.\allowbreak{}fill.\allowbreak{}f32 0.\allowbreak{}0f} & Accumulator with explicit precision \\
-\texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{} src} & Load with swizzle mode (see \emph{Ch 7}) \\
+\texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{} src} & Load with swizzle mode (Section 3.7) \\
 \texttt{mma.\allowbreak{}row.\allowbreak{}row mc, ma, mb} & C += A \(\times\) B (both row-major) \\
 \texttt{mma.\allowbreak{}row.\allowbreak{}col mc, ma, mb} & C += A \(\times\) B (A row-major, B col-major) \\
 \texttt{mma.\allowbreak{}row.\allowbreak{}row.\allowbreak{}sp mc, ma, mb, me} & Sparse MMA with metadata operand \\
@@ -20,3 +20,5 @@
 \bottomrule
 \end{tabularx}
 \end{table}
+
+Read the modifiers together with the data path. A swizzled load must match the layout produced by the copy; a sparse operation needs metadata for the same operand tile; scaling values must belong to the tile being accumulated. The short statement names do not remove these relationships.

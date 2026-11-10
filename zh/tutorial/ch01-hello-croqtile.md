@@ -45,7 +45,7 @@ int main() {
 将此代码保存为 `ele_add.co`，编译并运行：
 
 ```bash
-croqtile ele_add.co -o ele_add
+croq ele_add.co -o ele_add
 ./ele_add
 ```
 
@@ -118,17 +118,17 @@ auto res = ele_add(lhs.view(), rhs.view());
 鳄霸文件使用 `.co` 扩展名。编译器的使用方式类似 `gcc` 或 `clang`：
 
 ```bash
-croqtile ele_add.co                          # 生成 a.out
-croqtile ele_add.co -o ele_add               # 指定输出文件名
-croqtile -es -t cuda ele_add.co -o out.cu    # 仅输出 CUDA 源码
+croq ele_add.co                          # 生成 a.out
+croq ele_add.co -o ele_add               # 指定输出文件名
+croq -es -t cuda ele_add.co -o out.cu    # 仅输出 CUDA 源码
 ```
 
 `-es` 标志在转译后停止，让你检查生成的 CUDA 代码。`-t` 标志选择目标平台。
 
-要查看所有可用选项，运行 `croqtile --help`：
+要查看所有可用选项，运行 `croq --help`：
 
 ```bash
-croqtile --help
+croq --help
 ```
 
 这会打印完整的编译器标志列表——输出命名、目标选择、详细度和诊断选项。值得浏览一遍，这样你在需要时知道有什么可用的。

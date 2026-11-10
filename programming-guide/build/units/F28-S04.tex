@@ -1,8 +1,8 @@
 \subsection*{Synchronous and Asynchronous}
 
-\textbf{Asynchronous DMA}, or \textbf{Async-DMA}, is also known as \textbf{Non-Blocking DMA} because it does not block the execution of subsequent code. Conversely, \textbf{Synchronous DMA}, or \textbf{Sync-DMA}, is referred to as \textbf{Blocking DMA} because the code does not proceed until the DMA operation is complete. These terms will be used interchangeably in the following text.
+An asynchronous copy is non-blocking: subsequent code can execute while the transfer is pending. A synchronous copy completes before execution proceeds past the statement. These terms describe when the issuing code can continue, not whether it may safely read an unfinished transfer's destination.
 
-In Croqtile, the \texttt{.async} suffix in a \textbf{DMA operation} indicates that the operation is asynchronous. The following code provides an example:
+In Croqtile, the \texttt{.async} suffix in a \textbf{DMA operation} indicates that the operation is asynchronous. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Synchronous and Asynchronous}]
 f0 = dma.copy.async data0 => shared; // non-blocking
@@ -13,4 +13,4 @@ wait f0;                             // synchronization
 
 In this example, the DMA operation that produces the future \texttt{f0} is asynchronous, allowing the program to continue executing while the data transfer occurs in the background. The DMA operation that produces \texttt{f1} is synchronous, meaning the program will pause until the data is fully transferred from \texttt{data1} to \texttt{shared} storage. Meanwhile, the data copy of \texttt{data0} might still be in progress.
 
-Executing the statement \texttt{wait f0;} causes the program to check if \texttt{data0} has been fully transferred to \texttt{shared} storage. This synchronizes the main execution flow with the asynchronous DMA of \texttt{f0}. Therefore programmers must make sure there is no "dangling future* left in your code.
+The statement \texttt{wait f0;} waits until the transfer from \texttt{data0} to \texttt{shared} storage is complete, synchronizing subsequent execution with that transfer. Ensure that every asynchronous result is awaited before it is used.

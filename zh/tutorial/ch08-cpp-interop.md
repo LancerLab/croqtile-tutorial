@@ -44,7 +44,7 @@ int main() {   // ④
 - **③ `__cpp__` 字符串** 在它们出现于 `__co__` 主体中的位置被逐字符拼接到生成的 CUDA。编译器不解析其内容——它们在生成代码的拼接点处必须合法。
 - **④ Host 代码**（`main()` 及任何其他无注解函数）作为普通 C++ 透传，进入 host 编译路径。
 
-四个区域合并进一个 `.cu` 文件。`nvcc` 将 device 代码（`__global__`、`__device__`）编译为 GPU 机器码，将 host 代码编译为 CPU 代码，最终链接为单一二进制。运行 `croqtile kernel.co -v`（第 9 章）可查看编译器发出的完整 `nvcc` 命令。
+四个区域合并进一个 `.cu` 文件。`nvcc` 将 device 代码（`__global__`、`__device__`）编译为 GPU 机器码，将 host 代码编译为 CPU 代码，最终链接为单一二进制。运行 `croq kernel.co -v`（第 9 章）可查看编译器发出的完整 `nvcc` 命令。
 
 ## `__device__` 与普通 C++ inline 的区别
 
@@ -235,7 +235,7 @@ __co__ foo() {
 }
 ```
 
-预处理器在鳄霸解析 `__co__` 主体之前保留一分支并丢弃另一分支。命令行定义：`croqtile kernel.co -DMATMUL_TILE_K=128`。
+预处理器在鳄霸解析 `__co__` 主体之前保留一分支并丢弃另一分支。命令行定义：`croq kernel.co -DMATMUL_TILE_K=128`。
 
 ## 如何阅读生产级 `.co` 文件
 

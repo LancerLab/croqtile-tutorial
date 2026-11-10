@@ -15,7 +15,7 @@
 编译和运行任意内核：
 
 ```bash
-croqtile -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
+croq -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
 bash kernel.cute.result --execute
 ```
 
@@ -647,7 +647,7 @@ Croqtile 相对 cuBLAS 的微小优势来自 WARP_N=192 分块在该特定 GPU �
 
 ```bash
 # 编译 — 生成包装 nvcc 的自包含脚本
-croqtile -gs -t cute -arch=sm_90a \
+croq -gs -t cute -arch=sm_90a \
     matmul_f16_v4_auto_tuned.co -o v4.cute.result
 
 # 运行（编译 + 链接 + 执行一步完成）

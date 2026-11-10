@@ -1,19 +1,32 @@
 {
   "round": 0,
   "counts": {
-    "meta": 57,
-    "pov": 127,
-    "generic_headings": 39,
-    "typos": 12,
-    "broken": 16,
-    "hardware": 0,
+    "meta": 0,
+    "pov": 0,
+    "generic_headings": 0,
+    "typos": 0,
+    "broken": 0,
+    "dangling_refs": 0,
+    "dup_headings": 0,
+    "repeated_sentences": 0,
+    "stale_titles": 0,
+    "inline_number_emph": 0,
+    "heading_only": 0,
+    "merged_paragraphs": 0,
+    "preface_positioning": 0,
+    "section_1_1_framing": 0,
+    "hardware": 1,
     "placeholders": 0,
-    "narrative_gap": 68
+    "empty_markup": 0,
+    "emph_ref": 0,
+    "tutorial_voice": 0,
+    "fragments": 0,
+    "narrative_gap": 62
   },
-  "total": 319,
+  "total": 63,
   "narrative": {
-    "chapter_intro": 0,
+    "chapter_intro": 3,
     "slot_intro": 0,
-    "where_next": 0
+    "where_next": 3
   }
 }

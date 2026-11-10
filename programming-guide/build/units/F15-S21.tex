@@ -1,8 +1,8 @@
-\subsection*{Parameters Passing between Croqtile and C++ Function}
+\subsection*{Parameter Passing between Croqtile and C++ Function}
 
-Passing arguments between Croqtile and C++ requires the \texttt{croqtile.h} header. Normally, programmers combine the raw C++ pointer and associated dimensions info to construct Croqtile spanned data. The code below demonstrates how it works.
+Passing arguments between Croqtile and C++ requires the \texttt{croqtile.h} header. Combine a raw C++ pointer with its dimensions to construct Croqtile spanned data, as shown below.
 
-\begin{lstlisting}[language=croqtile,caption={Parameters Passing between Croqtile and C Function}]
+\begin{lstlisting}[language=croqtile,caption={Parameter Passing between Croqtile and C Function}]
 #include "croqtile.h"
 void bar(const float* data, unsigned size) {}
 __co__ void foo(f32 mdspan<2> d) {
@@ -15,6 +15,6 @@ void foobar(float* a) {
 }
 \end{lstlisting}
 
-In the example, you make use of croqtile utility function (template) 'make\_spanview' to wrap the data, which does not invoke copy. And in Croqtile function 'foo', the parameter 'f32 mdspan\textless{}2\textgreater{}' is the corresponding entity. Because the data is implicitly cast, you can simply use 'd' as the first parameter of C++ function 'bar'. And operation '|d|' obtains the total size of the spanned data 'd'. These are used for calling C++ function 'bar'.
+The \texttt{make\_spanview} utility template wraps the data without copying it. In the Croqtile function \texttt{foo}, the corresponding parameter \texttt{d} has type \texttt{f32 mdspan\textless{}2\textgreater{}}. An implicit conversion allows \texttt{d} to be passed as the first argument to the C++ function \texttt{bar}; \texttt{|d|} supplies its total element count.
 
-Similarly, \emph{Scalar Type} data can also be passed from/to Croqtile function. Nevertheless, ituple is only used inside Croqtile function.
+Scalar values can also pass between C++ and Croqtile functions. An \texttt{ituple}, however, is used only inside a Croqtile function.

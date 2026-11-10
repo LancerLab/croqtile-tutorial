@@ -8,8 +8,8 @@ if (tile_id < total_tiles) {
 }
 \end{lstlisting}
 
-All threads in scope evaluate the condition. Threads where it is false skip the body. --- Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.
+All threads in scope evaluate the condition. Threads where it is false skip the body. Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.
 
-\textbf{When to use \texttt{if}:} data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values --- loop indices, input data, tile coordinates.
+Use \co@if@ for runtime decisions such as bounds checks and conditional accumulation. The condition may depend on the current tile coordinate or input values. Keep it uniform across a cooperating group when the body contains an operation that requires the group to participate together.
 
-The practical rule: keep \texttt{if} conditions  (all 32 threads agree) whenever possible.
+Whenever possible, keep \texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree.

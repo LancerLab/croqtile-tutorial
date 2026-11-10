@@ -2,7 +2,7 @@
 
 Both \emph{Sync-DMA} and \emph{Async-DMA} operations can be used to define a \emph{future}. As seen in earlier examples, a \emph{future} acts as a handle for asynchronous operations and is typically used as a parameter of the \texttt{wait} statement to synchronize an \emph{Async-DMA}.
 
-Croqtile allows the \texttt{wait} statement to take multiple \emph{future}s. However, using a \emph{future} from a \textbf{Sync-DMA} in a \texttt{wait} statement will result in an error. The following code provides an example:
+Croqtile allows the \texttt{wait} statement to take multiple \emph{future}s. However, using a \emph{future} from a \textbf{Sync-DMA} in a \texttt{wait} statement will result in an error. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Two asynchronous copies}]
 f0 = dma.copy.async input0 => shared;
@@ -30,4 +30,4 @@ local f32 [f0.span] buffer;
 call device_kernel(f1.data, |f1.span|);
 \end{lstlisting}
 
-In this example, you use \texttt{.span} built-in member function to retrieve the shape of \texttt{f0}'s destination buffer, and \texttt{.data} to retrieve the \emph{spanned} data of \texttt{f1}'s destination. In addition, the \textbf{ElementCount} operation on the \emph{mdspan} of the destination buffer of \texttt{f1}. The \textbf{ElementCount} operation returns the number of elements in an \textbf{mdspan}, which is useful in many scenarios.
+Here, \texttt{.span} retrieves the shape of the destination buffer associated with \texttt{f0}, and \texttt{.data} retrieves the destination data associated with \texttt{f1}. Applying the element-count operation to \texttt{f1}'s destination shape returns its total number of elements.

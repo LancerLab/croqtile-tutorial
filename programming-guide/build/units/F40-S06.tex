@@ -18,3 +18,7 @@ __co__ auto rgb2gray(f32 [N, 3, H, W] input) {
   return out;
 }
 \end{lstlisting}
+
+The input shape is \co@[N, 3, H, W]@, with the three color channels in the second dimension. The underscore in \co@chunkat(q#n, _, h, w)@ keeps those channels together while selecting one image and a spatial region. Removing that channel dimension from the loaded shape gives the shape of \co@out_L1@; the helper writes one grayscale value for each spatial position.
+
+The composition \co@q # n@ assigns a consecutive group of images to each of the six parallel instances. The bounds assume that N divides by 6, H by 16, and W by 512 for this regular partition. Within those assumptions, each input tile contains all three channels for a 16 by 512 region, and the final copy writes its grayscale result to the matching output tile. Other image sizes need an explicit boundary policy.

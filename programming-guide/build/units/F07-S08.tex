@@ -32,8 +32,8 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 \end{lstlisting}
 
-\textbf{Producer \texttt{foreach}} --- Walks K with \texttt{cdiv(K, TILE\_\allowbreak{}K)} steps;
+The producer loop visits \co@cdiv(K, TILE_K)@ input slices. For each slice it fills the left and right staging buffers. Both operands must be ready before the consumer starts the corresponding contraction.
 
-\textbf{Consumer \texttt{mma} path}
+The consumer initializes one accumulator for its output tile, then loads and multiplies the operand fragments for each K slice. It writes the output after the last contribution. Because the two loops run independently, matching loop counts alone does not guarantee that the consumer sees the intended slice.
 
-\textbf{Missing coordination} --- Both sides loop over K independently. The consumer assumes each K-slab is ready when it reads. Making that assumption correct requires events (Section~\ref{sec:3-8-5}).
+The skeleton omits the handoff between these loops. Before use as a working pipeline, add a readiness signal after loading and a reuse signal after consumption. Section 3.8.5 supplies both with per-slot events.

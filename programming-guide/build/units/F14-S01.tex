@@ -1,1 +1,1 @@
-A \file{.co} program has a fixed structure: host code, device code and a tileflow function, each treated differently by the compiler.
+A \co@.co@ file brings the application and its parallel work into one source file. Ordinary host C++ prepares inputs and calls a \co@__co__@ function. That function describes the parallel work and can invoke device helpers for specialized computations. Understanding which compiler handles each part makes both integration and diagnostics easier.

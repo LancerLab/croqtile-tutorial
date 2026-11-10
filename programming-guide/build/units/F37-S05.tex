@@ -1,6 +1,6 @@
 \subsection*{2. \texttt{shared}}
 
-A \texttt{shared} buffer follows the same declaration syntax:
+A \co@shared@ buffer provides a common staging area for threads in a block. In a tiled matrix multiplication, a block can load an operand tile once and let several threads read it. The reads must follow completion of the load, and the next load must wait until those reads finish.
 
 \begin{lstlisting}[language=croqtile,caption={2. shared}]
 shared f32 [10, 10] tile_data;

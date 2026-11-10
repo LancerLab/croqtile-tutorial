@@ -1,6 +1,6 @@
 \subsection*{First Example: Tiled Addition Through shared storage}
 
-\begin{lstlisting}[language=croqtile,caption={First Example: Tiled Addition Through shared storage}]
+\begin{lstlisting}[language=croqtile,caption={Tiled Addition Through Shared Storage}]
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
   parallel {tr, tc} by [4, 8] {
@@ -25,6 +25,6 @@ The arithmetic is still element-wise addition. What changed is the data path:
 This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig2_tiled_add_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig2_tiled_add_light.png}
+\caption{For [64, 128] inputs and a [4, 8] tile grid, tile (1, 3) stages [16, 16] operands before element-wise addition.}
 \end{figure}
-\begin{center}\small\emph{Load a tile, compute on the staged data, then write results back using global coordinates.}\end{center}

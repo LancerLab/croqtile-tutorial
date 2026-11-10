@@ -8,9 +8,6 @@
 \section{Program Structure and Compilation Models}
 \label{sec:3-1}
 
-
-\input{build/units/F12-S02}
-
 \input{build/units/F14-S01}
 
 \input{build/units/F14-S02}
@@ -19,14 +16,15 @@
 
 \input{build/units/F14-S07}
 
-\input{build/units/F14-S09}
-
 \input{build/units/F31-S08}
+
+\input{build/units/F12-S02}
+
+\input{build/units/F14-S09}
 
 
 \section{Syntax Design and the Type System}
 \label{sec:3-2}
-
 
 \input{build/units/F05-S11}
 
@@ -69,7 +67,6 @@
 
 \section{Symbolic Shapes, Shape Evaluation, and Value Numbering}
 \label{sec:3-3}
-
 
 \input{build/units/F16-S02}
 
@@ -121,7 +118,6 @@
 \section{Parallelism, Space Specifiers, and Masking}
 \label{sec:3-4}
 
-
 \input{build/units/F05-S01}
 
 \input{build/units/F05-S02}
@@ -170,20 +166,17 @@
 \subsection{Worked Example: Tiled Matrix Multiplication}
 \label{sec:3-4-1}
 
-
 \input{build/units/F05-S13}
 
 
 \subsection{Tracing One Output Element}
 \label{sec:3-4-2}
 
-
 \input{build/units/F05-S17}
 
 
 \section{Tile Selection and Data Expressions}
 \label{sec:3-5}
-
 
 \input{build/units/F04-S04}
 
@@ -199,13 +192,11 @@
 \subsection{Arbitrary-Offset Windows: view and from}
 \label{sec:3-5-1}
 
-
 \input{build/units/F09-S07}
 
 
 \subsection{Strided Tiles: subspan, step, and at}
 \label{sec:3-5-2}
-
 
 \input{build/units/F09-S08}
 
@@ -213,20 +204,17 @@
 \subsection{Zero-Padding with zfill}
 \label{sec:3-5-3}
 
-
 \input{build/units/F09-S09}
 
 
 \subsection{Layout Reinterpretation with span\_as}
 \label{sec:3-5-4}
 
-
 \input{build/units/F09-S10}
 
 
 \subsection{Tile Selection: Summary and Syntax}
 \label{sec:3-5-10}
-
 
 \input{build/units/F09-S11}
 
@@ -235,7 +223,6 @@
 
 \section{Data Movement: Operations, Configuration, and Async Patterns}
 \label{sec:3-6}
-
 
 \input{build/units/F03-S07}
 
@@ -275,13 +262,11 @@
 \subsection{Worked Example: DMA Matmul}
 \label{sec:3-6-1}
 
-
 \input{build/units/F05-S14}
 
 
 \subsection{Multi-Buffering: dma.any, swap, and rotate}
 \label{sec:3-6-2}
-
 
 \input{build/units/F08-S02}
 
@@ -297,30 +282,27 @@
 \subsection{Worked Example: A Pipelined Kernel}
 \label{sec:3-6-3}
 
-
 \input{build/units/F09-S05}
 
 
 \section{Contraction and Layout Contracts}
 \label{sec:3-7}
 
+\input{build/units/F06-S01}
+
+\input{build/units/F06-S03}
 
 \input{build/units/F04-S18}
 
 \input{build/units/F04-S19}
 
-\input{build/units/F06-S01}
-
-\input{build/units/F06-S03}
+\input{build/units/F09-S03}
 
 \input{build/units/F06-S07}
-
-\input{build/units/F09-S03}
 
 
 \subsection{Worked Example: One Cooperative Group}
 \label{sec:3-7-1}
-
 
 \input{build/units/F06-S04}
 
@@ -328,13 +310,11 @@
 \subsection{Worked Example: Widening the Cooperation Scope}
 \label{sec:3-7-2}
 
-
 \input{build/units/F06-S05}
 
 
 \subsection{Worked Example: Two Cooperative Groups}
 \label{sec:3-7-3}
-
 
 \input{build/units/F06-S06}
 
@@ -342,20 +322,17 @@
 \subsection{MMA Syntax Summary}
 \label{sec:3-7-9}
 
-
 \input{build/units/F06-S08}
 
 
 \subsection{MMA Design Summary}
 \label{sec:3-7-10}
 
-
 \input{build/units/F06-S09}
 
 
 \section{Coordination, Pipelines, and Persistent Scheduling}
 \label{sec:3-8}
-
 
 \input{build/units/F07-S01}
 
@@ -377,20 +354,17 @@
 \subsection{Canonical Pattern: One Producer and One Consumer}
 \label{sec:3-8-1}
 
-
 \input{build/units/F07-S04}
 
 
 \subsection{Worked Example: A 1P1C Kernel Skeleton}
 \label{sec:3-8-2}
 
-
 \input{build/units/F07-S08}
 
 
 \subsection{Persistent Scheduling}
 \label{sec:3-8-3}
-
 
 \input{build/units/F07-S09}
 
@@ -399,7 +373,6 @@
 
 \subsection{Host-Level Concurrency and Stream Binding}
 \label{sec:3-8-4}
-
 
 \input{build/units/F07-S11}
 
@@ -417,7 +390,6 @@
 \subsection{Worked Example: A Full Event Pipeline}
 \label{sec:3-8-5}
 
-
 \input{build/units/F08-S10}
 
 \input{build/units/F08-S11}
@@ -428,7 +400,6 @@
 \subsection{Coordination Pattern Summary}
 \label{sec:3-8-10}
 
-
 \input{build/units/F07-S14}
 
 \input{build/units/F08-S15}
@@ -436,7 +407,6 @@
 
 \section{C++ Interoperability and the Preprocessor}
 \label{sec:3-9}
-
 
 \input{build/units/F10-S01}
 
@@ -458,13 +428,11 @@
 \subsection{Worked Example: Calling a Device Helper}
 \label{sec:3-9-1}
 
-
 \input{build/units/F10-S04}
 
 
 \subsection{Verbatim C++ Injection}
 \label{sec:3-9-2}
-
 
 \input{build/units/F10-S06}
 
@@ -472,13 +440,11 @@
 \subsection{Interoperability Summary}
 \label{sec:3-9-10}
 
-
 \input{build/units/F10-S13}
 
 
 \section{Tileflow Patterns and Design Rationales}
 \label{sec:3-10}
-
 
 \input{build/units/F09-S04}
 
@@ -496,7 +462,6 @@
 \subsection{Worked Example: Tiled matmul}
 \label{sec:3-10-1}
 
-
 \input{build/units/F40-S02}
 
 \input{build/units/F40-S03}
@@ -507,7 +472,6 @@
 \subsection{Worked Example: rgb2gray}
 \label{sec:3-10-2}
 
-
 \input{build/units/F40-S05}
 
 \input{build/units/F40-S06}
@@ -515,7 +479,6 @@
 
 \section{Diagnostics and Methodology}
 \label{sec:3-11}
-
 
 \input{build/units/F11-S01}
 

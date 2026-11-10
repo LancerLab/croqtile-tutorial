@@ -1,6 +1,6 @@
 \subsection*{\texttt{\_\_device\_\_} functions: target alongside Croqtile}
 
-A custom reduction, a sorting network, a special math function --- Croqtile does not need to manage these;
+A custom reduction, sorting network, or specialized math operation can be implemented as a device helper.
 
 A \texttt{\_\_co\_\_} function can call a \texttt{\_\_device\_\_} function using the \texttt{call} keyword:
 
@@ -37,12 +37,12 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 }
 \end{lstlisting}
 
-\textbf{\texttt{\_\allowbreak{}\_\allowbreak{}device\_\allowbreak{}\_\allowbreak{} void group\_\allowbreak{}topk\textless{}K\textgreater{}}} --- It operates on raw pointers (\texttt{f32*}, \texttt{s32*}), not Croqtile spans.
+The helper receives raw pointers to element storage. Its interface must therefore state any sizes or layout assumptions that it needs; the pointer alone does not preserve the Croqtile shape.
 
-\textbf{\texttt{\_\allowbreak{}\_\allowbreak{}device\_\allowbreak{}\_\allowbreak{} T SHFL\_\allowbreak{}XOR}} --- Croqtile passes them through.
+The \co@SHFL_XOR@ helper is ordinary device code passed to the target compiler. Its use inside the computation belongs to the helper's implementation; Croqtile does not translate that body into tile operations.
 
-\textbf{\texttt{call group\_\allowbreak{}topk\textless{}8\textgreater{}(.\allowbreak{}.\allowbreak{}.\allowbreak{})}} --- The \texttt{call} keyword invokes a \texttt{\_\_device\_\_} function from within a \texttt{\_\_co\_\_} body. Arguments are passed by pointer; the compiler handles the address translation between Croqtile spans and raw pointers.
+The \co@call group_topk<8>(...)@ statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call.
 
-\textbf{\texttt{inthreads (tid == 0)}} --- Note this uses \texttt{inthreads} without \texttt{.async} --- a sequential thread filter, not a concurrent region.
+The \co@inthreads (tid == 0)@ region selects one thread for the enclosed work and rejoins afterwards. It has no \co@.async@ modifier, so it does not introduce a separately progressing producer or consumer.
 
-This pattern --- Croqtile handles the parallelism, tiling, and memory orchestration; --- Is common in production kernels like MoE (mixture-of-experts) top-K, custom reductions, and specialized math.
+In this pattern, Croqtile handles parallelism, tiling, and data movement, while the device helper performs the specialized computation. Production kernels use it for MoE top-K, custom reductions, and specialized math.

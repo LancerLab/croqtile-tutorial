@@ -1,6 +1,6 @@
 \subsection*{Default Behavior and Usage}
 
-This default behavior simplifies memory management for users who do not need to explicitly define where their data should be stored, but it also means that accessing such data could incur higher latency, especially when working with large arrays or parallel processing units.
+Omitting the specifier leaves storage selection to the target and the surrounding execution context. This is convenient for introductory code, but a name without a specifier does not by itself tell you which threads can share its contents. When following a data path, check the declaration together with the parallel region that contains it.
 
 \begin{lstlisting}[language=croqtile,caption={A declaration without a specifier}]
 f32 [100, 100] d0;

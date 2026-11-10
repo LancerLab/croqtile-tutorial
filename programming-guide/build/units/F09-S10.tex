@@ -14,8 +14,9 @@ tile_2d = strip_load.data.span_as([tile_m, tile_k]);
 ma = mma.load tile_2d.chunkat(_, iv_warp);
 \end{lstlisting}
 
-\texttt{rows * cols} must equal the span length of the underlying storage, or the compiler rejects the program --- this invariant is checked at compile time, not at runtime.
+The product \co@rows * cols@ must equal the number of elements in the underlying region. A reshape preserves linear element order, so it cannot transpose a matrix or remove padding between rows. When the dimensions are constants, the compiler can check the element count before execution; dimensions derived from inputs must satisfy the same invariant for the actual call.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig7_span_as_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig7_span_as_light.png}
+\caption{The 16-element buffer becomes a [4, 4] view with the same linear order. The 1D strip is displayed on two lines for readability.}
 \end{figure}

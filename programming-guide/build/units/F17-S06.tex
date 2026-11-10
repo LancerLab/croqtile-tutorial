@@ -21,7 +21,7 @@ tiled_shape : shape / tiling_factors;
 padded_shape : shape + {2, 0, 2};
 \end{lstlisting}
 
-In this code, a mdspan-typed shape is divided by an ituple-typed tiling factor to derive a \texttt{tiled\_shape}. Additionally, a \texttt{padded\_shape} is derived from the addition of the initial \texttt{shape} and an anonymous \emph{ituple}. Note that when a \emph{mdspan} is added by an \emph{ituple}, their rank must be consistent. Or else, an error will occur.
+Here, dividing an \texttt{mdspan} shape by an \texttt{ituple} of tiling factors produces \texttt{tiled\_shape}. Adding an anonymous \texttt{ituple} to the original shape produces \texttt{padded\_shape}. The shape and tuple must have matching ranks; otherwise, the compiler reports an error.
 
 \begin{lstlisting}[language=croqtile,caption={An invalid shape expression}]
 shape : [7, 8, 9] + {1, 2}; // error: inconsistent rank

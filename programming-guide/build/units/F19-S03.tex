@@ -14,6 +14,6 @@ void bar(int * data, int dim0) {
 }
 \end{lstlisting}
 
-In this example, the first dimension of \texttt{input} is provided by \texttt{foo}'s \emph{spanned} input, where the value is retrieved from \texttt{bar}'s caller at execution. You may assume the value be determined by reading a configuration file, through shape derivation in a machine learning framework, or etc..
+The first dimension of \texttt{input} comes from the spanned input passed to \texttt{foo}; \texttt{bar} obtains the value from its caller at runtime. For example, it may come from a configuration file or a shape calculation in a machine learning framework.
 
-The \emph{anonymous dimension} can work properly for this case. However, in certain scenarios, it is not sufficient.
+An anonymous dimension is sufficient when only its size matters within one input. It does not give two inputs a shared name for a dimension that must agree. Matrix multiplication needs precisely that relationship: the left operand's column count must equal the right operand's row count.

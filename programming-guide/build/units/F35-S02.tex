@@ -1,14 +1,14 @@
 \subsection*{Event Basics}
 
-There are different definitions of \texttt{event} in different programming language. In Croqtile, the \textbf{Event} is used to handle communication and interaction between asynchronous code blocks at different level.
+The meaning of an event varies between programming languages. In Croqtile, an \textbf{event} coordinates asynchronous code blocks at different execution levels.
 
-An event in Croqtile is either \emph{SET} or \emph{UNSET}. When declaring an event, it is initialized with the \emph{UNSET} state. For example, the following code initialize a \texttt{shared} event:
+A Croqtile event has two states, \textbf{SET} and \textbf{UNSET}. A newly declared event starts in the UNSET state. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Declaring a shared event}]
 shared event e;
 \end{lstlisting}
 
-A \texttt{shared} event can only be declared inside a \texttt{parallel-by} block and used by parallel threads. Similarly, \texttt{global} and \texttt{local} events can be defined as well. There is normally restrictions syntactially for either the declarations and value references according to the target platforms.
+A \texttt{shared} event is declared inside a \texttt{parallel-by} block and used by its parallel instances. Events can also use \texttt{global} or \texttt{local} storage. The target platform determines the constraints on their declarations and references.
 
 In addition, you may declare an event array following C-style syntax:
 
@@ -18,16 +18,16 @@ shared event e[4], e1;
 
 A comma-separated expression can declare both an event and an event array on one line.
 
-In Croqtile, the \texttt{trigger} statements changes the \texttt{event} from \emph{UNSET} to \emph{SET} state:
+The \texttt{trigger} statement changes an event from \textbf{UNSET} to \textbf{SET}:
 
 \begin{lstlisting}[language=croqtile,caption={Triggering an event array}]
 shared event e[4], e1;
 trigger e, e1;
 \end{lstlisting}
 
-The \texttt{trigger} statement triggers each event in an event array \texttt{e}, as well as the single event \texttt{e1}, as showed in the comma-separated list.
+The comma-separated statement triggers every event in array \texttt{e} and the single event \texttt{e1}.
 
-Similarly, the \texttt{wait} statement can wait for an event in a blocking mannar. The wait statement blocks currentthreads for execution if the event is \emph{UNSET}, until the event state is changed to \emph{SET}.
+The \texttt{wait} statement blocks the current instance while the event is \textbf{UNSET}. Execution resumes once the event becomes \textbf{SET}.
 
 Triggering an event is what unblocks the code waiting on a \emph{wait statement}. For example,
 
@@ -42,6 +42,6 @@ parallel p by 2 {
 }
 \end{lstlisting}
 
-You have observed similar code in last section, except for that there are \texttt{wait} and \texttt{trigger} statements. In this code snippet, once the event \texttt{e} is triggered by the \emph{trigger-thread}, the \emph{wait-thread} is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by \texttt{sync.shared}, where thread \texttt{0} completes its \texttt{inthreads} block before thread \texttt{1}. From another perspective, the events here \textbf{chains the asynchronous \texttt{inthreads}}. This is useful in many scenarios.
+In this example, the triggering instance sets \texttt{e}, allowing the waiting instance to continue. Both then reach \texttt{sync.shared}. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish.
 
 In Croqtile semantics, \textbf{an event is always auto-reset by its \texttt{wait} statement}. That means when a \texttt{wait} statement is unblocked, the events that are waited are changed to \emph{UNSET} state.

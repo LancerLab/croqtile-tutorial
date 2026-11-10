@@ -116,7 +116,7 @@ BEGIN = re.compile(r'\\begin\{(' + '|'.join(ENV_NAMES) + r')\}')
 HEADING = re.compile(r'\\(chapter|section|subsection|paragraph)\*?\{(.*)\}\s*$')
 
 
-def split_tokens(text):
+def split_tokens(text, keep_leading_inline=False):
     """Return [(tag, payload), ...] for one generated TeX fragment."""
     lines = text.split('\n')
     tokens, prose = [], []
@@ -156,7 +156,8 @@ def split_tokens(text):
             continue
         if not stripped:
             flush()
-        elif stripped.startswith(('\\', '%')) and not prose:
+        elif stripped.startswith(('\\', '%')) and not prose and not stripped.startswith(
+                (r'\texttt{', r'\textbf{', r'\emph{', r'\textit{', r'\co@', r'\file{')):
             pass
         else:
             prose.append(lines[i])
@@ -220,44 +221,23 @@ def template_line(tag, payload):
     return tag + ': ' + str(payload)
 
 
-def lines_of(text):
-    return [template_line(t, p) for t, p in split_tokens(text)]
+def lines_of(text, keep_leading_inline=False):
+    return [template_line(t, p) for t, p in split_tokens(text, keep_leading_inline)]
 
 
 # ---------------------------------------------------------------------------
-# Chinese-edition layout (English sources stay untouched).
-# Drop the old chapter 1 sections 1.2-1.5, move old 1.1 to the head of the
-# former chapter 2, and renumber the two remaining chapters as 1 and 2.
+# Chinese edition follows the three English chapters.
 # ---------------------------------------------------------------------------
-ZH_DROP_SLOTS = {'1.2', '1.3', '1.4', '1.5'}
-ZH_CHAPTER_ORIGIN = {'1': '2', '2': '3'}
-ZH_CHAPTER_TITLES = {'1': 'Language Basics', '2': 'Programming Guide'}
+ZH_CHAPTER_ORIGIN = {'1': '1', '2': '2', '3': '3'}
+ZH_CHAPTER_TITLES = CHAPTER_TITLES.copy()
 
 
 def zh_remap(slot):
-    """Original slot -> Chinese-edition slot, or None when dropped."""
-    if slot in ZH_DROP_SLOTS:
-        return None
-    p = slot.split('.')
-    tail = ('.' + '.'.join(p[2:])) if len(p) > 2 else ''
-    if p[0] == '1':
-        return '1.1'
-    if p[0] == '2':
-        return '1.' + str(int(p[1]) + 1) + tail
-    if p[0] == '3':
-        return '2.' + '.'.join(p[1:])
-    return None
+    return slot
 
 
 def zh_origin(slot):
-    """Chinese-edition slot -> original slot, for English title lookup."""
-    p = slot.split('.')
-    tail = ('.' + '.'.join(p[2:])) if len(p) > 2 else ''
-    if p[0] == '1':
-        return '1.1' if slot == '1.1' else '2.' + str(int(p[1]) - 1) + tail
-    if p[0] == '2':
-        return '3.' + '.'.join(p[1:])
-    return None
+    return slot
 
 
 # ---------------------------------------------------------------------------
@@ -273,19 +253,48 @@ def load_manifest():
         if slot:
             by_slot.setdefault(slot, []).append(r['uid'])
     slots = sorted(by_slot, key=lambda s: tuple(int(x) for x in s.split('.')))
-    # Introduce execution regions and events before multi-stage examples.
-    coordination = ['F34-S06', 'F34-S09', 'F35-S01', 'F35-S02',
-                    'F07-S06', 'F07-S07', 'F35-S05']
-    if '1.11' in by_slot:
-        if set(by_slot['1.11']) != set(coordination):
-            raise ValueError('Chapter 1 coordination units changed; review their order')
-        by_slot['1.11'] = coordination
+    # Read order and visible numbering from the English chapters, not registry IDs.
+    layout = english_layout()
+    for slot, (_, _, uids) in layout.items():
+        if set(uids) != set(by_slot[slot]):
+            raise ValueError('English chapter and manifest differ: ' + slot)
+        by_slot[slot] = uids
+    slots = list(layout)
     return by_slot, slots
 
 
 def chapter_texts():
     return {n: (PG / 'content' / fn).read_text(encoding='utf-8')
             for n, fn in CHAPTER_FILES.items()}
+
+
+def english_layout():
+    """Map stable source labels to the numbers actually typeset by LaTeX."""
+    layout = {}
+    for chapter, text in chapter_texts().items():
+        section = subsection = 0
+        pattern = r'\\(section|subsection)\{([^\n]*)\}\s*\\label\{sec:([^}]+)\}\s*(.*?)(?=\n\\(?:section|subsection)\{|\Z)'
+        for m in re.finditer(pattern, text, re.S):
+            if m[1] == 'section':
+                section += 1
+                subsection = 0
+                number = f'{chapter}.{section}'
+            else:
+                subsection += 1
+                number = f'{chapter}.{section}.{subsection}'
+            slot = m[3].replace('-', '.')
+            uids = re.findall(r'\\input\{build/units/([^}]+)\}', m[4])
+            layout[slot] = (number, tex_inline(m[2]), uids)
+    return layout
+
+
+def display_references(text, layout):
+    # Only prose references outside inline code use source-label numbering.
+    def replace(part):
+        return re.sub(r'(?<![\w.])([123]\.\d+(?:\.\d+)?)(?![\w.])',
+                      lambda m: layout[m[1]][0] if m[1] in layout else m[0], part)
+    return ''.join(part if i % 2 else replace(part)
+                   for i, part in enumerate(re.split(r'(`[^`]*`)', text)))
 
 
 def structure_keys():
@@ -349,7 +358,7 @@ def unit_keys(by_slot, slots, chapter):
             continue
         for uid in by_slot[slot]:
             text = (PG / 'build/units' / (uid + '.tex')).read_text(encoding='utf-8')
-            yield 'UID:' + uid, lines_of(text)
+            yield 'UID:' + uid, lines_of(text, keep_leading_inline=chapter == '1')
 
 
 def skeleton_order():
@@ -584,7 +593,10 @@ table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 8px 0 12
 th { border-top: 1.5px solid #1f2933; border-bottom: 1px solid #1f2933;
      font-family: "Noto Sans CJK SC"; text-align: left; padding: 5px 6px; }
 td { border-bottom: 1px solid #d9dee3; padding: 5px 6px; vertical-align: top; }
-img { max-width: 86%; display: block; margin: 10px auto; }
+img { width: 100%; max-width: 100%; display: block; margin: 10px auto; }
+.guide-figure { break-inside: avoid; }
+.guide-figure .cap { text-align: center; margin-top: 5px; }
+.guide-figure.wide img { width: 100%; max-width: 100%; }
 ul, ol { margin: 4px 0 10px 0; padding-left: 1.5em; }
 blockquote { margin: 10px 0; padding: 8px 12px; background: #eef4f8;
              border-left: 3px solid #4d7ea8; color: #34495e; }
@@ -657,6 +669,11 @@ def build():
     zh = load_blocks(ZH)
     editorial = json.loads(CH1_EDITORIAL.read_text(encoding='utf-8'))
     order = skeleton_order()
+    layout = english_layout()
+    first_chapter_units = {uid for slot, (_, _, uids) in layout.items()
+                           if slot.startswith('1.') for uid in uids}
+    zh = {key: [display_references(line, layout) for line in lines]
+          for key, lines in zh.items()}
     listing_no = figure_no = table_no = 0
     md = []
 
@@ -666,6 +683,8 @@ def build():
             raise FileNotFoundError(path)
         figure_no += 1
         cls = 'guide-figure syntax' if compact else 'guide-figure'
+        if path == 'f03-compile_and_run_zh.png':
+            cls += ' wide'
         md.extend(['<div class="%s">' % cls,
                    '<img src="figures/%s" alt="%s">' %
                    (html_mod.escape(path, quote=True), html_mod.escape(caption, quote=True)),
@@ -677,7 +696,7 @@ def build():
         for item in items:
             kind = item['kind']
             if kind == 'prose':
-                md.extend([item['text'], ''])
+                md.extend([display_references(item['text'], layout), ''])
             elif kind == 'figure':
                 emit_figure(item['path'], item['caption'], item.get('compact', True))
             elif kind == 'code':
@@ -720,7 +739,7 @@ def build():
             slot = key[4:]
             head = next((x[3:].strip() for x in zh[key] if x.startswith('H:')), '')
             cls = 'toc-l2' if len(slot.split('.')) == 2 else 'toc-l3'
-            toc.append(toc_row(cls, 'sec-' + slot.replace('.', '-'), slot, head))
+            toc.append(toc_row(cls, 'sec-' + slot.replace('.', '-'), layout[slot][0], head))
     md += ['<div class="toc-heading">目录</div>', '<div class="toc">']
     md += toc
     md += ['</div>', '<div class="page-break"></div>', '']
@@ -754,7 +773,7 @@ def build():
                 text = text.strip()
                 if tag == 'H':
                     md.append('%s %s %s <a id="sec-%s"></a>' %
-                                  (level, slot, text, slot.replace('.', '-')))
+                                  (level, layout[slot][0], text, slot.replace('.', '-')))
                 elif tag == 'I':
                     md.append(text)
                 else:
@@ -765,7 +784,7 @@ def build():
         if key.startswith('UID:'):
             uid = key[4:]
             text = (PG / 'build/units' / (uid + '.tex')).read_text(encoding='utf-8')
-            tokens = split_tokens(text)
+            tokens = split_tokens(text, keep_leading_inline=uid in first_chapter_units)
             codes = [p for t, p in tokens if t == 'C']
             figs = [p for t, p in tokens if t == 'F']
             tables = [p for t, p in tokens if t == 'T']
@@ -808,11 +827,7 @@ def build():
                     if replacement:
                         emit_figure(replacement['path'], body, replacement.get('compact', False))
                     else:
-                        figure_no += 1
-                        md.append('<div class="cap">图 %d：%s</div>' % (figure_no, body))
-                        if payload.get('path'):
-                            md.append('![](%s)' % ('figures/' + payload['path']))
-                        md.append('')
+                        emit_figure(payload['path'], body)
                 occurrences[tag] = occurrences.get(tag, 0) + 1
                 emit_editorial(hooks.get('after_' + tag + str(occurrences[tag]), []))
             emit_editorial(hooks.get('after', []))

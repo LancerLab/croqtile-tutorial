@@ -1,3 +1,3 @@
 \subsection*{\texttt{chunkat}, \texttt{subspan}, and \texttt{view().from()}: Three Ways to Select a Tile}
 
-Croqtile gives you three common ways to describe the tile you want to move.
+A tile expression answers two questions: how large is the region, and where does it begin? With \co@chunkat@, bounded indices provide the partition counts and select a piece. With \co@subspan(...).at(...)@, the tile shape is explicit and the coordinates count tiles. With \co@view(...).from(...)@, both the shape and the starting element coordinates are explicit. The distinction matters whenever a window starts between regular tile boundaries.

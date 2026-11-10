@@ -90,7 +90,7 @@ class CompileAndRun(Scene):
         self.wait(0.4)
 
         # Scene 2: Compile
-        type_line("$ ", "croqtile ele_add.co -o ele_add", delay=0.025)
+        type_line("$ ", "croq ele_add.co -o ele_add", delay=0.025)
 
         # Show compilation output
         self.wait(0.3)
@@ -124,11 +124,11 @@ class CompileAndRun(Scene):
         self.wait(0.5)
 
         # Scene 4: --help hint
-        type_line("$ ", "croqtile --help", delay=0.03)
+        type_line("$ ", "croq --help", delay=0.03)
         self.wait(0.3)
 
         help_lines = [
-            "Usage: croqtile [options] <input.co>",
+            "Usage: croq [options] <input.co>",
             "",
             "Options:",
             "  -o <file>     Output binary name",

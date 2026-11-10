@@ -17,9 +17,9 @@ __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
 }
 \end{lstlisting}
 
-In this case, it defines device function template named \texttt{matmul\_kernel}, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function \texttt{matmul\textless{}16, 4, 72\textgreater{}} for the call.
+The call supplies three constant template arguments to \co@matmul_kernel@. The target compiler instantiates the corresponding specialization, just as it would for an ordinary C++ template call.
 
-So in Croqtile, calling a template function is similar to those in C++. However, \textbf{the template argument passed must be able to be inferred as compile time constant value} by Croqtile compiler. Therefore, any runtime values can result in error.
+Template arguments must be evaluable as constants during Croqtile compilation. An input-dependent value cannot select a C++ specialization at runtime:
 
 \begin{lstlisting}[language=croqtile,caption={A call that instantiates it}]
 __co__ void foo(int M) {
@@ -29,4 +29,4 @@ __co__ void foo(int M) {
 }
 \end{lstlisting}
 
-Croqtile compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.
+The Croqtile compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, compilation stops with an error.

@@ -15,4 +15,4 @@ Persistent scheduling & \texttt{if} + \texttt{foreach} + \texttt{\#} & Fixed gri
 \end{tabularx}
 \end{table}
 
-The 1P1C skeleton above is incomplete: without \texttt{wait} / \texttt{trigger}, the consumer can read before the producer has finished writing. Section~\ref{sec:3-8-5} adds the buffering and event protocols that make the pipeline safe, and walks through the resulting kernel stage by stage.
+The completed pipeline adds two dependencies to the earlier skeleton: input readiness before computation, and completion of operand use before slot reuse. When adapting it, trace one slot through a full cycle and then through its next reuse. This exposes missing signals and mismatched iteration counts more clearly than looking at either loop alone.

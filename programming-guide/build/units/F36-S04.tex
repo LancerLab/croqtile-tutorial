@@ -3,7 +3,9 @@
 \begin{itemize}[leftmargin=1.6em]
 \item Stream binding is only allowed on \textbf{block-level} parallel (\texttt{: block}).
 \item The identifier inside \texttt{\textless{}.\allowbreak{}.\allowbreak{}.\allowbreak{}\textgreater{}} must be a \texttt{stream}-typed variable.
-\item Without stream binding, synchronous \texttt{parallel-by} uses device-wide
+\item Without stream binding, synchronous \texttt{parallel-by} uses device-wide synchronization.
 \end{itemize}
 
-synchronization, and asynchronous \texttt{parallel-by} uses the default stream.
+Without stream binding, asynchronous \texttt{parallel-by} uses the default stream.
+
+A stream selects an ordering context for launches. It does not make two kernels independent if the second reads data written by the first. When using separate streams, keep that dependency explicit and retain the buffers until their queued users finish. Host-side return from an asynchronous launch only confirms that execution was submitted.

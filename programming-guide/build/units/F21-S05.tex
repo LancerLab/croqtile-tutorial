@@ -6,7 +6,7 @@ Every time the value numbering process generates a signature, it tries to simpli
    int a = 0 + 1;
 \end{lstlisting}
 
-Given the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:
+Given the simple integer expression, the value numbering process could generate signatures and associated value number as illustrated:
 
 \begin{lstlisting}[language=croqtile,caption={The simplified graph}]
    VN #0:  const_3
@@ -15,7 +15,7 @@ Given the simple integer expression, the value numbering process could generates
    Alias a -> #2
 \end{lstlisting}
 
-Here, without optimizations, two constant values \#0 and \#1, and a new value number \#2, which is an addition of \#0 and \#1 are generated. \#2 has the signature of "+:\#0:\#1". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The below output showcases the optimized value numbering process:
+Here, without optimizations, two constant values \#0 and \#1, and a new value number \#2, which is an addition of \#0 and \#1 are generated. \#2 has the signature of "+:\#0:\#1". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The following output showcases the optimized value numbering process:
 
 \begin{lstlisting}[language=croqtile,caption={The folded graph}]
    VN #0:  const_3

@@ -2,7 +2,7 @@
 
 In C++, loops are typically constructed using \texttt{for}, \texttt{while}, and \texttt{do-while} blocks. These loops include conditions for termination and usually involve variable manipulations related to loop control. Programmers have the freedom to define exit conditions, loop stepping, and other aspects, allowing for flexible loop structures.
 
-In contrast, Croqtile, being a domain-specific language for data movement, supports a more constrained loop structure. The current loop construction in Croqtile is as follows:
+Croqtile uses bounded ranges for these loops. The range is defined once and then visited by \co@foreach@:
 
 \begin{lstlisting}[language=croqtile,caption={A foreach loop}]
 foreach index {
@@ -18,6 +18,6 @@ for (int index = 0; index < 6; ++index) {
 }
 \end{lstlisting}
 
-While \emph{bounded variables} may seem restrictive, they are sufficient for data movement tasks, as you typically won't move data with a negative or out-of-bound index.
+This form suits tile traversal: the loop visits the valid coordinates in a declared range, and the same bounds can be used to derive each tile's shape.
 
 In Croqtile, \emph{bounded variables} defined within a \texttt{parallel-by} statement are immutable and cannot be used in \texttt{foreach} statements. Instead, programmers should use the \texttt{with-in} statement to define the \emph{bounded variables} suitable for loops.

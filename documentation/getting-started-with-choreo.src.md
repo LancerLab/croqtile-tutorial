@@ -55,13 +55,13 @@ Species except for *target source code* and *work-script* (introduced later) are
 
 The usage of the Choreo-C++ compiler is similar to that of `gcc` or `clang`. For example:
 ```
-choreo your_program.co
+croq your_program.co
 ```
 This command generates an `a.out` executable file. The `-o <filename>` option can be used to specify the output filename when needed. Compiler options like `-c` and `-S` work similarly to those in C++ compilers, provided they are supported by the target platform.
 
 The `-t <platform>` option allows you to specify the target platform for the compilation. Additionally, the `-es` option generates *target source code* without performing the "target compilation*. For instance:
 ```bash
-choreo -t cuda your_program.co -es -o cuda_source.co
+croq -t cuda your_program.co -es -o cuda_source.co
 ```
 This command produces CUDA C++ source code, which can be useful for specific development tasks.
 
@@ -75,7 +75,7 @@ Here is a example output of `--help`:
 
 ```bash
 // --help
-Usage: choreo [options] file...
+Usage: croq [options] file...
 Options:
   --help                    Display this information.
   --help-hidden             Display hidden options.

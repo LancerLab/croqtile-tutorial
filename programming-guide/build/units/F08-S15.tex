@@ -7,10 +7,11 @@
 \textbf{Pattern} & \textbf{Primitives used} & \textbf{When to use} \\
 \midrule
 \texttt{swap} double buffering & \texttt{dma.any}, \texttt{swap} & Single thread group interleaving load and compute \\
+Event pipeline & \co@inthreads.async@, events & Separate producer and consumer groups \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Both patterns achieve the same goal --- overlapping memory and compute --- but at different levels of complexity. Start with \texttt{swap} for simpler kernels;
+Handle rotation is enough when one group controls both the transfer schedule and the computation. Separate producer and consumer regions need events because neither can infer the other's progress from its own instruction order. More buffering can give them room to overlap, but it cannot repair a missing dependency.
 
-The same synchronization patterns from this part of the guide, with richer data movement primitives underneath.
+The same synchronization patterns can be combined with the richer data-movement primitives described in this guide.

@@ -138,7 +138,7 @@
 `chunkat`、`subspan`、`view()`、`from()`、`step()`、`at()`、`span_as`、`zfill`、
 `dma.copy`、`tma.copy`、`dma.any`、`swap`、`rotate`、`inthreads.async`、
 `parallel.async`、`print!`、`assert`、`make_spandata`、`croq::`、
-`croqtile.h`、`croqtile`（命令）、`MDSpan`、`FP16`、`FP32`、`MMA`、`TMA`、
+`croqtile.h`、`croq`（命令）、`MDSpan`、`FP16`、`FP32`、`MMA`、`TMA`、
 所有 CLI 选项、文件路径、代码与代码注释、参考文献题名。
 
 ## 四、一致性检查

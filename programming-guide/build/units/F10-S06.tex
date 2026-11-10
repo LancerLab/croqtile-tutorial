@@ -15,4 +15,4 @@ parallel p1 by 2 : group-4 {
 }
 \end{lstlisting}
 
-\textbf{Placement} --- Put the hint at the top of each \texttt{inthreads.\allowbreak{}async} branch, before the heavy loop.
+The injected strings place target-specific register hints at the start of the producer and consumer regions, before their long-running loops. The two roles can have different resource needs. Croqtile preserves the instruction text; the target compiler and device determine whether the hint is valid. Keep this code close to the region whose behavior it changes, and verify the result with the target tools.

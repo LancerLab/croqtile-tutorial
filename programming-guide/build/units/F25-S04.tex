@@ -1,6 +1,6 @@
 \subsection*{C++ Host: Data Argument with Shape}
 
-One obvious gap between C/C++ pointers/arrays and Croqtile \emph{spanned data} is that \emph{spanned data} is shaped. Therefore, to call a Croqtile function, it is necessary to convert pointers or arrays.
+Croqtile spanned data carries a shape in addition to its data pointer. Before passing a C/C++ pointer or array to a Croqtile function, wrap it with the required shape information.
 
 One direct method is to use the Croqtile API provided in \texttt{croqtile.h}. A program does not have to include \texttt{croqtile.h} explicitly in a Croqtile compilation environment; the compiler includes it for every Croqtile program.
 
@@ -13,7 +13,7 @@ void entry(float * input, float* output) {
 }
 \end{lstlisting}
 
-In the above example, you make use of \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanned} function template, providing the rank as template parameter, and typed pointer together with shape list as the function parameters. In this way, a shape is attached with the pointer, which makes a valid Croqtile function parameter. As you may figure out from \texttt{croqtile.h}, it results in \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} object, which simply wraps the C/C++ pointer/array and the array-based list. Its simplified definition is:
+The \texttt{croqtile:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanned} function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:
 
 \begin{lstlisting}[language={},caption={The host-side buffer wrapper}]
 template <typename T, size_t Rank>
@@ -32,6 +32,6 @@ void entry(float * input, float* output, int M, int N) {
 }
 \end{lstlisting}
 
-In this example, the \texttt{input} shape is runtime variable. But do not worry if wrong parameter is provided. Croqtile will check if \texttt{M == 7} and \texttt{N == 16} when entering into the tileflow program. \textbf{If not, the program will terminate immediately} since all the assumptions about shapes in the Croqtile function does not hold.
+Here, \texttt{input} has a runtime shape. On entry to the Tileflow program, Croqtile checks that \texttt{M == 7} and \texttt{N == 16}. \textbf{If either condition fails, the program terminates immediately}, because the function's shape assumptions do not hold.
 
-One important notice for the \emph{spanned data} inputs is that they are \textbf{references to the input data/buffers}. That implies no data copy happens at invoking Croqtile function, though somebody may think from the language perspective it look like copy-semantics.
+Spanned-data inputs are \textbf{references to the original data or buffers}. Calling a Croqtile function does not copy the input data, even though the parameter syntax may resemble a declaration with value semantics.

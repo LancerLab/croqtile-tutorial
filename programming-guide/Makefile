@@ -14,7 +14,8 @@ PDF_MEMOIR := $(OUTPUT_DIR)/croqtile-programming-guide-memoir.pdf
 SOURCES := main.tex main-manual.tex main-memoir.tex body.tex croqguide.sty \
            references.bib $(wildcard preamble/*.tex) $(wildcard content/*.tex) \
            $(wildcard build/units/*.tex) $(wildcard figures/*.png) \
-           UNIT-REGISTRY.md tools/build_guide.py
+           UNIT-REGISTRY.md tools/build_guide.py tools/figure_editorial.py tools/prose_editorial.py \
+           editorial/figure-captions.json editorial/prose-polish.json editorial/narrative-polish.json $(wildcard editorial/getting-started/*.md)
 
 .PHONY: all ebook manual memoir clean distclean check
 

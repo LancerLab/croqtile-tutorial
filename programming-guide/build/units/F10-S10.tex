@@ -7,3 +7,5 @@
 #if MATMUL_WARP_M != 64
 #endif
 \end{lstlisting}
+
+The preprocessor evaluates this condition before the Croqtile function is parsed. An incompatible set of constants therefore stops the build with the supplied message. Use this for relationships among configuration macros; a property of input data supplied at runtime belongs in a runtime assertion instead.

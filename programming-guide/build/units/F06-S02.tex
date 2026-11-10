@@ -7,6 +7,8 @@ Every contraction kernel follows the same rhythm, and the spelling makes each st
 \item \textbf{\texttt{mma.\allowbreak{}store mc, dst}}
 \end{enumerate}
 
-You loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \texttt{mc}), then run step 4 once to flush the completed output tile. --- You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\texttt{row.row} here).
+You loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \texttt{mc}), then run step 4 once to flush the completed output tile. You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\texttt{row.row} here).
 
-The \texttt{.row.row} suffix is a \textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \texttt{row.row}, \texttt{row.col}, \texttt{col.row}, and \texttt{col.col}; in practice, \texttt{row.row} and \texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint
+The \texttt{.row.row} suffix is a \textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \texttt{row.row}, \texttt{row.col}, \texttt{col.row}, and \texttt{col.col}; in practice, \texttt{row.row} and \texttt{row.col} cover most kernels. Choosing the wrong variant produces incorrect results.
+
+For two K slices, initialize \co@mc@ once, load the first pair of operands and accumulate, then load the second pair and accumulate into the same \co@mc@. Only then store the output. The load handles describe operand fragments; the accumulator holds the partial result across iterations. This distinction explains why fill and store sit outside the repeated load-and-multiply sequence.

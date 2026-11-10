@@ -1,3 +1,3 @@
 \subsection*{Look-Ahead: Bounded I-Tuples}
 
-\emph{I-tuples} are not frequently used in real Croqtile code. However, their variants, \textbf{bounded i-tuple}s, which bind an \emph{i-tuple} with an \emph{mdspan} to indicate its possible range, are essential for constructing Croqtile loops. You will cover \emph{bounded i-tuples} in more detail in later chapters.
+A bounded tuple attaches ranges to an ordinary integer tuple. For example, a position \co@{1, 2}@ together with bounds \co@[4, 8]@ identifies one position and also describes the space containing it. Loops use the bounds for iteration, and \co@chunkat@ uses them to derive a partition.

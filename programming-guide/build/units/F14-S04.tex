@@ -3,18 +3,18 @@
 The Croqtile compilation process typically involves three major steps: \textbf{Pre-processing}, \textbf{Transpilation}, and \textbf{Target Compilation}. To better understand how different parts of a Croqtile program work together, the full compilation workflow is illustrated below:
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f14-compile-workflow.drawio.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f14-compile-workflow.drawio.png}
 \end{figure}
 
 As shown in the figure, immediately after \emph{pre-processing}, Croqtile \emph{transpiles} (\emph{source-to-source} compilation) the \emph{tileflow program} into target code, leaving the user-provided \emph{host program} and \emph{device program} unchanged. The \emph{tileflow program} is \emph{transpiled} into host and device source code, which you refer to as \emph{croqtile-generated code}. The compiler then combines the user-provided code and \emph{croqtile-generated} code to perform the \emph{target compilation} process. This process can generate various outputs, such as transpiled source code, workscripts, target modules, target assembly, and executables.
 
 The Croqtile compiler functions as an end-to-end compiler, with the key step being the transpilation of the \emph{tileflow program} into \emph{croqtile-generated code}.
 
-One notable feature of Croqtile compilation is its support for both:
+The target determines whether host and device sources are compiled together or separately:
 
 \begin{itemize}[leftmargin=1.6em]
-\item \textbf{Single Source Compilation Model}: Similar to , where the target compiler allows device and host programs to be in a single source file for target compilation.
-\item \textbf{Separate Source Compilation Model}: Similar to , where host and device code must be compiled separately.
+\item \textbf{Single Source Compilation Model}: The target compiler allows device and host programs to be in a single source file for target compilation.
+\item \textbf{Separate Source Compilation Model}: Host and device code must be compiled separately.
 \end{itemize}
 
 The code shown above naturally supports the \emph{Single Source Compilation Model}. However, to support the \emph{Separate Source Compilation Model}, Croqtile requires wrapping the Device Program with the \texttt{\_\_cok\_\_} block, as shown below:
@@ -27,4 +27,4 @@ __co__ void croqtile_function(...) { ... }
 void foo() { ... }
 \end{lstlisting}
 
-This is the code structure for a  program. The \texttt{\_\allowbreak{}\_\allowbreak{}cok\_\allowbreak{}\_\allowbreak{} \{\}} wrapper enables the Croqtile compiler to handle user-provided device code properly. It helps Croqtile separate device and host code from a single Croqtile source file for different compilation processes. Therefore, do not be surprised if you encounter \texttt{\_\_cok\_\_} in certain Croqtile code; it is necessary for integrating support for the \emph{Separate Source Compilation Model}.
+The \co@__cok__@ wrapper marks device code that Croqtile must separate from host code before invoking the target compilers. It is needed when the target uses separate host and device compilation. The source can still be maintained as one \co@.co@ file; the wrapper tells the build process where to split it.

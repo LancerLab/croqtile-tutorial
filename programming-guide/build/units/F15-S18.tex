@@ -1,10 +1,10 @@
 \subsection*{Async Operation: the DMA Statement}
 
-Except for parallel execution, Croqtile allows one fixed form of async operation: the DMA statement.
+Alongside parallel execution, Croqtile provides asynchronous DMA statements for data movement.
 
-Conceptually, a DMA statement is executed asynchronously with the SPMD code. It works quite similar to CPU async thread, except its behavior is limited by the DMA configuration. (CPU allows to program the async thread as will)
+An asynchronous DMA operation runs alongside the SPMD code. Like an asynchronous CPU thread, it allows other work to continue, but its behavior is restricted to the configured data transfer.
 
-The below code showcases one basic DMA statement.
+The following code showcases one basic DMA statement.
 
 \begin{lstlisting}[language=croqtile,caption={An asynchronous DMA declaration}]
 global f32 [10] g_data;
@@ -14,9 +14,9 @@ f = dma.copy.async g_data => l_data;
 wait f;         // explicit wait
 \end{lstlisting}
 
-You might observe the assignment of 'f'. This is the handler for the asynchronous DMA entity. In Croqtile, you refer to it as the 'future' of the DMA operation. Programmers have the option to code the explicit synchronization statement 'wait' to pause the current thread until the 'future' arrives. Otherwise, the thread continues execution in parallel with the DMA operation.
+The assignment names \texttt{f} as the \textbf{future} of the asynchronous DMA operation. Use \texttt{wait f} to pause the current instance until the transfer completes. Until then, the instance can continue executing alongside the transfer.
 
-At times, programmers may find it tedious to explicitly define temporal data. Croqtile offers an even simpler syntax:
+Explicit temporary-buffer declarations can be repetitive. Croqtile also allows the following shorter form:
 
 \begin{lstlisting}[language=croqtile,caption={The same declaration with storage}]
 global f32 [10] data;
@@ -26,4 +26,4 @@ f = dma.copy data => local;
 
 Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination memory type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
 
-DMA operations entail intricate details that demand careful programming. Programmers should refer to the DMA manual to make informed decisions for their code. Nonetheless, Croqtile compiler provides plenty of static and runtime checks to assist programmers in avoiding potential errors in this aspect.
+The shorter declaration leaves allocation to the compiler, but the data dependency is unchanged. Identify the destination through the future, wait if the transfer is asynchronous, and check that the next operation expects the resulting shape and storage. The advanced patterns below preserve these requirements while allowing several transfers to be in flight.

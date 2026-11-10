@@ -45,7 +45,7 @@ int main() {
 Save this as `ele_add.co`, compile, and run:
 
 ```bash
-croqtile ele_add.co -o ele_add
+croq ele_add.co -o ele_add
 ./ele_add
 ```
 
@@ -119,17 +119,17 @@ The rest of `main` is ordinary verification: loop over every element and assert 
 Croqtile files use the `.co` extension. The compiler works like `gcc` or `clang`:
 
 ```bash
-croqtile ele_add.co                          # produces a.out
-croqtile ele_add.co -o ele_add               # specify output name
-croqtile -es -t cuda ele_add.co -o out.cu    # emit CUDA source only
+croq ele_add.co                          # produces a.out
+croq ele_add.co -o ele_add               # specify output name
+croq -es -t cuda ele_add.co -o out.cu    # emit CUDA source only
 ```
 
 The `-es` flag stops after transpilation, letting you inspect the generated CUDA code. The `-t` flag selects the target platform.
 
-To see all available options, run `croqtile --help`:
+To see all available options, run `croq --help`:
 
 ```bash
-croqtile --help
+croq --help
 ```
 
 This prints the full set of compiler flags — output naming, target selection, verbosity, and diagnostic options. It is worth scanning once so you know what is available when you need it.

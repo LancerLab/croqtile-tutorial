@@ -1,8 +1,8 @@
 \subsection*{\textbf{c. Expressiveness and Flexibility}}
 
-Symbolic dimensions enable a \textbf{richer} set of expressions for describing data shapes. Instead of using arbitrary placeholders like \texttt{?} or \texttt{-1}, which are limited to basic dimensionality, symbolic dimensions can be \textbf{constrained} using complex arithmetic and relationships. For example, you can directly express how one dimension depends on another, or how it is scaled or tiled, in a much more natural way.
+A named dimension can appear in several shape expressions. For example, a buffer may use half of M along one axis and a padded N along another. These expressions show how the new shape depends on the input dimensions.
 
-In contrast, using \texttt{?} or \texttt{-1} often leads to brittle code, where developers need to manually calculate or infer the actual size at runtime, introducing potential errors and making the code harder to reason about.
+An anonymous dimension can still be read through the input's shape. A symbolic name is useful when that same value occurs in several expressions: changing one derivation then leaves its relationship to the other dimensions visible.
 
 For example, you can easily express relationships between dimensions using symbolic variables:
 
@@ -11,4 +11,4 @@ mdspan sp : [M, N]; // Symbolic dimensions
 mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expressions
 \end{lstlisting}
 
-If you were using \texttt{?} or \texttt{-1}, expressing the same relationships would require convoluted workarounds or additional runtime logic.
+The benefit is that the dependency is written where the shape is declared. The program still has to satisfy the resulting size and divisibility requirements for each call.

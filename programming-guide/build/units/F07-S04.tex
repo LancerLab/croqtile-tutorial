@@ -11,10 +11,10 @@ parallel p1 by 2 : group-4 {
 }
 \end{lstlisting}
 
-\textbf{\texttt{parallel p1 by 2 :\allowbreak{} group-\allowbreak{}4}}
+The declaration \co@parallel p1 by 2 : group-4@ creates two cooperating groups in the same surrounding block. The value of \co@p1@ selects a role; it does not identify a tile along K.
 
-\textbf{\texttt{inthreads.\allowbreak{}async (p1 == 0)}}
+The region for \co@p1 == 0@ is the producer. It owns the writes that fill the shared staging buffers. The other group can proceed with computation while those writes target a different, available slot.
 
-\textbf{\texttt{inthreads.\allowbreak{}async (p1 == 1)}} --- The two blocks are separate programs sharing an address space.
+The region for \co@p1 == 1@ is the consumer. It reads completed tiles and updates its accumulator. The two regions share staging storage, so the event protocol must identify when a slot changes from writable to readable and back again.
 
-Sharing an address space is exactly what makes this dangerous. Without coordination, the consumer might read a buffer before the producer has finished writing it. This is where events come in.
+Because both regions share a buffer, their reads and writes must be coordinated. Without synchronization, the consumer could read before the producer finishes writing. Events express the required ordering.

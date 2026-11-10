@@ -1,8 +1,8 @@
 \subsection*{Explicit Masking/Condition}
 
-Thread masking is a concept when programs have a full view of all instances of SPMD code. However, from the SPMD coding practise, which program is limited in single thread view, the thread masking appears as a boolean expression which typically is a comparison result related to thread identifiers.
+A thread mask describes which SPMD instances execute a region. Within the code for a single instance, it appears as a Boolean condition, usually a comparison involving a thread identifier.
 
-In the examples that follow, Croqtile experimentally supports explicit masking of the \texttt{foreach} block, which mask off loop code as a whole. For example:
+In the examples that follow, Croqtile experimentally supports explicit masking of the \texttt{foreach} block, which masks off loop code as a whole. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Explicit Masking/Condition}]
 __co__  void foo() {

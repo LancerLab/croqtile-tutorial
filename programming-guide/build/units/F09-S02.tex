@@ -9,16 +9,18 @@ tma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
 Same source expression, same \texttt{=\textgreater{}} destination form. The difference is \textbf{who does the work}:
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig3_tma_descriptor_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig3_tma_descriptor_light.png}
+\caption{The descriptor supplies tensor layout information, the source expression supplies tile coordinates, and the transfer writes the shared destination.}
 \end{figure}
 
 \begin{itemize}[leftmargin=1.6em]
 \item \textbf{DMA path.} Threads cooperate to cover the tile; each lane participates in address math and load issue.
-\item \textbf{TMA path.} One descriptor-based operation describes the tensor slice;
+\item \textbf{TMA path.} A descriptor-based operation describes the tensor slice and delegates address generation to the transfer engine.
 \end{itemize}
 
-\textbf{What this buys you.} You still synchronize on the whole tile (with events or the pipeline discipline from Section~\ref{sec:3-8-5}), but you drop the per-thread load choreography. The compiler builds the tensor descriptor from your \texttt{\_\_co\_\_} signature and global layouts.
+The descriptor carries the tensor geometry needed by the transfer engine. The compiler builds it from the function's shape and layout information. The program still waits for tile readiness and protects buffer reuse; changing the transfer engine does not remove either dependency.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig1_tma_vs_dma_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig1_tma_vs_dma_light.png}
+\caption{DMA distributes transfer work across threads; TMA delegates tensor address generation to a descriptor-based transfer engine.}
 \end{figure}

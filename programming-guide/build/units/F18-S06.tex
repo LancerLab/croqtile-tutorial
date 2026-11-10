@@ -1,12 +1,12 @@
 \subsection*{Declaring the Parameters and Return Values}
 
-A \emph{spanned data} is passed between host and tileflow programs. Therefore, a croqtile function can have \emph{spanned data}s as its parameters. The following code showcases an example:
+Spanned data can appear in the parameter and return declarations of a Croqtile function:
 
 \begin{lstlisting}[language=croqtile,caption={An explicit return shape}]
 __co__ f16 [7, 8] foo(f32 [16, 17, 5] input) {...}
 \end{lstlisting}
 
-The syntax is similar to variable definitions, except that operations on an existing \emph{mdspan} is not possible. Additionally, no storage specifier is allowed or initialization is allowed.
+Parameter and return declarations resemble variable declarations, but they do not allow operations on an existing \texttt{mdspan}, storage specifiers, or initializers.
 
 One useful built-in member function for the \emph{spanned} parameters is \texttt{.span}, which provides the associated \emph{mdspan} of the \emph{spanned data}. The following code demonstrates how to use it for a buffer declaration:
 

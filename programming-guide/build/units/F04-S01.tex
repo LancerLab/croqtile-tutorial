@@ -1,8 +1,8 @@
 \subsection*{Data Movement: The Tile Movement Engine}
 
-Section~\ref{sec:1-4} used scalar indexing: pick one position, read inputs, compute, write output.
+Section~\ref{sec:1-3} used scalar indexing: pick one position, read inputs, compute, write output.
 
-Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:
+A tiled implementation instead selects a region, stages it in the storage used by the computation, and reuses it there. Croqtile expresses the transfer directly, including transformations that belong to the movement itself:
 
 \begin{itemize}[leftmargin=1.6em]
 \item \texttt{dma.copy} moves a tile as-is.
@@ -13,6 +13,6 @@ Croqtile makes that explicit. Instead of treating data movement as a hidden side
 This part of the guide introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig1_element_vs_block_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig1_element_vs_block_light.png}
+\caption{Scalar indexing reads individual elements; explicit tile movement stages a selected tile into shared storage.}
 \end{figure}
-\begin{center}\small\emph{Left: element-by-element thinking. Right: tile-by-tile movement into fast memory.}\end{center}

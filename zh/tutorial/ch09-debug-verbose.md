@@ -68,7 +68,7 @@ assert(stage < MATMUL_STAGES, "stage index out of bounds");
 向编译器传入 `-v`（或 `--verbose`）可查看其调用的外部命令——哪个预处理器、哪个代码生成器、哪次 `nvcc` 调用：
 
 ```bash
-croqtile kernel.co -v -o kernel
+croq kernel.co -v -o kernel
 ```
 
 当你怀疑编译器向 `nvcc` 传错了标志，或需要查看生成文件的确切路径以便手动检查时，这很有用。
@@ -78,7 +78,7 @@ croqtile kernel.co -v -o kernel
 编译器支持通过 `-rtc`（或 `--runtime-check`）进行分级运行时检查：
 
 ```bash
-croqtile kernel.co -rtc=high -o kernel
+croq kernel.co -rtc=high -o kernel
 ```
 
 级别：`none`、`entry`（默认）、`low`、`medium`、`high`、`all`。每一级是上一级的超集。开发阶段可使用 `high` 或 `all`，生产环境使用 `none`。
@@ -96,7 +96,7 @@ croqtile kernel.co -rtc=high -o kernel
 使用 `-g` 编译以启用调试符号：
 
 ```bash
-croqtile kernel.co -g -o kernel_debug
+croq kernel.co -g -o kernel_debug
 ```
 
 生成代码包含 Croqtile 类型的 RTTI 结构：
@@ -140,8 +140,8 @@ $3 = true
 ```
 
 ```bash
-croqtile kernel.co -DDEBUG_PRINT -o kernel    # 调试构建
-croqtile kernel.co -o kernel                   # 生产构建
+croq kernel.co -DDEBUG_PRINT -o kernel    # 调试构建
+croq kernel.co -o kernel                   # 生产构建
 ```
 
 ## 小结

@@ -4,11 +4,11 @@
 lhs.chunkat(tr, tc)
 \end{lstlisting}
 
-\texttt{chunkat} divides each dimension into equal chunks based on the surrounding parallel structure. If \texttt{lhs} has shape \texttt{[64, 128]} and the kernel uses \texttt{parallel \{tr, tc\} by [4, 8]}, then \texttt{lhs.\allowbreak{}chunkat(tr, tc)} selects a \texttt{[16, 16]} tile.
+The \co@chunkat@ expression divides each dimension according to the corresponding index bound. With input shape \co@[64, 128]@ and \co@parallel {tr, tc} by [4, 8]@, it selects a \co@[16, 16]@ tile. The current values of \co@tr@ and \co@tc@ select which tile, while their bounds determine its size.
 
 That makes \texttt{chunkat} the natural tool when your tiling follows the parallel decomposition directly.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig3_chunkat_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig3_chunkat_light.png}
+\caption{chunkat(1, 3) selects rows 16–31 and columns 48–63 from a [64, 128] tensor partitioned into [4, 8] tiles.}
 \end{figure}
-\begin{center}\small\emph{\texttt{chunkat(1, 3)} selects one equal tile from a regular tiling grid.}\end{center}

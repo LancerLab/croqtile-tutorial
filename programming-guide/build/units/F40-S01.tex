@@ -1,3 +1,3 @@
 \subsection*{Tiling Optimisation in Croqtile}
 
-Two complete programs are enough to see why the tiling constructs are shaped the way they are.
+The following examples use the same tile-selection machinery for different computations. Matrix multiplication carries partial sums across K slices; RGB-to-grayscale conversion processes each selected image region independently. Comparing their data paths shows which parts of the structure come from tiling and which come from the computation itself.

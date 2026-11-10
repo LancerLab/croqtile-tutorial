@@ -1,3 +1,3 @@
 \subsection*{\texttt{foreach tile\_\allowbreak{}k(1:\allowbreak{})}: sliced iteration}
 
-The slice \texttt{(1:)} means tile indices \texttt{1, 2, ...} through the end. Tile 0 was loaded in the prologue.
+The range expression \co@(1:)@ starts iteration at index 1 and keeps the original exclusive upper bound. With 16 tiles, it visits 1 through 15. This is useful after a prologue has loaded tile 0: the loop issues each remaining load once, while computation consumes the previously loaded tile. The final loaded tile is handled after the loop.

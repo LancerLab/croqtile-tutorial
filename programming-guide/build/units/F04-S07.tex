@@ -4,7 +4,7 @@
 lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)
 \end{lstlisting}
 
-\texttt{view(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}from(.\allowbreak{}.\allowbreak{}.\allowbreak{})} is the most general selection form introduced in this part of the guide. \texttt{view(...)} states the shape of the region you want, and \texttt{.from(...)} gives its starting coordinate in element space.
+The form \co@view(...).from(...)@ gives a window an explicit shape and an origin measured in elements. A \co@[16, 16]@ window starting at \co@(37, 50)@ keeps that exact origin; it does not round it to the nearest tile boundary.
 
 This is the right tool when the tile origin is already available as element offsets rather than tile indices, or when the region is not most naturally described as an equal chunk. It is especially useful for dynamic and irregular access patterns where \texttt{chunkat(...)} would be awkward or impossible.
 

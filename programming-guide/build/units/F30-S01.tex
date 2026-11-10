@@ -4,6 +4,6 @@ Repetitive tasks are common in programming.
 
 Currently, the most widely used parallelization paradigm is \textbf{Single Program, Multiple Data (SPMD)}. In this paradigm, code is written once but executed as multiple instances simultaneously. Each instance operates independently unless synchronization is explicitly implemented. Croqtile adopts this paradigm and abstracts parallelism using the \textbf{parallel-by} block.
 
-Looping, on the other hand, is a more straightforward concept and is the most common method for writing sequential code. In Croqtile, programmers can construct loops using the \textbf{with-in + foreach} block. This structure supports \emph{do-while} style iterations, which are particularly useful in scenarios involving multiple buffers, given Croqtile's primary focus on orchestrating data movement.
+A sequential loop is needed when later work depends on earlier work, such as accumulating successive K slices. Croqtile separates the bounded range declared by \co@with-in@ from the traversal performed by \co@foreach@. This also permits work before and after the traversal, as used in buffered pipelines.
 
-In the following sections, this section examines the details of constructing loops and implementing parallelism in Croqtile.
+The following sections explain how Croqtile constructs loops and expresses parallel work.

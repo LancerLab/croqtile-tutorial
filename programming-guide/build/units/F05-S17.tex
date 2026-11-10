@@ -1,4 +1,4 @@
-Pick global position \texttt{(row=37, col=50)} in the output. Working out which block and thread own it fixes the index arithmetic for the rest of the kernel.
+Trace output position \co@(37, 50)@ using the block-and-thread decomposition of the DMA matmul in Section 3.6.1. That example uses an 8 by 16 block grid, with each block handling a 16 by 16 output tile. This differs from the 16 by 64 logical grid in the scalar example immediately above; both cover the same output shape.
 
 Blocks partition 128 rows into 8 tiles of 16: \texttt{px = 37 /\allowbreak{} 16 = 2}, offset \texttt{qx = 37 \% 16 = 5}. Columns partition 256 into 16 tiles of 16: \texttt{py = 50 /\allowbreak{} 16 = 3}, offset \texttt{qy = 50 \% 16 = 2}. So block \texttt{(2, 3)}, thread \texttt{(5, 2)}.
 

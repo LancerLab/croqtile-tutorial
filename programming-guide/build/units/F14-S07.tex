@@ -1,8 +1,8 @@
 \subsection*{Device Program: Parallel Computation}
 
-The kernel is designed to operate on input data, process it in parallel, and generate the output.
+A device helper receives the data selected and staged by its caller. Its job is to compute on that data using the target language. The following addition helper illustrates this boundary: Croqtile arranges the chunks and transfers, while the helper operates on the pointers and element count passed to it.
 
-You repeat the code as below:
+The device helper from the earlier example is repeated below:
 
 \begin{lstlisting}[language=croqtile,caption={A device helper called from tileflow}]
 __device__ void kernel(int * a, int * b, int * c, int n) {
@@ -20,6 +20,6 @@ __cok__ {
 } // end of __cok__
 \end{lstlisting}
 
-Here, the \texttt{extern "C"} annotation replaces the \texttt{\_\_device\_\_} keyword used in  target, as  requires C-linkage for the device functions.
+In this separate-source example, \texttt{extern "C"} replaces \texttt{\_\_device\_\_} because the target requires C linkage for device functions.
 
-Programmers must be aware that the device program follows the \emph{Single-Program-Multiple-Data (SPMD)} paradigm. However, unlike traditional  programs, the device program does not manage data movement ---whether between the host and device or across multiple storage levels within the device. Instead, the \emph{tileflow program} orchestrates these tasks in a much simpler and safer manner.
+The helper runs within the parallel execution arranged by its caller. In this example, the Tileflow function performs the transfers and the helper computes on the selected chunk. Keeping those responsibilities separate lets the transfer structure change without rewriting the helper's arithmetic.

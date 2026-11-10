@@ -1,6 +1,6 @@
 \subsection*{One group, one tile: the simplest MMA matmul}
 
-One cooperative group is written \texttt{: group} in Croqtile.
+The smallest example assigns one output tile to a cooperative group, written \co@: group@. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position.
 
 \begin{lstlisting}[language=croqtile,caption={One group, one tile: the simplest MMA matmul}]
 #define TILE_M 16
@@ -30,17 +30,17 @@ __co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16
 }
 \end{lstlisting}
 
-\textbf{\texttt{\_\allowbreak{}\_\allowbreak{}co\_\allowbreak{}\_\allowbreak{} void} and in-place output.} The kernel returns nothing;
+The function returns \co@void@ because it writes into the \co@output@ parameter. The caller supplies that buffer and reads it after the operation completes. Inside the function, \co@output_s@ is the staging buffer used between \co@mma.store@ and the final copy.
 
-\textbf{Block grid.} \texttt{cdiv(M, TILE\_\allowbreak{}M)} is ceiling division --- how many tiles along M, including partial tiles. \texttt{block\_m} and \texttt{block\_n} pick which output tile this block owns.
+The ceiling division \co@cdiv(M, TILE_M)@ counts the tiles along M, including a possible partial tile. The pair \co@(block_m, block_n)@ identifies the output tile assigned to the current block. The operand selections use the same output coordinates with the current K-slice coordinate.
 
-With all dimensions 16, extents are 1\(\times\)1
+When the matrix dimensions and the tile dimensions are all 16, the block grid is 1 by 1. Larger matrices produce more output tiles. The \co@MMA_M@, \co@MMA_N@, and \co@MMA_K@ names in the listing must be defined consistently with the intended fragment geometry before compiling it.
 
-Section~\ref{sec:3-6} goes deeper on \texttt{subspan} versus \texttt{chunkat}.
+Section 3.5 explains how \co@subspan@ and \co@chunkat@ select tiles.
 
 \begin{keypoint}[Quick `subspan` syntax reminder]
 \texttt{subspan(h, w)} declares a fixed-size rectangular view shape, and \texttt{.at(i, j)} selects which view instance you want from the parent tensor. In other words, \texttt{lhs.\allowbreak{}subspan(TILE\_\allowbreak{}M, TILE\_\allowbreak{}K).\allowbreak{}at(block\_\allowbreak{}m, iv\_\allowbreak{}k)} means "take the \texttt{[TILE\_\allowbreak{}M, TILE\_\allowbreak{}K]} tile at \texttt{(block\_\allowbreak{}m, iv\_\allowbreak{}k)}." Use \texttt{subspan} when you want an explicit tile shape; use \texttt{chunkat} when you want to slice by equal chunks of an existing dimension.
 
 \end{keypoint}
 
-The four-step syntax reads linearly and the tile geometry is obvious.
+The accumulator spans the entire K loop. Initializing it inside that loop would discard earlier contributions, while storing inside the loop would expose only a partial result. Keeping initialization before the loop and the store after it makes the output tile's lifetime visible.

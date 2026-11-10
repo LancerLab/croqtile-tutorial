@@ -14,4 +14,4 @@ __co__ void foo() {
 }
 \end{lstlisting}
 
-The comments in the above code explain the event instances. The mechanism is same to the spanned data declarations, where storage specifier is also required. From implementation perspective, event can be implement as the leveled boolean data within the specified storage. Therefore, it also takes the storage of this level. However, in concept, the event belongs to a specific level. Therefore, its instance count coresponds to its parallel level.
+The comments identify the event instances. As with spanned-data declarations, the storage specifier determines the level at which an event is stored and shared. An implementation may represent events with Boolean state at that storage level; the number of instances follows the corresponding parallel scope.

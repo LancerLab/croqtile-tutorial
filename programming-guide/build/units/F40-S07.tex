@@ -1,20 +1,7 @@
 \subsection*{Compose Two Bounded Variables for Tiling with \texttt{\#}}
 
-In the example above, there is a need to tile the matrices in a manner that involves \textbf{two bounded variables}. This is where the \textbf{\texttt{\#} operator} comes into play, allowing the program to compute the \textbf{Cartesian product} of two bounded variables (\textbf{not commutative}).
+The RGB-to-grayscale example in Section 3.10.2 combines a worker index q with a sequential image index n. The expression \co@q # n@ assigns consecutive images to each worker. For N = 18 and six workers, the inner bound is 3, so worker 1 processes images 3, 4, and 5. The details below use that same partition.
 
-\noindent\textbf{The \texttt{\#} Operator:}\par
+With six workers, q has bound 6 and n has bound N / 6. Their composition has bound N and value \co@q * (N / 6) + n@. The remaining indices h and w choose spatial tiles; the channel dimension stays whole. Thus the worker assignment and the local traversal jointly identify the source tile and its output position.
 
-\begin{itemize}[leftmargin=1.6em]
-\item The code defines the tiling parameters with four bounded variables: \texttt{q}, \texttt{n}, \texttt{h}, and \texttt{w}, whose upper bounders are \texttt{6}, \texttt{N/6}, \texttt{H/16}, and \texttt{W/512}.
-\item Suppose \texttt{N} is 18, \texttt{q} represents physical thread index. You want each thread to process data that is contiguous in the first dimension. That is, the first thread handles input[0\textasciitilde{}2][xxx], the second thread handles input[3\textasciitilde{}5][xxx], and so on.
-\item \texttt{q \# n} will result in a new bounded variable implicitly, whose upper bound is \texttt{N}: bound of \texttt{q} multiply bound of \texttt{n}.
-\item For every data move, the stride of each dimension is 1, 3, 16, 512. In the last dimension, the index is \texttt{w}. In the first dimension, the index is \texttt{q * (bound of n) + n}.
-\end{itemize}
-
-\noindent\textbf{Why this is Important:}\par
-
-\begin{itemize}[leftmargin=1.6em]
-\item The combination of \texttt{q} and \texttt{n} ensures that physical and virtual parallelism can work together efficiently.
-\item This helps optimize \textbf{memory access patterns}, especially when working with large matrices, where efficient memory use is crucial.
-\item Unlike higher-level loop scheduling techniques like in TVM, which abstract away the actual data movement, Croqtile explicitly links \textbf{virtual loops} to \textbf{physical DMA operations}. This results in more efficient data movement and computation.
-\end{itemize}
+Changing the operand order changes the assignment. For N = 18, \co@n # q@ would give worker 1 the images 1, 7, and 13 as n advances, instead of the consecutive images 3, 4, and 5 selected by \co@q # n@. The operator makes this scheduling choice explicit in the data expression; its performance depends on how the resulting accesses behave on the target.

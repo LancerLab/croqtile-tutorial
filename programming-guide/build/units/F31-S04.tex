@@ -13,7 +13,7 @@ parallel p by 2 {
 
 This code defines two levels of parallelism with values \texttt{2} and \texttt{12}, respectively. This means a total of \texttt{2 x 12 = 24} parallel threads are invoked for the task. Each thread is identified by a unique combination of \texttt{p} and \texttt{q}. In Croqtile, you refer to the level of \texttt{p} as \emph{parallel-level-0} and the level of \texttt{q} as \emph{parallel-level-1}.
 
-One key difference observable by programmers is the \textbf{synchronization cost}. This hierarchical design encourages programmers to place the most divergent code (that requires synchronization) within the \textbf{block} level to enhance overall performance.
+The nesting determines which instances belong to the same enclosing region. Shared data and synchronization must follow that structure. Put cooperating work at a level whose instances can use the required storage and synchronization operations.
 
 In Croqtile syntax, you can define multiple-level parallelism in a single line:
 
@@ -21,4 +21,4 @@ In Croqtile syntax, you can define multiple-level parallelism in a single line:
 parallel p by 2, q by 12 { ... }
 \end{lstlisting}
 
-This achieves the same parallelization as the previous example. It uses the \textbf{comma-separated} \emph{parallel-by} expression, assuming there is no code in the between two parallel levels.
+This comma-separated form expresses the same two parallel levels as the nested version, provided there is no intervening code between those levels.

@@ -1,5 +1,5 @@
 \paragraph*{In short}
 
-Integers and i-tuples are the two scalar-shaped values a kernel declares. The \emph{Integer}s follow C/C++ syntax. \emph{i-tuples} follow a syntax similar to \emph{mdspan}, but they can operate on \emph{mdspan} to derive new values.
+Use an integer for one control value and an \co@ituple@ for an ordered group of values. A shape such as \co@[7, 14]@ describes ranges, while a tuple such as \co@{1, 2}@ can describe a position or a pair of tiling factors. The matching ranks let shape arithmetic apply each factor to the corresponding dimension.
 
-Both types \textbf{require an \_initialization expression\_ and cannot be reassigned}, making them appear as \textbf{constant} or \textbf{immutable} values. In fact, all variables defined in Croqtile tileflow programs are immutable, except for those of specific types. Therefore, \textbf{the assignment operator \texttt{=} is used for variable initialization in most cases}, which programs must be aware of.
+Both integers and ordinary tuples must be initialized and cannot be reassigned. This restriction concerns the names used for control and shape calculations. A buffer element is different: the addition example writes to \co@output.at(i, j)@, and a matrix multiplication updates its accumulator. Keeping these roles distinct avoids treating an immutable index as though it were a mutable accumulator.

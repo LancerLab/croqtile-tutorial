@@ -1,5 +1,5 @@
 \paragraph*{In short}
 
-You are now aware that a Croqtile program consists of three parts, with the \emph{tileflow program} being the core. This part is transpiled into target source code during the compilation process. The call chain typically flows from the host to the tileflow program, and then from the tileflow program to the device code.
+A Croqtile program consists of host code, Tileflow code, and device code. Compilation translates the Tileflow functions into target source. The call chain typically runs from the host to a Tileflow function, then to a device function.
 
-You may have noticed that Croqtile not only abstracts DMA operations into higher-level semantics but also combines iteration and tiling for ease of use. This makes Croqtile code concise and expressive. In the following chapters, you will delve deeper into Croqtile's syntax and semantics to explore its full potential.
+Croqtile combines higher-level DMA operations with iteration and tiling, so a compact program can express the full data flow. The following sections explain the syntax and semantics of these constructs.

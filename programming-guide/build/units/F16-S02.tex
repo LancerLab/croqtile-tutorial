@@ -1,5 +1,5 @@
 \subsection*{First-Class Citizen: Shape}
 
-Croqtile's primary function is to manage data movements, which are crucial for efficiently organizing and processing large datasets, especially in machine learning and high-performance computing scenarios. However, most C++ programming environments handle data in a casual manner ---either as flat (pointers) or hierarchical structures (arrays), without a native representation of associated shapes.
+A raw pointer does not tell a caller whether its elements form a vector, a matrix, or a tile cut from a larger tensor. That missing information has to be supplied elsewhere whenever code computes an offset or checks a transfer. Croqtile keeps shape information alongside the data so declarations, tile selections, and movement statements can refer to the same dimensions.
 
 In contrast, Croqtile enforces code safety and simplifies the programming of shaped data by requiring that \textbf{any data declared or used must be associated with a shape}. This motivates Croqtile to treat shape as a first-class citizen.

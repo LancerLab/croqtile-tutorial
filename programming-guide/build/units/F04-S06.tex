@@ -4,4 +4,4 @@
 lhs.subspan(64, 64).at(block_m, iv_k)
 \end{lstlisting}
 
-\texttt{subspan} says what the tile shape is. \texttt{.at(...)} says which tile instance you want. This is the better fit when the tile shape is an explicit algorithmic choice, such as a GEMM tile of \texttt{[64, 64]}, rather than something you want inferred from \texttt{parallel by .\allowbreak{}.\allowbreak{}.\allowbreak{}}.
+The \co@subspan@ expression supplies the tile extents explicitly, and \co@.at(...)@ supplies tile coordinates. For a \co@[16, 16]@ tile, coordinate \co@(2, 3)@ begins at element \co@(32, 48)@. This form is useful when the tile size is a fixed algorithmic choice rather than derived from the number of parallel instances.

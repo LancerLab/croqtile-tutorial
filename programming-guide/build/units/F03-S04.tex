@@ -6,7 +6,7 @@ Start with the signature, which declares more than a C++ function prototype woul
 __co__ s32 [4, 8] ele_add(s32 [4, 8] lhs, s32 [4, 8] rhs) {
 \end{lstlisting}
 
-The \texttt{\_\_co\_\_} prefix marks this as a Croqtile function. Unlike regular C++ functions, the signature carries full shape information: \texttt{s32 [4, 8]} means "a 2D tensor of shape 4 \(\times\) 8 with element type \texttt{s32} (signed 32-bit integer)". Both parameters and the return type follow this convention --- \texttt{type [shape] name}. The compiler uses these shapes to verify that every indexing operation is in-bounds at compile time.
+The \co@__co__@ prefix marks a Croqtile function. The declaration \co@s32 [4, 8]@ combines signed 32-bit elements with a two-dimensional shape: four rows and eight columns. Both inputs and the result follow the form \co@type [shape] name@. These declarations give the compiler the information needed to check ranks and reason about index bounds. Constraints that depend on caller-supplied dimensions may also require runtime checks.
 
 Croqtile supports these element types: \texttt{s32} (signed 32-bit int), \texttt{f16} (half-precision float), \texttt{bf16} (brain float), \texttt{f32} (single-precision float), and \texttt{f8\_e4m3} / \texttt{f8\_e5m2} (8-bit floats). In the examples that follow, \texttt{s32} is the simplest to reason about.
 
@@ -21,9 +21,9 @@ parallel {i, j} by [4, 8]
   output.at(i, j) = lhs.at(i, j) + rhs.at(i, j);
 \end{lstlisting}
 
-\texttt{parallel \{i, j\} by [4, 8]} creates 4 \(\times\) 8 = 32 parallel instances, one per element position. Each instance runs the body with its own \texttt{(i, j)} pair. The \texttt{.at(i, j)} accessor indexes into a tensor at position \texttt{(i, j)}, and the addition is direct --- one element, one thread.
+The statement \co@parallel {i, j} by [4, 8]@ declares 32 independent instances, one for each element position. An instance with \co@(i, j) = (1, 3)@ reads that position from both inputs and writes the sum to the same position in \co@output@. No two instances write the same element, and none needs a result produced by another instance. That independence is what permits parallel execution.
 
-What \texttt{parallel} leaves unsaid is how those instances map onto the machine: without an annotation the compiler decides. That mapping is deliberately absent from the language here --- the statement describes independent work, not the resources that run it.
+Without a space specifier, the compiler chooses how to map the instances to execution resources. The statement establishes their independence; it does not require one physical thread per element or all instances to run at once.
 
 \begin{lstlisting}[language=croqtile,caption={Returning the result}]
 return output;

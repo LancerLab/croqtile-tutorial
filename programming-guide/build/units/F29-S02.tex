@@ -1,6 +1,6 @@
 \subsection*{\emph{Ubound} Operation}
 
-In the previous chapter, you learned that a \emph{bounded variable} defined by a \texttt{parallel-by} or \texttt{with-in} statement is either an \emph{integer} or an \emph{ituple} with one or more bounds. You also learned how to use the \emph{current value} and \emph{upper-bound value} of the \emph{bounded variable} to construct loops in \texttt{foreach} blocks, where the \emph{upper-bound} is implicitly used.
+A bounded variable declared by \texttt{parallel-by} or \texttt{with-in} is an integer or tuple with associated bounds. A \texttt{foreach} loop uses its current value as the index and its upper bound to determine the iteration range.
 
 In Croqtile, a program can use the \textbf{ubound operation} to explicitly retrieve the upper bound of a bounded variable. \emph{Ubound} is a unary operation that uses the prefix symbol \texttt{\#} before a bounded variable. For example:
 

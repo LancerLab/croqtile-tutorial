@@ -974,19 +974,19 @@ Here's the summary across all 99 iterations: **40 were kept, 59 were discarded.*
 | [`04_host_micro.co`](../assets/fused-moe-fp8/04_host_micro.co) | `-gs -t cute -arch=sm_90a` | Host pipeline + micro-opts (end of Phase 2+3) | 9.89 |
 | [**`05_cuda_optimized.co`**](../assets/fused-moe-fp8/05_cuda_optimized.co) | `-gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale` | Grid swap, L2, QSG pipelining, `__cpp__` scatter (end of Phase 4+5) | **13.18** |
 
-All files compile with the Croqtile compiler (`./choreo -gs`) and produce correct results on H800 PCIe. The `-gs` flag auto-generates a build script that handles all nvcc flags (`-D__USE_CUDA_TYPE__`, `--default-stream per-thread`, etc.). TFLOPS measured on H800 PCIe (SM90), end-to-end, 500 repetitions.
+All files compile with the Croqtile compiler (`./croq -gs`) and produce correct results on H800 PCIe. The `-gs` flag auto-generates a build script that handles all nvcc flags (`-D__USE_CUDA_TYPE__`, `--default-stream per-thread`, etc.). TFLOPS measured on H800 PCIe (SM90), end-to-end, 500 repetitions.
 
 To reproduce any measurement:
 
 ```bash
 # All milestones use -gs (auto-generated build script):
-./choreo -gs -t cute -arch=sm_90a [choreo-flags] <file>.co -o /tmp/<file>.cute.result
+./croq -gs -t cute -arch=sm_90a [choreo-flags] <file>.co -o /tmp/<file>.cute.result
 CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     EXTRA_TARGET_CFLAGS="-DRUNMAIN --use_fast_math" \
     bash /tmp/<file>.cute.result --execute
 
 # 04/05 need extra choreo flags:
-./choreo -gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale \
+./croq -gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale \
     05_cuda_optimized.co -o /tmp/05.cute.result
 CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     EXTRA_TARGET_CFLAGS="-DRUNMAIN --use_fast_math" \

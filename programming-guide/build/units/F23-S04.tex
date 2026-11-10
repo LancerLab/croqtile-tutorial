@@ -1,6 +1,6 @@
 \subsection*{Conditional Compilation}
 
-Croqtile also support conditional compilation which C/C++ programs used a lot. This includes \texttt{\#if}/\texttt{\#ifdef}/\texttt{\#ifndef}/\texttt{\#else}/\texttt{\#endif}. The below code snippet showcases the usage:
+Croqtile supports conditional compilation with directives including \texttt{\#if}, \texttt{\#ifdef}, \texttt{\#ifndef}, \texttt{\#else}, and \texttt{\#endif}:
 
 \begin{lstlisting}[language=croqtile,caption={Conditional Compilation}]
 #define PATH0
@@ -20,6 +20,6 @@ __co__ foo() {
 #endif
 \end{lstlisting}
 
-In this way, it also make host and croqtile code be controlled within the same preprocess method.
+The same preprocessing conditions can control both host C++ and Croqtile code.
 
 The preprocessor is still being extended, and full C preprocessing support is not planned: a C feature is picked up only when a program actually needs it.

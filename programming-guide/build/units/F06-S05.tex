@@ -1,9 +1,10 @@
 \subsection*{Widening the scope: cooperative group and mma}
 
-The four-step syntax does not change. The only thing that changes in Croqtile is the space specifier: \texttt{: group-4} instead of \texttt{: group}.
+A wider cooperating group uses \co@: group-4@ while retaining the same fill, load, multiply, and store operations. The example also changes tile dimensions and staging buffers to suit that scope. The shared syntax makes the two versions comparable, but a change in cooperation width still requires compatible tile geometry and target support.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f06-fig4_sm86_vs_sm90_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig4_sm86_vs_sm90_light.png}
+\caption{The : group and : group-4 scopes use different cooperation widths while preserving the fill, load, multiply, and store interface.}
 \end{figure}
 
 \begin{lstlisting}[language=croqtile,caption={Widening the scope: cooperative group and mma}]
@@ -36,10 +37,10 @@ __co__ void matmul_wgmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f1
 }
 \end{lstlisting}
 
-Fill, load, multiply, store --- the rhythm is identical. The differences are mechanical:
+The sequence remains fill, load, multiply, and store; the space specifier determines the cooperation scope.
 
-\texttt{.f16}, \texttt{.f32}, etc. FP16 operands with FP32 accumulation is a common pattern for long K dimensions, avoiding numerical overflow in partial sums. The \texttt{0.0f} means the initial value is of type \texttt{f32} (there is no literal \texttt{f16} in the Croqtile). Casting will be performed to \texttt{f16} in the fill operation. If \texttt{.f16} is not specified, the initial value will be inferred from the type of the \texttt{ma} and \texttt{mb} operands.
+The fill suffix chooses accumulator precision. This listing uses \co@mma.fill.f16 0.0f@, so the initial single-precision literal is converted for an FP16 accumulator. An FP32 accumulator is a separate choice, expressed with \co@.f32@, and provides a wider range and greater precision for partial sums. The operand type alone should not be used to infer what an explicitly annotated accumulator stores.
 
-\textbf{\texttt{chunkat(\_\allowbreak{}, iv\_\allowbreak{}group)}.} \texttt{\_} means "do not tile that dimension" --- Only K is subdivided per MMA slice.
+The expression \co@chunkat(_, iv_warp)@ leaves the row dimension whole and subdivides only K. The underscore means that no partition is applied to that dimension.
 
-That is the whole point of the abstraction: the same four operations, the same layout contract, the same \texttt{chunkat} / \texttt{subspan} expressions. You think about \emph{what} contraction to perform; the cooperation width is a deployment detail.
+The underscore in the operand selection leaves one dimension intact while the loop divides K into MMA slices. Each slice contributes to the same accumulator. This lets the outer staging tile be larger than the fragment consumed by one matrix operation without changing the output tile being accumulated.

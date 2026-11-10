@@ -1,1 +1,1 @@
-As \texttt{inthreads} introduce MPMD programming pattern in Croqtile, it is necessary to synchornize between different asynchronous code. You can use event in Croqtile to achieve that.
+An asynchronous region can advance independently, but a dependency on another region still needs to be expressed. An event marks that dependency: one region triggers it after completing the required work, and another waits before using the result. The event carries readiness information; the data remains in the buffer shared by the regions.

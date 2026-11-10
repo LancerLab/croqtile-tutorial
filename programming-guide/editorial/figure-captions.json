@@ -1,0 +1,110 @@
+{
+  "f04-fig1_element_vs_block_light.png": {
+    "en": "Scalar indexing reads individual elements; explicit tile movement stages a selected tile into shared storage.",
+    "zh": "标量索引逐个读取元素；显式分块搬运先选择分块，再将其复制到 shared 存储。"
+  },
+  "f04-fig2_tiled_add_light.png": {
+    "en": "For [64, 128] inputs and a [4, 8] tile grid, tile (1, 3) stages [16, 16] operands before element-wise addition.",
+    "zh": "输入形状为 [64, 128]，分块网格为 [4, 8]。分块 (1, 3) 先装入两个 [16, 16] 操作数，再逐元素相加。"
+  },
+  "f04-fig3_chunkat_light.png": {
+    "en": "chunkat(1, 3) selects rows 16–31 and columns 48–63 from a [64, 128] tensor partitioned into [4, 8] tiles.",
+    "zh": "对按 [4, 8] 网格划分的 [64, 128] 张量，chunkat(1, 3) 选中第 16–31 行、第 48–63 列。"
+  },
+  "f04-fig_future_data_light.png": {
+    "en": "The copy result exposes the destination tensor through .data and its shape through .span; asynchronous reads require completion first.",
+    "zh": "复制结果通过 .data 提供目标张量，通过 .span 提供其形状；异步复制必须完成后才能读取。"
+  },
+  "f04-fig_compose_light.png": {
+    "en": "With 16 elements per tile, tile = 2 and i = 3 compose to global position 2 × 16 + 3 = 35.",
+    "zh": "每块含 16 个元素时，tile = 2 与块内偏移 i = 3 组合得到全局位置 2 × 16 + 3 = 35。"
+  },
+  "f04-fig_extent_light.png": {
+    "en": "Prefix #tile gives the axis extent, 8; infix tile # i composes a tile coordinate and an in-tile offset.",
+    "zh": "前缀 #tile 返回轴的范围大小，此处为 8；中缀 tile # i 将分块坐标与块内偏移组合。"
+  },
+  "f04-fig_span_light.png": {
+    "en": "For a [4, 8] tensor, .span returns [4, 8], while .span(0) and .span(1) return 4 and 8.",
+    "zh": "对 [4, 8] 张量，.span 返回完整形状 [4, 8]；.span(0) 和 .span(1) 分别返回 4 和 8。"
+  },
+  "f05-fig1_virtual_parallelism_light.png": {
+    "en": "The same eight tasks take eight, two, or one time steps when one, four, or eight tasks can run at once.",
+    "zh": "同样的八个任务，在每次执行一个、四个或八个任务的示意调度下，分别需要八个、两个或一个时间步。"
+  },
+  "f05-fig2_logical_vs_physical_light.png": {
+    "en": "Space specifiers map parallel axes to blocks and threads; foreach loops remain sequential within that structure.",
+    "zh": "空间说明符将 parallel 轴映射到 block 和 thread；其中的 foreach 循环仍按顺序执行。"
+  },
+  "f05-fig5_scalar_matmul_light.png": {
+    "en": "The [128, 256] output has a [16, 64] tile grid. Each tile has shape [8, 4]; only the first few tiles are drawn.",
+    "zh": "[128, 256] 输出按 [16, 64] 网格划分，每块形状为 [8, 4]；图中只画出开头的一部分分块。"
+  },
+  "f05-fig6_dma_matmul_light.png": {
+    "en": "Each block stages [16, 16] operand tiles for one K slice; 256 threads accumulate the block’s [16, 16] output tile.",
+    "zh": "每个 block 为当前 K 切片装入两个 [16, 16] 操作数分块，再由 256 个线程累加该 block 的 [16, 16] 输出分块。"
+  },
+  "f06-fig2_register_loading_light.png": {
+    "en": "Operand fragments are distributed across cooperating lanes. The color pattern is schematic, not an exact instruction-level register map.",
+    "zh": "操作数片段分布在协作的线程之间。颜色仅示意这种分布，不代表某条指令的精确寄存器映射。"
+  },
+  "f06-fig3_mma_syntax_light.png": {
+    "en": "Initialize the accumulator, load both operands, accumulate, and store; repeat the load and accumulation steps over K slices.",
+    "zh": "先初始化累加器，再装入两个操作数、执行累加，最后写回；沿 K 切片重复装入和累加步骤。"
+  },
+  "f06-fig4_sm86_vs_sm90_light.png": {
+    "en": "The : group and : group-4 scopes use different cooperation widths while preserving the fill, load, multiply, and store interface.",
+    "zh": ": group 与 : group-4 使用不同的协作范围，但保留相同的 fill、load、multiply、store 操作接口。"
+  },
+  "f07-fig1_role_comparison_light.png": {
+    "en": "Four load/compute pairs are shown in both schedules. Concurrent producer and consumer regions overlap work while preserving dependencies.",
+    "zh": "两种调度都包含四组装入与计算任务。并发的生产者和消费者在遵守依赖关系的前提下重叠执行。"
+  },
+  "f07-fig2_persistent_kernel_light.png": {
+    "en": "Four fixed blocks process ten tiles in three iterations; the final two padded tile IDs are skipped by the if guard.",
+    "zh": "四个固定 block 用三轮迭代处理十个分块；最后两个补齐的分块编号由 if 条件跳过。"
+  },
+  "f08-fig1_pipeline_timeline_light.png": {
+    "en": "The same four K tiles run sequentially or with two-buffer overlap. Timings are schematic and include pipeline startup and drain.",
+    "zh": "同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。"
+  },
+  "f08-fig2_event_credit_flow_light.png": {
+    "en": "An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.",
+    "zh": "empty 信用允许填充阶段，full 信用允许读取阶段；消费者在计算完成后才释放该阶段供再次使用。"
+  },
+  "f09-fig3_tma_descriptor_light.png": {
+    "en": "The descriptor supplies tensor layout information, the source expression supplies tile coordinates, and the transfer writes the shared destination.",
+    "zh": "描述符提供张量布局信息，源表达式提供分块坐标；传输操作将选中的分块写入 shared 目标。"
+  },
+  "f09-fig1_tma_vs_dma_light.png": {
+    "en": "DMA distributes transfer work across threads; TMA delegates tensor address generation to a descriptor-based transfer engine.",
+    "zh": "DMA 由线程协作完成搬运；TMA 将张量地址生成交给基于描述符的传输引擎。"
+  },
+  "f09-fig2_swizzle_light.png": {
+    "en": "Eight-bank schematic: different addresses in one bank serialize, while remapping spreads accesses. Copy and MMA load must use matching swizzle.",
+    "zh": "八个 bank 的简化示意：同一 bank 的不同地址访问需要串行处理，重映射则分散访问。复制与 MMA 装入必须采用一致的 swizzle。"
+  },
+  "f09-fig8_expressiveness_light.png": {
+    "en": "Structured tile operations expose geometry and layout for efficient lowering; performance still depends on the chosen tiles and execution configuration.",
+    "zh": "结构化分块操作显式提供形状和布局，便于编译器生成高效代码；实际性能仍取决于分块选择与执行配置。"
+  },
+  "f09-fig4_view_from_light.png": {
+    "en": "The small example uses a [4, 4] window from (2, 3); the same rule selects the [16, 16] window from (37, 50) in the code.",
+    "zh": "图中用从 (2, 3) 开始的 [4, 4] 小窗口说明原理；正文代码从 (37, 50) 选取 [16, 16] 窗口时遵循相同规则。"
+  },
+  "f09-fig5_subspan_step_light.png": {
+    "en": "The small diagram contrasts packed [3, 3] tiles with step(5, 5). In the code, [16, 16] tiles with step(32, 32) leave 16-element gaps.",
+    "zh": "小图比较紧密排列的 [3, 3] 分块与 step(5, 5) 的间隔排列。正文的 [16, 16] 分块采用 step(32, 32)，留下 16 个元素的间隔。"
+  },
+  "f09-fig6_zfill_light.png": {
+    "en": "A [4, 4] boundary tile from a [6, 8] source keeps its valid rows and fills the two out-of-range rows with zeros.",
+    "zh": "从 [6, 8] 源张量选取的边界 [4, 4] 分块保留有效行，并将超出范围的两行填为零。"
+  },
+  "f09-fig7_span_as_light.png": {
+    "en": "The 16-element buffer becomes a [4, 4] view with the same linear order. The 1D strip is displayed on two lines for readability.",
+    "zh": "16 个元素的缓冲区重解释为 [4, 4] 视图，线性顺序保持不变；图中将一维数据分成两行显示，便于阅读。"
+  },
+  "f14-chunkat_3d_light.png": {
+    "en": "Dividing shape [6, 17, 128] by bounds [6, 17, 4] gives chunks of shape [1, 1, 32]. Chunk (1, 16, 2) starts at element (1, 16, 64).",
+    "zh": "形状 [6, 17, 128] 按范围 [6, 17, 4] 划分后，每块为 [1, 1, 32]。分块 (1, 16, 2) 从元素 (1, 16, 64) 开始。"
+  }
+}

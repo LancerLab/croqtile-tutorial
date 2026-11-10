@@ -6,9 +6,9 @@ output.at(tr # i, tc # j)
 
 This combines a tile coordinate with an in-tile coordinate to produce a coordinate in the full tensor.
 
-Read \texttt{tr \# i} as "row \texttt{i} inside tile \texttt{tr}."
+For an outer tile index \co@tr@ and an inner index \co@i@, \co@tr # i@ has value \co@tr * #i + i@. If a tile has 16 rows, tile 2 and inner row 5 identify global row 37. Its bound is the product of the two bounds. Operand order matters because the inner bound supplies the stride.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f04-fig_compose_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_compose_light.png}
+\caption{With 16 elements per tile, tile = 2 and i = 3 compose to global position 2 × 16 + 3 = 35.}
 \end{figure}
-\begin{center}\small\emph{Compose a tile index with an in-tile offset to recover a global coordinate.}\end{center}

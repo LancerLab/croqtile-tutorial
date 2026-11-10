@@ -5,7 +5,7 @@ When \texttt{print} / \texttt{println} is not enough, Croqtile supports debug RT
 Compile with \texttt{-g} to enable debug symbols:
 
 \begin{lstlisting}[language={},caption={Debug RTTI and debugger}]
-croqtile kernel.co -g -o kernel_debug
+croq kernel.co -g -o kernel_debug
 \end{lstlisting}
 
 The generated code includes RTTI structs for Croqtile types:
@@ -16,8 +16,8 @@ The generated code includes RTTI structs for Croqtile types:
 \toprule
 \textbf{Croqtile type} & \textbf{GDB type} & \textbf{Fields} \\
 \midrule
-Shaped tensor \textless{}br/\textgreater{} (\texttt{s32 [M, N]}) & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\allowbreak{}spanned\textless{}int, 2\textgreater{}} & \texttt{.span.data[]} (dimensions), \textless{}br/\textgreater{}\texttt{.stride.data[]} (strides), \textless{}br/\textgreater{}\texttt{.data} (pointer) \\
-Index tuple & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\allowbreak{}bounded\_\allowbreak{}ituple\textless{}N\textgreater{}} & \texttt{.data[]} (values), \textless{}br/\textgreater{}\texttt{.ub[]} (upper bounds) \\
+Shaped tensor   (\texttt{s32 [M, N]}) & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\allowbreak{}spanned\textless{}int, 2\textgreater{}} & \texttt{.span.data[]} (dimensions),  \texttt{.stride.data[]} (strides),  \texttt{.data} (pointer) \\
+Index tuple & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\allowbreak{}bounded\_\allowbreak{}ituple\textless{}N\textgreater{}} & \texttt{.data[]} (values),  \texttt{.ub[]} (upper bounds) \\
 Integer tuple & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\allowbreak{}ituple\textless{}N\textgreater{}} & \texttt{.data[]} (values) \\
 Multi-dim span & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\allowbreak{}mdspan\textless{}N\textgreater{}} & \texttt{.data[]} (extents) \\
 \bottomrule

@@ -1,7 +1,7 @@
 \subsection*{The three phases}
 
-\textbf{Prologue.} Issue loads for tile 0 into \texttt{lf0}/\texttt{rf0}. No compute yet --- the first tile must land before anything can multiply it.
+The prologue issues loads for tile 0 into \co@lf0@ and \co@rf0@. No previous tile exists to compute on yet, so these first transfers establish the state needed by the loop.
 
-\textbf{Steady state.} For each subsequent tile: start loads into \texttt{lf1}/\texttt{rf1}, compute on \texttt{lf0}/\texttt{rf0} from the previous iteration, then \texttt{swap} so names track the active buffers. New copies land in \texttt{lf1}/\texttt{rf1} \textbf{before} the compute reads \texttt{lf0}/\texttt{rf0}, so you never read a buffer being overwritten.
+In steady state, the loop issues the next loads into \co@lf1@ and \co@rf1@, waits for the current loads, and computes from \co@lf0@ and \co@rf0@. The two pairs refer to different buffers, so the next transfer can overlap the current computation. The next loads need not finish first. After the current computation, \co@swap@ makes the next pair current for the following iteration.
 
-\textbf{Epilogue.} After the last swap, \texttt{lf0}/\texttt{rf0} hold the final tile; one more compute pass drains them.
+The epilogue consumes the final loaded tile after the loop has stopped issuing transfers. It still requires that tile's load to be complete before reading it. The listing above illustrates handle rotation but omits a final wait and output initialization; a runnable accumulation must supply both, just as it does for the steady-state reads.

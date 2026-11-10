@@ -1,3 +1,3 @@
 \subsection*{Evaluation of Integers and I-Tuples}
 
-Similar to mdspan, both \emph{integer}s and \emph{i-tuple}s incur minimal runtime cost. Their values are evaluated at compile time whenever possible, so programmers can generally ignore their cost.
+Integer and tuple expressions are evaluated at compile time when their operands are known. Expressions depending on runtime indices or input sizes remain computations in the generated program. Immutability helps the compiler reuse and simplify them; it does not make every value a constant.

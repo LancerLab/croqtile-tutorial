@@ -1,11 +1,11 @@
 \subsection*{Walking through the kernel}
 
-\textbf{Ring index.} \texttt{stage = iv\_\allowbreak{}k \% STAGES} maps the unbounded K iteration to a fixed number of physical buffer slots --- double buffering generalized to N buffers.
+The stage index is \co@iv_k % STAGES@. With two slots, tiles 0 and 2 use slot 0, while tiles 1 and 3 use slot 1. These are different logical tiles sharing physical storage at different times; the event pair belongs to the slot, not to one permanent tile.
 
-\textbf{Producer path.} For each \texttt{iv\_k}, \texttt{wait empty[stage]} acquires a free slot. The \texttt{dma.copy} lines fill \texttt{lhs\_load\_s} / \texttt{rhs\_load\_s} at that stage. Then \texttt{trigger full[stage]} hands the slot to the consumer.
+The producer waits on \co@empty[stage]@ before writing either operand into that slot. Both copies in this example are synchronous, so triggering \co@full[stage]@ after them means both operands are ready. Replacing the copies with asynchronous operations would require completing those operations before sending the same signal.
 
-\textbf{Consumer bootstrap.} The loop \texttt{foreach \{s\} in [STAGES] \{ trigger empty[s]; \}} runs \textbf{before} the K-loop so every stage starts with an \texttt{empty} credit. Without this, the producer blocks forever on its first \texttt{wait empty} --- a deadlock.
+The consumer first triggers every \co@empty@ event. All events begin unset, so this bootstrap grants the producer permission to fill each slot once. No \co@full@ event is triggered here because no input has been loaded yet.
 
-\textbf{Consumer path.} Each \texttt{iv\_k}: \texttt{wait full[stage]} blocks until the producer has filled that slot, then MMA over the tile, \texttt{mma.commit}, and \texttt{trigger empty[stage]} to release the slot for reuse.
+The consumer waits on \co@full[stage]@, loads the operand fragments, and accumulates the slice. It then performs \co@mma.commit@ before triggering \co@empty[stage]@. That order matters: issuing a matrix operation is not sufficient evidence that it has stopped reading the shared operands.
 
-\texttt{mma.commit} is the fence that completes one K-slab's contribution to \texttt{mc} before that stage's shared buffer may be reused. Omitting it risks reading stale data --- the MMA might still be consuming operands when the producer overwrites the buffer.
+The completion point protects buffer reuse. If the producer overwrites a slot while MMA still reads it, the consumer can mix operands from two K slices even though the tile shapes are correct. Checking the \co@full@ signal alone cannot detect this mistake; the return of the \co@empty@ credit is equally necessary.

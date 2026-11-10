@@ -11,16 +11,16 @@ content unit back to its source.
 | `F01-S03` | `tutorial/index.md` | 1.1 | kept |
 | `F02-S01` | `tutorial/ch00-installation.md` | 1.2 | kept |
 | `F02-S02` | `tutorial/ch00-installation.md` | 1.2 | kept |
-| `F02-S03` | `tutorial/ch00-installation.md` | 1.3 | kept |
-| `F02-S04` | `tutorial/ch00-installation.md` | 1.4 | kept |
-| `F02-S05` | `tutorial/ch00-installation.md` | 1.5 | kept |
-| `F02-S06` | `tutorial/ch00-installation.md` | 1.6 | kept |
-| `F03-S01` | `tutorial/ch01-hello-croqtile.md` | 1.7 | kept |
+| `F02-S03` | `tutorial/ch00-installation.md` | 1.2 | kept |
+| `F02-S04` | `tutorial/ch00-installation.md` | 1.2 | kept |
+| `F02-S05` | `tutorial/ch00-installation.md` | 1.3 | kept |
+| `F02-S06` | `tutorial/ch00-installation.md` | 1.3 | kept |
+| `F03-S01` | `tutorial/ch01-hello-croqtile.md` | 1.3 | kept |
 | `F03-S02` | `tutorial/ch01-hello-croqtile.md` | 2.1 | kept |
-| `F03-S03` | `tutorial/ch01-hello-croqtile.md` | 1.7 | kept |
+| `F03-S03` | `tutorial/ch01-hello-croqtile.md` | 1.3 | kept |
 | `F03-S04` | `tutorial/ch01-hello-croqtile.md` | 2.2 | kept |
 | `F03-S05` | `tutorial/ch01-hello-croqtile.md` | 2.3 | kept |
-| `F03-S06` | `tutorial/ch01-hello-croqtile.md` | 1.5 | kept |
+| `F03-S06` | `tutorial/ch01-hello-croqtile.md` | 1.3 | kept |
 | `F03-S07` | `tutorial/ch01-hello-croqtile.md` | 3.6 | kept |
 | `F04-S01` | `tutorial/ch02-data-movement.md` | 3.6 | kept |
 | `F04-S02` | `tutorial/ch02-data-movement.md` | 2.9 | kept |
@@ -100,7 +100,7 @@ content unit back to its source.
 | `F08-S10` | `tutorial/ch06-synchronization.md` | 3.8.5 | kept |
 | `F08-S11` | `tutorial/ch06-synchronization.md` | 3.8.5 | kept |
 | `F08-S12` | `tutorial/ch06-synchronization.md` | 3.8.5 | kept |
-| `F08-S13` | `tutorial/ch06-synchronization.md` | 1.9 | kept |
+| `F08-S13` | `tutorial/ch06-synchronization.md` | 1.5 | kept |
 | `F08-S14` | `tutorial/ch06-synchronization.md` | 2.15 | kept |
 | `F08-S15` | `tutorial/ch06-synchronization.md` | 3.8.10 | kept |
 | `F09-S01` | `tutorial/ch07-advanced-movement.md` | X | moved |
@@ -116,7 +116,7 @@ content unit back to its source.
 | `F09-S11` | `tutorial/ch07-advanced-movement.md` | 3.5.10 | kept |
 | `F09-S12` | `tutorial/ch07-advanced-movement.md` | 3.5.10 | kept |
 | `F10-S01` | `tutorial/ch08-cpp-interop.md` | 3.9 | kept |
-| `F10-S02` | `tutorial/ch08-cpp-interop.md` | 1.8 | kept |
+| `F10-S02` | `tutorial/ch08-cpp-interop.md` | 1.4 | omitted |
 | `F10-S03` | `tutorial/ch08-cpp-interop.md` | 3.9 | kept |
 | `F10-S04` | `tutorial/ch08-cpp-interop.md` | 3.9.1 | kept |
 | `F10-S05` | `tutorial/ch08-cpp-interop.md` | 2.13 | kept |
@@ -126,18 +126,18 @@ content unit back to its source.
 | `F10-S09` | `tutorial/ch08-cpp-interop.md` | 2.13 | kept |
 | `F10-S10` | `tutorial/ch08-cpp-interop.md` | 2.13 | kept |
 | `F10-S11` | `tutorial/ch08-cpp-interop.md` | 2.13 | kept |
-| `F10-S12` | `tutorial/ch08-cpp-interop.md` | 1.10 | kept |
+| `F10-S12` | `tutorial/ch08-cpp-interop.md` | 1.4 | omitted |
 | `F10-S13` | `tutorial/ch08-cpp-interop.md` | 3.9.10 | kept |
 | `F11-S01` | `tutorial/ch09-debug-verbose.md` | 3.11 | kept |
 | `F11-S02` | `tutorial/ch09-debug-verbose.md` | 2.14 | kept |
 | `F11-S03` | `tutorial/ch09-debug-verbose.md` | 2.14 | kept |
 | `F11-S04` | `tutorial/ch09-debug-verbose.md` | 2.14 | kept |
-| `F11-S05` | `tutorial/ch09-debug-verbose.md` | 1.9 | kept |
-| `F11-S06` | `tutorial/ch09-debug-verbose.md` | 1.9 | kept |
-| `F11-S07` | `tutorial/ch09-debug-verbose.md` | 1.9 | kept |
-| `F11-S08` | `tutorial/ch09-debug-verbose.md` | 1.9 | kept |
-| `F11-S09` | `tutorial/ch09-debug-verbose.md` | 1.9 | kept |
-| `F11-S10` | `tutorial/ch09-debug-verbose.md` | 1.9 | kept |
+| `F11-S05` | `tutorial/ch09-debug-verbose.md` | 1.5 | kept |
+| `F11-S06` | `tutorial/ch09-debug-verbose.md` | 1.5 | kept |
+| `F11-S07` | `tutorial/ch09-debug-verbose.md` | 1.5 | kept |
+| `F11-S08` | `tutorial/ch09-debug-verbose.md` | 1.5 | kept |
+| `F11-S09` | `tutorial/ch09-debug-verbose.md` | 1.5 | kept |
+| `F11-S10` | `tutorial/ch09-debug-verbose.md` | 1.5 | kept |
 | `F12-S01` | `documentation/index.md` | 1.1 | kept |
 | `F12-S02` | `documentation/index.md` | 3.1 | kept |
 | `F13-S01` | `documentation/what-is-choreo.md` | 1.1 | kept |
@@ -149,8 +149,8 @@ content unit back to its source.
 | `F14-S02` | `documentation/choreo-program-structure.md` | 3.1 | kept |
 | `F14-S03` | `documentation/choreo-program-structure.md` | 2.1 | kept |
 | `F14-S04` | `documentation/choreo-program-structure.md` | 3.1 | kept |
-| `F14-S05` | `documentation/choreo-program-structure.md` | 1.8 | kept |
-| `F14-S06` | `documentation/choreo-program-structure.md` | 1.8 | kept |
+| `F14-S05` | `documentation/choreo-program-structure.md` | 1.4 | omitted |
+| `F14-S06` | `documentation/choreo-program-structure.md` | 1.4 | omitted |
 | `F14-S07` | `documentation/choreo-program-structure.md` | 3.1 | kept |
 | `F14-S08` | `documentation/choreo-program-structure.md` | 2.9 | kept |
 | `F14-S09` | `documentation/choreo-program-structure.md` | 3.1 | kept |
@@ -221,10 +221,10 @@ content unit back to its source.
 | `F21-S09` | `documentation/value-numbering.md` | 3.3 | kept |
 | `F21-S10` | `documentation/value-numbering.md` | 3.3 | kept |
 | `F22-S01` | `documentation/getting-started-with-choreo.src.md` | 1.2 | kept |
-| `F22-S02` | `documentation/getting-started-with-choreo.src.md` | 1.3 | kept |
+| `F22-S02` | `documentation/getting-started-with-choreo.src.md` | 1.2 | kept |
 | `F22-S03` | `documentation/getting-started-with-choreo.src.md` | 1.2 | kept |
-| `F22-S04` | `documentation/getting-started-with-choreo.src.md` | 1.6 | kept |
-| `F22-S05` | `documentation/getting-started-with-choreo.src.md` | 1.5 | kept |
+| `F22-S04` | `documentation/getting-started-with-choreo.src.md` | 1.3 | kept |
+| `F22-S05` | `documentation/getting-started-with-choreo.src.md` | 1.3 | kept |
 | `F23-S01` | `documentation/macro-in-choreo.md` | 2.13 | kept |
 | `F23-S02` | `documentation/macro-in-choreo.md` | 2.13 | kept |
 | `F23-S03` | `documentation/macro-in-choreo.md` | 2.13 | kept |
@@ -344,4 +344,4 @@ content unit back to its source.
 | `F45-S01` | `documentation/operator-samples.md` | 占位 | placeholder |
 | `F46-S01` | `documentation/symbolic-evaluation.md` | 占位 | placeholder |
 
-Units marked `moved` are archived verbatim in `HARDWARE-NOTES.md`; `placeholder` units are empty or TODO pages.
+Units marked `moved` are archived verbatim in `HARDWARE-NOTES.md`; `placeholder` units are empty or TODO pages. Units marked `omitted` repeat introductory interop material covered in chapters 2 and 3; their upstream sources remain available.

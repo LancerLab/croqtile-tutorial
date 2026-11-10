@@ -2,7 +2,7 @@
 
 The examples above use \texttt{mma.row.row} on dense FP16 tiles. The same four-step pattern extends to workloads the basic form cannot reach.
 
-But it needs a \textbf{metadata operand} \texttt{me} that encodes which elements are nonzero:
+A sparse contraction also needs a \textbf{metadata operand} \texttt{me} that identifies the nonzero elements:
 
 \begin{lstlisting}[language=croqtile,caption={A sparse contraction}]
 mma.row.row.sp mc, ma, mb, me;
@@ -10,7 +10,7 @@ mma.row.row.sp mc, ma, mb, me;
 
 The \texttt{.sp} suffix adds the metadata operand; everything else is the same fill-load-multiply-store rhythm. Any layout combination works: \texttt{mma.row.col.sp}, etc. You load \texttt{me} from a separate metadata tensor alongside A and B.
 
-\textbf{Quantized operands with per-tile scaling.} FP8 operands (\texttt{f8\_e4m3}, \texttt{f8\_e5m2}) need per-tile dequantization so the accumulator stays numerically accurate. Croqtile fuses the scaling into the contraction:
+For quantized operands with per-tile scales, the contraction also needs the scale values associated with the selected A and B tiles. The \co@.scale@ form expresses this scaling alongside the matrix operation:
 
 \begin{lstlisting}[language=croqtile,caption={A scaled contraction}]
 mma.row.row.scale mc, ma, mb, sc_a, sc_b;

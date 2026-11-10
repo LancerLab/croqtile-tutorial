@@ -16,6 +16,6 @@
 \end{tabularx}
 \end{table}
 
-The tools above answer three questions in order: what the compiler believed at compile time, what the program did at runtime, and which flag exposes each. Start with \texttt{print!} when a shape or a type is surprising, move to \texttt{assert} when a value is surprising, and only then turn on a verbose build.
+These tools observe different stages of the same program. Compiler output explains the shapes and types Croqtile inferred; runtime checks expose the values used in an actual call. Verbose mode is useful when the build itself fails, because it shows which external command failed and how to reproduce it. A successful build and a correct result are separate checks.
 
-The next step is to open a benchmark kernel from the \texttt{croqtile/\allowbreak{}benchmark/\allowbreak{}} directory, map its regions to the chapters here, change one constant, rebuild, and measure.
+Once the small example passes, apply the same checks to a kernel you want to change. Keep a reference result, change one part of the program, and compare the new output before measuring performance. This makes it possible to connect a regression to a specific change.

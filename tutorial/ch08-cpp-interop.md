@@ -46,7 +46,7 @@ What happens to each region:
 - **③ `__cpp__` strings** are spliced character-for-character into the generated CUDA at the point where they appear in the `__co__` body. The compiler does not parse their contents — they must be valid at the splice point in the generated code.
 - **④ Host code** (`main()` and any other non-annotated functions) is passed through as ordinary C++ and ends up in the host compilation path.
 
-All four regions merge into one `.cu` file. `nvcc` compiles the device code (`__global__`, `__device__`) into GPU machine code, compiles the host code into CPU code, and links them into a single binary. Run `croqtile kernel.co -v` (Chapter 9) to see the exact `nvcc` command the compiler issues.
+All four regions merge into one `.cu` file. `nvcc` compiles the device code (`__global__`, `__device__`) into GPU machine code, compiles the host code into CPU code, and links them into a single binary. Run `croq kernel.co -v` (Chapter 9) to see the exact `nvcc` command the compiler issues.
 
 ## `__device__` vs ordinary C++ inline
 
@@ -226,7 +226,7 @@ __co__ foo() {
 }
 ```
 
-The preprocessor keeps one branch and discards the other before Croqtile parses the `__co__` body. Command-line defines: `croqtile kernel.co -DMATMUL_TILE_K=128`.
+The preprocessor keeps one branch and discards the other before Croqtile parses the `__co__` body. Command-line defines: `croq kernel.co -DMATMUL_TILE_K=128`.
 
 ## Reading a production `.co` file
 

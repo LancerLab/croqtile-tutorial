@@ -1,6 +1,6 @@
 \subsection*{Structured concurrent regions with \texttt{inthreads.\allowbreak{}async}}
 
-\texttt{inthreads.\allowbreak{}async} solves a fundamentally different problem than \texttt{if}. Instead of asking "should this thread execute this code?" at runtime, it says "this group of threads runs this program, that group runs that program" at \textbf{compile time}.
+The form \co@inthreads.async@ assigns different thread groups to separately progressing regions. Its predicate identifies the group responsible for each region. This is useful for a producer and consumer whose roles are fixed even though their progress depends on which buffers are ready.
 
 \begin{lstlisting}[language=croqtile,caption={Structured concurrent regions with inthreads.async}]
 parallel p1 by 2 : group-4 {
@@ -26,13 +26,13 @@ The distinction from \texttt{if} is structural, not just performance:
 \end{tabularx}
 \end{table}
 
-\textbf{Why "structured"?} The regions are lexically scoped --- the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each \texttt{inthreads.\allowbreak{}async} block is a static partition.
+The regions are lexically scoped, so the compiler can identify their participants from the program structure. The code does not create an unbounded number of tasks at runtime. Each region operates within the declared parallel scope.
 
-\textbf{The \texttt{.async} modifier.} Without \texttt{.async}, \texttt{inthreads} would execute regions sequentially --- thread subsets take turns. This is analogous to the \texttt{async} keyword in structured concurrency frameworks --- it marks a region as independently schedulable.
+Without \co@.async@, the region rejoins the surrounding execution before later code proceeds. Adding \co@.async@ allows other regions to advance independently. Any data handoff between them then needs an explicit synchronization protocol.
 
 The figure below shows the effect. --- The producer's DMA and the consumer's MMA overlap in time:
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f07-fig1_role_comparison_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig1_role_comparison_light.png}
+\caption{Four load/compute pairs are shown in both schedules. Concurrent producer and consumer regions overlap work while preserving dependencies.}
 \end{figure}
-\begin{center}\small\emph{Each waits for the other. Bottom: \texttt{inthreads.\allowbreak{}async} partitions into two concurrent programs --- DMA and MMA overlap, roughly halving wall-clock time.}\end{center}

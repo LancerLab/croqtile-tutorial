@@ -1,8 +1,8 @@
 \subsection*{The Storage Qualifier}
 
-A spanned-typed data in Croqtile is usually large.
+A tile may be shared by cooperating threads or used privately by one thread. Its element type and shape do not express that distinction; a storage specifier does.
 
-In croqtile, the language defines three storage qualifiers to annotate the data being defined, including:
+The three storage specifiers used in these examples are:
 
 \begin{itemize}[leftmargin=1.6em]
 \item \textbf{global},
@@ -10,7 +10,7 @@ In croqtile, the language defines three storage qualifiers to annotate the data 
 \item and \textbf{local}.
 \end{itemize}
 
-The below code showcases the usage.
+For example:
 
 \begin{lstlisting}[language=croqtile,caption={The Storage Qualifier}]
 ndims : [20, 15];
@@ -18,4 +18,4 @@ local f32 [10, 10] d0;
 shared f16 [ndims] d1;
 \end{lstlisting}
 
-By default, when no storage qualifier appears, the data defined is considered as from the \emph{global} storage.
+Choose the storage specifier to match the code that uses the buffer. Defaults depend on the execution context and target; use an explicit specifier when a transfer or a cooperating group requires a particular storage location.

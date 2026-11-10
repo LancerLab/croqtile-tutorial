@@ -9,3 +9,5 @@ with x in [10] {
   }
 }
 \end{lstlisting}
+
+Each iteration gives the bounded variable a current value for the duration of the loop body. The bound stays fixed. Use that current value to select data, and use the bound when deriving how many pieces the data is divided into. Declaring a parallel index instead would assign one value to each independent instance rather than visit the values in order.

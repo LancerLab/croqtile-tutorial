@@ -12,178 +12,195 @@ P: If you are new to Croqtile, begin with getting.started to build the compiler 
 P: Once you are comfortable with the basic syntax, consult programming.guide as needed. It groups the language by function and explains the semantics, constraints and design choices behind the constructs. Complete kernels appear alongside the features they use, so you can study a particular topic or return to it while writing a program. quickref collects the syntax for quick lookup; the corresponding sections explain the meaning of a construct and the conditions for using it.
 
 === CH1
+H: Getting Started
+I: This chapter takes you from installing Croqtile to a program you have built and run yourself. After the language's motivation, set up and verify the compiler, run a complete element-wise addition example, and use the command-line options to inspect its build. Finally, learn the tools for checking compilation commands, runtime values, and incorrect results.
+N: With a program running, continue to language.basics to learn what each construct in it means. If you already know the syntax, programming.guide is arranged for lookup.
+
+=== CHTITLE1
+H: Getting Started
+
+=== CH2
 H: Language Basics
 I: You will learn to read and write Croqtile programs by working through short examples. Start with the structure of a complete program and the roles of its functions, then follow how shapes, iteration, tile selection, data movement and coordination are expressed. Each example adds a construct and explains its role, so you can build up a working understanding of the syntax.
 N: You can now read most `.co` files. programming.guide explains why the constructs are shaped this way and covers the advanced forms; quickref is a compact lookup table.
 
-=== CHTITLE1
+=== CHTITLE2
 H: Language Basics
 
-=== CH2
+=== CH3
 H: Programming Guide
 I: This chapter organises the same language by function. It explains the structure of a Croqtile program, its type system, symbolic shapes, parallelism, tile selection, data movement, contraction and coordination, and the reasoning behind them. Complete kernels sit beside the feature they demonstrate, so each section also stands on its own.
 N: quickref collects the syntax in one place. For the compiler design behind the language, see [参考文献].
 
-=== CHTITLE2
+=== CHTITLE3
 H: Programming Guide
 
 === SEC:1.1
 H: What is Croqtile
 
 === SEC:1.2
-H: The Two Parts of a Croqtile Program
+H: Setting Up: Requirements, Build, and Verification
 
 === SEC:1.3
-H: Reading a Kernel Line by Line
-
-=== SEC:1.4
-H: The Host-Side API: Inputs and Outputs
+H: The Toolchain: Command Line and Build Utilities
 
 === SEC:1.5
-H: Shapes and mdspan
-
-=== SEC:1.6
-H: Integers, I-Tuples, and Bounded Values
-
-=== SEC:1.7
-H: Spanned Data and Storage Specifiers
-
-=== SEC:1.8
-H: Iteration: parallel-by, with-in, and foreach
-
-=== SEC:1.9
-H: Tile Selection: chunkat, subspan, and view/from
-
-=== SEC:1.10
-H: Data Movement: the DMA Statement and Futures
-
-=== SEC:1.11
-H: Coordination: inthreads, Events, and Async Blocks
-
-=== SEC:1.12
-H: Branching and Early Return
-
-=== SEC:1.13
-H: The Four-Step MMA Syntax
-
-=== SEC:1.14
-H: C++ Embedding, Calls, Macros, and the Preprocessor
-
-=== SEC:1.15
-H: Printing, Assertions, and Compile-Time Inspection
-
-=== SEC:1.16
-H: Syntax Quick Reference
+H: Inspecting and Debugging a Build
 
 === SEC:2.1
-H: Program Structure and Compilation Models
+H: The Two Parts of a Croqtile Program
 
 === SEC:2.2
-H: Syntax Design and the Type System
+H: Reading a Kernel Line by Line
 
 === SEC:2.3
-H: Symbolic Shapes, Shape Evaluation, and Value Numbering
+H: The Host-Side API: Inputs and Outputs
 
 === SEC:2.4
-H: Parallelism, Space Specifiers, and Masking
-
-=== SEC:2.4.1
-H: Worked Example: Tiled Matrix Multiplication
-
-=== SEC:2.4.2
-H: Tracing One Output Element
+H: Shapes and mdspan
 
 === SEC:2.5
-H: Tile Selection and Data Expressions
-
-=== SEC:2.5.1
-H: Arbitrary-Offset Windows: view and from
-
-=== SEC:2.5.2
-H: Strided Tiles: subspan, step, and at
-
-=== SEC:2.5.3
-H: Zero-Padding with zfill
-
-=== SEC:2.5.4
-H: Layout Reinterpretation with span_as
-
-=== SEC:2.5.10
-H: Tile Selection: Summary and Syntax
+H: Integers, I-Tuples, and Bounded Values
 
 === SEC:2.6
-H: Data Movement: Operations, Configuration, and Async Patterns
-
-=== SEC:2.6.1
-H: Worked Example: DMA Matmul
-
-=== SEC:2.6.2
-H: Multi-Buffering: dma.any, swap, and rotate
-
-=== SEC:2.6.3
-H: Worked Example: A Pipelined Kernel
+H: Spanned Data and Storage Specifiers
 
 === SEC:2.7
-H: Contraction and Layout Contracts
-
-=== SEC:2.7.1
-H: Worked Example: One Cooperative Group
-
-=== SEC:2.7.2
-H: Worked Example: Widening the Cooperation Scope
-
-=== SEC:2.7.3
-H: Worked Example: Two Cooperative Groups
-
-=== SEC:2.7.9
-H: MMA Syntax Summary
-
-=== SEC:2.7.10
-H: MMA Design Summary
+H: Iteration: parallel-by, with-in, and foreach
 
 === SEC:2.8
-H: Coordination, Pipelines, and Persistent Scheduling
-
-=== SEC:2.8.1
-H: Canonical Pattern: One Producer and One Consumer
-
-=== SEC:2.8.2
-H: Worked Example: A 1P1C Kernel Skeleton
-
-=== SEC:2.8.3
-H: Persistent Scheduling
-
-=== SEC:2.8.4
-H: Host-Level Concurrency and Stream Binding
-
-=== SEC:2.8.5
-H: Worked Example: A Full Event Pipeline
-
-=== SEC:2.8.10
-H: Coordination Pattern Summary
+H: Tile Selection: chunkat, subspan, and view/from
 
 === SEC:2.9
-H: C++ Interoperability and the Preprocessor
-
-=== SEC:2.9.1
-H: Worked Example: Calling a Device Helper
-
-=== SEC:2.9.2
-H: Verbatim C++ Injection
-
-=== SEC:2.9.10
-H: Interoperability Summary
+H: Data Movement: the DMA Statement and Futures
 
 === SEC:2.10
-H: Tileflow Patterns and Design Rationales
-
-=== SEC:2.10.1
-H: Worked Example: Tiled matmul
-
-=== SEC:2.10.2
-H: Worked Example: rgb2gray
+H: Coordination: inthreads, Events, and Async Blocks
 
 === SEC:2.11
+H: Branching and Early Return
+
+=== SEC:2.12
+H: The Four-Step MMA Syntax
+
+=== SEC:2.13
+H: C++ Embedding, Calls, Macros, and the Preprocessor
+
+=== SEC:2.14
+H: Printing, Assertions, and Compile-Time Inspection
+
+=== SEC:2.15
+H: Syntax Quick Reference
+
+=== SEC:3.1
+H: Program Structure and Compilation Models
+
+=== SEC:3.2
+H: Syntax Design and the Type System
+
+=== SEC:3.3
+H: Symbolic Shapes, Shape Evaluation, and Value Numbering
+
+=== SEC:3.4
+H: Parallelism, Space Specifiers, and Masking
+
+=== SEC:3.4.1
+H: Worked Example: Tiled Matrix Multiplication
+
+=== SEC:3.4.2
+H: Tracing One Output Element
+
+=== SEC:3.5
+H: Tile Selection and Data Expressions
+
+=== SEC:3.5.1
+H: Arbitrary-Offset Windows: view and from
+
+=== SEC:3.5.2
+H: Strided Tiles: subspan, step, and at
+
+=== SEC:3.5.3
+H: Zero-Padding with zfill
+
+=== SEC:3.5.4
+H: Layout Reinterpretation with span_as
+
+=== SEC:3.5.10
+H: Tile Selection: Summary and Syntax
+
+=== SEC:3.6
+H: Data Movement: Operations, Configuration, and Async Patterns
+
+=== SEC:3.6.1
+H: Worked Example: DMA Matmul
+
+=== SEC:3.6.2
+H: Multi-Buffering: dma.any, swap, and rotate
+
+=== SEC:3.6.3
+H: Worked Example: A Pipelined Kernel
+
+=== SEC:3.7
+H: Contraction and Layout Contracts
+
+=== SEC:3.7.1
+H: Worked Example: One Cooperative Group
+
+=== SEC:3.7.2
+H: Worked Example: Widening the Cooperation Scope
+
+=== SEC:3.7.3
+H: Worked Example: Two Cooperative Groups
+
+=== SEC:3.7.9
+H: MMA Syntax Summary
+
+=== SEC:3.7.10
+H: MMA Design Summary
+
+=== SEC:3.8
+H: Coordination, Pipelines, and Persistent Scheduling
+
+=== SEC:3.8.1
+H: Canonical Pattern: One Producer and One Consumer
+
+=== SEC:3.8.2
+H: Worked Example: A 1P1C Kernel Skeleton
+
+=== SEC:3.8.3
+H: Persistent Scheduling
+
+=== SEC:3.8.4
+H: Host-Level Concurrency and Stream Binding
+
+=== SEC:3.8.5
+H: Worked Example: A Full Event Pipeline
+
+=== SEC:3.8.10
+H: Coordination Pattern Summary
+
+=== SEC:3.9
+H: C++ Interoperability and the Preprocessor
+
+=== SEC:3.9.1
+H: Worked Example: Calling a Device Helper
+
+=== SEC:3.9.2
+H: Verbatim C++ Injection
+
+=== SEC:3.9.10
+H: Interoperability Summary
+
+=== SEC:3.10
+H: Tileflow Patterns and Design Rationales
+
+=== SEC:3.10.1
+H: Worked Example: Tiled matmul
+
+=== SEC:3.10.2
+H: Worked Example: rgb2gray
+
+=== SEC:3.11
 H: Diagnostics and Methodology
 
 === APP

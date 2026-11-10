@@ -111,7 +111,7 @@ These document that scale DMA to SMEM is a viable alternative when register pres
 ## Reproduction
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co \
   -o /tmp/bs.cute.result && bash /tmp/bs.cute.result --execute
 ```

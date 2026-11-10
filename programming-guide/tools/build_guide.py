@@ -15,6 +15,10 @@ hardware/architecture sentences (which are archived in HARDWARE-NOTES.md).
 """
 
 import collections
+import filecmp
+
+from figure_editorial import polish_figures
+from prose_editorial import polish_prose
 import os
 import re
 import shutil
@@ -25,6 +29,10 @@ ROOT = os.path.abspath(os.path.join(PG, '..'))
 UNITS_DIR = os.path.join(PG, 'build', 'units')
 FIG_DIR = os.path.join(PG, 'figures')
 REG = os.path.join(PG, 'UNIT-REGISTRY.md')
+
+# These introductory interop units repeat material covered in chapters 2 and 3.
+# Keep their upstream sources and source-map entries, but omit them from the book.
+OMITTED_UNITS = {'F10-S02', 'F10-S12', 'F14-S05', 'F14-S06'}
 
 os.makedirs(UNITS_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
@@ -229,7 +237,7 @@ SLOT_TITLES = {
     '1.1': 'What is Croqtile',
     '1.2': 'Setting Up: Requirements, Build, and Verification',
     '1.3': 'The Toolchain: Command Line and Build Utilities',
-    '1.4': 'Your First Programs',
+    '1.4': 'Programs with C++ Integration',
     '1.5': 'Inspecting and Debugging a Build',
     '2.1': 'The Two Parts of a Croqtile Program',
     '2.2': 'Reading a Kernel Line by Line',
@@ -291,16 +299,12 @@ SLOT_TITLES = {
 # pages had none of that connective tissue; these paragraphs supply it without
 # replacing any original content unit.
 CHAPTER_INTRO = {
-    '1': ("This chapter takes you from the question of why Croqtile exists to a "
-          "program you have built and run yourself. It begins with the "
-          "motivation for the language and the properties it was designed "
-          "around --- zero-cost abstractions, compile-time safety checks, "
-          "dynamic shapes and symbolic dimensions, and a form that automated "
-          "tuning can work with --- then follows a step-by-step path: the "
-          "smallest kernel that compiles, progressively richer matmul "
-          "variants, and the toolchain needed to build and inspect each one. "
-          "By the end you will be able to reproduce the output of a simple "
-          "program on your own."),
+    '1': ("This chapter takes you from installing Croqtile to a program you "
+          "have built and run yourself. After the language's motivation, "
+          "set up and verify the compiler, run a complete element-wise "
+          "addition example, and use the command-line options to inspect "
+          "its build. Finally, learn the tools for checking compilation "
+          "commands, runtime values, and incorrect results."),
     '2': ("You will learn to read and write Croqtile programs by working "
           "through short examples. Start with the structure of a complete "
           "program and the roles of its functions, then follow how shapes, "
@@ -414,8 +418,7 @@ UNIT_OVERRIDES = [
     ('F02-S02',
      r'(?s)Most Linux distributions.*\Z',
      "Most Linux distributions ship Flex but an older Bison. If the Bison on "
-     "your system is below 3.8, the setup step described in "
-     "Section~\\ref{sec:1-3} fetches a compatible version on its own, so the "
+     "your system is below 3.8, the setup step below fetches a compatible version on its own, so the "
      "distribution package does not have to be replaced by hand."),
     ('F22-S03',
      r'(?s)\\begin\{itemize\}.*?\\end\{itemize\}',
@@ -437,7 +440,7 @@ UNIT_OVERRIDES = [
      'Then run the test suite; it is the check that the freshly built compiler is sound:'),
     ('F02-S03', r'Add it to your \\texttt\{PATH\} or invoke it by its full path\.',
      "Add it to your \\texttt{PATH} or invoke it by its full path. "
-     "Section~\\ref{sec:1-4} compiles a minimal program to confirm the "
+     "The next step compiles a minimal program to confirm the "
      "installation end to end."),
     # Section 1.4: Triton and TileLang both say what a verification command
     # proves, then name the expected output.  The upstream page dropped the
@@ -448,8 +451,8 @@ UNIT_OVERRIDES = [
      "as \\file{verify.co}:"),
     ('F02-S04', r'caption=\{Verify the Installation\}\]\n__co__',
      'caption={A minimal Croqtile program}]\n__co__'),
-    ('F02-S04', r'caption=\{Verify the Installation\}\]\ncroqtile verify\.co',
-     'caption={Compile and run the check}]\ncroqtile verify.co'),
+    ('F02-S04', r'caption=\{Verify the Installation\}\]\ncroq verify\.co',
+     'caption={Compile and run the check}]\ncroq verify.co'),
     ('F02-S04',
      r'You should see \\texttt\{OK\}\. If you do, the compiler, linker, and runtime are all working\.',
      "You should see \\texttt{OK}. If you do, the compiler, linker, and "
@@ -478,10 +481,10 @@ UNIT_OVERRIDES = [
     ('F22-S05', r'without performing the .target compilation\*\.',
      'without performing the downstream compilation.'),
     ('F22-S05', r'Here is a example output of', 'Here is an example of the output of'),
-    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\ncroqtile your_program\.co',
-     'caption={Default invocation}]\ncroqtile your_program.co'),
-    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\ncroqtile -t target',
-     'caption={Emitting lowered source}]\ncroqtile -t target'),
+    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\ncroq your_program\.co',
+     'caption={Default invocation}]\ncroq your_program.co'),
+    ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\ncroq -t target',
+     'caption={Emitting lowered source}]\ncroq -t target'),
     ('F22-S05', r'caption=\{Compile Croqtile Program\}\]\n// --help',
      'caption={Full option list}]\n// --help'),
     ('F03-S06',
@@ -489,10 +492,10 @@ UNIT_OVERRIDES = [
      "For a first program the same command is enough. Files use the "
      "\\file{.co} extension, and the default invocation produces "
      "\\texttt{a.out}:"),
-    ('F03-S06', r'caption=\{Build and Compile\}\]\ncroqtile ele_add\.co',
-     'caption={Compiling a first program}]\ncroqtile ele_add.co'),
-    ('F03-S06', r'caption=\{Build and Compile\}\]\ncroqtile --help',
-     'caption={Listing the options}]\ncroqtile --help'),
+    ('F03-S06', r'caption=\{Build and Compile\}\]\ncroq ele_add\.co',
+     'caption={Compiling a first program}]\ncroq ele_add.co'),
+    ('F03-S06', r'caption=\{Build and Compile\}\]\ncroq --help',
+     'caption={Listing the options}]\ncroq --help'),
     # Section 1.6: the Part III "Environment" page interleaves six command
     # blocks with sentence fragments, and both units list the same shortcuts.
     # Keep every command, rewrite the connective prose, and name each listing.
@@ -559,8 +562,8 @@ UNIT_OVERRIDES = [
      r'caption=\{A Complete Example: Element-Wise Addition\}\]\n__co__',
      'caption={A complete element-wise addition}]\n__co__'),
     ('F03-S03',
-     r'caption=\{A Complete Example: Element-Wise Addition\}\]\ncroqtile ele_add\.co',
-     'caption={Compile and run the example}]\ncroqtile ele_add.co'),
+     r'caption=\{A Complete Example: Element-Wise Addition\}\]\ncroq ele_add\.co',
+     'caption={Compile and run the example}]\ncroq ele_add.co'),
     ('F03-S03',
      r'You should see \\texttt\{Test Passed\}\. Now for a closer look at each part\.',
      "You should see \\texttt{Test Passed}. The chapters that follow take this "
@@ -584,8 +587,8 @@ UNIT_OVERRIDES = [
      "program itself. If something looks wrong after editing a pipeline, verify"),
     ('F11-S09', r'caption=\{Putting it together\}\]\n#ifdef DEBUG_PRINT',
      'caption={Guarding debug prints}]\n#ifdef DEBUG_PRINT'),
-    ('F11-S09', r'caption=\{Putting it together\}\]\ncroqtile kernel\.co',
-     'caption={Debug and production builds}]\ncroqtile kernel.co'),
+    ('F11-S09', r'caption=\{Putting it together\}\]\ncroq kernel\.co',
+     'caption={Debug and production builds}]\ncroq kernel.co'),
     # Section 1.10: the only source content was a bare five-item checklist
     # whose first item had no explanation.  Keep all five regions, but write
     # them in the order a reader actually meets them in the file.
@@ -1423,7 +1426,8 @@ def resolve_image(src, md_path, fid):
             base = os.path.basename(c)
             name = 'f%02d-%s' % (fid, re.sub(r'[^A-Za-z0-9._-]', '-', base))
             dest = os.path.join(FIG_DIR, name)
-            if not os.path.isfile(dest):
+            # Refresh changed upstream assets so rebuilds cannot retain stale figures.
+            if not os.path.isfile(dest) or not filecmp.cmp(c, dest, shallow=False):
                 shutil.copyfile(c, dest)
             figures_copied[name] = c
             return name
@@ -1515,8 +1519,10 @@ def norm_head(s):
 
 def heading_for(title, uid, slot):
     """Normalise a source section title to one level under the slot heading."""
-    if uid == 'F01-S03':
+    if uid in {'F01-S03', 'F02-S02', 'F03-S06', 'F10-S12', 'F22-S05'}:
         return ''  # Its former prerequisites list is now continuous opening prose.
+    if uid == 'F02-S05':
+        return r'\subsection*{Compiler Options}'
     plain = re.sub(r'`([^`]+)`', r'\1', title)
     plain = re.sub(r'\*+', '', plain).strip()
     low = plain.lower().rstrip('.:')
@@ -1733,8 +1739,8 @@ def convert_body(lines, uid, md_path, fid, section_title):
                 name = resolve_image(src, md_path, fid)
                 if name:
                     out.append('\\begin{figure}[htbp]\\centering')
-                    out.append('\\includegraphics[width=0.86\\linewidth,'
-                               'height=0.42\\textheight,keepaspectratio]{' + name + '}')
+                    out.append('\\includegraphics[width=\\linewidth,'
+                               'height=0.56\\textheight,keepaspectratio]{' + name + '}')
                     out.append('\\end{figure}')
             # Italic caption directly below the figure block.
             while i < n and not lines[i].strip():
@@ -1839,17 +1845,43 @@ def main():
                 continue
 
             frag = convert_body(body, uid, rel, fid, title)
+            if uid in OMITTED_UNITS:
+                manifest.append((uid, rel, slot, 'omitted', title))
+                continue
             for ouid, pat, repl in UNIT_OVERRIDES:
                 if ouid in (uid, '*'):
                     if callable(repl):
                         frag = repl(frag)
                     else:
                         frag = re.sub(pat, lambda m, t=repl: t, frag)
+            first_chapter_refs = {
+                'F02-S04': {'sec:1-5': 'sec:1-3'},
+                'F02-S06': {'sec:1-7': 'sec:1-4'},
+                'F04-S01': {'sec:1-7': 'sec:1-3'},
+                'F04-S02': {'sec:1-7': 'sec:1-3'},
+                'F10-S02': {'sec:1-9': 'sec:1-5'},
+            }
+            for old_ref, new_ref in first_chapter_refs.get(uid, {}).items():
+                frag = frag.replace(old_ref, new_ref)
+            editorial_path = os.path.join(PG, 'editorial', 'getting-started', uid + '.md')
+            if os.path.isfile(editorial_path):
+                with open(editorial_path, encoding='utf-8') as editorial_file:
+                    editorial_lines = editorial_file.read().splitlines()
+                frag = convert_body(editorial_lines, uid, rel, fid, title)
+                if uid == 'F03-S06':
+                    frag = frag.replace(r'\end{figure}',
+                                        r'\caption{Compiling and running ele\_add, followed by compiler help}' + '\n' + r'\end{figure}')
+                captions = {'F22-S05': ['Inspecting intermediate output and compiler help'],
+                            'F02-S06': ['Testing sample operators']}
+                if uid in captions:
+                    frag = caption_names(captions[uid])(frag)
+            frag = polish_figures(frag, uid, esc)
             frag = clean_fragment(frag)
             # An empty registered group heading contributes no heading at all;
             # otherwise the PDF shows a title with nothing beneath it.
             heading_tex = heading_for(title, uid, slot) if frag.strip() else ''
             text = (heading_tex + '\n\n' if heading_tex else '') + frag
+            text = polish_prose(text, uid)
             frag_path = os.path.join(UNITS_DIR, uid + '.tex')
             open(frag_path, 'w', encoding='utf-8').write(text + '\n')
             slot_units[slot].append(uid)
@@ -1871,7 +1903,24 @@ def main():
             if slot in SLOT_INTROS:
                 buf.append('\\guideslotintro{' + intro_tex(SLOT_INTROS[slot]) + '}')
                 buf.append('')
-            for uid in slot_units[slot]:
+            chapter_order = {
+                '1.2': ['F02-S01', 'F02-S02', 'F22-S01', 'F22-S03',
+                        'F02-S03', 'F22-S02', 'F02-S04'],
+                '1.3': ['F03-S01', 'F03-S03', 'F03-S06', 'F02-S05',
+                        'F22-S05', 'F02-S06', 'F22-S04'],
+                '1.5': ['F11-S05', 'F11-S06', 'F11-S08', 'F11-S09',
+                        'F11-S07', 'F08-S13', 'F11-S10'],
+                '2.10': ['F34-S06', 'F34-S09', 'F35-S01', 'F35-S02',
+                         'F07-S06', 'F07-S07', 'F35-S05'],
+                '3.1': ['F14-S01', 'F14-S02', 'F14-S04', 'F14-S07',
+                        'F31-S08', 'F12-S02', 'F14-S09'],
+                '3.7': ['F06-S01', 'F06-S03', 'F04-S18', 'F04-S19',
+                        'F09-S03', 'F06-S07'],
+            }
+            ordered_units = chapter_order.get(slot, slot_units[slot])
+            if set(ordered_units) != set(slot_units[slot]):
+                raise ValueError('Chapter order differs from registry: ' + slot)
+            for uid in ordered_units:
                 buf.append('\\input{build/units/' + uid + '}')
                 # Two units on consecutive lines would be typeset as one
                 # paragraph.  The blank line gives each its own paragraph.
@@ -1892,7 +1941,9 @@ def main():
     for uid, rel, slot, status, _ in manifest:
         smap.append('| `%s` | `%s` | %s | %s |' % (uid, rel, slot, status))
     smap += ['', 'Units marked `moved` are archived verbatim in '
-             '`HARDWARE-NOTES.md`; `placeholder` units are empty or TODO pages.',
+             '`HARDWARE-NOTES.md`; `placeholder` units are empty or TODO pages. '
+             'Units marked `omitted` repeat introductory interop material '
+             'covered in chapters 2 and 3; their upstream sources remain available.',
              '']
     open(os.path.join(PG, 'build', 'SOURCE-MAP.md'), 'w',
          encoding='utf-8').write('\n'.join(smap))
@@ -1920,10 +1971,11 @@ def main():
     # Report ----------------------------------------------------------------
     print('files          :', len(files))
     print('units          :', len(manifest),
-          '(kept %d, moved %d, placeholder %d)' % (
+          '(kept %d, moved %d, placeholder %d, omitted %d)' % (
               sum(1 for m in manifest if m[3] == 'kept'),
               sum(1 for m in manifest if m[3] == 'moved'),
-              sum(1 for m in manifest if m[3] == 'placeholder')))
+              sum(1 for m in manifest if m[3] == 'placeholder'),
+              sum(1 for m in manifest if m[3] == 'omitted')))
     print('slots          :', len(slot_units))
     print('figures copied :', len(figures_copied))
     print('removed chunks :', sum(len(v) for v in removed.values()))

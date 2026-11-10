@@ -23,6 +23,6 @@ wait f;
 tma.copy f.data => output;
 \end{lstlisting}
 
-Rule: if you read \texttt{f.data} from an async transfer, wait first.
+A future identifies the destination before an asynchronous transfer necessarily finishes. Access through \co@f.data@ does not mean the elements are ready. Place \co@wait f@ before the first operation that reads those elements, and keep the source and destination valid while the transfer is in flight.
 
 Later chapters use async copies to overlap load and compute. In this part of the guide, the important part is the contract: \texttt{.async} creates an in-flight transfer, and \texttt{wait} makes it safe to consume.

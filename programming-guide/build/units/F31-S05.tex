@@ -1,6 +1,6 @@
 \subsection*{Sub-Level Parallelism}
 
-Targets like  allow a single parallelism level to be divided into up to three sub-levels. In Croqtile, \texttt{ituple} and \texttt{mdspan} are used for this syntax:
+Some targets allow a single parallel level to be divided into up to three coordinate axes. Croqtile expresses these axes using \texttt{ituple} and \texttt{mdspan}:
 
 \begin{lstlisting}[language=croqtile,caption={Sub-Level Parallelism}]
 parallel {px, py, pz} by [1, 1, 2] {

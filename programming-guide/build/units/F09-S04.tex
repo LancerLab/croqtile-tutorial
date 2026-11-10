@@ -1,11 +1,12 @@
 \subsection*{Why the restricted interface works: expressiveness vs performance}
 
-That flexibility has a cost.
+Writing every load and address calculation separately gives a programmer many choices, but it also leaves the compiler to recover which operations form one tile transfer. Croqtile asks the program to describe that region explicitly. The restriction is useful when the desired movement fits a regular shape, because its geometry is available before individual transfers are generated.
 
-Croqtile takes the opposite approach: it restricts the expressible patterns to those that are \textbf{guaranteed to be in the performance sweet spot}. There is no way to accidentally write a strided, uncoalesced global load or a layout conflict shared-memory layout --- the syntax simply does not allow it.
+Croqtile makes tile geometry and layout explicit through structured movement operations. This gives the compiler the information it needs to lower a transfer efficiently and avoids repeating per-element address choreography.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f09-fig8_expressiveness_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig8_expressiveness_light.png}
+\caption{Structured tile operations expose geometry and layout for efficient lowering; performance still depends on the chosen tiles and execution configuration.}
 \end{figure}
 
-Croqtile's \texttt{dma.copy} follows the same principle --- The trade is explicit: you give up the ability to write arbitrary data movement, and in return, every data movement you write is fast.
+The trade is explicit: structured operations constrain how a transfer is described. They support efficient lowering, while actual performance still depends on tile sizes, alignment, layouts, and synchronization.

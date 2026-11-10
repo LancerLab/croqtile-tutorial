@@ -2,11 +2,11 @@
 
 Every programming language that targets a parallel machine must answer one question: \textbf{what happens when different threads need to do different things?}
 
-On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. --- It must \textbf{serialize} the divergent paths and mask inactive threads.
+On a CPU, each core has its own program counter. When threads share an instruction stream, however, divergent paths execute in sequence while inactive threads are masked.
 
-All threads evaluate the condition; threads where it is false are masked (deactivated); This is \textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.
+All threads evaluate the condition, and those for which it is false are masked. This \textbf{predicated execution} is simple and widely used, but divergent paths can be expensive.
 
-Predicated execution is not enough. This is not a data-dependent branch --- it is two \textbf{structurally different programs} that happen to share an address space. Trying to express this with \texttt{if} means one program pauses while the other runs. There is no overlap, no pipeline.
+A tiled matrix multiplication also has work with different roles: one group can load the next operands while another computes with the current operands. The groups need to progress independently between well-defined handoffs. A runtime condition describes which branch an instance takes; a pipeline also needs a way to express those separate roles and their dependencies.
 
 Croqtile introduces two additional control-flow primitives to fill this gap:
 

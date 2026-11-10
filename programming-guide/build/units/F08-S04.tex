@@ -1,3 +1,3 @@
 \subsection*{\texttt{swap}: names, not bytes}
 
-\texttt{swap(lf0, lf1)} exchanges \textbf{future handles} --- the Croqtile-level names that refer to buffers. Only the names rotate. For triple buffering, \texttt{rotate(f0, f1, f2)} cycles three handles in one step.
+The operation \co@swap(lf0, lf1)@ exchanges the handles that name the current and next buffers; it does not copy their elements or wait for a transfer. For three buffers, \co@rotate(f0, f1, f2)@ cycles the handles. In either case, follow the handle after the exchange to identify which transfer must complete before a read.

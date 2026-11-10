@@ -1,5 +1,9 @@
 \subsection*{Debug and Verbose: Printing, Assertions, and GDB}
 
-The universal debugging discipline is the same everywhere: \textbf{systematically narrow the search space}, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list.
+Debugging works best by \textbf{systematically narrowing the search}, starting with inexpensive checks. Static analysis and compile-time assertions catch errors without runtime overhead. Targeted runtime checks then help locate the problem. Use an interactive debugger once these checks have narrowed the possible causes.
 
 Croqtile provides tools at each level: \textbf{compile-time shape printing} (\texttt{print!}, \texttt{println!}) to verify tile dimensions without launching a kernel, \textbf{runtime assertions} (\texttt{assert}) for invariant checks, \textbf{guarded device \texttt{println}} for runtime inspection of specific threads, \textbf{debug RTTI} for \texttt{debugger}, and a \textbf{verbose mode} (\texttt{-v}) to see what the compiler is actually doing under the hood.
+
+Start from a small input whose expected result is easy to compute. For a wrong matrix element, recover its tile and local coordinates, check the selected input slices, and compare one partial sum before examining the full output. If the program hangs, trace one event slot instead: record its initial state, each trigger, and the instance expected to consume it. This distinguishes an indexing error from a missing handoff.
+
+When the failure occurs during compilation, identify the stage before changing the kernel. Preprocessed output reveals macro expansion, generated source reveals Croqtile's translation, and verbose output identifies the target compiler command. Once the issue is fixed, rerun the reference comparison with diagnostic output disabled before measuring performance. Sections 1.4 and 2.14 give the corresponding commands and inspection syntax.

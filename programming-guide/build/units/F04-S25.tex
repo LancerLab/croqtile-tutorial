@@ -25,4 +25,4 @@ The syntax collected here means the following:
 \end{tabularx}
 \end{table}
 
-The next chapter builds on this by overlapping movement with compute. Once you can think of a kernel as a loop that repeatedly stages tiles and computes on staged tiles, double buffering and pipelining become natural extensions rather than new ideas.
+When reading a movement statement, first identify the selected region and its destination, then check when the destination becomes ready. These questions remain the same in a pipeline; the extra buffers simply allow different tiles to be at different points in that sequence.

@@ -1,3 +1,3 @@
 \subsection*{Compile-Time Safety}
 
-In development builds, 1,319 runtime assertions guard every transfer and memory access. Together they eliminate entire classes of bugs that would otherwise need \texttt{memcheck} and hours of printf debugging.
+Shape and rank checks catch incompatible uses before execution when enough information is available. Runtime checks cover constraints that depend on actual inputs, and assertions can state additional application requirements. Together they help localize failures, but they do not replace checking output values or the synchronization protocol.

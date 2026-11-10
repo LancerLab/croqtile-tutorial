@@ -39,3 +39,5 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
   return output;
 }
 \end{lstlisting}
+
+The outer staging buffers hold full operands in this configuration because the outer tile bounds are all 1. The inner bounds \co@[4, 4, 8]@ divide M, K, and N: a left tile is \co@[128, 256]@, a right tile is \co@[256, 128]@, and their product contributes to a \co@[128, 128]@ output tile. The \co@after@ clauses order the inner input copies after the outer copies. This listing is a structural illustration: helper definitions, complete waits before operand use and buffer reuse, and output initialization must be supplied and checked before treating it as a runnable kernel.

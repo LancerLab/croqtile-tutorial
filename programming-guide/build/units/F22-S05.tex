@@ -1,58 +1,9 @@
-\subsection*{Compile Croqtile Program}
+For example, you can inspect the generated source or the result of preprocessing before building an executable:
 
-Croqtile is a source-to-source translator: it turns a \file{.co} program into C++ source that a downstream compiler consumes. With that compiler in place the chain behaves like an end-to-end compiler, so the command line can offer the usual output forms.
-
-Once the compiler is built, a program can be lowered into several output forms:
-
-\begin{itemize}[leftmargin=1.6em]
-\item Target source code
-\item Target object module
-\item Target executable binary/module
-\item Target assembly
-\item Work-script
-\end{itemize}
-
-All but the first and last are the familiar forms from a C++ toolchain. Which of them a build can produce depends on what the downstream compiler supports.
-
-The command itself has the usual shape:
-
-\begin{lstlisting}[language=croqtile,caption={Default invocation}]
-croqtile your_program.co
+\begin{lstlisting}[language={},caption={Inspecting intermediate output and compiler help}]
+croq -t target -es ele_add.co -o ele_add.target.cpp
+croq -E ele_add.co
+croq --help
 \end{lstlisting}
 
-This command generates an \texttt{a.out} executable file. The \texttt{-\allowbreak{}o \textless{}filename\textgreater{}} option can be used to specify the output filename when needed. Compiler options like \texttt{-c} and \texttt{-S} work similarly to those in C++ compilers, provided they are supported by the target platform.
-
-The \texttt{-\allowbreak{}t \textless{}platform\textgreater{}} option allows you to specify the target platform for the compilation. Additionally, the \texttt{-es} option generates \emph{target source code} without performing the downstream compilation. For instance:
-
-\begin{lstlisting}[language={},caption={Emitting lowered source}]
-croqtile -t target your_program.co -es -o target_source.co
-\end{lstlisting}
-
-Notably, Croqtile allows the \texttt{-E} option to support Croqtile-only preprocessing. The Croqtile preprocessor handles simple macros and preprocessor directives such as \texttt{\#if}, \texttt{\#ifdef}, \texttt{\#ifndef}, \texttt{\#else}, and \texttt{\#endif}, enabling Croqtile functions to be integrated with other C++ code. The \texttt{-E} option outputs the preprocessed code, for example, removing code within \texttt{\#if 0} and \texttt{\#endif} directives inside Croqtile functions.
-
-Furthermore, in development scenarios, Croqtile can generate \emph{work-script} (using the \texttt{-gs} option) to drive further low-level compilation and execution. This facilitates the development process, as many scripts are integrated for easy debugging.
-
-Lastly, options \texttt{--help} and \texttt{--help-hidden} are available for listing the full option set. Programmers and users can check the list to find their appropriate usage.
-
-Here is an example of the output of \texttt{--help}:
-
-\begin{lstlisting}[language={},caption={Full option list}]
-// --help
-Usage: croqtile [options] file...
-Options:
-  --help                    Display this information.
-  --help-hidden             Display hidden options.
-  -e, --dump-ast            Dump the Abstract Syntax Tree (AST) after parsing.
-  -i, --infer-types         Show the result of type inference.
-  -bf16n, --native-bf16     Utilize native bf16 type when target platform support.
-  -f16n, --native-f16       Utilize native f16 type when target platform support.
-  -n, --remove-comments     Remove all comments in non-croqtile code. (Useful for FileCheck)
-  -t, --target <platform>   Set the compilation target. Use '--help-target' to show current supported targets.
-  -v, --verbose             Display the programs invoked by the compiler.
-  -E                        Preprocess only; do not compile.
-  -arch=<processor>         Set the target configuration to execute the binary code.
-  -c                        Compile croqtile code and the generated target code; Without linking.
-  -es                       Emit target source file without target source compilation.
-  -gs                       Generate target script.
-  -o <file>                 Place the output into <file>.
-\end{lstlisting}
+Replace \texttt{target} with a name reported by \texttt{croq -\allowbreak{}-\allowbreak{}help-\allowbreak{}target}. Available output forms depend on the selected toolchain. Use \texttt{-v} when you need to see the actual compilation commands; Section 1.4 covers further build diagnostics.

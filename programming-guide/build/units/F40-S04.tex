@@ -6,7 +6,7 @@ In the matrix multiplication example, \textbf{memory tiling} is achieved using t
 
 \begin{itemize}[leftmargin=1.6em]
 \item The \texttt{lhs} and \texttt{rhs} matrices are tiled using the \texttt{chunkat} method. The chunks are defined by \texttt{m\_tile}, \texttt{k\_tile}, and \texttt{n\_tile}, which represent different dimensions of the matrices involved in the multiplication.
-\item The chunks for both matrices are loaded asynchronously into the  (\texttt{lhs\_load} and \texttt{rhs\_load}) with the \texttt{dma.copy.async} operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.
+\item The chunks for both matrices are loaded asynchronously into shared storage (\texttt{lhs\_load} and \texttt{rhs\_load}) with the \texttt{dma.copy.async} operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.
 \end{itemize}
 
 \noindent\textbf{Bounded Variables:}\par

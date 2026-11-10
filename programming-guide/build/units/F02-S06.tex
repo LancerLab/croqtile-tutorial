@@ -1,13 +1,11 @@
 \subsection*{Development Utilities}
 
-When you change Croqtile itself, three shortcuts are enough to narrow a failure from the whole suite down to one operator family:
+The commands above build your \texttt{.co} program. The repository's Makefile commands are useful when testing sample operators or changing the compiler itself:
 
-\begin{lstlisting}[language={},caption={Everyday development shortcuts}]
-make help                              # list all available targets
-make sample-test                       # run all sample operator tests
-make sample-test-operator OPERATOR=add # test a specific operator
+\begin{lstlisting}[language={},caption={Testing sample operators}]
+make help
+make sample-test
+make sample-test-operator OPERATOR=add
 \end{lstlisting}
 
-They are the commands to reach for when a build passes but an operator does not, or when a change to the compiler needs checking against the samples.
-
-With the compiler installed and verified, you are ready to write your first real Croqtile program in Section~\ref{sec:1-4}.
+\texttt{make help} lists the available targets. \texttt{make sample-\allowbreak{}test} runs all sample operators; \texttt{OPERATOR=add} restricts the run to addition. Other operator names include \texttt{mul}, \texttt{relu}, \texttt{sigmoid}, \texttt{softmax}, and \texttt{tanh}. With the program built, Section 1.4 explains how to inspect the compilation commands and check its execution.

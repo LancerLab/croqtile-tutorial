@@ -34,12 +34,15 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 \end{lstlisting}
 
-\textbf{\texttt{parallel block\_\allowbreak{}id by NUM\_\allowbreak{}GROUPS :\allowbreak{} block}} --- Fixed worker count.
+The declaration fixes the number of workers at \co@NUM_GROUPS@. Work size changes the number of loop iterations rather than the number of launched blocks.
 
-\textbf{\texttt{tile\_\allowbreak{}id = tile\_\allowbreak{}iter \#\allowbreak{} block\_\allowbreak{}id}} --- Composes iteration with block index to stripe across tiles.
+The expression \co@tile_iter # block_id@ has value \co@tile_iter * NUM_GROUPS + block_id@. It assigns the next consecutive set of tiles to the workers on each iteration.
 
-\textbf{\texttt{if (tile\_\allowbreak{}id \textless{} total\_\allowbreak{}tiles)}} --- The \texttt{if} guard: a runtime predicate that skips the body for padding iterations. This is exactly the use case \texttt{if} is designed for --- a data-dependent decision, not a structural partition.
+The condition \co@tile_id < total_tiles@ excludes indices beyond the final valid tile. All work for that tile belongs inside the guard, including any producer-consumer protocol whose participants must agree whether the tile exists.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f07-fig2_persistent_kernel_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig2_persistent_kernel_light.png}
+\caption{Four fixed blocks process ten tiles in three iterations; the final two padded tile IDs are skipped by the if guard.}
 \end{figure}
+
+For four workers and ten output tiles, the composed tile indices are 0--3 on the first iteration, 4--7 on the second, and 8--11 on the third. The guard accepts only 8 and 9 in the last iteration. This covers each valid tile once, but it does not guarantee that every worker stays busy until the end; tile cost and the remaining work still determine utilization.

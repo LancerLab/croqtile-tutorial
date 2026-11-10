@@ -1,3 +1,3 @@
 \subsection*{Easy to Use}
 
-You work on tensors and tiles, not raw buffers and pointers.
+A tile selection can use the input shape and bounded indices directly. For example, changing the number of chunks changes the derived chunk size without requiring a second set of manually calculated offsets. The programmer still chooses the partition; the language keeps the consequences of that choice connected.

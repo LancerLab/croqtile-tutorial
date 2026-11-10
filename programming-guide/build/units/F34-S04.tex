@@ -1,6 +1,6 @@
 \subsection*{Uniform and Divergence}
 
-Masking is an implementation-level concept. From the perspective of the SPMD programming, you typically claim the code that processes data chunks \textbf{diverges} because not all the thread instances execute the same code due to masking. And programmers should be aware of that their SPMD code is a combination of:
+From the SPMD programmer's perspective, code \textbf{diverges} when masking causes different instances to follow different paths. An SPMD program can therefore contain:
 
 \begin{itemize}[leftmargin=1.6em]
 \item \textbf{Uniform Code}: \emph{All threads} execute the same code path.
@@ -9,4 +9,4 @@ Masking is an implementation-level concept. From the perspective of the SPMD pro
 
 It is necessary to have the \emph{divergent} code in SPMD code to handle different real-world requirements. And from a perspective of different programming paradigm, applying \emph{divergent} code in SPMD programs can even mimic MPMD (Multiple Program Multiple Data) behavior. In MPMD, different threads execute different code. Therefore, \emph{divergence} can extend SPMD to MPMD scope conceptually.
 
-In Croqtile, you are able to create divergent code via \texttt{inthreads} block. Let us dive into the detail.
+Use an \texttt{inthreads} block to select the instances that execute a divergent region.

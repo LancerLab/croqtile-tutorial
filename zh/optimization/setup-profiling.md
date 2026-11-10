@@ -82,7 +82,7 @@ std::cout << "HW efficiency: " << eff << "%\n";
 性能相关的 `.co` 文件通过鳄霸驱动构建。典型调用如下：
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/matmul/matmul_f16_dyn_sm90.co \
   -o /tmp/matmul.cute.result && bash /tmp/matmul.cute.result --execute
 ```

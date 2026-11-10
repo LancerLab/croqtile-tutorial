@@ -1,5 +1,5 @@
 \subsection*{\texttt{\_\allowbreak{}\_\allowbreak{}co\_\allowbreak{}\_\allowbreak{} auto} return type}
 
-\texttt{\_\allowbreak{}\_\allowbreak{}co\_\allowbreak{}\_\allowbreak{} auto matmul(.\allowbreak{}.\allowbreak{}.\allowbreak{})} lets the compiler infer the return type from \texttt{return output}.
+Use \co@auto@ when the result shape is easiest to describe inside the function. In \co@__co__ auto matmul(...)@, the compiler infers the return type from the buffer named by \co@return output@. The result still has an element type and a shape; \co@auto@ saves repeating that information in the signature. An explicit return type is useful when you want the signature itself to state the required output shape.
 
-\begin{center}\small\emph{Using \texttt{s32} with scalar accumulation is a simplified style that isolates the \texttt{swap} mechanism (Section~\ref{sec:3-6-2}); the same return-type deduction applies to the FP16/MMA kernels in Section~\ref{sec:3-7}.}\end{center}
+The return convention is the same for element-wise arithmetic, scalar matrix multiplication, and MMA kernels that return a buffer. It does not depend on how the function computes the elements.

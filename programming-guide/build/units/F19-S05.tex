@@ -14,7 +14,7 @@ __co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
 Croqtile performs both compile-time and runtime checks to ensure safety:
 
 \begin{itemize}[leftmargin=1.6em]
-\item \textbf{Compile-time Checks}: Croqtile verifies rank consistency. In this example, \texttt{lhs.span} has a ranked of \texttt{2}, matching the rank of \texttt{\{tile\_\allowbreak{}m, tile\_\allowbreak{}k\}}, so there are no issues.
+\item \textbf{Compile-time Checks}: Croqtile verifies rank consistency. In this example, \texttt{lhs.span} has a rank of \texttt{2}, matching the rank of \texttt{\{tile\_\allowbreak{}m, tile\_\allowbreak{}k\}}, so there are no issues.
 \item \textbf{Runtime Checks}: Croqtile generates code to validate dimensions at runtime. For instance, in the declaration of \texttt{tiled\_lhs}, its shape must not have a dimension of \texttt{0}, which would result in an invalid zero-sized buffer. Croqtile's \emph{transpilation} process generates the following \emph{target host code}:
 \end{itemize}
 

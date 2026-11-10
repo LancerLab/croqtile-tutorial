@@ -1,3 +1,3 @@
 \subsection*{Other Operations: \texttt{transp} and \texttt{pad}}
 
-\texttt{copy} is only the simplest member of the family.
+A plain copy preserves the source's shape and element order. Use \co@transp@ when the destination needs a different dimension order, or \co@pad@ when it needs extra positions filled with a specified value. Treat the destination shape as part of the operation: later tile selection and computation must use the transformed shape, not the original one.

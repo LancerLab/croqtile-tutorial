@@ -1,6 +1,6 @@
 \subsection*{Use \texttt{chunkat} Expression to Tile Data}
 
-In all the examples from the previous section, the \emph{data expressions} of the \emph{DMA statement} directly utilized the \emph{spanned} data or \emph{storage} annotation. However, programmers can use the \textbf{chunkat} expression to enable tiling behavior in practice. For example:
+A transfer can use a whole buffer, but a tiled algorithm usually needs only the portion assigned to the current instance. Put \co@chunkat@ in the source expression to describe that portion directly:
 
 \begin{lstlisting}[language=croqtile,caption={Use chunkat Expression to Tile Data}]
 __co__ void foo(f32 [36] input) {
@@ -13,7 +13,7 @@ __co__ void foo(f32 [36] input) {
 In this example, the built-in member function \texttt{.chunkat} is used to create a tile or block for the source expression of the DMA statement. Each tiled block is called a \textbf{chunk} in Croqtile. The \texttt{.chunkat(...)} data expression can be considered a simpler form of \texttt{.\allowbreak{}chunk(.\allowbreak{}.\allowbreak{}.\allowbreak{}).\allowbreak{}at(.\allowbreak{}.\allowbreak{}.\allowbreak{})}, where the semantics of each part are illustrated in the figure below:
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f29-chunkat.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f29-chunkat.png}
 \end{figure}
 
 Considering the expression \texttt{input.\allowbreak{}chunkat(p)}, which is equivalent to \texttt{input.\allowbreak{}chunk(\#\allowbreak{}p).\allowbreak{}at(p)}:

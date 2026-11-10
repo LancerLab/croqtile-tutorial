@@ -7,7 +7,7 @@
 \textbf{Aspect} & \textbf{One block per tile} & \textbf{Persistent (\texttt{NUM\_GROUPS} blocks)} \\
 \midrule
 Grid size & Grows with problem & Fixed \\
-Tail utilization & Last wave may leave SMs idle & All SMs stay busy \\
+Tail utilization & Last wave may leave SMs idle & Workers can process further tiles; a tail may remain \\
 Extra constructs & Minimal & \texttt{total\_tiles}, \texttt{tile\_\allowbreak{}iter \#\allowbreak{} block\_\allowbreak{}id}, \texttt{if} \\
 Complexity & Lower & Higher \\
 \bottomrule

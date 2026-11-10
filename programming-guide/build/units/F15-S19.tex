@@ -1,6 +1,6 @@
 \subsection*{Bounded-ituple/integer and 'chunkat' Operation}
 
-'chunkat' is an operation performed on spanned data. It creates a new \emph{mdspan} over the existing data. Thus in certain systems, it is referred to as 'subview'. However, as 'chunkat' accepts bounded-ituple and bounded-integer as parameters, it is named differently in Croqtile.
+A \co@chunkat@ expression selects a view of existing spanned data. It uses each bounded argument twice: the upper bound determines the number of chunks, and the current value selects one chunk. Selection alone does not move the elements; the surrounding DMA statement performs the transfer.
 
 \begin{lstlisting}[language=croqtile,caption={Bounded-ituple/integer and chunkat Operation}]
 global f32 [6, 10, 100] data;

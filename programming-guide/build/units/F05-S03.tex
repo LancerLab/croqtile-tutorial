@@ -4,12 +4,12 @@ Croqtile gives you two separate knobs:
 
 \begin{enumerate}[leftmargin=1.6em]
 \item \textbf{\texttt{parallel}} --- declares that iterations are independent and \emph{may} run concurrently. This is a logical statement.
-\item \textbf{Space specifiers} (\texttt{: block}, \texttt{: thread}, \texttt{: group}, \texttt{: group-4}) --- tell the compiler  each parallel axis maps to. This is a physical statement.
+\item \textbf{Space specifiers} (\texttt{: block}, \texttt{: thread}, \texttt{: group}, \texttt{: group-4}) --- tell the compiler where each parallel axis maps. This is a physical statement.
 \end{enumerate}
 
 There is also \texttt{foreach}, which is the opposite of \texttt{parallel}: iterations run \textbf{sequentially}, in order. Use \texttt{foreach} when later iterations depend on earlier ones --- an accumulation loop, a K-dimension reduction, a pipeline that loads tile \emph{k} before computing with it.
 
-\begin{lstlisting}[language=croqtile,caption={Croqtile s Two-Layer Parallelism Model}]
+\begin{lstlisting}[language=croqtile,caption={Croqtile's Two-Layer Parallelism Model}]
 parallel {px, py} by [8, 16] : block
   foreach {tile_k} in [16]               // sequential -- K-dimension loop
     parallel {qx, qy} by [16, 16] : thread  // concurrent -- mapped to threads
@@ -18,10 +18,10 @@ parallel {px, py} by [8, 16] : block
 \end{lstlisting}
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f05-fig2_logical_vs_physical_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig2_logical_vs_physical_light.png}
+\caption{Space specifiers map parallel axes to blocks and threads; foreach loops remain sequential within that structure.}
 \end{figure}
-\begin{center}\small\emph{Left: the logical nesting the programmer writes (parallel = concurrent, foreach = sequential). Space specifiers bridge the two.}\end{center}
 
-If you omit the space specifier --- just \texttt{parallel p by 8} --- the compiler picks a default mapping. That is what Chapters 1 and 2 did, and it worked fine for simple cases. Explicit specifiers are how you take control when performance matters.
+If you omit the space specifier, as in \texttt{parallel p by 8}, the compiler chooses a default mapping. The introductory examples use this form. Explicit specifiers let you control the mapping when performance requires it.
 
-Both \texttt{parallel} and \texttt{foreach} support multi-dimensional indices (\texttt{\{a, b\}} syntax), the compose operator (\texttt{\#}), and the extent operator (\texttt{\#p}). Everything from Chapters 1 and 2 still applies.
+Both \co@parallel@ and \co@foreach@ can use multidimensional indices. Once the outer and inner ranges are established, the compose operator \co@#@ connects their coordinates to positions in the full tensor. The bounds are part of that calculation, which is why changing the iteration geometry also changes tile selection.

@@ -82,7 +82,7 @@ Use `CROQTILE_SKIP_VERIFY=1` only when you trust correctness. A fast wrong kerne
 Performance `.co` files are built through the Croqtile driver. A typical invocation:
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/matmul/matmul_f16_dyn_sm90.co \
   -o /tmp/matmul.cute.result && bash /tmp/matmul.cute.result --execute
 ```

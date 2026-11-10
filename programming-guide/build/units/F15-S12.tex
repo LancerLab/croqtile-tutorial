@@ -1,5 +1,5 @@
 \subsection*{Bounded Types}
 
-Bounded types consists of \textbf{Bounded Scalar} and \textbf{Bounded ITuple}. Bounded Scalar takes a range of [0, ub), where 'ub' represents its upper bound. Therefore, if an integer 'p' is set as bounded, it should also be associated with a specific upper bound. To establish such associations, programmers must code explicitly inside the \emph{Control Structures} of 'parallel-by' and 'with-in', which will be introduced later.
+A bounded integer carries a value and an exclusive upper bound. In \co@parallel p by 6@, its possible values are 0 through 5 and its upper bound is 6. A tile selection can therefore determine both which piece \co@p@ identifies and how many pieces exist. The \co@parallel-by@ and \co@with-in@ constructs establish this association.
 
-Similarly, since \emph{ITuple} is a group of \emph{Integer}s, it can also be associated with a group of bounds. Specifically, in Croqtile, the \emph{Bounded ITuple} is associated with a \emph{mdspan} value, where a group of upper bounds are settled. In later sections, you shall illustrate the detailed syntax.
+A bounded tuple extends the same idea to several dimensions. Each component has its own bound, and an \co@mdspan@ describes the combined range. For example, a tuple bounded by \co@[4, 8]@ can identify one of 32 positions. Section 2.7 shows how to declare and iterate over these indices.

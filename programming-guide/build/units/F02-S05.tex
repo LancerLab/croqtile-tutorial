@@ -1,30 +1,24 @@
-\subsection*{Compiler Usage}
+\subsection*{Compiler Options}
 
-The \texttt{croqtile} command works like \texttt{gcc} or \texttt{clang}:
+After running \texttt{ele\_add}, you can use the same command pattern for other \texttt{.co} files. Croqtile first generates target source code, then invokes the target toolchain to compile and link it. By default the output is \texttt{a.out}; \texttt{-o} gives it an explicit name.
 
-\begin{lstlisting}[language={},caption={Compiler Usage}]
-croqtile program.co                     # compile and link -> a.out
-croqtile program.co -o my_kernel        # specify output name
-croqtile -es -t target program.co -o out.cu  # emit target source only
-croqtile -E program.co                  # preprocess only
-\end{lstlisting}
-
-Key flags:
+The following options select the output form or expose a step in this process:
 
 \begin{table}[htbp]
 \centering\small
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-\textbf{Flag} & \textbf{Effect} \\
+\textbf{Option} & \textbf{Purpose} \\
 \midrule
-\texttt{-\allowbreak{}o \textless{}file\textgreater{}} & Set output filename \\
-\texttt{-\allowbreak{}t \textless{}platform\textgreater{}} & Select target platform (e.g. \texttt{target}) \\
-\texttt{-es} & Emit target source code without compiling it \\
-\texttt{-E} & Preprocess only (expand macros, strip \texttt{\#if 0} blocks) \\
-\texttt{-c} & Compile without linking \\
-\texttt{-S} & Emit assembly \\
-\texttt{--help} & Show all options \\
-\texttt{--help-hidden} & Show advanced/internal options \\
+\texttt{-\allowbreak{}o \textless{}file\textgreater{}} & Set the output filename. \\
+\texttt{-\allowbreak{}t \textless{}platform\textgreater{}} & Select the target platform; list supported targets with \texttt{--help-target}. \\
+\texttt{-es} & Emit target source without compiling it further. \\
+\texttt{-E} & Emit preprocessed Croqtile source only. \\
+\texttt{-c} & Compile to an object file without linking. \\
+\texttt{-S} & Emit assembly when supported by the target toolchain. \\
+\texttt{-gs} & Generate a script for subsequent compilation and execution. \\
+\texttt{-v} / \texttt{--verbose} & Show the external commands invoked by the compiler. \\
+\texttt{--help} / \texttt{--help-hidden} & List standard or advanced compiler options. \\
 \bottomrule
 \end{tabularx}
 \end{table}

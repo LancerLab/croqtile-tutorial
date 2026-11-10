@@ -1,6 +1,6 @@
 \subsection*{Tile and Flow}
 
-It is possible to use the \texttt{chunkat} expression for either the source or the destination of a \emph{DMA statement}. When \texttt{chunkat} is used only for the source, it typically divides the input or buffer into smaller chunks to move it to storage closer to the processor. In contrast, when \texttt{chunkat} is used only for the destination, it typically moves the buffer to compose part of the output. The following code showcases an example:
+It is possible to use the \texttt{chunkat} expression for either the source or the destination of a \emph{DMA statement}. When \texttt{chunkat} is used only for the source, it typically divides the input or buffer into smaller chunks to move it to storage closer to the processor. In contrast, when \texttt{chunkat} is used only for the destination, it typically moves the buffer to compose part of the output. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Tile and Flow}]
 __co__ auto foo(f32 [36] input) {

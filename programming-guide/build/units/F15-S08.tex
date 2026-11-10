@@ -1,14 +1,14 @@
 \subsection*{Fully-Typing}
 
-A \emph{mdspan} can not be applied alone to define the data for computation. In Croqtile function, a data definition must be fully-typed, which consists of a fundamental type and a \emph{mdspan}. The below code showcases how it works.
+A buffer declaration needs both an element type and a shape. The shape determines how many positions the buffer contains, while the fundamental type determines what each position stores. The examples below reuse a named shape for half-precision data and use a literal shape for single-precision data.
 
-\begin{lstlisting}[language=croqtile,caption={Fully-Typing}]
+\begin{lstlisting}[language=croqtile,caption={Complete Types}]
 ndims : [20, 15];
 f32 [10, 10] d0;
 f16 [ndims] d1;
 \end{lstlisting}
 
-There are fundamental types that Croqtile has supported, including:
+The basic element types include:
 
 \begin{itemize}[leftmargin=1.6em]
 \item Unsigned Integers: \emph{u8/u16/u32}
@@ -16,4 +16,4 @@ There are fundamental types that Croqtile has supported, including:
 \item Floating-points: \emph{f16/bf16/f32}
 \end{itemize}
 
-Note 's32' and 'int' are different in Croqtile. 's32' is a fundamental type, which can not be applied for a fully typing.
+The types \texttt{s32} and \texttt{int} serve different purposes in Croqtile. The fundamental element type \texttt{s32} must be combined with a shape to declare a fully typed buffer.

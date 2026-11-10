@@ -4,17 +4,16 @@ Section~\ref{sec:3-4}'s tiled matmul computes the inner contraction the way a CP
 
 The job is \textbf{2D tensor contraction} --- the operation C += A \(\times\) B where A, B, and C are small, fixed-shape matrix tiles. It is the inner kernel of every GEMM, every convolution expressed as an im2col matmul, every attention head's QK\textasciicircum{}T.
 
-\begin{center}\small\emph{The same mathematical operation --- C += A \(\times\) B on tile-shaped operands}\end{center}
-
-What makes this hard for programmers is not the math but the . Get the layout wrong --- say, load a column-major tile into a row-major fragment --- and the result is silently incorrect.
+The difficulty is mapping matrix elements to the distributed operand fragments. Get the layout wrong --- say, load a column-major tile into a row-major fragment --- and the result is silently incorrect.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f06-fig2_register_loading_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig2_register_loading_light.png}
+\caption{Operand fragments are distributed across cooperating lanes. The color pattern is schematic, not an exact instruction-level register map.}
 \end{figure}
 
-Croqtile's design sidesteps this complexity entirely.
+Croqtile exposes the contraction through \co@fill@, \co@load@, multiply-accumulate, and \co@store@. The compiler handles the distribution of fragment elements across the chosen cooperation scope. The programmer still chooses compatible tile shapes and states the operand layouts; the abstraction depends on those choices being correct.
 
 \begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f06-fig3_mma_syntax_light.png}
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig3_mma_syntax_light.png}
+\caption{Initialize the accumulator, load both operands, accumulate, and store; repeat the load and accumulation steps over K slices.}
 \end{figure}
-\begin{center}\small\emph{The four-step MMA syntax is an abstract interface}\end{center}

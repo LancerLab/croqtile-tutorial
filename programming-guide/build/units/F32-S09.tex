@@ -1,6 +1,6 @@
 \subsection*{Values of Bounded Variables}
 
-Understanding the values associated with a bounded variable is crucial. A bounded variable has two key values:
+A bounded variable carries a range and a current value. For an index declared by \co@with-in@, the following rules describe how \co@foreach@ supplies that current value:
 
 \begin{itemize}[leftmargin=1.6em]
 \item \textbf{Current Value}:
@@ -14,7 +14,7 @@ Understanding the values associated with a bounded variable is crucial. A bounde
 \item \textbf{Upper-Bound Value}: This is specified in the \texttt{with-in} or \texttt{parallel-by} statements.
 \end{itemize}
 
-Programmers may encounter issues when using the current value of a bounded variable outside of a \texttt{foreach} statement, particularly after the loop has completed. By definition, the current value of a bounded variable is immutable except within a \texttt{foreach} loop. The following code illustrates this:
+After a \co@foreach@ loop, a \co@with-in@ index has its outside-the-loop value again; it is not a C++ loop variable left at the terminating value. A parallel index follows a different rule: its value identifies the current parallel instance. The example below concerns the sequential \co@with-in@ case.
 
 \begin{lstlisting}[language=croqtile,caption={Values of Bounded Variables}]
 with x in 6 {

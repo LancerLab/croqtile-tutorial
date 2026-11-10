@@ -2,7 +2,7 @@
 
 Using symbolic dimensions like \texttt{M} and \texttt{N} explicitly in the shape definition makes the program \textbf{easier to read} and understand. Instead of seeing a \texttt{?} or \texttt{-1} and wondering what the dimension is supposed to represent, the reader can immediately grasp that \texttt{M} and \texttt{N} are variables that depend on runtime values. This improves \textbf{maintainability} and reduces the cognitive load for developers who are reading and modifying the code.
 
-For example, if a program uses \texttt{?} for dynamic dimensions, it's unclear whether it represents an uninitialized value, a wildcard dimension, or something else. This can lead to confusion when trying to reason about the program. In contrast, symbolic dimensions are explicit and show exactly how the shape is determined:
+For example, two question marks identify two unknown extents; they do not state that those extents are equal. A repeated symbolic name records that equality directly in the function signature:
 
 \begin{lstlisting}[language=croqtile,caption={a. Improved Readability and Clarity}]
 // Using symbolic dimensions
@@ -13,4 +13,4 @@ mdspan spn : sp [1, M / 2, N / 4];
 mdspan sp : [? , ?];
 \end{lstlisting}
 
-The latter version is ambiguous and lacks the clarity that symbolic dimensions provide.
+The anonymous form remains useful when the dimensions are independent. Choose names when the relationship between them is part of the operation.

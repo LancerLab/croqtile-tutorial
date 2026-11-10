@@ -1,3 +1,3 @@
 \subsection*{Memory in Croqtile}
 
-In Croqtile, the memory system is designed to handle large datasets effectively, which is crucial for high-performance computing scenarios, especially in machine learning and scientific computing.
+Storage becomes part of the algorithm when different parallel instances need different views of a tile. The same \co@[M, N]@ shape may describe a global input, a shared staging tile, or a private working buffer. The shape controls indexing; the storage specifier determines where the buffer belongs.

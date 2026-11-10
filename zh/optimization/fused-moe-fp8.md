@@ -974,19 +974,19 @@ vLLM 未随发行附带该 shape（E=256、H800）的 tuned Triton 配置，因�
 | [`04_host_micro.co`](../../optimization/assets/fused-moe-fp8/04_host_micro.co) | `-gs -t cute -arch=sm_90a` | Host 流水线 + 微优化（Phase 2+3 末） | 9.89 |
 | [**`05_cuda_optimized.co`**](../../optimization/assets/fused-moe-fp8/05_cuda_optimized.co) | `-gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale` | Grid swap、L2、QSG 流水、`__cpp__` scatter（Phase 4+5 末） | **13.18** |
 
-上述文件均可用鳄霸编译器（`./choreo -gs`）编译，并在 H800 PCIe 上得到正确结果。`-gs` 会自动生成处理全部 nvcc 选项（`-D__USE_CUDA_TYPE__`、`--default-stream per-thread` 等）的构建脚本。TFLOPS 在 H800 PCIe（SM90）上测得，端到端，500 次重复。
+上述文件均可用鳄霸编译器（`./croq -gs`）编译，并在 H800 PCIe 上得到正确结果。`-gs` 会自动生成处理全部 nvcc 选项（`-D__USE_CUDA_TYPE__`、`--default-stream per-thread` 等）的构建脚本。TFLOPS 在 H800 PCIe（SM90）上测得，端到端，500 次重复。
 
 复现任意一次测量：
 
 ```bash
 # All milestones use -gs (auto-generated build script):
-./choreo -gs -t cute -arch=sm_90a [choreo-flags] <file>.co -o /tmp/<file>.cute.result
+./croq -gs -t cute -arch=sm_90a [choreo-flags] <file>.co -o /tmp/<file>.cute.result
 CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     EXTRA_TARGET_CFLAGS="-DRUNMAIN --use_fast_math" \
     bash /tmp/<file>.cute.result --execute
 
 # 04/05 need extra choreo flags:
-./choreo -gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale \
+./croq -gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale \
     05_cuda_optimized.co -o /tmp/05.cute.result
 CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     EXTRA_TARGET_CFLAGS="-DRUNMAIN --use_fast_math" \

@@ -37,7 +37,7 @@ Then run the test suite to confirm everything works:
 make test
 ```
 
-If all tests pass, the `croqtile` binary is ready in your build directory. Add it to your `PATH` or invoke it by its full path.
+If all tests pass, the `croq` binary is ready in your build directory. Add it to your `PATH` or invoke it by its full path.
 
 ## Verify the Installation
 
@@ -64,7 +64,7 @@ int main() {
 Compile and run:
 
 ```bash
-croqtile verify.co -o verify
+croq verify.co -o verify
 ./verify
 ```
 
@@ -72,13 +72,13 @@ You should see `OK`. If you do, the compiler, linker, and runtime are all workin
 
 ## Compiler Usage
 
-The `croqtile` command works like `gcc` or `clang`:
+The `croq` command works like `gcc` or `clang`:
 
 ```bash
-croqtile program.co                     # compile and link → a.out
-croqtile program.co -o my_kernel        # specify output name
-croqtile -es -t cute program.co -o out.cu  # emit CUDA source only
-croqtile -E program.co                  # preprocess only
+croq program.co                     # compile and link → a.out
+croq program.co -o my_kernel        # specify output name
+croq -es -t cute program.co -o out.cu  # emit CUDA source only
+croq -E program.co                  # preprocess only
 ```
 
 Key flags:

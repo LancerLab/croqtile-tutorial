@@ -1,6 +1,6 @@
 \subsection*{Defining Shapes with \texttt{mdspan}}
 
-In Croqtile, shapes can be defined with the \texttt{mdspan} keyword, which stands for \textbf{Multi-Dimensional Span}. This keyword represents multi-dimensional data for computations.
+The keyword \co@mdspan@ stands for multidimensional span. It describes the extents of a shape without allocating its elements. For example, a shape \co@[7, 8]@ has rank 2 and describes 56 positions; choosing \co@f32@ or \co@s32@ for those positions is a separate decision.
 
 You can explicitly define \texttt{mdspan} variables as follows:
 
@@ -9,18 +9,18 @@ mdspan s0 : [7, 8]; // Defines a 2D shape with dimensions [7, 8]
 mdspan<1> s1 : [3]; // Defines a 1D shape with dimensions [3]
 \end{lstlisting}
 
-In this example, the leading keyword \texttt{mdspan} indicates the declaration of a \emph{mdspan} variable, followed by the user-provided variable name. Each \emph{mdspan} variable is initialized with an \textbf{initialization expression}, which consists of comma-separated integer values enclosed by \texttt{[]}. The symbol \texttt{:}, which immediately follows the variable name, introduces the \emph{initialization expression}. Therefore, \texttt{s0} is defined as a 2D shape with \texttt{7} rows and \texttt{8} columns, while \texttt{s1} is a 1D shape with a dimension of \texttt{3}.
+The colon introduces the shape initializer, and square brackets enclose its dimensions. Thus \co@s0@ has seven rows and eight columns, while \co@s1@ has one dimension of size 3. A named shape can be reused in later buffer declarations.
 
-It is possible to optionally specify the \textbf{rank} of an \emph{mdspan} variable by placing \texttt{\textless{}\textgreater{}} after the \texttt{mdspan} keyword. If the rank is explicitly specified, it informs the Croqtile compiler to check for rank consistency. If the rank value differs from the corresponding \emph{initialization expression}, it triggers a failure at compilation. Here is an example:
+You can specify the \textbf{rank} by placing \texttt{\textless{}rank\textgreater{}} after \texttt{mdspan}. The compiler checks that this rank matches the initialization expression and reports a compilation error if they differ:
 
 \begin{lstlisting}[language=croqtile,caption={A rank mismatch}]
 mdspan<3> s2 : [64, 32]; // error: the rank of mdspan is inconsistent
 \end{lstlisting}
 
-In addition to explicit mdspan declarations, the Croqtile compiler can infer the type of \texttt{mdspan} variable from its \emph{initialization expression}, eliminating the need for the explicit \texttt{mdspan} keyword:
+Because the initializer identifies a shape, the compiler can infer the \co@mdspan@ type when the keyword is omitted:
 
 \begin{lstlisting}[language=croqtile,caption={Omitting the mdspan keyword}]
 s3 : [7, 8, 9]
 \end{lstlisting}
 
-In this code, \texttt{s3} is an \texttt{mdspan} of rank \texttt{3} with dimensions \texttt{7, 8, 9}. Since Croqtile \textbf{requires mdspan to always be initialized within declarations}, the type inference version is preferred in programming practice.
+Here \co@s3@ has rank 3 and dimensions 7, 8, and 9. Every named shape requires an initializer, so the inferred form is often sufficient.

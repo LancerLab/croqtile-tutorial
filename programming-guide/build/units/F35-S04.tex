@@ -1,6 +1,6 @@
-\subsection*{DeadLocks}
+\subsection*{Deadlocks}
 
-By default, the event is lock-free for high-performance synchoronization between different asynchronous blocks. That implies it is risky when multiple threads try to update the event, especially for \texttt{wait}.
+Events are lock-free by default to support efficient synchronization between asynchronous blocks. Multiple instances updating the same event require care, particularly when using \texttt{wait}.
 
 For example,
 
@@ -14,7 +14,7 @@ parallel p by 1 {
 }
 \end{lstlisting}
 
-In this code, two threads wait a single event \texttt{e}. However, since \texttt{wait} resets the event \texttt{e}, it is possible that \texttt{thread-0} resets the event before \texttt{thread-1} find the \texttt{e} has been triggered. As a result, \texttt{thread-1} is never unblocked and deadlocking happens.
+Both threads wait on the same event \texttt{e}. Because \texttt{wait} resets the event, \texttt{thread-0} may reset it before \texttt{thread-1} observes the trigger. In that case, \texttt{thread-1} remains blocked and the program deadlocks.
 
 \begin{lstlisting}[language=croqtile,caption={A credit-count deadlock}]
 qc = 2;

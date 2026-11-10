@@ -2,4 +2,4 @@
 
 Masking is what allows divergent execution inside an otherwise uniform parallel region. Developers can use either explicit thread masking via \texttt{inthreads} blocks or implicit control through \texttt{parallel-by} constructs to restrict execution to specific threads.
 
-While thread masking provides flexibility, it introduces thread asynchrony that complicates coordination. The next section will explore advanced techniques for managing these synchronization challenges.
+Masking identifies who executes a region. Whether the other instances wait at its end depends on the synchronization form. Section 3.8 develops asynchronous regions, where the program must express data dependencies with events rather than rely on a join after each region.

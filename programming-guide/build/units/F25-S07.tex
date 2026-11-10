@@ -14,7 +14,7 @@ void entry() {
 }
 \end{lstlisting}
 
-In this example, the \texttt{output} is semantically copied to the caller. However, in Croqtile's implementation, no copy happens. The returned type is \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data}, where its simplified definition is as following:
+The example returns \texttt{output} with value semantics, but the implementation avoids copying the buffer. The returned C++ type is \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data}, whose simplified definition is:
 
 \begin{lstlisting}[language={},caption={The host-side result wrapper}]
 template <typename T, size_t Rank>
@@ -24,6 +24,6 @@ class spanned_data {
 };
 \end{lstlisting}
 
-In contrast to \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view}, \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data} owns the buffer it points to. Thus there is \textbf{no copy actually happens when returning from a Croqtile function}. In compiler terminology, this is called the \emph{Return Value Optimization}.
+Unlike \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view}, \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data} owns the buffer it points to. \textbf{Returning it does not copy the buffer}; the implementation uses return value optimization.
 
-You may use member function like \texttt{.rank()}, \texttt{.shape()} to query shape related information of Croqtile return. It lets the host work with the result without knowing the details of the Croqtile function that produced it.
+Use member functions such as \texttt{.rank()} and \texttt{.shape()} to query the returned buffer's shape. The host can then work with the result without depending on the implementation of the Croqtile function.

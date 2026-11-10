@@ -9,6 +9,8 @@
 \texttt{\#\allowbreak{}define NAME value} & Object-like macro; shared across \texttt{\_\_co\_\_} and host regions & Preprocessor \\
 \texttt{\#if} / \texttt{\#ifdef} / \texttt{\#error} & Conditional compilation and compile-time assertions & Preprocessor \\
 \texttt{-DNAME=value} & Define macros from the command line for tile sweeps & Preprocessor \\
+\co@call helper(...)@ & Invoke a device helper & Device \\
+\co@__cpp__("...")@ & Insert target C++ at the current scope & Target-dependent \\
 \bottomrule
 \end{tabularx}
 \end{table}

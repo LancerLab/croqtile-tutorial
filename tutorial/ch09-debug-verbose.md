@@ -68,7 +68,7 @@ On the device, this compiles to a `printf` of the message followed by an abort. 
 Pass `-v` (or `--verbose`) to the compiler to see the external commands it invokes — which preprocessor, which code generator, which `nvcc` invocation:
 
 ```bash
-croqtile kernel.co -v -o kernel
+croq kernel.co -v -o kernel
 ```
 
 This is useful when you suspect the compiler is passing wrong flags to `nvcc` or when you need to see the exact generated file paths for manual inspection.
@@ -78,7 +78,7 @@ This is useful when you suspect the compiler is passing wrong flags to `nvcc` or
 The compiler supports graduated runtime checking with `-rtc` (or `--runtime-check`):
 
 ```bash
-croqtile kernel.co -rtc=high -o kernel
+croq kernel.co -rtc=high -o kernel
 ```
 
 Levels: `none`, `entry` (default), `low`, `medium`, `high`, `all`. Each level is a superset of the previous. Use `high` or `all` during development, `none` for production.
@@ -96,7 +96,7 @@ When `print` / `println` is not enough, Croqtile supports debug RTTI (Runtime Ty
 Compile with `-g` to enable debug symbols:
 
 ```bash
-croqtile kernel.co -g -o kernel_debug
+croq kernel.co -g -o kernel_debug
 ```
 
 The generated code includes RTTI structs for Croqtile types:
@@ -140,8 +140,8 @@ Work from cheap to expensive: `println!` (compile-time shapes) → guarded `prin
 ```
 
 ```bash
-croqtile kernel.co -DDEBUG_PRINT -o kernel    # debug build
-croqtile kernel.co -o kernel                   # production build
+croq kernel.co -DDEBUG_PRINT -o kernel    # debug build
+croq kernel.co -o kernel                   # production build
 ```
 
 ## Summary

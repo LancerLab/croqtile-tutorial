@@ -80,7 +80,7 @@ Both are simple kernels with **no** warp specialization — a single warpgroup, 
 
 ```bash
 # E4M3 baseline
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
   benchmark/performance/gemm_sp/gemm_sp_e4m3_dynamic_sm90_swizzle32_64_prepack.co \
   -o /tmp/e4m3_baseline.cute.result
 CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_baseline.cute.result --execute
@@ -88,7 +88,7 @@ CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_baseline.cute.result --execute
 
 ```bash
 # FP16 baseline
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
   benchmark/performance/gemm_sp/gemm_sp_f16_dynamic_sm90_swizzle64_128_prepack.co \
   -o /tmp/f16_baseline.cute.result
 CUDA_VISIBLE_DEVICES=0 bash /tmp/f16_baseline.cute.result --execute
@@ -279,7 +279,7 @@ We start with 2-stage rather than deeper pipelining because it is the simplest c
 Compile and run:
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
   benchmark/performance/gemm_sp/gemm_sp_e4m3_dyn_sm90_warpspec_1p2c_swizzle32_64_prepack.co \
   -o /tmp/e4m3_step1.cute.result
 CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_step1.cute.result --execute
@@ -330,7 +330,7 @@ Why these changes matter:
 The kernel structure is identical to Step 1 — only the defines change. The Croqtile compiler regenerates the correct TMA tensor descriptors, swizzle layouts, and mbarrier counts automatically for the new tile shape.
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --use-prepack \
   benchmark/performance/gemm_sp/gemm_sp_e4m3_dyn_sm90_warpspec_1p2c_swizzle128_128_prepack.co \
   -o /tmp/e4m3_step2.cute.result
 CUDA_VISIBLE_DEVICES=0 bash /tmp/e4m3_step2.cute.result --execute
@@ -452,7 +452,7 @@ The FP16 path follows the same logical structure as E4M3 but hits different cons
 The FP16 baseline is structurally identical to the E4M3 baseline: a single warpgroup, synchronous TMA, metadata loaded from global memory. The key difference is the swizzle configuration — FP16 (2 bytes per element) uses `swizzle64` for LHS and `swizzle128` for RHS, matching the larger access stride.
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-prepack \
+./croq -gs -t cute -arch=sm_90a --use-prepack \
   benchmark/performance/gemm_sp/gemm_sp_f16_dynamic_sm90_swizzle64_128_prepack.co \
   -o /tmp/f16_baseline.cute.result
 CUDA_VISIBLE_DEVICES=0 bash /tmp/f16_baseline.cute.result --execute
@@ -489,7 +489,7 @@ The first FP16 optimization applies the same structural move as E4M3 Step 1: int
 FP16's larger per-stage data (84 KB) limits it to 3 stages (vs 4 for E4M3), which still provides enough buffering for the producer to stay ahead.
 
 ```bash
-./croqtile -gs -t cute -arch=sm_90a --use-warpspec --use-prepack --stmatrix \
+./croq -gs -t cute -arch=sm_90a --use-warpspec --use-prepack --stmatrix \
   benchmark/performance/gemm_sp/gemm_sp_f16_aitune_2026-03-25_iter120.co \
   -o /tmp/f16_step1.cute.result
 CUDA_VISIBLE_DEVICES=0 bash /tmp/f16_step1.cute.result --execute

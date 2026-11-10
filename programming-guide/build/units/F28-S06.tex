@@ -1,6 +1,6 @@
 \subsection*{Data Expression}
 
-The data expressions used so far have been simple, either a defined \textbf{spanned data} or a \textbf{storage location}. The \textbf{storage location} is used solely for the \textbf{destination buffer} declaration, as it requires the Croqtile compiler to allocate memory for it. The following code provides an example:
+The data expressions used so far have been simple, either a defined \textbf{spanned data} or a \textbf{storage location}. The \textbf{storage location} is used solely for the \textbf{destination buffer} declaration, as it requires the Croqtile compiler to allocate memory for it. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Data Expression}]
 global f32 [32, 16] input;
@@ -9,6 +9,6 @@ dma.copy input => output;  // Copy to a user-declared buffer
 dma.copy input => shared;  // Same, but to a compiler-allocated buffer
 \end{lstlisting}
 
-In this example, the destination of the second DMA operation is specified as the storage location \texttt{shared}. This requires the compiler to allocate storage accordingly, making it equivalent to the first DMA operation. In practice, you recommend programmers use storage locations as destinations, as Croqtile can deduce the destination shape from the \textbf{DMA statement}.
+The second DMA statement names \texttt{shared} as its destination, so the compiler allocates the buffer with the inferred shape. It is equivalent to the first statement's explicit buffer declaration. Naming a storage location is convenient when the compiler can infer the destination shape.
 
-In practice, simple \textbf{data expressions} are rare. The next section introduces the \textbf{ChunkAt} expression to demonstrate how to implement tiling in data expressions.
+The same source and destination positions can contain tile expressions. For example, \co@input.chunkat(p)@ restricts the copy to the portion selected by \co@p@; an explicit destination view restricts where the result is written. Section 2.8 explains how those views are formed.

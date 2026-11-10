@@ -25,9 +25,9 @@ for (int x = 0; x < 6; ++x)
   for (int y = 0; y < 17; ++y) { }
 \end{lstlisting}
 
-Notice the ordering of the loop nesting: the \textbf{left-to-right} order of the \emph{bounded variable}s within a \emph{bounded ituple} corresponds to the \textbf{outer-to-inner} nesting of the loops. This ordering is essential for correct code behavior constructing sometimes.
+The left-to-right order of indices in a bounded tuple determines the outer-to-inner nesting of the loops. Keep this ordering in mind when the order of iteration matters.
 
-Furthermore, This rule also applies to the \emph{comma-separated bounded variable list} that follows the \texttt{foreach} statement:
+The same outer-to-inner ordering applies to a comma-separated list of bounded variables:
 
 \begin{lstlisting}[language=croqtile,caption={Several bounded groups}]
 with index = {x, y} in [6, 17], iv in [128] {

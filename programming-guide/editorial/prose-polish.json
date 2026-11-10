@@ -1,0 +1,1128 @@
+{
+  "F03-S05": [
+    {
+      "before": "The rest of \\texttt{main} is ordinary verification: loop over every element and assert equality. The host program is deliberately boring --- the interesting work happens in the \\texttt{\\_\\_co\\_\\_} function.",
+      "after": "The rest of \\texttt{main} verifies the result by iterating over every element and asserting equality. The host program handles setup and verification; the computation takes place in the \\texttt{\\_\\_co\\_\\_} function."
+    }
+  ],
+  "F15-S21": [
+    {
+      "before": "Passing arguments between Croqtile and C++ requires the \\texttt{croqtile.h} header. Normally, programmers combine the raw C++ pointer and associated dimensions info to construct Croqtile spanned data. The code below demonstrates how it works.",
+      "after": "Passing arguments between Croqtile and C++ requires the \\texttt{croqtile.h} header. Combine a raw C++ pointer with its dimensions to construct Croqtile spanned data, as shown below."
+    },
+    {
+      "before": "In the example, you make use of croqtile utility function (template) 'make\\_spanview' to wrap the data, which does not invoke copy. And in Croqtile function 'foo', the parameter 'f32 mdspan\\textless{}2\\textgreater{}' is the corresponding entity. Because the data is implicitly cast, you can simply use 'd' as the first parameter of C++ function 'bar'. And operation '|d|' obtains the total size of the spanned data 'd'. These are used for calling C++ function 'bar'.",
+      "after": "The \\texttt{make\\_spanview} utility template wraps the data without copying it. In the Croqtile function \\texttt{foo}, the corresponding parameter \\texttt{d} has type \\texttt{f32 mdspan\\textless{}2\\textgreater{}}. An implicit conversion allows \\texttt{d} to be passed as the first argument to the C++ function \\texttt{bar}; \\texttt{|d|} supplies its total element count."
+    },
+    {
+      "before": "Similarly, \\emph{Scalar Type} data can also be passed from/to Croqtile function. Nevertheless, ituple is only used inside Croqtile function.",
+      "after": "Scalar values can also pass between C++ and Croqtile functions. An \\texttt{ituple}, however, is used only inside a Croqtile function."
+    },
+    {
+      "before": "\\subsection*{Parameters Passing between Croqtile and C++ Function}\n\nPassing arguments between Croqtile and C++ requires the \\texttt{croqtile.h} header. Combine a raw C++ pointer with its dimensions to construct Croqtile spanned data, as shown below.",
+      "after": "\\subsection*{Parameter Passing between Croqtile and C++ Function}\n\nPassing arguments between Croqtile and C++ requires the \\texttt{croqtile.h} header. Combine a raw C++ pointer with its dimensions to construct Croqtile spanned data, as shown below."
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Parameters Passing between Croqtile and C Function}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Parameter Passing between Croqtile and C Function}]"
+    }
+  ],
+  "F25-S03": [
+    {
+      "before": "In this example, the second parameter is unnamed, which makes it unable to be reference in the Croqtile function. However, this is still the valid code.",
+      "after": "The second parameter is unnamed, so the function body cannot refer to it. The declaration is still valid."
+    }
+  ],
+  "F25-S04": [
+    {
+      "before": "One obvious gap between C/C++ pointers/arrays and Croqtile \\emph{spanned data} is that \\emph{spanned data} is shaped. Therefore, to call a Croqtile function, it is necessary to convert pointers or arrays.",
+      "after": "Croqtile spanned data carries a shape in addition to its data pointer. Before passing a C/C++ pointer or array to a Croqtile function, wrap it with the required shape information."
+    },
+    {
+      "before": "In the above example, you make use of \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}make\\_\\allowbreak{}spanned} function template, providing the rank as template parameter, and typed pointer together with shape list as the function parameters. In this way, a shape is attached with the pointer, which makes a valid Croqtile function parameter. As you may figure out from \\texttt{croqtile.h}, it results in \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}view} object, which simply wraps the C/C++ pointer/array and the array-based list. Its simplified definition is:",
+      "after": "The \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}make\\_\\allowbreak{}spanned} function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}view} that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:"
+    },
+    {
+      "before": "In this example, the \\texttt{input} shape is runtime variable. But do not worry if wrong parameter is provided. Croqtile will check if \\texttt{M == 7} and \\texttt{N == 16} when entering into the tileflow program. \\textbf{If not, the program will terminate immediately} since all the assumptions about shapes in the Croqtile function does not hold.",
+      "after": "Here, \\texttt{input} has a runtime shape. On entry to the Tileflow program, Croqtile checks that \\texttt{M == 7} and \\texttt{N == 16}. \\textbf{If either condition fails, the program terminates immediately}, because the function's shape assumptions do not hold."
+    },
+    {
+      "before": "One important notice for the \\emph{spanned data} inputs is that they are \\textbf{references to the input data/buffers}. That implies no data copy happens at invoking Croqtile function, though somebody may think from the language perspective it look like copy-semantics.",
+      "after": "Spanned-data inputs are \\textbf{references to the original data or buffers}. Calling a Croqtile function does not copy the input data, even though the parameter syntax may resemble a declaration with value semantics."
+    }
+  ],
+  "F25-S07": [
+    {
+      "before": "In this example, the \\texttt{output} is semantically copied to the caller. However, in Croqtile's implementation, no copy happens. The returned type is \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}data}, where its simplified definition is as following:",
+      "after": "The example returns \\texttt{output} with value semantics, but the implementation avoids copying the buffer. The returned C++ type is \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}data}, whose simplified definition is:"
+    },
+    {
+      "before": "In contrast to \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}view}, \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}data} owns the buffer it points to. Thus there is \\textbf{no copy actually happens when returning from a Croqtile function}. In compiler terminology, this is called the \\emph{Return Value Optimization}.",
+      "after": "Unlike \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}view}, \\texttt{croqtile:\\allowbreak{}:\\allowbreak{}spanned\\_\\allowbreak{}data} owns the buffer it points to. \\textbf{Returning it does not copy the buffer}; the implementation uses return value optimization."
+    },
+    {
+      "before": "You may use member function like \\texttt{.rank()}, \\texttt{.shape()} to query shape related information of Croqtile return. It lets the host work with the result without knowing the details of the Croqtile function that produced it.",
+      "after": "Use member functions such as \\texttt{.rank()} and \\texttt{.shape()} to query the returned buffer's shape. The host can then work with the result without depending on the implementation of the Croqtile function."
+    }
+  ],
+  "F16-S03": [
+    {
+      "before": "It is possible to optionally specify the \\textbf{rank} of an \\emph{mdspan} variable by placing \\texttt{\\textless{}\\textgreater{}} after the \\texttt{mdspan} keyword. If the rank is explicitly specified, it informs the Croqtile compiler to check for rank consistency. If the rank value differs from the corresponding \\emph{initialization expression}, it triggers a failure at compilation. Here is an example:",
+      "after": "You can specify the \\textbf{rank} by placing \\texttt{\\textless{}rank\\textgreater{}} after \\texttt{mdspan}. The compiler checks that this rank matches the initialization expression and reports a compilation error if they differ:"
+    }
+  ],
+  "F16-S04": [
+    {
+      "before": "In practical coding, it is common to derive a new shape from an existing one. For example, you might want to perform data \\textbf{tiling} or \\textbf{blocking}, which requires dividing the dimensions of a shape. Alternatively, you might want to \\textbf{pad} specific dimensions, which involves adding delta to the shape dimensions.",
+      "after": "New shapes often derive from existing ones. \\textbf{Tiling} or \\textbf{blocking} divides dimensions, while \\textbf{padding} increases selected dimensions by a specified amount."
+    },
+    {
+      "before": "Here, the initial \\texttt{shape} is explicitly listed element-wise rather than specified outside \\texttt{[]}. But similar to the prior version, The \\textbf{element-of} operation, which is annotated as \\texttt{()}, is used on top of existing shape to retrieve dimension values. Obviously, this approach requires more code but yields the same result. Thus, the prior version can be considered \\emph{syntactic sugar} for the complete \\emph{initialization expression} of the new shape.",
+      "after": "This form lists the dimensions explicitly inside \\texttt{[]}. The \\textbf{element-of} operation \\texttt{()} retrieves a dimension from the existing shape. Both forms produce the same result; the earlier form is syntactic sugar for the complete initialization expression."
+    },
+    {
+      "before": "The prior version can be as well deemed as a \\emph{syntactical sugar} of a complete definition.",
+      "after": "The shorter form is syntactic sugar for the complete shape definition."
+    }
+  ],
+  "F19-S03": [
+    {
+      "before": "In this example, the first dimension of \\texttt{input} is provided by \\texttt{foo}'s \\emph{spanned} input, where the value is retrieved from \\texttt{bar}'s caller at execution. You may assume the value be determined by reading a configuration file, through shape derivation in a machine learning framework, or etc..",
+      "after": "The first dimension of \\texttt{input} comes from the spanned input passed to \\texttt{foo}; \\texttt{bar} obtains the value from its caller at runtime. For example, it may come from a configuration file or a shape calculation in a machine learning framework."
+    }
+  ],
+  "F19-S04": [
+    {
+      "before": "Another approach in Croqtile to support dynamic shape is to use \\textbf{Symbolic Dimension}. \\emph{Symbolic dimension}s are named but as well unknown at compile-time. Here's an example:",
+      "after": "In Croqtile, \\textbf{symbolic dimensions} give names to dimensions whose values are unknown at compile time. For example:"
+    },
+    {
+      "before": "In the code, each dimension is given a symbolic name (\\texttt{M, K, N} in this case) for the \\emph{spanned} inputs. Compared to \\emph{anonymous dimension}, \\emph{symbolic dimension} approach clearly describes the relationship between shapes. The code looks intuitive and is easy to maintain. Furthermore, it is possible to improve the code safety with the additional information provided. Let us dive deeper for this.",
+      "after": "Each input dimension has a symbolic name: \\texttt{M}, \\texttt{K}, or \\texttt{N}. Unlike anonymous dimensions, these names make relationships between shapes explicit, improving readability and maintenance. They also give the compiler more information for consistency checks."
+    }
+  ],
+  "F15-S05": [
+    {
+      "before": "Scalar types in Croqtile include the \\emph{Integer Type} and \\emph{Boolean Type}. The \\emph{Integer Type} is similar to C++ type 'int' or 'int32\\_t'. It is an signed value which takes 32-bits, ranging from $-2^{31}$ to $2^{31}-1$. The below code illustrates its usage for defining the data and function declaration.",
+      "after": "Croqtile provides \\textbf{integer} and \\textbf{Boolean} scalar types. Its integer type is a signed 32-bit value, like C++ \\texttt{int} or \\texttt{int32\\_t}, with range $-2^{31}$ to $2^{31}-1$. The following example uses it in variable and function declarations."
+    },
+    {
+      "before": "Operations like integer arithmetics, shift and logical operation are all supported. And the syntax is identical to C++ builtin operations. In Croqtile, you neither provide equivalence of unsigned scalar integers, nor equivalence of 8-bits, 16-bits, 64-bits scalar integers. This design is simply motivated by the fact: these types are not essential for program control purposes. And normally a 32-bits signed integer can fulfill such work.",
+      "after": "Integers support arithmetic, shifts, and logical operations with C++ syntax. Croqtile does not provide unsigned or 8-, 16-, or 64-bit scalar control integers: a signed 32-bit integer is sufficient for the program-control tasks this type serves."
+    },
+    {
+      "before": "The \\emph{Boolean Type} in Croqtile is similar to C++ type 'bool'. The operations on top of Boolean, and conversion between Integers, are identical to these of C++.",
+      "after": "The Boolean type corresponds to C++ \\texttt{bool}. Boolean operations and conversions between Boolean and integer values follow C++ rules."
+    }
+  ],
+  "F15-S11": [
+    {
+      "before": "In Croqtile, you allow special operation over \\emph{i-tuple} and \\emph{mdspan}. Below is an example to apply a fixed tiling over an mdspan:",
+      "after": "Croqtile supports operations between \\texttt{ituple} and \\texttt{mdspan} values. The following example applies fixed tiling factors to a shape:"
+    },
+    {
+      "before": "\n\nIn Croqtile, mdspan can be defined with such \\textbf{Tuple-Span Operations}. The supported operations includes:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{mdspan} $/$ \\emph{i-tuple}\n\\item \\emph{mdspan} $+$ \\emph{i-tuple}\n\\item \\emph{mdspan} $\\%$ \\emph{i-tuple}\n\\item \\emph{mdspan} $*$ \\emph{i-tuple}\n\\item \\emph{mdspan} $-$ \\emph{i-tuple}\n\\end{itemize}\n\nEssentially, these operations can be achieved through mdspan \\emph{dimension-wise} definition. However, \\emph{tuple-span operations} aid programmers in writing more readable code. This is also the objective that Croqtile aims to achieve.",
+      "after": "\n\nIn Croqtile, mdspan can be defined with such \\textbf{Tuple-Span Operations}. The supported operations include:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{mdspan} $/$ \\emph{i-tuple}\n\\item \\emph{mdspan} $+$ \\emph{i-tuple}\n\\item \\emph{mdspan} $\\%$ \\emph{i-tuple}\n\\item \\emph{mdspan} $*$ \\emph{i-tuple}\n\\item \\emph{mdspan} $-$ \\emph{i-tuple}\n\\end{itemize}\n\nEssentially, these operations can be achieved through mdspan \\emph{dimension-wise} definition. However, \\emph{tuple-span operations} aid programmers in writing more readable code. This is also the objective that Croqtile aims to achieve."
+    }
+  ],
+  "F17-S06": [
+    {
+      "before": "In this code, a mdspan-typed shape is divided by an ituple-typed tiling factor to derive a \\texttt{tiled\\_shape}. Additionally, a \\texttt{padded\\_shape} is derived from the addition of the initial \\texttt{shape} and an anonymous \\emph{ituple}. Note that when a \\emph{mdspan} is added by an \\emph{ituple}, their rank must be consistent. Or else, an error will occur.",
+      "after": "Here, dividing an \\texttt{mdspan} shape by an \\texttt{ituple} of tiling factors produces \\texttt{tiled\\_shape}. Adding an anonymous \\texttt{ituple} to the original shape produces \\texttt{padded\\_shape}. The shape and tuple must have matching ranks; otherwise, the compiler reports an error."
+    }
+  ],
+  "F18-S01": [
+    {
+      "before": "Croqtile \\emph{tileflow program} describes how to move data around. Therefore, declaring or defining the data or buffer are fundamental. The declarations that follow fix an element type, a shape and, where it matters, a storage specifier.",
+      "after": "A Croqtile Tileflow program describes data movement, so buffer declarations are fundamental. Each declaration specifies an element type, a shape, and, when needed, a storage location."
+    }
+  ],
+  "F18-S03": [
+    {
+      "before": "Here the previous example used the named \\emph{mdspan} \\texttt{shape} to define a 2D buffer named \\texttt{data0}, where the elements are 32-bit integers. Note that the named \\emph{mdspan} \\texttt{shape} is placed inside \\texttt{[]}. Additionally, it is allowed to use \\emph{element-of}, arithmetics, or concatenation on \\emph{mdspan}s to specify the buffer's shape.",
+      "after": "This example uses the named \\texttt{mdspan} \\texttt{shape} to declare the two-dimensional buffer \\texttt{data0} with 32-bit integer elements. Place the shape inside \\texttt{[]}; element access, arithmetic, and concatenation can also appear in the shape expression."
+    },
+    {
+      "before": "\n\nThis example uses the named \\texttt{mdspan} \\texttt{shape} to declare the two-dimensional buffer \\texttt{data0} with 32-bit integer elements. Place the shape inside \\texttt{[]}; element access, arithmetic, and concatenation can also appear in the shape expression.\n\nIn Croqtile terminology, the element type is referred to as the \\textbf{fundamental type}. Croqtile supports multiple fundamental types, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{Unsigned Integers}: \\texttt{u8}, \\texttt{u16}, \\texttt{u32}\n\\item \\textbf{Signed Integers}: \\texttt{s8}, \\texttt{s16}, \\texttt{s32}\n\\item \\textbf{Floating Points}: \\texttt{f16}, \\texttt{bf16}, \\texttt{f32}\n\\end{itemize}\n\nThe prefixes \\texttt{u} and \\texttt{s} stand for \"unsigned\" and \"signed\", respectively, while the number suffix indicates the bit width of the type. \\texttt{f16} refers to the \\emph{IEEE-754} standard \\emph{half-float}, and \\texttt{bf16} refers to the 16-bit \\emph{binary float}, commonly used in machine learning scenario.\n\nNote \\texttt{s32} is different from \\texttt{int}. Although they occupy the same amount of storage, in Croqtile, \\texttt{s32} can not be used alone to define programming entities. For example:",
+      "after": "\n\nThis example uses the named \\texttt{mdspan} \\texttt{shape} to declare the two-dimensional buffer \\texttt{data0} with 32-bit integer elements. Place the shape inside \\texttt{[]}; element access, arithmetic, and concatenation can also appear in the shape expression.\n\nIn Croqtile terminology, the element type is referred to as the \\textbf{fundamental type}. Croqtile supports multiple fundamental types, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{Unsigned Integers}: \\texttt{u8}, \\texttt{u16}, \\texttt{u32}\n\\item \\textbf{Signed Integers}: \\texttt{s8}, \\texttt{s16}, \\texttt{s32}\n\\item \\textbf{Floating Points}: \\texttt{f16}, \\texttt{bf16}, \\texttt{f32}\n\\end{itemize}\n\nThe prefixes \\texttt{u} and \\texttt{s} stand for \"unsigned\" and \"signed\", respectively, while the number suffix indicates the bit width of the type. \\texttt{f16} refers to the \\emph{IEEE-754} standard \\emph{half-float}, and \\texttt{bf16} refers to the 16-bit \\emph{binary float}, commonly used in machine learning scenario.\n\nNote \\texttt{s32} is different from \\texttt{int}. Although they occupy the same amount of storage, in Croqtile, \\texttt{s32} cannot be used alone to define programming entities. For example:"
+    },
+    {
+      "before": "The prefixes \\texttt{u} and \\texttt{s} stand for \"unsigned\" and \"signed\", respectively, while the number suffix indicates the bit width of the type. \\texttt{f16} refers to the \\emph{IEEE-754} standard \\emph{half-float}, and \\texttt{bf16} refers to the 16-bit \\emph{binary float}, commonly used in machine learning scenario.",
+      "after": "The prefixes \\texttt{u} and \\texttt{s} mean unsigned and signed, and the numeric suffix gives the bit width. The type \\texttt{f16} is IEEE 754 half precision; \\texttt{bf16} is the 16-bit brain floating-point format commonly used in machine learning."
+    }
+  ],
+  "F18-S06": [
+    {
+      "before": "The syntax is similar to variable definitions, except that operations on an existing \\emph{mdspan} is not possible. Additionally, no storage specifier is allowed or initialization is allowed.",
+      "after": "Parameter and return declarations resemble variable declarations, but they do not allow operations on an existing \\texttt{mdspan}, storage specifiers, or initializers."
+    }
+  ],
+  "F18-S08": [
+    {
+      "before": "A declaration fixes the element type and shape, an initializer can fill the buffer at that point, a storage specifier says where it lives, and the compiler manages its lifetime from there. This enables us to step further to the next essential topic: the dynamic shape support.",
+      "after": "A declaration determines the element type and shape, an initializer fills the buffer, and a storage specifier selects its location. The compiler manages the buffer's lifetime. Dynamic shapes extend these declarations to dimensions supplied at runtime."
+    }
+  ],
+  "F05-S03": [
+    {
+      "before": "If you omit the space specifier --- just \\texttt{parallel p by 8} --- the compiler picks a default mapping. That is what Chapters 1 and 2 did, and it worked fine for simple cases. Explicit specifiers are how you take control when performance matters.",
+      "after": "If you omit the space specifier, as in \\texttt{parallel p by 8}, the compiler chooses a default mapping. The introductory examples use this form. Explicit specifiers let you control the mapping when performance requires it."
+    },
+    {
+      "before": "tell the compiler  each parallel axis maps to",
+      "after": "tell the compiler where each parallel axis maps"
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Croqtile s Two-Layer Parallelism Model}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Croqtile's Two-Layer Parallelism Model}]"
+    }
+  ],
+  "F15-S14": [
+    {
+      "before": "In systems like CPU, it allows of asynchronous thread to realize the parallel execution. However, in Croqtile, it employs the Single Instruction Multiple Data (SPMD) model as it way to realize parallelization.",
+      "after": "Systems such as CPUs can use asynchronous threads for parallel execution. Croqtile expresses parallel work with the Single Program, Multiple Data (SPMD) model."
+    },
+    {
+      "before": "The above code snippet illustrates the method to create a parallel region with Croqtile keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)",
+      "after": "The \\texttt{parallel} and \\texttt{by} keywords declare six execution instances. Each runs the same SPMD code with a different value of \\texttt{p}. You can think of \\texttt{p} as the index of a six-iteration loop whose iterations are independent and may execute in any order."
+    },
+    {
+      "before": "Despite parallelism, there is one more implication of 'parallel-by'. In the statement, 'p' is an integer associated with its bound [0, 6). You name 'p' as a \\textbf{bounded integer} instead of a simple integer. In some special operations like 'chunkat' (explain later), it requires the \\emph{bounded-integer} to work properly since the bound is essential for its computation.",
+      "after": "The declaration also associates \\texttt{p} with the range \\texttt{[0, 6)}, making it a \\textbf{bounded integer}. Operations such as \\texttt{chunkat} use both its current value and its bound."
+    }
+  ],
+  "F15-S15": [
+    {
+      "before": "Here, 'index' is a \\emph{i-tuple} with 2 elements. Sometimes programmers prefer that the 2 elements being named. This is possible by using the below syntax.",
+      "after": "Here, \\texttt{index} is an \\texttt{ituple} with two elements. You can also name the elements individually:"
+    },
+    {
+      "before": "While 'with-in' may seem like 'parallel-by', it operates differently. One significant difference is 'with-in' statement does not have implication for parallelism. The code block inside 'with-in' statement is sequentially executed. It does nothing more than creating the \\emph{bounded-ituple}.",
+      "after": "A \\texttt{with-in} statement creates bounded indices but does not introduce parallel execution. Its body executes sequentially unless it contains another construct that introduces parallel work."
+    },
+    {
+      "before": "The code snippet requires 'n' and 'n\\_p' to have an identical value in all iterations. Thus inside the 'with-in' block, it is possible to replace'n' whenever 'n\\_p' is required, or the opposite. Such a facility is useful to program many AI kernels. Programmers should use operation '\\textless{}-\\textgreater{}' to establish such relations.",
+      "after": "The relation \\texttt{n \\textless{}-\\allowbreak{}\\textgreater{} n\\_\\allowbreak{}p} requires the two indices to have the same value in every iteration. Within the \\texttt{with-in} block, either name can be used wherever the other is required. Such bindings are useful when expressing AI kernels."
+    },
+    {
+      "before": "\\subsection*{The 'with-in' Block and 'where' Clause}\n\nSimilar to 'parallel-by', 'with-in' statement can also bind \\emph{i-tuples} to a \\emph{mdspan}. The below code shows an example.",
+      "after": "\\subsection*{The 'with-in' Block and 'where' Clause}\n\nSimilar to 'parallel-by', 'with-in' statement can also bind \\emph{i-tuples} to a \\emph{mdspan}. The following code shows an example."
+    }
+  ],
+  "F31-S03": [
+    {
+      "before": "This invokes two parallel threads to execute. However, it is not possible for the two threads to work on different data, which is normally required by SPMD programs for a data-parallel processing purpose.",
+      "after": "This creates two execution instances. Without a named index, the code cannot use that index to select different data for each instance, as SPMD programs commonly need to do."
+    },
+    {
+      "before": "\n\nYou name the code inside \\texttt{\\{\\}} as the SPMD-style \\textbf{parallel execution block}, and the instances of the code as the \\textbf{parallel thread}. In this example:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{parallel}}: This keyword initiates the \\emph{parallel execution block}.\n\\item \\textbf{\\texttt{p}}: It is the \\textbf{parallel variable}. It contains an integer value identifying the current \\emph{parallel thread}. Each \\emph{parallel thread} runs the same code but with a different value of \\emph{parallel variable} \\texttt{p}.\n\\item \\textbf{\\texttt{by 6}}: It indicates that there are totally 6 \\emph{parallel thread}s. Thus, the \\emph{parallel variable} \\texttt{p} ranges from \\texttt{0} to \\texttt{5} across different threads.\n\\end{itemize}\n\nIn some scenarios, programers may not require an explicit \\emph{parallel variable} for a simple parallel construct. It is possible to omit it:",
+      "after": "\n\nYou name the code inside \\texttt{\\{\\}} as the SPMD-style \\textbf{parallel execution block}, and the instances of the code as the \\textbf{parallel thread}. In this example:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{parallel}}: This keyword initiates the \\emph{parallel execution block}.\n\\item \\textbf{\\texttt{p}}: It is the \\textbf{parallel variable}. It contains an integer value identifying the current \\emph{parallel thread}. Each \\emph{parallel thread} runs the same code but with a different value of \\emph{parallel variable} \\texttt{p}.\n\\item \\textbf{\\texttt{by 6}}: It indicates that there are totally 6 \\emph{parallel thread}s. Thus, the \\emph{parallel variable} \\texttt{p} ranges from \\texttt{0} to \\texttt{5} across different threads.\n\\end{itemize}\n\nIn some scenarios, programmers may not require an explicit \\emph{parallel variable} for a simple parallel construct. It is possible to omit it:"
+    }
+  ],
+  "F31-S04": [
+    {
+      "before": "This achieves the same parallelization as the previous example. It uses the \\textbf{comma-separated} \\emph{parallel-by} expression, assuming there is no code in the between two parallel levels.",
+      "after": "This comma-separated form expresses the same two parallel levels as the nested version, provided there is no intervening code between those levels."
+    }
+  ],
+  "F31-S05": [
+    {
+      "before": "Targets like  allow a single parallelism level to be divided into up to three sub-levels. In Croqtile, \\texttt{ituple} and \\texttt{mdspan} are used for this syntax:",
+      "after": "Some targets allow a single parallel level to be divided into up to three coordinate axes. Croqtile expresses these axes using \\texttt{ituple} and \\texttt{mdspan}:"
+    }
+  ],
+  "F32-S06": [
+    {
+      "before": "Notice the ordering of the loop nesting: the \\textbf{left-to-right} order of the \\emph{bounded variable}s within a \\emph{bounded ituple} corresponds to the \\textbf{outer-to-inner} nesting of the loops. This ordering is essential for correct code behavior constructing sometimes.",
+      "after": "The left-to-right order of indices in a bounded tuple determines the outer-to-inner nesting of the loops. Keep this ordering in mind when the order of iteration matters."
+    }
+  ],
+  "F32-S08": [
+    {
+      "before": "As seen in the code, the \\texttt{y}-loop starts at \\texttt{1}. The \\emph{range expression} consists of a \\emph{bounded variable}, followed by braced enclosing three colon-separated integer values, like the below form:",
+      "after": "The \\texttt{y} loop starts at \\texttt{1}. A range expression consists of a bounded variable followed by three colon-separated integer fields in parentheses:"
+    }
+  ],
+  "F32-S10": [
+    {
+      "before": "Bounded variables and the loops derived from them are what data movement code is built from. You introduced the syntax and behavior of these constructs, including how to apply range operations to modify loop iterations and the importance of understanding the current and upper-bound values of bounded variables.",
+      "after": "Bounded variables define iteration ranges, and range expressions adjust the starting point, ending point, and stride. Reading these loops requires distinguishing a variable's current value from its upper bound."
+    },
+    {
+      "before": "The loop deriving part is important for implementing multi-buffering data movement, which is essential for building high-performance kernels and will be introduced in optimization chapters later.",
+      "after": "Deriving a loop this way is useful for multi-buffered data movement, where the loop may skip a tile loaded before iteration begins. Section 3.6.2 develops this pattern."
+    }
+  ],
+  "F29-S02": [
+    {
+      "before": "In the previous chapter, you learned that a \\emph{bounded variable} defined by a \\texttt{parallel-by} or \\texttt{with-in} statement is either an \\emph{integer} or an \\emph{ituple} with one or more bounds. You also learned how to use the \\emph{current value} and \\emph{upper-bound value} of the \\emph{bounded variable} to construct loops in \\texttt{foreach} blocks, where the \\emph{upper-bound} is implicitly used.",
+      "after": "A bounded variable declared by \\texttt{parallel-by} or \\texttt{with-in} is an integer or tuple with associated bounds. A \\texttt{foreach} loop uses its current value as the index and its upper bound to determine the iteration range."
+    }
+  ],
+  "F29-S06": [
+    {
+      "before": "Now, you may try to write a full tileflow program. Section~\\ref{sec:3-6-1} puts the pieces together into a complete tileflow program.",
+      "after": "Section 3.6.1 combines these constructs in a complete Tileflow program."
+    }
+  ],
+  "F14-S08": [
+    {
+      "before": "In this code, the \\texttt{\\_\\_co\\_\\_}-prefixed croqtile function accepts two inputs \\texttt{lhs} and \\texttt{rhs}, both with the shape \\texttt{[6, 17, 128]} and the element type of \\texttt{s32} (signed 32-bit integer). And the output is defined to have the same shape and type as the inputs.",
+      "after": "The \\texttt{\\_\\_co\\_\\_} function accepts \\texttt{lhs} and \\texttt{rhs}, both with shape \\texttt{[6, 17, 128]} and element type \\texttt{s32} (signed 32-bit integer). The output has the same shape and element type."
+    },
+    {
+      "before": "Inside the \\texttt{parallel-by} block, a \\texttt{with-in} block binds the symbol \\texttt{index} to two values, \\texttt{17} and \\texttt{4}. In Croqtile, \\texttt{index} is referred to as a \\texttt{bounded-ituple} with two \\texttt{bounded} values, which can be used in \\texttt{foreach} statements. (You will explain \\texttt{bounded} types in later chapters.)",
+      "after": "Inside the \\texttt{parallel-by} block, \\texttt{with-in} binds \\texttt{index} to the bounds \\texttt{[17, 4]}. This two-dimensional bounded tuple supplies the indices for the \\texttt{foreach} loop."
+    },
+    {
+      "before": "This is illustrated in the below figure:",
+      "after": "The following figure shows how the bounds determine the chunk shape and the indices select a chunk."
+    },
+    {
+      "before": "Next, the statement \\texttt{local s32 [lhs\\_\\allowbreak{}load.\\allowbreak{}span] l1\\_\\allowbreak{}out;} defines a per-parallel-thread buffer. Note here it takes its shape from the expression \\texttt{lhs\\_load.span}, which represents the tiled block. The buffer is used to store the output data in the subsequent \\texttt{call} statement. The \\texttt{call} statement invoke the \\emph{device function} named \\texttt{kernel} to perform computations. Once the computation is complete, another DMA statement moves the output data from the \\texttt{local} buffer back to host. This complete one iteration.",
+      "after": "The declaration \\texttt{local s32 [lhs\\_\\allowbreak{}load.\\allowbreak{}span] l1\\_\\allowbreak{}out;} creates a buffer for each parallel instance, with the same shape as the loaded chunk. The subsequent \\texttt{call} invokes the device function \\texttt{kernel}, which writes its result to that buffer. A final DMA statement copies the result back to the host output, completing the iteration."
+    },
+    {
+      "before": "\\item The source expression \\texttt{lhs.\\allowbreak{}chunkat(p, index)} is referred to as the \\textbf{chunkat expression} in Croqtile. Here, \\texttt{p} and \\texttt{index} tiling factors for the \\texttt{lhs}. Given that \\texttt{lhs} has a shape of \\texttt{[6, 17, 128]} and the upper bounds of \\texttt{p} and \\texttt{index} are \\texttt{6}, \\texttt{17}, and \\texttt{4}, the data chunk size is \\texttt{1x1x32} (\\texttt{6/\\allowbreak{}6, 17/\\allowbreak{}17, 128/\\allowbreak{}4}). In each iteration, a single data chunk is used as the source, with the exact chunk determined by the current values of \\texttt{p} and \\texttt{index}. For example, in parallel thread \\texttt{1} and the iteration \\texttt{\\{16, 2\\}}, the chunk's offset is set to \\texttt{\\{1, 16, 2\\}}.",
+      "after": "\\item The source expression \\texttt{lhs.\\allowbreak{}chunkat(p, index)} selects a chunk of \\texttt{lhs}. The bounds of \\texttt{p} and \\texttt{index}, namely \\texttt{[6, 17, 4]}, determine the partition. Dividing the input shape \\texttt{[6, 17, 128]} by these bounds gives chunk shape \\texttt{[1, 1, 32]}. The current values select the chunk: instance \\texttt{p = 1} and iteration \\texttt{index = \\{16, 2\\}} select chunk \\texttt{(1, 16, 2)}, whose element origin is \\texttt{(1, 16, 64)}."
+    }
+  ],
+  "F28-S01": [
+    {
+      "before": "The data movement is abstracted as the most complicated statement in Croqtile. This section will introduce you  the basic \\emph{DMA statement} structure and the future variable they produce.",
+      "after": "The DMA statement describes data movement and can name its result with a future. Its syntax specifies the operation, source, and destination."
+    }
+  ],
+  "F28-S03": [
+    {
+      "before": "A DMA statement in Croqtile can be an asynchronous entity, meaning that the code following an \\textbf{asynchronous DMA} executes in parallel with the DMA statement. For a \\emph{asynchronous DMA}, explicit synchronization is required before using the DMA result.",
+      "after": "A DMA statement can execute asynchronously, allowing subsequent code to run while the transfer is in progress. An asynchronous transfer requires explicit synchronization before its result is used."
+    }
+  ],
+  "F28-S04": [
+    {
+      "before": "Executing the statement \\texttt{wait f0;} causes the program to check if \\texttt{data0} has been fully transferred to \\texttt{shared} storage. This synchronizes the main execution flow with the asynchronous DMA of \\texttt{f0}. Therefore programmers must make sure there is no \"dangling future* left in your code.",
+      "after": "The statement \\texttt{wait f0;} waits until the transfer from \\texttt{data0} to \\texttt{shared} storage is complete, synchronizing subsequent execution with that transfer. Ensure that every asynchronous result is awaited before it is used."
+    }
+  ],
+  "F28-S06": [
+    {
+      "before": "In this example, the destination of the second DMA operation is specified as the storage location \\texttt{shared}. This requires the compiler to allocate storage accordingly, making it equivalent to the first DMA operation. In practice, you recommend programmers use storage locations as destinations, as Croqtile can deduce the destination shape from the \\textbf{DMA statement}.",
+      "after": "The second DMA statement names \\texttt{shared} as its destination, so the compiler allocates the buffer with the inferred shape. It is equivalent to the first statement's explicit buffer declaration. Naming a storage location is convenient when the compiler can infer the destination shape."
+    }
+  ],
+  "F28-S07": [
+    {
+      "before": "In this example, you use \\texttt{.span} built-in member function to retrieve the shape of \\texttt{f0}'s destination buffer, and \\texttt{.data} to retrieve the \\emph{spanned} data of \\texttt{f1}'s destination. In addition, the \\textbf{ElementCount} operation on the \\emph{mdspan} of the destination buffer of \\texttt{f1}. The \\textbf{ElementCount} operation returns the number of elements in an \\textbf{mdspan}, which is useful in many scenarios.",
+      "after": "Here, \\texttt{.span} retrieves the shape of the destination buffer associated with \\texttt{f0}, and \\texttt{.data} retrieves the destination data associated with \\texttt{f1}. Applying the element-count operation to \\texttt{f1}'s destination shape returns its total number of elements."
+    }
+  ],
+  "F28-S08": [
+    {
+      "before": "You explored both synchronous and asynchronous operations, and saw how Croqtile supports advanced data handling with various \\emph{DMA Operation Types}. Finally, you discovered how futures help manage async operations and retrieve buffers, ensuring smooth data flow and synchronization.",
+      "after": "DMA statements support synchronous and asynchronous transfers and several movement operations. Futures name the results, expose destination buffers, and provide handles for waiting on asynchronous work."
+    },
+    {
+      "before": "In the next section, you will step further to the \\emph{Data Expression} to see how to make data tiling/blocking happen.",
+      "after": "Section 2.8 explains how data expressions select tiles or blocks within a buffer."
+    }
+  ],
+  "F07-S02": [
+    {
+      "before": "The practical rule: keep \\texttt{if} conditions  (all 32 threads agree) whenever possible.",
+      "after": "Whenever possible, keep \\texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree."
+    },
+    {
+      "before": "\n\nAll threads in scope evaluate the condition. Threads where it is false skip the body. --- Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.\n\n\\textbf{When to use \\texttt{if}:} data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values --- loop indices, input data, tile coordinates.\n\nWhenever possible, keep \\texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree.",
+      "after": "\n\nAll threads in scope evaluate the condition. Threads where it is false skip the body. Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.\n\n\\textbf{When to use \\texttt{if}:} data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values --- loop indices, input data, tile coordinates.\n\nWhenever possible, keep \\texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree."
+    }
+  ],
+  "F07-S12": [
+    {
+      "before": "Sometimes you need to early return from a \\texttt{parallel} block. The \\texttt{yield} keyword generates a \\texttt{return;} instruction that leaves the device code for that instance.",
+      "after": "Use \\texttt{yield} to return early from a \\texttt{parallel} block. It generates a \\texttt{return;} instruction that ends device execution for the current instance."
+    }
+  ],
+  "F35-S05": [
+    {
+      "before": "Programmers must be careful to use Croqtile events, or else it is possible to result in deadlocks, which is hard to debug.",
+      "after": "Pair event triggers and waits carefully. Incorrect ordering can cause deadlocks that are difficult to diagnose."
+    },
+    {
+      "before": "Events let asynchronous \\texttt{inthreads} blocks agree on an order. The \\texttt{trigger} statements can set events and event arrays to \\emph{SET} state, while \\texttt{wait} statements block execution, and reset events to \\emph{UNSET} until they are triggered.",
+      "after": "Events order asynchronous \\texttt{inthreads} regions. A \\texttt{trigger} sets an event or event array to \\textbf{SET}. A \\texttt{wait} blocks until the event is triggered, then resets it to \\textbf{UNSET}."
+    }
+  ],
+  "F15-S20": [
+    {
+      "before": "In the above example, program calls the existing C++ function 'bar' using Croqtile keyword 'call', which is intuitive.",
+      "after": "The example uses the Croqtile \\texttt{call} keyword to invoke the existing C++ function \\texttt{bar}."
+    },
+    {
+      "before": "\\subsection*{Function Calls and Call Croqtile Function}\n\nCroqtile functions are not allowed to call another Croqtile function. However, inside a Croqtile function, it is normal to have function calls to C++ kernels.",
+      "after": "\\subsection*{Calling C++ Functions}\n\nCroqtile functions are not allowed to call another Croqtile function. However, inside a Croqtile function, it is normal to have function calls to C++ kernels."
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Function Calls and Call Croqtile Function}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Calling C++ Functions}]"
+    }
+  ],
+  "F23-S03": [
+    {
+      "before": "Croqtile support C-style comments, either \\texttt{/*...*/} or \\texttt{//...}, leveraging the capability croqtile preprocessor has provided.",
+      "after": "Croqtile supports both C-style block comments (\\texttt{/*...*/}) and line comments (\\texttt{//...}) through its preprocessor."
+    }
+  ],
+  "F23-S04": [
+    {
+      "before": "Croqtile also support conditional compilation which C/C++ programs used a lot. This includes \\texttt{\\#if}/\\texttt{\\#ifdef}/\\texttt{\\#ifndef}/\\texttt{\\#else}/\\texttt{\\#endif}. The below code snippet showcases the usage:",
+      "after": "Croqtile supports conditional compilation with directives including \\texttt{\\#if}, \\texttt{\\#ifdef}, \\texttt{\\#ifndef}, \\texttt{\\#else}, and \\texttt{\\#endif}:"
+    },
+    {
+      "before": "In this way, it also make host and croqtile code be controlled within the same preprocess method.",
+      "after": "The same preprocessing conditions can control both host C++ and Croqtile code."
+    }
+  ],
+  "F24-S01": [
+    {
+      "before": "In current implementation of Croqtile functions, it invokes \\emph{device function} to implement the specified target computations. This section will learn the detail about the \\emph{call statement}s in Croqtile.",
+      "after": "Croqtile uses device functions to perform target computations. The \\texttt{call} statement specifies where to invoke a device function and which arguments to pass."
+    }
+  ],
+  "F24-S02": [
+    {
+      "before": "To call a device function in the Croqtile function, it requires the call statement explicitly led by \\texttt{call}.",
+      "after": "To invoke a device function from a Croqtile function, use a statement beginning with \\texttt{call}."
+    }
+  ],
+  "F24-S03": [
+    {
+      "before": "Here, the keyword \\texttt{call} is followed by a function name \\texttt{func-name}, an optional \\texttt{\\textless{}\\textgreater{}} enclosed template arguments, which are comma-separated. The \\texttt{arguments} are also comma-separated and listed inside \\texttt{()} like normal C/C++ functions.",
+      "after": "After \\texttt{call}, write the function name and, optionally, comma-separated template arguments in angle brackets. Ordinary arguments follow in parentheses, separated by commas as in C/C++."
+    }
+  ],
+  "F24-S04": [
+    {
+      "before": "In addition, \\textbf{operations on floating-point are not supported} by Croqtile till now, considering the floating is not useful for tileflow programs. Instead, they are typically values for device computation, which the \\emph{tileflow program}s pass such values directly to device kernels.",
+      "after": "Croqtile does not perform arithmetic on these floating-point scalar values in Tileflow code. Instead, the Tileflow program passes them to device functions for computation."
+    },
+    {
+      "before": "\\subsection*{The Convention: Allowed Argument Types}\n\nIn current implementation, the argument must be either:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{Spanned Data} type, or\n\\item Scalar \\emph{Integer} type, or\n\\item Scalar \\emph{Floating-Point} type.\n\\end{itemize}\n\nHere, the scalar \\emph{integer} type only includes \\texttt{int}, whereas the scalar \\emph{floating-point type} includes \\texttt{float}, \\texttt{double}, \\texttt{half}, \\texttt{bfp16}, and \\texttt{half8}. However, since the target-platform differs in floating-point support, the \\emph{floating-point type} parameter also varies for different target platforms.\n\nCroqtile does not perform arithmetic on these floating-point scalar values in Tileflow code. Instead, the Tileflow program passes them to device functions for computation.\n\nThe below code showcases an example:",
+      "after": "\\subsection*{The Convention: Allowed Argument Types}\n\nIn current implementation, the argument must be either:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{Spanned Data} type, or\n\\item Scalar \\emph{Integer} type, or\n\\item Scalar \\emph{Floating-Point} type.\n\\end{itemize}\n\nHere, the scalar \\emph{integer} type only includes \\texttt{int}, whereas the scalar \\emph{floating-point type} includes \\texttt{float}, \\texttt{double}, \\texttt{half}, \\texttt{bfp16}, and \\texttt{half8}. However, since the target-platform differs in floating-point support, the \\emph{floating-point type} parameter also varies for different target platforms.\n\nCroqtile does not perform arithmetic on these floating-point scalar values in Tileflow code. Instead, the Tileflow program passes them to device functions for computation.\n\nThe following code showcases an example:"
+    },
+    {
+      "before": "\n\nIn this example, it passes different data types as arguments from Croqtile function to the device functions, which matches the device parameters exactly. Note that in the device function, the **corresponding parameter type of the \\emph{spanned data} argument is simply the pointer of its \\_element type\\_**, where the shape information is dropped. For example, the \\texttt{foo}'s argument \\texttt{p} is \\texttt{float*}, which corresponds the \\emph{spanned data} argument \\texttt{input.data}. In Croqtile, you names the parameter as a \\textbf{decayed} pointer of the \\emph{spanned data}. If using other form like \\texttt{float p[]}, it will trigger failure in target compilation stage.\n\nFor some types like \\texttt{f16}, and \\texttt{bf16}, there may not be native target support of such types, it is possible to utilize \\texttt{croqtile::f16} and \\texttt{croqtile::bf16} to handle such types.",
+      "after": "\n\nIn this example, it passes different data types as arguments from Croqtile function to the device functions, which matches the device parameters exactly. Note that in the device function, the **corresponding parameter type of the \\emph{spanned data} argument is simply the pointer of its \\_element type\\_**, where the shape information is dropped. For example, the \\texttt{foo}'s argument \\texttt{p} is \\texttt{float*}, which corresponds the \\emph{spanned data} argument \\texttt{input.data}. In Croqtile, the parameter is described as a \\textbf{decayed} pointer of the \\emph{spanned data}. If using other form like \\texttt{float p[]}, it will trigger failure in target compilation stage.\n\nFor some types like \\texttt{f16}, and \\texttt{bf16}, there may not be native target support of such types, it is possible to utilize \\texttt{croqtile::f16} and \\texttt{croqtile::bf16} to handle such types."
+    }
+  ],
+  "F14-S07": [
+    {
+      "before": "You repeat the code as below:",
+      "after": "The device helper from the earlier example is repeated below:"
+    },
+    {
+      "before": "Here, the \\texttt{extern \"C\"} annotation replaces the \\texttt{\\_\\_device\\_\\_} keyword used in  target, as  requires C-linkage for the device functions.",
+      "after": "In this separate-source example, \\texttt{extern \"C\"} replaces \\texttt{\\_\\_device\\_\\_} because the target requires C linkage for device functions."
+    }
+  ],
+  "F14-S09": [
+    {
+      "before": "You are now aware that a Croqtile program consists of three parts, with the \\emph{tileflow program} being the core. This part is transpiled into target source code during the compilation process. The call chain typically flows from the host to the tileflow program, and then from the tileflow program to the device code.",
+      "after": "A Croqtile program consists of host code, Tileflow code, and device code. Compilation translates the Tileflow functions into target source. The call chain typically runs from the host to a Tileflow function, then to a device function."
+    },
+    {
+      "before": "You may have noticed that Croqtile not only abstracts DMA operations into higher-level semantics but also combines iteration and tiling for ease of use. This makes Croqtile code concise and expressive. In the following chapters, you will delve deeper into Croqtile's syntax and semantics to explore its full potential.",
+      "after": "Croqtile combines higher-level DMA operations with iteration and tiling, so a compact program can express the full data flow. The following sections explain the syntax and semantics of these constructs."
+    }
+  ],
+  "F31-S08": [
+    {
+      "before": "For targets like , the \\texttt{parallel-by} block not only specifies the number of parallel threads but also defines the boundary between host and device code, leveraging Croqtile's ability to manage heterogeneity. Specifically:",
+      "after": "For targets that separate host and device execution, \\texttt{parallel-by} specifies both the parallel instance count and the boundary between host and device code:"
+    },
+    {
+      "before": "For those familiar with , this is analogous to a  occurring at the \\texttt{parallel-by} statement. However, Croqtile abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.",
+      "after": "The \\texttt{parallel-by} statement therefore also marks a device-program launch. Croqtile represents this boundary through the same SPMD parallelism model used to describe the work."
+    }
+  ],
+  "F15-S02": [
+    {
+      "before": "It aims to simplify the daily tasks of engineers responsible for crafting high-performance kernels. By leveraging Croqtile, the programming process becomes more accessible, allowing engineers to optimize these critical processes with greater ease and efficiency.",
+      "after": "Croqtile aims to simplify the everyday work of developing high-performance kernels, making it easier to express and optimize their computation and data movement."
+    }
+  ],
+  "F15-S03": [
+    {
+      "before": "Croqtile is the DSL code embedded within C++. The Croqtile compiler performs the source-to-source translation of the Croqtile function to be C++ code. It implicitly includes \"croqtile.h\", which bridges the translated code to work properly with other C++ code. The below code snippet showcases an example.",
+      "after": "Croqtile is a DSL embedded in C++. Its compiler translates Croqtile functions into C++ and implicitly includes \\texttt{croqtile.h} so the generated code can interoperate with ordinary C++. For example:"
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Embedding Croqtile within C}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Embedding Croqtile within C++}]"
+    }
+  ],
+  "F15-S04": [
+    {
+      "before": "Among the four type categories, \\emph{scalar} and \\emph{ituple} could be well accepted consider it maps to elements of existing general purpose programming languages. However, the \\emph{spanned type}, and \\emph{bounded type} are specific to the domain. The following sections will show the detail.",
+      "after": "Scalar and \\texttt{ituple} values resemble familiar constructs in general-purpose languages. Spanned and bounded types are specific to Croqtile's domain; the following sections explain their roles."
+    },
+    {
+      "before": "\\subsection*{Variables and Types}\n\nCroqtile introduces four fundamental type categories: scalar-type, spanned-type, integer-tuple-type (ituple-type) and bounded-type. These types serve for different purposes.\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{Scalar Type}. It is designed to fullfil the requirement of program control. It consist of \\emph{Integer Type} and \\emph{Boolean Type}.\n\\item \\textbf{Spanned Type}. It represents the data type (normally the tensor) for computation. Apart from referencing the raw data, a \\emph{spanned type} also associates data with a shape representing by multi-dimensional ranges. The 'multi-dimensional ranges' is named 'mdspan'. It is useful for tiling, etc, which is introduced soon.\n\\item \\textbf{Integer Tuple (I-Tuple) Type}. It represents a group of integer values. A common usage of \\emph{i-tuple} is to introduce the bound of multi-dimensional data.\n\\item \\textbf{Bounded (Integer/ITuple) Type}. This is the special type that is used to simplify data (sub-zone) reference. And it works with loop construct to iteratively process data.\n\\end{itemize}\n\nScalar and \\texttt{ituple} values resemble familiar constructs in general-purpose languages. Spanned and bounded types are specific to Croqtile's domain; the following sections explain their roles.",
+      "after": "\\subsection*{Variables and Types}\n\nCroqtile introduces four fundamental type categories: scalar-type, spanned-type, integer-tuple-type (ituple-type) and bounded-type. These types serve for different purposes.\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{Scalar Type}. It is designed to fulfill the requirement of program control. It consists of \\emph{Integer Type} and \\emph{Boolean Type}.\n\\item \\textbf{Spanned Type}. It represents the data type (normally the tensor) for computation. Apart from referencing the raw data, a \\emph{spanned type} also associates data with a shape represented by multi-dimensional ranges. The 'multi-dimensional ranges' is named 'mdspan'. It is useful for tiling, etc, which is introduced soon.\n\\item \\textbf{Integer Tuple (I-Tuple) Type}. It represents a group of integer values. A common usage of \\emph{i-tuple} is to introduce the bound of multi-dimensional data.\n\\item \\textbf{Bounded (Integer/ITuple) Type}. This is the special type that is used to simplify data (sub-zone) reference. And it works with loop construct to iteratively process data.\n\\end{itemize}\n\nScalar and \\texttt{ituple} values resemble familiar constructs in general-purpose languages. Spanned and bounded types are specific to Croqtile's domain; the following sections explain their roles."
+    }
+  ],
+  "F15-S06": [
+    {
+      "before": "A spanned type is a \\textbf{Composite Type}. It consists of a \\textbf{fundamental type}, and a \\textbf{multi-dimensional-span(mdspan) type}. Neither the \\emph{fundamental type} nor the \\emph{mdspan} is a \\emph{complete type}. It implies that neither of them can type a data with storage. In Croqtile, you name them as \\emph{partial types}.",
+      "after": "A spanned type combines a \\textbf{fundamental element type} with a \\textbf{multidimensional span (\\texttt{mdspan})}. Neither component alone is a complete type for data with storage; Croqtile calls them \\textbf{partial types}."
+    },
+    {
+      "before": "The reason for making the type be composition of two is to specifically manipulate \\emph{mdspan} alone. This is crucial in ML scenarios where data are always organized as multi-dimensional. It is very common for the programmers to tile the data into smaller blocks/chunks, and move them across storage hierarchy. Therefore, manipulating the \\_shape\\_ (represented by \\_mdspan\\_) of multi-dimensional data plays a vital role.",
+      "after": "Separating these components lets a program manipulate shapes independently of element types. This is useful for multidimensional machine learning data: tiling divides it into smaller blocks, and data movement transfers those blocks between storage levels. Shape calculations describe these operations."
+    },
+    {
+      "before": "In the following sections, this section shows how to define such partial types and how to compose partial types into a complete type for declaring/defining multi-dimensional data purpose.",
+      "after": "The following examples define these partial types and combine them into complete types for multidimensional data declarations."
+    }
+  ],
+  "F15-S07": [
+    {
+      "before": "Unlike most type systems, \\emph{mdspan}, comes as an partial entity for typing. Here you claims it as \\emph{partial} because Croqtile program is unable to define data as a \\emph{mdspan} type. However, \\emph{mdspan} itself can be defined solely. Such design is based on the oberservation that loop tiling/blocking cares nothing but the shape of multiple dimension data. Therefore, Croqtile allows programmers to manipulate \\emph{mdspan} regardless the fundanmental type it associated with, to ease the programming about shapes.",
+      "after": "An \\texttt{mdspan} is a partial type: it describes a shape but cannot by itself declare a data buffer. Shape values can nevertheless be defined and manipulated independently. Tiling depends on multidimensional shape rather than element type, so this separation simplifies shape calculations."
+    },
+    {
+      "before": "Meanwhile, croqtile compiler could apply type checking on \\emph{mdspan} to reveal code errors as early (ahead of execution, when applies) as possble.",
+      "after": "The compiler also checks \\texttt{mdspan} expressions to detect errors as early as possible, before execution when the necessary information is available."
+    },
+    {
+      "before": "As illustrated, a 'mdspan' can be explicitly defined with \\emph{mdspan} partial-type keyword as annotated, optionally with a '\\textless{}' '\\textgreater{}' enclosed total dimension value. It is also possible to define a mdspan without type annotation. As shown in definition of 'd' above. (Note: 'mds' and 'd' are of the \\textbf{dependent type}, considering the type depends on the evaluation of 'a' and 'b'. Programers may provides 'a' and 'b' with runtime values. However, in this way, some runtime check are paid consequently)",
+      "after": "An \\texttt{mdspan} can be declared explicitly, with an optional rank in angle brackets, or inferred from its initializer, as in the declaration of \\texttt{d}. The types of \\texttt{mds} and \\texttt{d} depend on the values of \\texttt{a} and \\texttt{b}. If these values are supplied at runtime, some checks must also occur at runtime."
+    },
+    {
+      "before": "For C++ programmers, you may think a mdspan as the trait of a multiple dimensional array, where it describes a multi-level-range. For example, 'sp' in the above example defines two-level of ranges, ranging from 0 to 6, and 0 to 7 separately.",
+      "after": "For a C++ programmer, an \\texttt{mdspan} describes the ranges of a multidimensional array. In the example, \\texttt{sp} has two dimensions, with indices from 0 to 6 and from 0 to 7, respectively."
+    },
+    {
+      "before": "As a conseqeunce, you may derive a mdspan from existing one as the below code snippet:",
+      "after": "You can therefore derive a new \\texttt{mdspan} from an existing one:"
+    },
+    {
+      "before": "With such a facility, it is very convinient to apply tiling over multiple-dimensional spans in your Croqtile code. Considering that tiling operation is always required in constructing the high-performance kernels, Croqtile has provided syntax suger to make the work even easier:",
+      "after": "This makes tiling multidimensional shapes convenient. Because tiling is common in high-performance kernels, Croqtile provides a shorter form for the same calculation:"
+    },
+    {
+      "before": "This code works the same way as the previous one, but obviously in a much simpler syntax. This follows one of Croqtile's design philosophy --- To enable functionalities with minimal code whenever possible.",
+      "after": "This version computes the same shape with less code, following Croqtile's aim of expressing common operations concisely."
+    },
+    {
+      "before": "Except for defining a mdspan in the above \\emph{dimension-wise} way, Croqtile also support to define mdspan definition with other methods. You will introduce such methods when \\emph{i-tuple} is revealed.",
+      "after": "An \\texttt{mdspan} can also be defined using operations on whole tuples. The \\texttt{ituple} discussion explains those forms."
+    },
+    {
+      "before": "\n\nIn the above example, the expression 'sp(0)' reasons about the first dimension value of mdspan 'sp'. The dimension values are in essence integer values, which are suitable for integer arithmetics.\n\nYou can therefore derive a new \\texttt{mdspan} from an existing one:",
+      "after": "\n\nIn the above example, the expression 'sp(0)' reasons about the first dimension value of mdspan 'sp'. The dimension values are in essence integer values, which are suitable for integer arithmetic.\n\nYou can therefore derive a new \\texttt{mdspan} from an existing one:"
+    }
+  ],
+  "F15-S22": [
+    {
+      "before": "Croqtile introduces a novel approach to SPMD programming. It favors C++-style coding and is embedded within C++. However, its primary focus is on alleviating the burden of low-level programming details, particularly those related to data manipulation across various memory layers through DMA operations. At times, it is also referred to as the dataflow programming DSL. You developed this tool to support the daily task of constructing high-performance kernels. Your aim is to enable programmers to focus less on the intricacies of language construction and more on higher-level conceptual thinking.",
+      "after": "Croqtile expresses SPMD programs in a C++-style DSL embedded in C++. It reduces the low-level work of moving data between storage levels, particularly through DMA, and is therefore also described as a dataflow DSL. Its purpose is to support everyday kernel development by letting programmers focus on the organization of computation rather than repetitive implementation details."
+    },
+    {
+      "before": "You wish you find it functions as expected. And you are looking forward to any feedback for continuous improvement.",
+      "after": "Feedback from using these constructs helps guide further improvements to the language."
+    }
+  ],
+  "F18-S02": [
+    {
+      "before": "The primary focus of a Tileflow program is to manipulate large datasets by moving them around. In some terminology, the input and output of a Croqtile function are classified as \"input data\" and \"output data,\" respectively. Meanwhile, any other storage is referred to as \"buffers.\" This conceptually distinguishes between \"external\" and \"internal\" memory from a function's perspective. However, both \"data\" and \"buffer\" refer to storage positions. In Croqtile, both are typed as \\textbf{spanned}, reflecting that they are data/buffers associated with an",
+      "after": "A Tileflow program moves and processes large datasets. Function inputs and outputs are often called data, while internal storage is called a buffer. This distinguishes external and internal storage from the function's perspective. Both are represented by \\textbf{spanned types}, which associate stored data with a shape."
+    }
+  ],
+  "F18-S07": [
+    {
+      "before": "The lifetime of storage allocated inside a \\emph{croqtile function} is managed by the Croqtile compiler for efficient use. The compiler attempts to reuse buffers as much as possible if their lifetimes do not overlap. Therefore users of Croqtile are not necessary to do buffer management.",
+      "after": "The Croqtile compiler manages the lifetime of storage allocated inside a function. It attempts to reuse buffers whose lifetimes do not overlap, so programmers do not need to manage those allocations themselves."
+    }
+  ],
+  "F21-S02": [
+    {
+      "before": "In this illustration, the number after \"VN \\#\" is the value number of an expression. I either represents a constant integer value (known at compile time), a symbolic value (like variable 'a', 'b'), or composition of other value numbers. Here, value number \\#0 and \\#3 represents a reference to constant value, where \\#1, and \\#2 represents reference to the integer-typed variable \"b\" and \"c\". \\#4 represents the value of an addition expression, which gives the sum of \\#2 and \\#3. That is the expression of 'c + 3' when dereferencing all the value numbers. And lastly, value number \\#5 represents the list of values defined by mdspan 'a' symbolically. With such a definition, you may translate the indexing operations, e.g. \"a(0)\", results in value number \\#0 and thus a constant of 1.",
+      "after": "A number after \"VN \\#\" identifies an expression's value. It may represent a constant integer, a symbolic value, or a combination of other value numbers. Here, \\#0 and \\#3 refer to constants; \\#1 and \\#2 refer to the integer variables \\texttt{b} and \\texttt{c}. Value \\#4 represents the sum of \\#2 and \\#3, which expands to \\texttt{c + 3}. Value \\#5 represents the list of values in \\texttt{mdspan a}. Indexing \\texttt{a(0)} selects \\#0, the constant 1."
+    }
+  ],
+  "F21-S04": [
+    {
+      "before": "In current implement, the value numbering process in a syntax-directed way. It traverse the Abstract Syntax Tree nodes and generate value numbers when the node contains an expression.",
+      "after": "The current value-numbering implementation follows the syntax tree. It traverses the abstract syntax tree and assigns a value number whenever a node contains an expression."
+    },
+    {
+      "before": "Notably, for simplicity, current signature is an string of expression. This can be improved by hashing later (like most value numbering process does).",
+      "after": "For simplicity, the current implementation represents an expression signature as a string. A hash-based representation could replace it later, as in many value-numbering implementations."
+    },
+    {
+      "before": "\\subsection*{From Expressions to Value Numbers}\n\nThe current value-numbering implementation follows the syntax tree. It traverses the abstract syntax tree and assigns a value number whenever a node contains an expression.\n\nThe method of generating value numbers is simple. For each expression, it takes the expression as the input, and returns corresponding value number.\n\nMore specifically, it:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item Generates a signature from an expression.\n\\item If the signature has already existed, return the associated value number by looking up the value number table.\n\\item Or else, it associates the signature with a new value number in the value number table, and return it.\n\\end{itemize}\n\nFor simplicity, the current implementation represents an expression signature as a string. A hash-based representation could replace it later, as in many value-numbering implementations.\n\nIn addition, to handle the symbol definition and symbol reference, it follows the below rules:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item When an expression is to initialize a symbol (variable or partial type), the symbol is assign the same value number of the expression. More specifically, it associate the signature of the \\emph{scoped} symbol name with the value number in the value number table.\n\\item When an expression references a symbol, it looks up its corresponding signature in the value number table, and return it.\n\\end{itemize}\n\nNote the symbol must use its \\emph{scoped name} for signature generation, since identical names are allowed to be defined in different scope.",
+      "after": "\\subsection*{From Expressions to Value Numbers}\n\nThe current value-numbering implementation follows the syntax tree. It traverses the abstract syntax tree and assigns a value number whenever a node contains an expression.\n\nThe method of generating value numbers is simple. For each expression, it takes the expression as the input, and returns corresponding value number.\n\nMore specifically, it:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item Generates a signature from an expression.\n\\item If the signature already exists, return the associated value number by looking up the value number table.\n\\item Or else, it associates the signature with a new value number in the value number table, and return it.\n\\end{itemize}\n\nFor simplicity, the current implementation represents an expression signature as a string. A hash-based representation could replace it later, as in many value-numbering implementations.\n\nIn addition, to handle the symbol definition and symbol reference, it follows the following rules:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item When an expression is to initialize a symbol (variable or partial type), the symbol is assigned the same value number of the expression. More specifically, it associates the signature of the \\emph{scoped} symbol name with the value number in the value number table.\n\\item When an expression references a symbol, it looks up its corresponding signature in the value number table, and return it.\n\\end{itemize}\n\nNote the symbol must use its \\emph{scoped name} for signature generation, since identical names are allowed to be defined in different scopes."
+    }
+  ],
+  "F21-S06": [
+    {
+      "before": "After value numbering and simplification, each expression is associated with its simplified value number. In Croqtile, this is important step for the shape inference process of the mdspan type.",
+      "after": "After value numbering and simplification, each expression refers to its simplified value number. Croqtile uses these results to infer \\texttt{mdspan} shapes."
+    },
+    {
+      "before": "The \\emph{mdspan} type is a partial type that defines count of fundamental-typed elements. And in programming, together with a fundamental type, e.g, it decides the memory size an \\emph{spanned} object takes.",
+      "after": "An \\texttt{mdspan} describes the number of elements in each dimension. Together with a fundamental element type, it determines the storage size of a spanned object."
+    },
+    {
+      "before": "The shape detail of \\emph{mdspan} could be runtime decided. However, in many scenario, the shape is possible to be fully evaluated to fixed numbers at compile time. In such a scenario, static memory allocation can also be triggered at compile time to best utilize the system memory. Or else, the it requires to generate code to calculate the shapes.",
+      "after": "Some dimensions are determined at runtime; others can be fully evaluated at compile time. Known dimensions allow storage requirements to be determined in advance. Otherwise, the compiler generates code to calculate the shape at runtime."
+    },
+    {
+      "before": "Consequently, except the constant values, it is required to generate expressions back from value numbers.",
+      "after": "For nonconstant values, the compiler must reconstruct expressions from the value numbers."
+    }
+  ],
+  "F21-S08": [
+    {
+      "before": "In Croqtile, you applying the value numbering \\emph{GLOBALLY} but on top of AST. As it is a syntax-directed method without basic blocks and thus lack data flow analysis, it is impossible to inference a shape with varying dimensions.",
+      "after": "Croqtile applies value numbering globally across the abstract syntax tree. This syntax-directed approach does not construct basic blocks or perform data-flow analysis, so it cannot infer shapes whose dimensions change through reassignment."
+    }
+  ],
+  "F30-S01": [
+    {
+      "before": "In the following sections, this section examines the details of constructing loops and implementing parallelism in Croqtile.",
+      "after": "The following sections explain how Croqtile constructs loops and expresses parallel work."
+    }
+  ],
+  "F31-S02": [
+    {
+      "before": "In Croqtile, the code run in parallel are placed into the \\emph{parallel execution block}, which showcasing there are multiple instances of the same code that are executed simultaneously.",
+      "after": "A \\textbf{parallel execution block} contains code executed by multiple instances. Each instance runs the same code with its own parallel index."
+    }
+  ],
+  "F33-S02": [
+    {
+      "before": "It is usually necessary to mask off some \\emph{parallel thread} in programming SPMD code. Programmers may invoke fixed number of parallel threads where the tasks can not evenly divided. Thus masking is necessary to close this gap: it makes only parts of the threads to work, while leaving the other threads wait the working threads..",
+      "after": "SPMD programs often launch a fixed number of parallel instances even when the work does not divide evenly among them. Masking limits execution to the instances with valid work and leaves the others inactive."
+    },
+    {
+      "before": "In Croqtile code, the code may be implicitly masked, or explicit masked. Let us dive into the detail.",
+      "after": "Croqtile supports both explicit masks and masking implied by the surrounding code structure."
+    }
+  ],
+  "F33-S03": [
+    {
+      "before": "Thread masking is a concept when programs have a full view of all instances of SPMD code. However, from the SPMD coding practise, which program is limited in single thread view, the thread masking appears as a boolean expression which typically is a comparison result related to thread identifiers.",
+      "after": "A thread mask describes which SPMD instances execute a region. Within the code for a single instance, it appears as a Boolean condition, usually a comparison involving a thread identifier."
+    },
+    {
+      "before": "\\subsection*{Explicit Masking/Condition}\n\nA thread mask describes which SPMD instances execute a region. Within the code for a single instance, it appears as a Boolean condition, usually a comparison involving a thread identifier.\n\nIn the examples that follow, Croqtile experimentally supports explicit masking of the \\texttt{foreach} block, which mask off loop code as a whole. For example:",
+      "after": "\\subsection*{Explicit Masking/Condition}\n\nA thread mask describes which SPMD instances execute a region. Within the code for a single instance, it appears as a Boolean condition, usually a comparison involving a thread identifier.\n\nIn the examples that follow, Croqtile experimentally supports explicit masking of the \\texttt{foreach} block, which masks off loop code as a whole. For example:"
+    }
+  ],
+  "F33-S04": [
+    {
+      "before": "In this example, there exists two-level of parallelization. The code inside \\texttt{parallel p by 6} block but outside \\texttt{parallel q by 2} blocks is only for \\emph{parallel-level-0}. However, for target like , it could invoke 2 parallel threads in practise to execute either code inside \\emph{parallel-level-0} or \\emph{parallel-level-1}. Therefore, the \\emph{parallel-level-0}-only part is as if guarded with a C++ block \\texttt{if (q == 0)}.",
+      "after": "This example has two parallel levels. Code inside \\texttt{parallel p by 6} but outside \\texttt{parallel q by 2} belongs only to the outer level. If the target launches two inner instances for that region, the outer-only code behaves as though guarded by \\texttt{if (q == 0)}."
+    },
+    {
+      "before": "Conditional \\texttt{foreach} Block Since It is possible to guard the \\texttt{foreach} loop with conditions. One direct",
+      "after": "A condition can also guard a \\texttt{foreach} loop, controlling execution of the loop as a whole."
+    },
+    {
+      "before": "\\subsection*{Implicit Masking}\n\nSome code structures in Croqtile imply implicit masking. One typical situation is the multi-level \\texttt{parallel-by} block. The below code showcases an example:",
+      "after": "\\subsection*{Implicit Masking}\n\nSome code structures in Croqtile imply implicit masking. One typical situation is the multi-level \\texttt{parallel-by} block. The following code showcases an example:"
+    }
+  ],
+  "F34-S01": [
+    {
+      "before": "While Croqtile primarily targets SPMD (Single-Program-Multiple-Data) programming, it also supports MPMD (Multiple-Program-Multiple-Data) execution through thread masking. In this section, you demonstrate how to write divergent code using \\texttt{inthreads} block in Croqtile.",
+      "after": "Croqtile primarily uses SPMD (Single Program, Multiple Data), but thread masking also allows different instances to run different code, expressing MPMD (Multiple Program, Multiple Data) behavior. The \\texttt{inthreads} block selects these divergent regions."
+    }
+  ],
+  "F34-S04": [
+    {
+      "before": "Masking is an implementation-level concept. From the perspective of the SPMD programming, you typically claim the code that processes data chunks \\textbf{diverges} because not all the thread instances execute the same code due to masking. And programmers should be aware of that their SPMD code is a combination of:",
+      "after": "From the SPMD programmer's perspective, code \\textbf{diverges} when masking causes different instances to follow different paths. An SPMD program can therefore contain:"
+    },
+    {
+      "before": "In Croqtile, you are able to create divergent code via \\texttt{inthreads} block. Let us dive into the detail.",
+      "after": "Use an \\texttt{inthreads} block to select the instances that execute a divergent region."
+    }
+  ],
+  "F05-S13": [
+    {
+      "before": "This is dense --- here is what each piece does.",
+      "after": "The tile dimensions follow from the parallel bounds:"
+    },
+    {
+      "before": "The first version uses only \\texttt{parallel} and \\texttt{.at()}, before any tiling or data movement is added",
+      "after": "The first version uses \\texttt{parallel} to divide the output and \\texttt{.at()} to read individual elements. It does not yet use explicit data movement."
+    }
+  ],
+  "F40-S07": [
+    {
+      "before": "In the example above, there is a need to tile the matrices in a manner that involves \\textbf{two bounded variables}. This is where the \\textbf{\\texttt{\\#} operator} comes into play, allowing the program to compute the \\textbf{Cartesian product} of two bounded variables (\\textbf{not commutative}).",
+      "after": "The example combines \\textbf{two bounded variables} to select tiles. The \\textbf{\\texttt{\\#} operator} composes their coordinates over a Cartesian product. Operand order matters: the operation is \\textbf{not commutative}."
+    }
+  ],
+  "F15-S18": [
+    {
+      "before": "Except for parallel execution, Croqtile allows one fixed form of async operation: the DMA statement.",
+      "after": "Alongside parallel execution, Croqtile provides asynchronous DMA statements for data movement."
+    },
+    {
+      "before": "Conceptually, a DMA statement is executed asynchronously with the SPMD code. It works quite similar to CPU async thread, except its behavior is limited by the DMA configuration. (CPU allows to program the async thread as will)",
+      "after": "An asynchronous DMA operation runs alongside the SPMD code. Like an asynchronous CPU thread, it allows other work to continue, but its behavior is restricted to the configured data transfer."
+    },
+    {
+      "before": "You might observe the assignment of 'f'. This is the handler for the asynchronous DMA entity. In Croqtile, you refer to it as the 'future' of the DMA operation. Programmers have the option to code the explicit synchronization statement 'wait' to pause the current thread until the 'future' arrives. Otherwise, the thread continues execution in parallel with the DMA operation.",
+      "after": "The assignment names \\texttt{f} as the \\textbf{future} of the asynchronous DMA operation. Use \\texttt{wait f} to pause the current instance until the transfer completes. Until then, the instance can continue executing alongside the transfer."
+    },
+    {
+      "before": "At times, programmers may find it tedious to explicitly define temporal data. Croqtile offers an even simpler syntax:",
+      "after": "Explicit temporary-buffer declarations can be repetitive. Croqtile also allows the following shorter form:"
+    },
+    {
+      "before": "\\subsection*{Async Operation: the DMA Statement}\n\nAlongside parallel execution, Croqtile provides asynchronous DMA statements for data movement.\n\nAn asynchronous DMA operation runs alongside the SPMD code. Like an asynchronous CPU thread, it allows other work to continue, but its behavior is restricted to the configured data transfer.\n\nThe below code showcases one basic DMA statement.",
+      "after": "\\subsection*{Async Operation: the DMA Statement}\n\nAlongside parallel execution, Croqtile provides asynchronous DMA statements for data movement.\n\nAn asynchronous DMA operation runs alongside the SPMD code. Like an asynchronous CPU thread, it allows other work to continue, but its behavior is restricted to the configured data transfer.\n\nThe following code showcases one basic DMA statement."
+    }
+  ],
+  "F28-S05": [
+    {
+      "before": "Here, the \\textbf{DMA configuration}s are enclosed by \\texttt{\\textless{}\\textgreater{}}. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as , are listed below as an example:",
+      "after": "DMA configurations appear in angle brackets, and their contents depend on the operation. The supported syntax and constraints also depend on the target platform."
+    },
+    {
+      "before": "Programmers should note that support for DMA types other than \\texttt{dma.copy} varies by platform. For instance, on the  platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads.",
+      "after": "Support for operations other than \\texttt{dma.copy} varies by platform. A transfer may map to TMA or to a sequence of load instructions issued by cooperating threads."
+    }
+  ],
+  "F38-S01": [
+    {
+      "before": "To aggressively optimize the high-performance computation kernels, one effective method is to overlap computation with DMA (Direct Memory Access) data movement. This approach, known as \\textbf{multi-buffering optimization}, typically requires programmers to manage multiple buffers.",
+      "after": "Overlapping computation with DMA data movement can improve kernel performance. This \\textbf{multi-buffering} pattern requires multiple buffers so one can be filled while another is used for computation."
+    },
+    {
+      "before": "If the programmer want to enable more than two buffers, \\textbf{rotate} statements is required to replace \\textbf{swap}.",
+      "after": "To use more than two buffers, replace \\textbf{swap} with \\textbf{rotate}."
+    },
+    {
+      "before": "\n\nIn croqtile function \\texttt{ele\\_add}, there are two input parameters: 'lhs' and 'rhs', both double-buffered in local storage. You refer to these buffers as 'A' and 'B'. While buffer A is used for computation, buffer B is filled with data via a DMA operation. Once the kernel function completes computation on buffer A, the roles of A and B are swapped: A becomes the buffer for loading the next data chunk, and B becomes the buffer for computation. This process iterates until all data chunks are consumed.\n\nThe implementation divides data movements and computations into three stages, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item the \\textbf{prologue}(line 8-11). It (pre-)load the first chunk of data. In this example, buffer A is pre-loaded with data.\n\\item the \\textbf{body}(line 12-20). It processes the data pre-loaded in last iteration or in prologue, and pre-load the data for next iteration.\n\\item and the \\textbf{epilogue}(line 21-25). It processes the last data chunk only.\n\\end{itemize}\n\nIn the code, futures 'lfB' and 'rfB' are declared as dummies. These dummy futures serve as placeholders and are replaced by DMA statements at lines 13-14. The reason for declaring dummy futures is that the futures ('lfB' and 'rfB') of the DMA invoked in the body stage are used in the epilogue stage (lines 21-22). However, from a lexical scope perspective, defining futures inside the foreach-block (lines 12-20) would not extend their lifetime to their last uses. Therefore, it is necessary to declare 'lfB' and 'rfB' early.\n\nThe \\textbf{swap} statements at lines 18-19 exchange futures to ensure the \\textbf{wait} statement at line 15 functions correctly. Note that only futures with identical DMA operations can be swapped. Additionally, the iteration range of the \\emph{foreach} statement at line 12 is adjusted. \\texttt{foreach y(1:)} means the loop over the \\emph{bounded variable} 'y' starts from the second value up to the upper bound. In line 17, the \\emph{chunkat} expression is also tuned. \\texttt{y - 1} results in the current value of 'y' minus 1, setting up the body stage to work properly with the prologue stage. This adjustment is necessary because the iteration count must be reduced by 1, and the pre-load operation should fetch the 'next' chunk while computation is conducted on the 'current' chunk of data. Alternatively, you can use \\texttt{foreach y(:-1)} and adjust the chunkat expression of the pre-load statements at lines 13-14 to achieve the same effect.\n\nIn line 25, the expression \\texttt{y(-1)} retrieves the 'last value' of 'y' within its bound.\n\nThe \\textbf{select} expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk.\n\nTo use more than two buffers, replace \\textbf{swap} with \\textbf{rotate}.",
+      "after": "\n\nIn croqtile function \\texttt{ele\\_add}, there are two input parameters: 'lhs' and 'rhs', both double-buffered in local storage. You refer to these buffers as 'A' and 'B'. While buffer A is used for computation, buffer B is filled with data via a DMA operation. Once the kernel function completes computation on buffer A, the roles of A and B are swapped: A becomes the buffer for loading the next data chunk, and B becomes the buffer for computation. This process iterates until all data chunks are consumed.\n\nThe implementation divides data movements and computations into three stages, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item the \\textbf{prologue}(line 8-11). It preloads the first chunk of data. In this example, buffer A is pre-loaded with data.\n\\item the \\textbf{body}(line 12-20). It processes the data preloaded in the previous iteration or in prologue, and preloads the data for next iteration.\n\\item and the \\textbf{epilogue}(line 21-25). It processes the last data chunk only.\n\\end{itemize}\n\nIn the code, futures 'lfB' and 'rfB' are declared as dummies. These dummy futures serve as placeholders and are replaced by DMA statements at lines 13-14. The reason for declaring dummy futures is that the futures ('lfB' and 'rfB') of the DMA invoked in the body stage are used in the epilogue stage (lines 21-22). However, from a lexical scope perspective, defining futures inside the foreach-block (lines 12-20) would not extend their lifetime to their last uses. Therefore, it is necessary to declare 'lfB' and 'rfB' early.\n\nThe \\textbf{swap} statements at lines 18-19 exchange futures to ensure the \\textbf{wait} statement at line 15 functions correctly. Note that only futures with identical DMA operations can be swapped. Additionally, the iteration range of the \\emph{foreach} statement at line 12 is adjusted. \\texttt{foreach y(1:)} means the loop over the \\emph{bounded variable} 'y' starts from the second value up to the upper bound. In line 17, the \\emph{chunkat} expression is also tuned. \\texttt{y - 1} results in the current value of 'y' minus 1, setting up the body stage to work properly with the prologue stage. This adjustment is necessary because the iteration count must be reduced by 1, and the pre-load operation should fetch the 'next' chunk while computation is conducted on the 'current' chunk of data. Alternatively, you can use \\texttt{foreach y(:-1)} and adjust the chunkat expression of the pre-load statements at lines 13-14 to achieve the same effect.\n\nIn line 25, the expression \\texttt{y(-1)} retrieves the 'last value' of 'y' within its bound.\n\nThe \\textbf{select} expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk.\n\nTo use more than two buffers, replace \\textbf{swap} with \\textbf{rotate}."
+    }
+  ],
+  "F06-S03": [
+    {
+      "before": "The four-step syntax stays the same regardless of how many threads cooperate on a single contraction. What changes is the \\textbf{cooperation scope} --- And that progression is the story of this section.",
+      "after": "The four-step syntax stays the same as the number of cooperating threads changes. The following examples vary the \\textbf{cooperation scope} while preserving those operations."
+    }
+  ],
+  "F06-S05": [
+    {
+      "before": "Fill, load, multiply, store --- the rhythm is identical. The differences are mechanical:",
+      "after": "The sequence remains fill, load, multiply, and store; the space specifier determines the cooperation scope."
+    }
+  ],
+  "F06-S07": [
+    {
+      "before": "But it needs a \\textbf{metadata operand} \\texttt{me} that encodes which elements are nonzero:",
+      "after": "A sparse contraction also needs a \\textbf{metadata operand} \\texttt{me} that identifies the nonzero elements:"
+    }
+  ],
+  "F07-S01": [
+    {
+      "before": "On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. --- It must \\textbf{serialize} the divergent paths and mask inactive threads.",
+      "after": "On a CPU, each core has its own program counter. When threads share an instruction stream, however, divergent paths execute in sequence while inactive threads are masked."
+    },
+    {
+      "before": "All threads evaluate the condition; threads where it is false are masked (deactivated); This is \\textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.",
+      "after": "All threads evaluate the condition, and those for which it is false are masked. This \\textbf{predicated execution} is simple and widely used, but divergent paths can be expensive."
+    }
+  ],
+  "F08-S09": [
+    {
+      "before": "The \\texttt{swap} pattern works because one thread group controls both loading and computing --- it knows the order. They cannot share a \\texttt{swap} schedule; they need a signaling mechanism.",
+      "after": "The \\texttt{swap} pattern uses one thread group to control both loading and computation in a known order. Separate producer and consumer groups need a signaling mechanism to coordinate their independent schedules."
+    }
+  ],
+  "F34-S07": [
+    {
+      "before": "Similar to the \\texttt{parallel-by} statements, it is possible to make the threads with/without executing the divergent code be asynchronous. The following code showcases a example that conduct MPMD execution in the SPMD code:",
+      "after": "Like \\texttt{parallel-by}, \\texttt{inthreads} can execute asynchronously. This lets instances running a divergent region proceed independently of those outside it, expressing MPMD behavior within an SPMD program:"
+    },
+    {
+      "before": "In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each \\texttt{inthreads} block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the \\texttt{sync.shared} statement established a \\textbf{synchronization point} for all threads. That makes sure code for both paths get executed after this \\emph{synchronization point}.",
+      "after": "The example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues."
+    },
+    {
+      "before": "\n\nThe example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues.\n\nOnly the outer \\texttt{inthreads} can be declared as asynchronous. Programmers will get an compile-time error when using \\texttt{inthreads.\\allowbreak{}async} for any inner \\texttt{inthreads} block.",
+      "after": "\n\nThe example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues.\n\nOnly the outer \\texttt{inthreads} can be declared as asynchronous. Programmers will get a compile-time error when using \\texttt{inthreads.\\allowbreak{}async} for any inner \\texttt{inthreads} block."
+    }
+  ],
+  "F35-S03": [
+    {
+      "before": "The comments in the above code explain the event instances. The mechanism is same to the spanned data declarations, where storage specifier is also required. From implementation perspective, event can be implement as the leveled boolean data within the specified storage. Therefore, it also takes the storage of this level. However, in concept, the event belongs to a specific level. Therefore, its instance count coresponds to its parallel level.",
+      "after": "The comments identify the event instances. As with spanned-data declarations, the storage specifier determines the level at which an event is stored and shared. An implementation may represent events with Boolean state at that storage level; the number of instances follows the corresponding parallel scope."
+    }
+  ],
+  "F35-S04": [
+    {
+      "before": "By default, the event is lock-free for high-performance synchoronization between different asynchronous blocks. That implies it is risky when multiple threads try to update the event, especially for \\texttt{wait}.",
+      "after": "Events are lock-free by default to support efficient synchronization between asynchronous blocks. Multiple instances updating the same event require care, particularly when using \\texttt{wait}."
+    },
+    {
+      "before": "In this code, two threads wait a single event \\texttt{e}. However, since \\texttt{wait} resets the event \\texttt{e}, it is possible that \\texttt{thread-0} resets the event before \\texttt{thread-1} find the \\texttt{e} has been triggered. As a result, \\texttt{thread-1} is never unblocked and deadlocking happens.",
+      "after": "Both threads wait on the same event \\texttt{e}. Because \\texttt{wait} resets the event, \\texttt{thread-0} may reset it before \\texttt{thread-1} observes the trigger. In that case, \\texttt{thread-1} remains blocked and the program deadlocks."
+    },
+    {
+      "before": "\\subsection*{DeadLocks}\n\nEvents are lock-free by default to support efficient synchronization between asynchronous blocks. Multiple instances updating the same event require care, particularly when using \\texttt{wait}.\n\nFor example,",
+      "after": "\\subsection*{Deadlocks}\n\nEvents are lock-free by default to support efficient synchronization between asynchronous blocks. Multiple instances updating the same event require care, particularly when using \\texttt{wait}.\n\nFor example,"
+    }
+  ],
+  "F08-S15": [
+    {
+      "before": "Both patterns achieve the same goal --- overlapping memory and compute --- but at different levels of complexity. Start with \\texttt{swap} for simpler kernels;",
+      "after": "Both patterns overlap data movement and computation, but differ in complexity. Start with \\texttt{swap} for simpler kernels."
+    },
+    {
+      "before": "The same synchronization patterns from this part of the guide, with richer data movement primitives underneath.",
+      "after": "The same synchronization patterns can be combined with the richer data-movement primitives described in this guide."
+    }
+  ],
+  "F10-S01": [
+    {
+      "before": "The preceding sections have built a stack of abstractions: tiles, parallelism, MMA, pipelines, events, TMA. That is the Croqtile you want to live in. This part of the guide is about the times you need to step outside.",
+      "after": "The preceding sections introduced tiles, parallelism, MMA, pipelines, events, and TMA. C++ interoperability extends these abstractions when a kernel needs additional device functions or target-specific code."
+    }
+  ],
+  "F10-S03": [
+    {
+      "before": "A \\texttt{\\_\\_device\\_\\_} function compiles to . The \\texttt{\\_\\_co\\_\\_} body calls it with the \\texttt{call} keyword, and the generated \\texttt{\\_\\_global\\_\\_} kernel invokes it directly on the device.",
+      "after": "A \\texttt{\\_\\_device\\_\\_} function compiles to device code. The \\texttt{\\_\\_co\\_\\_} body invokes it with \\texttt{call}, and the generated \\texttt{\\_\\_global\\_\\_} kernel calls it directly on the device."
+    },
+    {
+      "before": "You cannot call a host function from inside a \\texttt{\\_\\_co\\_\\_} body;",
+      "after": "You cannot call a host function from inside a \\texttt{\\_\\_co\\_\\_} body."
+    }
+  ],
+  "F23-S05": [
+    {
+      "before": "The primary target of croqtile preprocessing is to make host/device macros work as a whole, but such a workflow makes it possible sometimes different. From an implementation perspective, Croqtile pre-processor only substitute/conditionally-compile code inside the tileflow function, while leaving other pre-processing to the C++ preprocessor. That could restrict Croqtile pre-processing in a limited scope.",
+      "after": "Croqtile preprocessing coordinates macros across the host and device portions of a program. Its implementation substitutes macros and handles conditional compilation within Tileflow functions, while leaving other preprocessing to the C++ preprocessor. This division can produce differences from ordinary C++ preprocessing."
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Difference with C pre-processing}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Differences from C++ Preprocessing}]"
+    }
+  ],
+  "F23-S06": [
+    {
+      "before": "To mimic a target native compilation, croqtile preprocess also takes the builtin macros from the target. Consequently, these macros can be utilized inside tileflow functions as well as the host code.",
+      "after": "Croqtile also imports the target's built-in macros to match native compilation. These macros can be used in both Tileflow functions and host code."
+    }
+  ],
+  "F24-S06": [
+    {
+      "before": "Croqtile compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.",
+      "after": "The Croqtile compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, compilation stops with an error."
+    }
+  ],
+  "F25-S08": [
+    {
+      "before": "Like C++ functions, Croqtile functions can be defined anyway in the source code. One common raised question is about the \\textbf{function signature}, as long as programmers may want to link the module with Croqtile function definition.",
+      "after": "Like C++ functions, Croqtile functions can be defined throughout a source file. When linking a module that contains one, its \\textbf{function signature} determines how it is called."
+    },
+    {
+      "before": "The answer is that Croqtile function follows the C++ calling convention, which makes it standard C++ function with C++ name mangling. \\textbf{\\texttt{extern \"C\"}} is not possible for a Croqtile function, since it utilize C++ template-based object as its parameter type (spanned data).",
+      "after": "A Croqtile function follows the C++ calling convention and uses C++ name mangling. It does not support \\texttt{extern \"C\"}, because its spanned-data parameters use C++ template-based types."
+    },
+    {
+      "before": "\\subsection*{More Questions}\n\nLike C++ functions, Croqtile functions can be defined throughout a source file. When linking a module that contains one, its \\textbf{function signature} determines how it is called.\n\nA Croqtile function follows the C++ calling convention and uses C++ name mangling. It does not support \\texttt{extern \"C\"}, because its spanned-data parameters use C++ template-based types.\n\nSome features are not supported yet:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item Croqtile function declaration without definition. This allows calling Croqtile function from another module.\n\\item Croqtile function with \\texttt{inline}. This allows the Croqtile function be used in headers.\n\\end{itemize}",
+      "after": "\\subsection*{More Questions}\n\nLike C++ functions, Croqtile functions can be defined throughout a source file. When linking a module that contains one, its \\textbf{function signature} determines how it is called.\n\nA Croqtile function follows the C++ calling convention and uses C++ name mangling. It does not support \\texttt{extern \"C\"}, because its spanned-data parameters use C++ template-based types.\n\nSome features are not supported yet:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item Croqtile function declaration without definition. This allows calling Croqtile function from another module.\n\\item Croqtile function with \\texttt{inline}. This allows the Croqtile function to be used in headers.\n\\end{itemize}"
+    }
+  ],
+  "F26-S01": [
+    {
+      "before": "In some target like \\emph{factor}, it requires the device function to follow C-linkage, where the device functions must be prefixed with \\texttt{extern \"C\"}. Since template functions can not be applies to functions with C-linkage, Croqtile has some wrapper tricks to enable it. For example:",
+      "after": "Targets such as \\emph{factor} require C linkage for device functions, expressed with \\texttt{extern \"C\"}. Function templates cannot have C linkage, so Croqtile provides wrappers to support them:"
+    },
+    {
+      "before": "\n\nAs the comment depicts, Croqtile compiler may generate a specialization version of function template \\texttt{bar\\textless{}3\\textgreater{}}, which enables the function template as well. But note that, the function template no longer requires \\texttt{extern \"C\" decoration} as those for normal \\emph{factor} device functions.\n\nAs the implementation is different with other targets, you may utilize \\texttt{-kt} to enable such functionality for \\emph{croqtile-factor} compilation.",
+      "after": "\n\nAs the comment depicts, Croqtile compiler may generate a specialization version of function template \\texttt{bar\\textless{}3\\textgreater{}}, which enables the function template as well. But note that, the function template no longer requires \\texttt{extern \"C\" decoration} as those for normal \\emph{factor} device functions.\n\nAs the implementation differs from other targets, you may utilize \\texttt{-kt} to enable such functionality for \\emph{croqtile-factor} compilation."
+    }
+  ],
+  "F10-S04": [
+    {
+      "before": "A custom reduction, a sorting network, a special math function --- Croqtile does not need to manage these;",
+      "after": "A custom reduction, sorting network, or specialized math operation can be implemented as a device helper."
+    },
+    {
+      "before": "This pattern --- Croqtile handles the parallelism, tiling, and memory orchestration; --- Is common in production kernels like MoE (mixture-of-experts) top-K, custom reductions, and specialized math.",
+      "after": "In this pattern, Croqtile handles parallelism, tiling, and data movement, while the device helper performs the specialized computation. Production kernels use it for MoE top-K, custom reductions, and specialized math."
+    }
+  ],
+  "F13-S05": [
+    {
+      "before": "Compact, structured syntax keeps entire kernels inside AI context windows (30--60 lines vs. Structured error messages and well-documented CLI arguments let autonomous agents compile, profile, and iterate without human intervention.",
+      "after": "Compact, structured syntax can keep an entire kernel within an AI agent's context window, often in 30--60 lines. Structured error messages and documented command-line options support autonomous cycles of compilation, profiling, and refinement."
+    }
+  ],
+  "F11-S01": [
+    {
+      "before": "The universal debugging discipline is the same everywhere: \\textbf{systematically narrow the search space}, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list.",
+      "after": "Debugging works best by \\textbf{systematically narrowing the search}, starting with inexpensive checks. Static analysis and compile-time assertions catch errors without runtime overhead. Targeted runtime checks then help locate the problem. Use an interactive debugger once these checks have narrowed the possible causes."
+    }
+  ],
+  "F15-S08": [
+    {
+      "before": "Note 's32' and 'int' are different in Croqtile. 's32' is a fundamental type, which can not be applied for a fully typing.",
+      "after": "The types \\texttt{s32} and \\texttt{int} serve different purposes in Croqtile. The fundamental element type \\texttt{s32} must be combined with a shape to declare a fully typed buffer."
+    },
+    {
+      "before": "\\subsection*{Fully-Typing}\n\nA \\emph{mdspan} can not be applied alone to define the data for computation. In Croqtile function, a data definition must be fully-typed, which consists of a fundamental type and a \\emph{mdspan}. The below code showcases how it works.",
+      "after": "\\subsection*{Fully-Typing}\n\nA \\emph{mdspan} cannot be applied alone to define the data for computation. In Croqtile function, a data definition must be fully-typed, which consists of a fundamental type and a \\emph{mdspan}. The following code showcases how it works."
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Fully-Typing}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Complete Types}]"
+    }
+  ],
+  "F34-S06": [
+    {
+      "before": "\\subsection*{Parallel Perspective of Tileflow Programs}\n\nIn Croqtile, a \\emph{divergent} code region is generated with the keyword \\texttt{inthreads}, where a compare expression followed.\n\nLet us have a look at the following example:",
+      "after": "\\subsection*{Parallel Perspective of Tileflow Programs}\n\nIn Croqtile, a \\emph{divergent} code region is generated with the keyword \\texttt{inthreads}, followed by a comparison expression.\n\nLet us have a look at the following example:"
+    },
+    {
+      "before": "\n\nYou may now re-examine Croqtile tileflow programs from the perspective of parallelism. It consists of\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{Sequential Code}\n\\item \\emph{SPMD-Styled Parallel Code} enclosed in \\texttt{parallel-by} block, which consists of:\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{Uniform Code}\n\\item \\emph{Divergent Code} enclosed in \\texttt{inthreads} block.\n\\end{itemize}\n\\end{itemize}\n\nIn this example, \\texttt{p \\textless{}= 2} initiates the \\emph{divergent code block}, where from the implementation perspective, it creates a thread mask of \\texttt{000111}, which allows only thread \\texttt{0}, \\texttt{1} and \\texttt{2} to execute the code inside. And thread \\texttt{3}, \\texttt{4} and \\texttt{5} will skip this path. \\textbf{All threads are forced synchronized after the \\texttt{inthreads} block}. In this case, it implies thread \\texttt{3}, \\texttt{4}, and \\texttt{5} waits for the completion of the others before stepping forward.\n\nIn Croqtile, the \\texttt{inthreads} block looks like a \\texttt{if} conditional block in C/C++. However, \\texttt{inthreads} explicit claims the code divergence, which is a concept in SPMD program, rather than the conditional block for sequential code. Therefore, the \\texttt{inthreads} block:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item Can only appear in the SPMD code region, which is enclosed in the \\texttt{parallel-by} block.\n\\item Can only have a comparison result related to thread identifiers.\n\\end{itemize}\n\nCroqtile compiler has the checks for both the comparison expression and \\texttt{inthreads}-block placement.",
+      "after": "\n\nYou can examine Croqtile tileflow programs from the perspective of parallelism. It consists of\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{Sequential Code}\n\\item \\emph{SPMD-Styled Parallel Code} enclosed in \\texttt{parallel-by} block, which consists of:\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{Uniform Code}\n\\item \\emph{Divergent Code} enclosed in \\texttt{inthreads} block.\n\\end{itemize}\n\\end{itemize}\n\nIn this example, \\texttt{p \\textless{}= 2} initiates the \\emph{divergent code block}, where from the implementation perspective, it creates a thread mask of \\texttt{000111}, which allows only thread \\texttt{0}, \\texttt{1} and \\texttt{2} to execute the code inside. And thread \\texttt{3}, \\texttt{4} and \\texttt{5} will skip this path. \\textbf{All threads are forced synchronized after the \\texttt{inthreads} block}. In this case, it implies thread \\texttt{3}, \\texttt{4}, and \\texttt{5} waits for the completion of the others before stepping forward.\n\nIn Croqtile, the \\texttt{inthreads} block looks like a \\texttt{if} conditional block in C/C++. However, \\texttt{inthreads} explicit claims the code divergence, which is a concept in SPMD program, rather than the conditional block for sequential code. Therefore, the \\texttt{inthreads} block:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item Can only appear in the SPMD code region, which is enclosed in the \\texttt{parallel-by} block.\n\\item Can only have a comparison result related to thread identifiers.\n\\end{itemize}\n\nCroqtile compiler has the checks for both the comparison expression and \\texttt{inthreads}-block placement."
+    }
+  ],
+  "F21-S09": [
+    {
+      "before": "\\subsection*{Limitations}\n\nMore specifically, it has to set two limitations:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item Any mdspan can not have element with bounded integer type, or produced from bounded ituple.\n\\item Simple integer type and ituple type can not be re-defined.\n\\end{enumerate}",
+      "after": "\\subsection*{Limitations}\n\nMore specifically, it has to set two limitations:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item Any mdspan cannot have element with bounded integer type, or produced from bounded ituple.\n\\item Simple integer type and ituple type cannot be re-defined.\n\\end{enumerate}"
+    }
+  ],
+  "F25-S06": [
+    {
+      "before": "\\subsection*{Return Type and Type Deduction}\n\nSimilar to the input, \\emph{spanned data} and \\emph{integer} are valid output types. The \\emph{void} type is also allowed if nothing is returned.\n\nIn addition to the explicit return type annotation, Croqtile support type inference on returns. For example:",
+      "after": "\\subsection*{Return Type and Type Deduction}\n\nSimilar to the input, \\emph{spanned data} and \\emph{integer} are valid output types. The \\emph{void} type is also allowed if nothing is returned.\n\nIn addition to the explicit return type annotation, Croqtile supports type inference on returns. For example:"
+    }
+  ],
+  "F18-S04": [
+    {
+      "before": "\n\nSince Croqtile handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{global}: Refers to the device's global storage.\n\\item \\emph{shared}: Refers to the device block's shared storage\n\\item \\emph{local}: Refers to the thread-private storage.\n\\end{itemize}\n\nOther targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters.",
+      "after": "\n\nSince Croqtile handles storage in a heterogeneous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{global}: Refers to the device's global storage.\n\\item \\emph{shared}: Refers to the device block's shared storage\n\\item \\emph{local}: Refers to the thread-private storage.\n\\end{itemize}\n\nOther targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters."
+    }
+  ],
+  "F06-S02": [
+    {
+      "before": "Every contraction kernel follows the same rhythm, and the spelling makes each step visible:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{mma.fill 0.0}}\n\\item \\textbf{\\texttt{mma.load}}\n\\item \\textbf{\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb}} --- issue the contraction: \\textbf{C += A \\(\\times\\) B} into \\texttt{mc}.\n\\item \\textbf{\\texttt{mma.\\allowbreak{}store mc, dst}}\n\\end{enumerate}\n\nYou loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \\texttt{mc}), then run step 4 once to flush the completed output tile. --- You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\\texttt{row.row} here).\n\nThe \\texttt{.row.row} suffix is a \\textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \\texttt{row.row}, \\texttt{row.col}, \\texttt{col.row}, and \\texttt{col.col}; in practice, \\texttt{row.row} and \\texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint",
+      "after": "Every contraction kernel follows the same rhythm, and the spelling makes each step visible:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{mma.fill 0.0}}\n\\item \\textbf{\\texttt{mma.load}}\n\\item \\textbf{\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb}} --- issue the contraction: \\textbf{C += A \\(\\times\\) B} into \\texttt{mc}.\n\\item \\textbf{\\texttt{mma.\\allowbreak{}store mc, dst}}\n\\end{enumerate}\n\nYou loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \\texttt{mc}), then run step 4 once to flush the completed output tile. You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\\texttt{row.row} here).\n\nThe \\texttt{.row.row} suffix is a \\textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \\texttt{row.row}, \\texttt{row.col}, \\texttt{col.row}, and \\texttt{col.col}; in practice, \\texttt{row.row} and \\texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint"
+    },
+    {
+      "before": "Choosing the wrong variant is a correctness bug, not a performance hint",
+      "after": "Choosing the wrong variant produces incorrect results."
+    }
+  ],
+  "F21-S05": [
+    {
+      "before": "\n\nGiven the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:",
+      "after": "\n\nGiven the simple integer expression, the value numbering process could generate signatures and associated value number as illustrated:"
+    },
+    {
+      "before": "\n\nHere, without optimizations, two constant values \\#0 and \\#1, and a new value number \\#2, which is an addition of \\#0 and \\#1 are generated. \\#2 has the signature of \"+:\\#0:\\#1\". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The below output showcases the optimized value numbering process:",
+      "after": "\n\nHere, without optimizations, two constant values \\#0 and \\#1, and a new value number \\#2, which is an addition of \\#0 and \\#1 are generated. \\#2 has the signature of \"+:\\#0:\\#1\". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The following output showcases the optimized value numbering process:"
+    }
+  ],
+  "F15-S12": [
+    {
+      "before": "\\subsection*{Bounded Types}\n\nBounded types consists of \\textbf{Bounded Scalar} and \\textbf{Bounded ITuple}. Bounded Scalar takes a range of [0, ub), where 'ub' represents its upper bound. Therefore, if an integer 'p' is set as bounded, it should also be associated with a specific upper bound. To establish such associations, programmers must code explicitly inside the \\emph{Control Structures} of 'parallel-by' and 'with-in', which will be introduced later.\n\nSimilarly, since \\emph{ITuple} is a group of \\emph{Integer}s, it can also be associated with a group of bounds. Specifically, in Croqtile, the \\emph{Bounded ITuple} is associated with a \\emph{mdspan} value, where a group of upper bounds are settled. In later sections, you shall illustrate the detailed syntax.",
+      "after": "\\subsection*{Bounded Types}\n\nBounded types consist of \\textbf{Bounded Scalar} and \\textbf{Bounded ITuple}. Bounded Scalar takes a range of [0, ub), where 'ub' represents its upper bound. Therefore, if an integer 'p' is set as bounded, it should also be associated with a specific upper bound. To establish such associations, programmers must code explicitly inside the \\emph{Control Structures} of 'parallel-by' and 'with-in', which will be introduced later.\n\nSimilarly, since \\emph{ITuple} is a group of \\emph{Integer}s, it can also be associated with a group of bounds. Specifically, in Croqtile, the \\emph{Bounded ITuple} is associated with a \\emph{mdspan} value, where a group of upper bounds are settled. In later sections, you shall illustrate the detailed syntax."
+    }
+  ],
+  "F17-S02": [
+    {
+      "before": "\\subsection*{Integers for Program Control}\n\nIn high-performance computation kernels, integers are typically used for program control rather than computation. In Croqtile \\emph{tileflow programs}, integers are used exclusively for loop control and array indexing. Given the limited value ranges in these scenarios, Croqtile has provided a single integer type --- the \\emph{32-bit signed integer} --- to simplify the design for this domain-specific use.\n\nIn Croqtile, an \\textbf{integer}-typed variable is defined similar to C/C++:",
+      "after": "\\subsection*{Integers for Program Control}\n\nIn high-performance computation kernels, integers are typically used for program control rather than computation. In Croqtile \\emph{tileflow programs}, integers are used exclusively for loop control and array indexing. Given the limited value ranges in these scenarios, Croqtile provides a single integer type --- the \\emph{32-bit signed integer} --- to simplify the design for this domain-specific use.\n\nIn Croqtile, an \\textbf{integer}-typed variable is defined similar to C/C++:"
+    },
+    {
+      "before": "\n\nIn Croqtile, the \\emph{mdspan}-typed shape can not be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:",
+      "after": "\n\nIn Croqtile, the \\emph{mdspan}-typed shape cannot be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:"
+    }
+  ],
+  "F05-S06": [
+    {
+      "before": "\\subsection*{\\texttt{: thread} --- Threads Within a Block}",
+      "after": "\\subsection*{\\texttt{: thread} Threads Within a Block}"
+    }
+  ],
+  "F18-S05": [
+    {
+      "before": "\n\nThe syntax for the \\emph{initialization expression} of a \\emph{spanned data} is straightforward: it encloses an initial value inside brackets following the variable name. However, its functionality is limited --- it always set all elements to a fixed value.",
+      "after": "\n\nThe syntax for the \\emph{initialization expression} of a \\emph{spanned data} is straightforward: it encloses an initial value inside brackets following the variable name. However, its functionality is limited --- it always sets all elements to a fixed value."
+    }
+  ],
+  "F04-S20": [
+    {
+      "before": "\\subsection*{DMA vs TMA}\n\nBoth engines move shaped tiles. The difference is how they do it and what constraints they require.\n\n\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n & \\textbf{\\texttt{dma}} & \\textbf{\\texttt{tma}} \\\\\n\\midrule\nCommon destination & \\texttt{shared} & \\texttt{shared} \\\\\nAsync support & Yes & Yes \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n\nExample TMA use:",
+      "after": "\\subsection*{DMA vs TMA}\n\nBoth engines move shaped tiles. The difference is how they do it and which constraints they impose.\n\n\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n & \\textbf{\\texttt{dma}} & \\textbf{\\texttt{tma}} \\\\\n\\midrule\nCommon destination & \\texttt{shared} & \\texttt{shared} \\\\\nAsync support & Yes & Yes \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n\nExample TMA use:"
+    }
+  ],
+  "F34-S03": [
+    {
+      "before": "\\subsection*{Masking in SPMD}\n\nIt is typically necessary to mask off some \\emph{parallel threads} in SPMD programming. For example, programmers often divide data into chunks for parallel or iterative processing. However, there may be a remainder that cannot be evenly distributed across all threads.\n\n\\begin{figure}[htbp]\\centering\n\\includegraphics[width=\\linewidth,height=0.56\\textheight,keepaspectratio]{f34-masking-datachunk-dispatch.png}\n\\end{figure}\n\nThe figure aboves showcases a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \\emph{thread-0} is required to work. You may observe the \\textbf{thread mask} for each iteration are \\texttt{1111}, except for the last iteration (\\texttt{1000}). The thread mask is a combination of boolean bits, where \\texttt{1} stands for \\textbf{active}, and \\texttt{0} stands for \\textbf{inactive}. So in this case, only \\emph{thread-0} is set to be \\emph{active} to avoid unnecessary data chunk processing in the last iteration.",
+      "after": "\\subsection*{Masking in SPMD}\n\nIt is typically necessary to mask off some \\emph{parallel threads} in SPMD programming. For example, programmers often divide data into chunks for parallel or iterative processing. However, there may be a remainder that cannot be evenly distributed across all threads.\n\n\\begin{figure}[htbp]\\centering\n\\includegraphics[width=\\linewidth,height=0.56\\textheight,keepaspectratio]{f34-masking-datachunk-dispatch.png}\n\\end{figure}\n\nThe figure above shows a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \\emph{thread-0} is required to work. You may observe the \\textbf{thread mask} for each iteration is \\texttt{1111}, except for the last iteration (\\texttt{1000}). The thread mask is a combination of boolean bits, where \\texttt{1} stands for \\textbf{active}, and \\texttt{0} stands for \\textbf{inactive}. So in this case, only \\emph{thread-0} is set to be \\emph{active} to avoid unnecessary data chunk processing in the last iteration."
+    },
+    {
+      "before": "The figure above shows a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \\emph{thread-0} is required to work. You may observe the \\textbf{thread mask} for each iteration is \\texttt{1111}, except for the last iteration (\\texttt{1000}). The thread mask is a combination of boolean bits, where \\texttt{1} stands for \\textbf{active}, and \\texttt{0} stands for \\textbf{inactive}. So in this case, only \\emph{thread-0} is set to be \\emph{active} to avoid unnecessary data chunk processing in the last iteration.",
+      "after": "The figure distributes 13 data chunks across four parallel instances in four iterations. All instances are active for the first three iterations, giving mask \\texttt{1111}. Only instance 0 has work in the final iteration, giving mask \\texttt{0001} when the least significant bit represents instance 0. A \\texttt{1} denotes an active instance and a \\texttt{0} an inactive one, preventing unnecessary processing of nonexistent chunks."
+    }
+  ],
+  "F06-S06": [
+    {
+      "before": "\\subsection*{Tiling further: two cooperative group sharing operands}\n\nSection~\\ref{sec:3-4} introduced \\texttt{parallel p1 by 2 :\\allowbreak{} group-\\allowbreak{}4} --- with MMA, both groups can share the same B tile while loading different rows of A.",
+      "after": "\\subsection*{Tiling further: two cooperative groupss sharing operands}\n\nSection~\\ref{sec:3-4} introduced \\texttt{parallel p1 by 2 :\\allowbreak{} group-\\allowbreak{}4} --- with MMA, both groups can share the same B tile while loading different rows of A."
+    },
+    {
+      "before": "two cooperative groupss",
+      "after": "two cooperative groups"
+    },
+    {
+      "before": "\\textbf{Aspect} &  &  & ",
+      "after": "\\textbf{Aspect} & One group & One group-4 & Two group-4 groups"
+    },
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={Tiling further: two cooperative group sharing operands}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Tiling further: two cooperative groups sharing operands}]"
+    }
+  ],
+  "F15-S09": [
+    {
+      "before": "\\subsection*{The Storage Qualifier}\n\nA spanned-typed data in Croqtile is usually large.\n\nIn croqtile, the language defines three storage qualifiers to annotate the data being defined, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{global},\n\\item \\textbf{shared},\n\\item and \\textbf{local}.\n\\end{itemize}\n\nThe below code showcases the usage.",
+      "after": "\\subsection*{The Storage Qualifier}\n\nA spanned-typed data in Croqtile is usually large.\n\nIn croqtile, the language defines three storage qualifiers to annotate the data being defined, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{global},\n\\item \\textbf{shared},\n\\item and \\textbf{local}.\n\\end{itemize}\n\nThe following code showcases the usage."
+    }
+  ],
+  "F17-S05": [
+    {
+      "before": "\\subsection*{Defining I-Tuples}\n\nIn Croqtile, multiple integers can be grouped into an \\textbf{integer-tuple}, or \\textbf{i-tuple} (or \\textbf{ituple}). The keyword \\texttt{ituple} can be used to define an \\emph{i-tuple}. The below code showcases the usage:",
+      "after": "\\subsection*{Defining I-Tuples}\n\nIn Croqtile, multiple integers can be grouped into an \\textbf{integer-tuple}, or \\textbf{i-tuple} (or \\textbf{ituple}). The keyword \\texttt{ituple} can be used to define an \\emph{i-tuple}. The following code showcases the usage:"
+    }
+  ],
+  "F34-S09": [
+    {
+      "before": "\\subsection*{Implicit Masking}\n\nIn Croqtile, code between multiple \\texttt{parallel-by} levels can be considered as a type of implicit masking. The below code showcases an example:",
+      "after": "\\subsection*{Implicit Masking}\n\nIn Croqtile, code between multiple \\texttt{parallel-by} levels can be considered as a type of implicit masking. The following code showcases an example:"
+    }
+  ],
+  "F23-S02": [
+    {
+      "before": "\\subsection*{Object-Like Macros}\n\nCroqtile preprocessor supports C/C++ \\textbf{object-like macros} to connect both host code and tileflow code. The \\emph{object-like macro} performs pure text replacement and accepts no parameters. The below code gives an example:",
+      "after": "\\subsection*{Object-Like Macros}\n\nCroqtile preprocessor supports C/C++ \\textbf{object-like macros} to connect both host code and tileflow code. The \\emph{object-like macro} performs pure text replacement and accepts no parameters. The following code gives an example:"
+    },
+    {
+      "before": "\n\nIn the code snippet, the inputs of croqtile function \\texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \\texttt{M}, \\texttt{N}, \\texttt{K} with values \\texttt{256}, \\texttt{32}, \\texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers makes different code consistent and easy to manipulate.\n\nThe preprocessor currently supports only macros without parameters, so code like:",
+      "after": "\n\nIn the code snippet, the inputs of croqtile function \\texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \\texttt{M}, \\texttt{N}, \\texttt{K} with values \\texttt{256}, \\texttt{32}, \\texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers make different code consistent and easy to manipulate.\n\nThe preprocessor currently supports only macros without parameters, so code like:"
+    }
+  ],
+  "F35-S02": [
+    {
+      "before": "There are different definitions of \\texttt{event} in different programming language. In Croqtile, the \\textbf{Event} is used to handle communication and interaction between asynchronous code blocks at different level.",
+      "after": "The meaning of an event varies between programming languages. In Croqtile, an \\textbf{event} coordinates asynchronous code blocks at different execution levels."
+    },
+    {
+      "before": "An event in Croqtile is either \\emph{SET} or \\emph{UNSET}. When declaring an event, it is initialized with the \\emph{UNSET} state. For example, the following code initialize a \\texttt{shared} event:",
+      "after": "A Croqtile event has two states, \\textbf{SET} and \\textbf{UNSET}. A newly declared event starts in the UNSET state. For example:"
+    },
+    {
+      "before": "A \\texttt{shared} event can only be declared inside a \\texttt{parallel-by} block and used by parallel threads. Similarly, \\texttt{global} and \\texttt{local} events can be defined as well. There is normally restrictions syntactially for either the declarations and value references according to the target platforms.",
+      "after": "A \\texttt{shared} event is declared inside a \\texttt{parallel-by} block and used by its parallel instances. Events can also use \\texttt{global} or \\texttt{local} storage. The target platform determines the constraints on their declarations and references."
+    },
+    {
+      "before": "In Croqtile, the \\texttt{trigger} statements changes the \\texttt{event} from \\emph{UNSET} to \\emph{SET} state:",
+      "after": "The \\texttt{trigger} statement changes an event from \\textbf{UNSET} to \\textbf{SET}:"
+    },
+    {
+      "before": "The \\texttt{trigger} statement triggers each event in an event array \\texttt{e}, as well as the single event \\texttt{e1}, as showed in the comma-separated list.",
+      "after": "The comma-separated statement triggers every event in array \\texttt{e} and the single event \\texttt{e1}."
+    },
+    {
+      "before": "Similarly, the \\texttt{wait} statement can wait for an event in a blocking mannar. The wait statement blocks currentthreads for execution if the event is \\emph{UNSET}, until the event state is changed to \\emph{SET}.",
+      "after": "The \\texttt{wait} statement blocks the current instance while the event is \\textbf{UNSET}. Execution resumes once the event becomes \\textbf{SET}."
+    },
+    {
+      "before": "You have observed similar code in last section, except for that there are \\texttt{wait} and \\texttt{trigger} statements. In this code snippet, once the event \\texttt{e} is triggered by the \\emph{trigger-thread}, the \\emph{wait-thread} is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by \\texttt{sync.shared}, where thread \\texttt{0} completes its \\texttt{inthreads} block before thread \\texttt{1}. From another perspective, the events here \\textbf{chains the asynchronous \\texttt{inthreads}}. This is useful in many scenarios.",
+      "after": "In this example, the triggering instance sets \\texttt{e}, allowing the waiting instance to continue. Both then reach \\texttt{sync.shared}. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish."
+    }
+  ],
+  "F15-S10": [
+    {
+      "before": "An integer tuple is an unordered set of integers. As described, it is normally used as a (subscription) index.",
+      "after": "An integer tuple is an ordered collection of integers, commonly used as a multidimensional index."
+    }
+  ],
+  "F07-S04": [
+    {
+      "before": "Sharing an address space is exactly what makes this dangerous. Without coordination, the consumer might read a buffer before the producer has finished writing it. This is where events come in.",
+      "after": "Because both regions share a buffer, their reads and writes must be coordinated. Without synchronization, the consumer could read before the producer finishes writing. Events express the required ordering."
+    }
+  ],
+  "F09-S09": [
+    {
+      "before": "The brute-force fix is to add a special code path for the boundary tile. But this breaks the uniformity of the MMA loop and adds branches that the compiler cannot optimize away. \\texttt{.zfill} solves this elegantly:",
+      "after": "A separate code path for the boundary tile adds branches and complicates a uniform MMA loop. The \\texttt{.zfill} modifier handles the missing source elements during transfer:"
+    }
+  ],
+  "F36-S04": [
+    {
+      "before": "synchronization, and asynchronous \\texttt{parallel-by} uses the default stream.",
+      "after": "Without stream binding, asynchronous \\texttt{parallel-by} uses the default stream."
+    },
+    {
+      "before": "synchronous \\texttt{parallel-by} uses device-wide",
+      "after": "synchronous \\texttt{parallel-by} uses device-wide synchronization."
+    }
+  ],
+  "F14-S04": [
+    {
+      "before": "Similar to , where the target compiler",
+      "after": "The target compiler"
+    },
+    {
+      "before": "Similar to , where host and device code",
+      "after": "Host and device code"
+    }
+  ],
+  "F11-S03": [
+    {
+      "before": "\\textbf{nondeterministic}",
+      "after": "\\textbf{nondeterministic}."
+    }
+  ],
+  "F07-S05": [
+    {
+      "before": "Croqtile provides \\textbf{events}",
+      "after": "Croqtile provides \\textbf{events}."
+    }
+  ],
+  "F06-S04": [
+    {
+      "before": "With all dimensions 16, extents are 1\\(\\times\\)1",
+      "after": "With all dimensions equal to 16, the tile-grid extents are 1 by 1."
+    }
+  ],
+  "F05-S14": [
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={DMA Matmul: Tiles in shared storage}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={DMA Matmul: Tiles in Shared Storage}]"
+    }
+  ],
+  "F04-S03": [
+    {
+      "before": "\\begin{lstlisting}[language=croqtile,caption={First Example: Tiled Addition Through shared storage}]",
+      "after": "\\begin{lstlisting}[language=croqtile,caption={Tiled Addition Through Shared Storage}]"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 \paragraph*{In short}
 
-Bounded variables and the loops derived from them are what data movement code is built from. You introduced the syntax and behavior of these constructs, including how to apply range operations to modify loop iterations and the importance of understanding the current and upper-bound values of bounded variables.
+Bounded variables define iteration ranges, and range expressions adjust the starting point, ending point, and stride. Reading these loops requires distinguishing a variable's current value from its upper bound.
 
-The loop deriving part is important for implementing multi-buffering data movement, which is essential for building high-performance kernels and will be introduced in optimization chapters later.
+Deriving a loop this way is useful for multi-buffered data movement, where the loop may skip a tile loaded before iteration begins. Section 3.6.2 develops this pattern.

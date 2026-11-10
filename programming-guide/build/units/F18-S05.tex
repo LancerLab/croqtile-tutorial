@@ -7,4 +7,4 @@ local s32 [17, 6] b1 {0};       // elements are initialized to 0
 shared f32 [128, 16] b2 {3.14f}; // elements are initialized to 3.14f
 \end{lstlisting}
 
-The syntax for the \emph{initialization expression} of a \emph{spanned data} is straightforward: it encloses an initial value inside brackets following the variable name. However, its functionality is limited --- it always set all elements to a fixed value.
+The braces after the buffer name contain one initial value, applied to every element. This form fills the whole buffer; it is not an element-by-element initializer list.

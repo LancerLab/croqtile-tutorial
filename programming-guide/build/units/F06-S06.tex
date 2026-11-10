@@ -1,8 +1,8 @@
-\subsection*{Tiling further: two cooperative group sharing operands}
+\subsection*{Tiling further: two cooperative groups sharing operands}
 
 Section~\ref{sec:3-4} introduced \texttt{parallel p1 by 2 :\allowbreak{} group-\allowbreak{}4} --- with MMA, both groups can share the same B tile while loading different rows of A.
 
-\begin{lstlisting}[language=croqtile,caption={Tiling further: two cooperative group sharing operands}]
+\begin{lstlisting}[language=croqtile,caption={Tiling further: two cooperative groups sharing operands}]
 #define TILE_M 128
 #define TILE_N 128
 #define TILE_K 128
@@ -33,7 +33,7 @@ __co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, gl
 }
 \end{lstlisting}
 
-\textbf{Splitting M with \texttt{p1}.} With \texttt{TILE\_M = 128} and \texttt{group\_M = 64}, the block spans 128 rows; \texttt{p1} selects the upper or lower 64-row strip. Both use the same \texttt{rhs\_load\_s}.
+With \co@TILE_M = 128@ and a 64-row group tile, \co@p1@ selects either the upper or lower half of the block's output rows. The groups load different rows of A and share \co@rhs_load_s@, since both need the same B columns and K slice.
 
 The four-step syntax stays invariant; only the parallel decomposition of the tile changes.
 
@@ -41,7 +41,7 @@ The four-step syntax stays invariant; only the parallel decomposition of the til
 \centering\small
 \begin{tabularx}{\linewidth}{@{}lXXX@{}}
 \toprule
-\textbf{Aspect} &  &  &  \\
+\textbf{Aspect} & One group & One group-4 & Two group-4 groups \\
 \midrule
 Operand sharing & N/A & N/A & B tile shared, A rows split by \texttt{p1} \\
 Threads & 32 & 128 & 256 \\
@@ -49,3 +49,5 @@ Accumulator & \texttt{mma.fill 0.0} & \texttt{mma.\allowbreak{}fill.\allowbreak{
 \bottomrule
 \end{tabularx}
 \end{table}
+
+The two groups must store disjoint output row ranges. They may read the same right-hand tile because those reads do not modify it, but each group needs its own accumulator for its assigned rows. This separates operand reuse from output ownership: sharing an input does not imply sharing a partial sum.

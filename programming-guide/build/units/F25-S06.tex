@@ -2,7 +2,7 @@
 
 Similar to the input, \emph{spanned data} and \emph{integer} are valid output types. The \emph{void} type is also allowed if nothing is returned.
 
-In addition to the explicit return type annotation, Croqtile support type inference on returns. For example:
+In addition to the explicit return type annotation, Croqtile supports type inference on returns. For example:
 
 \begin{lstlisting}[language=croqtile,caption={Return Type and Type Deduction}]
 __co__ auto foo() {
@@ -12,4 +12,4 @@ __co__ auto foo() {
 }
 \end{lstlisting}
 
-In this code, the return type is annotated as \texttt{auto}, which is the same keyword as C++. Croqtile is capable of inferring return type as \texttt{f32 [7, 16]}. Therefore, it is recommended to use \texttt{auto} whenever possible.
+Here, \co@auto@ is inferred as \co@f32 [7, 16]@ from \co@result@. This is useful when the output shape is derived inside the function: changing that derivation does not require a matching edit to the return annotation. Use an explicit type when a fixed return shape is part of the interface you want to enforce.

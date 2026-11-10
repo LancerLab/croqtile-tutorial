@@ -16,7 +16,7 @@ u16 [shape + 6] data2;          // shaped as [78, 20]
 s16 [shape, 8] data3;           // shaped as [72, 14, 8]
 \end{lstlisting}
 
-Here the previous example used the named \emph{mdspan} \texttt{shape} to define a 2D buffer named \texttt{data0}, where the elements are 32-bit integers. Note that the named \emph{mdspan} \texttt{shape} is placed inside \texttt{[]}. Additionally, it is allowed to use \emph{element-of}, arithmetics, or concatenation on \emph{mdspan}s to specify the buffer's shape.
+This example uses the named \texttt{mdspan} \texttt{shape} to declare the two-dimensional buffer \texttt{data0} with 32-bit integer elements. Place the shape inside \texttt{[]}; element access, arithmetic, and concatenation can also appear in the shape expression.
 
 In Croqtile terminology, the element type is referred to as the \textbf{fundamental type}. Croqtile supports multiple fundamental types, including:
 
@@ -26,9 +26,9 @@ In Croqtile terminology, the element type is referred to as the \textbf{fundamen
 \item \textbf{Floating Points}: \texttt{f16}, \texttt{bf16}, \texttt{f32}
 \end{itemize}
 
-The prefixes \texttt{u} and \texttt{s} stand for "unsigned" and "signed", respectively, while the number suffix indicates the bit width of the type. \texttt{f16} refers to the \emph{IEEE-754} standard \emph{half-float}, and \texttt{bf16} refers to the 16-bit \emph{binary float}, commonly used in machine learning scenario.
+The prefixes \texttt{u} and \texttt{s} mean unsigned and signed, and the numeric suffix gives the bit width. The type \texttt{f16} is IEEE 754 half precision; \texttt{bf16} is the 16-bit brain floating-point format commonly used in machine learning.
 
-Note \texttt{s32} is different from \texttt{int}. Although they occupy the same amount of storage, in Croqtile, \texttt{s32} can not be used alone to define programming entities. For example:
+The element type \co@s32@ and the control type \co@int@ have different roles, even though both describe 32-bit integers. An \co@s32@ declaration needs a shape. The following standalone declaration is rejected:
 
 \begin{lstlisting}[language=croqtile,caption={A rejected fundamental type}]
 s32 a;  // error: the fundamental type can not be used for variable definition alone

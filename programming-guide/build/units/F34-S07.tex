@@ -1,6 +1,6 @@
 \subsection*{Make it Asynchronous}
 
-Similar to the \texttt{parallel-by} statements, it is possible to make the threads with/without executing the divergent code be asynchronous. The following code showcases a example that conduct MPMD execution in the SPMD code:
+Like \texttt{parallel-by}, \texttt{inthreads} can execute asynchronously. This lets instances running a divergent region proceed independently of those outside it, expressing MPMD behavior within an SPMD program:
 
 \begin{lstlisting}[language=croqtile,caption={Make it Asynchronous}]
 __co__  void foo() {
@@ -17,6 +17,6 @@ __co__  void foo() {
 }
 \end{lstlisting}
 
-In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each \texttt{inthreads} block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the \texttt{sync.shared} statement established a \textbf{synchronization point} for all threads. That makes sure code for both paths get executed after this \emph{synchronization point}.
+The example divides the parallel instances into two groups without synchronizing after each \texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues.
 
-Only the outer \texttt{inthreads} can be declared as asynchronous. Programmers will get an compile-time error when using \texttt{inthreads.\allowbreak{}async} for any inner \texttt{inthreads} block.
+Only the outer \texttt{inthreads} can be declared as asynchronous. Programmers will get a compile-time error when using \texttt{inthreads.\allowbreak{}async} for any inner \texttt{inthreads} block.

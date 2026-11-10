@@ -1,12 +1,12 @@
 \subsection*{More Questions}
 
-Like C++ functions, Croqtile functions can be defined anyway in the source code. One common raised question is about the \textbf{function signature}, as long as programmers may want to link the module with Croqtile function definition.
+Like C++ functions, Croqtile functions can be defined throughout a source file. When linking a module that contains one, its \textbf{function signature} determines how it is called.
 
-The answer is that Croqtile function follows the C++ calling convention, which makes it standard C++ function with C++ name mangling. \textbf{\texttt{extern "C"}} is not possible for a Croqtile function, since it utilize C++ template-based object as its parameter type (spanned data).
+A Croqtile function follows the C++ calling convention and uses C++ name mangling. It does not support \texttt{extern "C"}, because its spanned-data parameters use C++ template-based types.
 
 Some features are not supported yet:
 
 \begin{itemize}[leftmargin=1.6em]
 \item Croqtile function declaration without definition. This allows calling Croqtile function from another module.
-\item Croqtile function with \texttt{inline}. This allows the Croqtile function be used in headers.
+\item Croqtile function with \texttt{inline}. This allows the Croqtile function to be used in headers.
 \end{itemize}

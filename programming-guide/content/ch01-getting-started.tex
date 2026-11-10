@@ -3,7 +3,7 @@
 \chapter{Getting Started}
 \label{ch:getting-started}
 
-\guidechapterintro{This chapter takes you from the question of why Croqtile exists to a program you have built and run yourself. It begins with the motivation for the language and the properties it was designed around --- zero-cost abstractions, compile-time safety checks, dynamic shapes and symbolic dimensions, and a form that automated tuning can work with --- then follows a step-by-step path: the smallest kernel that compiles, progressively richer matmul variants, and the toolchain needed to build and inspect each one. By the end you will be able to reproduce the output of a simple program on your own.}
+\guidechapterintro{This chapter takes you from installing Croqtile to a program you have built and run yourself. After the language's motivation, set up and verify the compiler, run a complete element-wise addition example, and use the command-line options to inspect its build. Finally, learn the tools for checking compilation commands, runtime values, and incorrect results.}
 
 \section{What is Croqtile}
 \label{sec:1-1}
@@ -40,9 +40,13 @@
 \section{The Toolchain: Command Line and Build Utilities}
 \label{sec:1-3}
 
-\input{build/units/F02-S05}
+\input{build/units/F03-S01}
+
+\input{build/units/F03-S03}
 
 \input{build/units/F03-S06}
+
+\input{build/units/F02-S05}
 
 \input{build/units/F22-S05}
 
@@ -51,36 +55,20 @@
 \input{build/units/F22-S04}
 
 
-\section{Your First Programs}
-\label{sec:1-4}
-
-\input{build/units/F03-S01}
-
-\input{build/units/F03-S03}
-
-\input{build/units/F10-S02}
-
-\input{build/units/F14-S05}
-
-\input{build/units/F14-S06}
-
-\input{build/units/F10-S12}
-
-
 \section{Inspecting and Debugging a Build}
 \label{sec:1-5}
-
-\input{build/units/F08-S13}
 
 \input{build/units/F11-S05}
 
 \input{build/units/F11-S06}
 
-\input{build/units/F11-S07}
-
 \input{build/units/F11-S08}
 
 \input{build/units/F11-S09}
+
+\input{build/units/F11-S07}
+
+\input{build/units/F08-S13}
 
 \input{build/units/F11-S10}
 

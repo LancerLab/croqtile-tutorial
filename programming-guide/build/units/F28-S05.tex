@@ -16,6 +16,6 @@ dma.transp<0, 2, 1> input => shared;  // Result shape [32, 9, 16]
 dma.pad<{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f> input => shared; // Result shape [33, 17, 14]
 \end{lstlisting}
 
-Here, the \textbf{DMA configuration}s are enclosed by \texttt{\textless{}\textgreater{}}. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as , are listed below as an example:
+DMA configurations appear in angle brackets, and their contents depend on the operation. The supported syntax and constraints also depend on the target platform.
 
-Programmers should note that support for DMA types other than \texttt{dma.copy} varies by platform. For instance, on the  platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads.
+Support for operations other than \texttt{dma.copy} varies by platform. A transfer may map to TMA or to a sequence of load instructions issued by cooperating threads.

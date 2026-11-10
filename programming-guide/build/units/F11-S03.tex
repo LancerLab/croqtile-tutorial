@@ -8,9 +8,9 @@ __co__ void inspect(s32 [4, 8] data) {
 }
 \end{lstlisting}
 
-Each call takes a comma-separated mix of string literals and expressions. The output order across threads is \textbf{nondeterministic}
+Each call takes a comma-separated mix of string literals and expressions. The output order across threads is \textbf{nondeterministic}.
 
-\textbf{Guarding output.} For a specific check, guard the print with a condition:
+To inspect one execution path, guard the print with a condition on its index:
 
 \begin{lstlisting}[language=croqtile,caption={A print inside a parallel block}]
 parallel {px, py} by [8, 16] : block

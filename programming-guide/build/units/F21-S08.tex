@@ -1,3 +1,5 @@
 \subsection*{Lexical Scopes and Restriction}
 
-In Croqtile, you applying the value numbering \emph{GLOBALLY} but on top of AST. As it is a syntax-directed method without basic blocks and thus lack data flow analysis, it is impossible to inference a shape with varying dimensions.
+Croqtile applies value numbering globally across the abstract syntax tree. This syntax-directed approach does not construct basic blocks or perform data-flow analysis, so it cannot infer shapes whose dimensions change through reassignment.
+
+For a reader of generated code, the consequence is straightforward: a constant shape may disappear into constants, while a symbolic shape becomes a calculation in the generated program. Value numbering tries to preserve and simplify those relationships. It does not prove every mathematical identity, so an expression that seems equivalent by hand may still need a clearer formulation.

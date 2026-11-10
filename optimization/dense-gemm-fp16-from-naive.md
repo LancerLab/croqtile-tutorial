@@ -15,7 +15,7 @@ This is a companion piece to Simon Boehm's excellent [CUDA MMM worklog](https://
 Compile and run any kernel:
 
 ```bash
-croqtile -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
+croq -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
 bash kernel.cute.result --execute
 ```
 
@@ -647,7 +647,7 @@ Writing the v4 kernel correctly in raw CUDA would require several hundred lines:
 
 ```bash
 # Compile — produces a self-contained script wrapping nvcc
-croqtile -gs -t cute -arch=sm_90a \
+croq -gs -t cute -arch=sm_90a \
     matmul_f16_v4_auto_tuned.co -o v4.cute.result
 
 # Run (compile + link + execute in one step)

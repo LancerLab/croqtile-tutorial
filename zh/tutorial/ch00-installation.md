@@ -37,7 +37,7 @@ make
 make test
 ```
 
-如果所有测试通过，`croqtile` 二进制文件已就绪，位于构建目录中。将其添加到 `PATH` 或使用完整路径调用。
+如果所有测试通过，`croq` 二进制文件已就绪，位于构建目录中。将其添加到 `PATH` 或使用完整路径调用。
 
 ## 验证安装
 
@@ -64,7 +64,7 @@ int main() {
 编译并运行：
 
 ```bash
-croqtile verify.co -o verify
+croq verify.co -o verify
 ./verify
 ```
 
@@ -72,13 +72,13 @@ croqtile verify.co -o verify
 
 ## 编译器用法
 
-`croqtile` 命令的使用方式类似 `gcc` 或 `clang`：
+`croq` 命令的使用方式类似 `gcc` 或 `clang`：
 
 ```bash
-croqtile program.co                     # 编译并链接 → a.out
-croqtile program.co -o my_kernel        # 指定输出文件名
-croqtile -es -t cuda program.co -o out.cu  # 仅输出 CUDA 源码
-croqtile -E program.co                  # 仅预处理
+croq program.co                     # 编译并链接 → a.out
+croq program.co -o my_kernel        # 指定输出文件名
+croq -es -t cuda program.co -o out.cu  # 仅输出 CUDA 源码
+croq -E program.co                  # 仅预处理
 ```
 
 主要标志：

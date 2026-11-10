@@ -71,17 +71,17 @@ DARK = {
 }
 
 LIGHT = {
-    "bg":        "#f0fdf4",
-    "fg":        "#14532d",
-    "fg2":       "#166534",
-    "fg3":       "#15803d",
-    "dim":       "#6b8f71",
-    "fill":      "#dcfce7",
-    "stroke":    "#86efac",
-    "separator": "#a7f3d0",
+    "bg":        "#ffffff",
+    "fg":        "#0f172a",
+    "fg2":       "#334155",
+    "fg3":       "#475569",
+    "dim":       "#64748b",
+    "fill":      "#f1f5f9",
+    "stroke":    "#cbd5e1",
+    "separator": "#e2e8f0",
 
     "green":     "#16a34a",
-    "green_dk":  "#14532d",
+    "green_dk":  "#166534",
     "blue":      "#2563eb",
     "orange":    "#ea580c",
     "red":       "#dc2626",
@@ -100,21 +100,21 @@ LIGHT = {
     "future_c":  "#7c3aed",
     "data_c":    "#16a34a",
 
-    "dram_c":    "#d1fae5",
-    "l2_c":      "#bbf7d0",
-    "sm_c":      "#15803d",
+    "dram_c":    "#e2e8f0",
+    "l2_c":      "#cbd5e1",
+    "sm_c":      "#475569",
     "smem_c":    "#16a34a",
     "reg_c":     "#22c55e",
-    "label_c":   "#166534",
+    "label_c":   "#334155",
     "arrow_c":   "#2563eb",
 
     "lhs_c":     "#2563eb",
     "rhs_c":     "#ea580c",
     "out_c":     "#16a34a",
 
-    "grid_c":    "#dcfce7",
+    "grid_c":    "#f1f5f9",
     "hl_c":      "#a16207",
-    "dim_c":     "#15803d",
+    "dim_c":     "#475569",
     "extent_c":  "#db2777",
 
     "term_bg":   "#f8fafc",
@@ -130,7 +130,7 @@ LIGHT = {
     "orange_tile": "#ea580c",
     "red_accent":  "#dc2626",
     "green_ok":    "#16a34a",
-    "gray_bg":     "#dcfce7",
+    "gray_bg":     "#f1f5f9",
     "purple_role": "#7c3aed",
 }
 

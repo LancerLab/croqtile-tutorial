@@ -1,10 +1,6 @@
 \subsection*{Putting it together}
 
-\begin{figure}[htbp]\centering
-\includegraphics[width=0.86\linewidth,height=0.42\textheight,keepaspectratio]{f11-fig1_debug_workflow_light.png}
-\end{figure}
-
-Work from cheap to expensive: \texttt{println!} (compile-time shapes) \(\rightarrow\) guarded \texttt{println} on one tile (runtime values) \(\rightarrow\) event/stage prints (synchronization) \(\rightarrow\) pattern analysis (layout) \(\rightarrow\) \texttt{debugger} (pointer bugs). Guard runtime prints behind \texttt{\#ifdef} so they vanish in production:
+Choose the first check from the symptom. If a tile has the wrong dimensions, inspect its shape with \co@println!@ before running the program. If the shape is right but the values are wrong, print one tile or add an assertion near the suspect operation. A stalled pipeline calls for event and iteration counts; a regular pattern of incorrect matrix elements calls for a layout check. Use a debugger when these checks point to an address or lifetime problem. Keep temporary output behind a preprocessor guard so it can be removed from a normal build:
 
 \begin{lstlisting}[language=croqtile,caption={Guarding debug prints}]
 #ifdef DEBUG_PRINT
@@ -13,6 +9,6 @@ Work from cheap to expensive: \texttt{println!} (compile-time shapes) \(\rightar
 \end{lstlisting}
 
 \begin{lstlisting}[language={},caption={Debug and production builds}]
-croqtile kernel.co -DDEBUG_PRINT -o kernel    # debug build
-croqtile kernel.co -o kernel                   # production build
+croq kernel.co -DDEBUG_PRINT -o kernel    # debug build
+croq kernel.co -o kernel                   # production build
 \end{lstlisting}

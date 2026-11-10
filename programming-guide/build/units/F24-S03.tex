@@ -6,9 +6,9 @@ The general syntax for a \texttt{call} statement in Croqtile is:
 call func-name <optional-template-args> (arguments);
 \end{lstlisting}
 
-Here, the keyword \texttt{call} is followed by a function name \texttt{func-name}, an optional \texttt{\textless{}\textgreater{}} enclosed template arguments, which are comma-separated. The \texttt{arguments} are also comma-separated and listed inside \texttt{()} like normal C/C++ functions.
+After \texttt{call}, write the function name and, optionally, comma-separated template arguments in angle brackets. Ordinary arguments follow in parentheses, separated by commas as in C/C++.
 
-\textbf{Croqtile transpilation process would not apply any check between the callers and the callees}, including the function existence, function signature consistency, and parameter consistency. It delegates such duties to the target compilation process. Programmers must be careful about the conventions between Croqtile function and device function consequently.
+The target compiler checks that the called function exists and that its signature accepts the generated arguments. Croqtile does not perform these C++ checks during transpilation. A call error may therefore mention generated source; compare it with the helper declaration and the original call site.
 
 In the following example, \texttt{call bar();} in \texttt{mou} is illegal code since it tries to call device function in a code location which is assumed to be host code area.
 

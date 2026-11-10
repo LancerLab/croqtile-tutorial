@@ -1,958 +1,854 @@
-=== UID:F12-S02
-P: This reference covers every aspect of programming with Croqtile:
-L: **Program structure**: How Croqtile programs are organized --- the `__co__` function, host-side APIs, and C++ interoperability.
-L: **Shaped data**: Croqtile's type system for multi-dimensional tensors --- shapes, MDSpan, spanned data, symbolic dimensions, and dynamic shapes.
-L: **Loop and parallelism**: SPMD parallelism, loop control, tiling, and iteration constructs.
-L: **Data movement**: DMA statements, tiling with `chunkat`, TMA, swizzle, and advanced data movement patterns.
-L: **C++ embeddings**: Input/output conventions, `__cpp__` inline blocks, macros, and preprocessor integration.
-L: **Optimization patterns**: Tileflow optimizations, async DMA patterns, multi-buffering, and performance tuning techniques.
+=== UID:F03-S02
+P: At its simplest a program has two parts. A `__co__` function describes computation on shaped tensors, and the compiler translates that function into target code. The host program is standard C++ that prepares the data, calls the function and checks the result. Both live in a single `.co` file, and the `__co__` prefix is all the compiler needs to tell them apart.
 
-=== UID:F14-S01
-P: A `.co` program has a fixed structure: host code, device code and a tileflow function, each treated differently by the compiler.
+=== UID:F14-S03
+H: Host, Device and Tileflow
+P: Both of those parts are present here, but the ordinary C++ side is worth splitting once more: a `.co` file may also carry a `__device__` helper. The listing is written from the inside out --- a device helper, the `__co__` function that calls it, and the host `main()` that calls the `__co__` function.
+C: The three regions of one source file
+P: Execution starts at the bottom of the listing, in the host program. Written in standard C++ and run on the CPU, it is the entry point of the module and the caller of the Tileflow program --- the `__co__` functions --- and it manages the overall workflow of the heterogeneous application. A typical host body prepares the input data, invokes a Croqtile function, handles its return value and advances to the next step.
+P: The Tileflow program called from there is the part Croqtile adds. Built from `__co__` functions, it is the core of a `.co` program: it orchestrates data movement between host and device and between storage levels within a single device. A typical Tileflow body moves data into a buffer at the appropriate storage level, calls a device function to compute on it, and moves the result back to the host. It is the only region the compiler translates.
+P: Device functions sit at the other end of that call chain. A `__device__` function defines computation-intensive operations that run on the target device; the prefix marks it as device code. Like the host program, it passes through Croqtile compilation unchanged. The compiler leaves both sides of ordinary C++ alone; only the `__co__` function between them is rewritten.
 
-=== UID:F14-S02
-H: Construct a Croqtile Program
-P: A typical *Croqtile* program is composed of multiple parts, depending on the target platform.
-L: The Device Program | The Host Program | The Tileflow Program
+=== UID:F03-S04
+H: The Croqtile Function
+P: Start with the signature, which declares more than a C++ function prototype would: every parameter and the result carry a shape.
+C: A kernel signature
+P: The `__co__` prefix marks a Croqtile function. The declaration `s32 [4, 8]` combines signed 32-bit elements with a two-dimensional shape: four rows and eight columns. Both inputs and the result follow the form `type [shape] name`. These declarations give the compiler the information needed to check ranks and reason about index bounds. Constraints that depend on caller-supplied dimensions may also require runtime checks.
+P: Croqtile supports these element types: `s32` (signed 32-bit int), `f16` (half-precision float), `bf16` (brain float), `f32` (single-precision float), and `f8_e4m3` / `f8_e5m2` (8-bit floats). In the examples that follow, `s32` is the simplest to reason about.
+C: Allocating the output
+P: This allocates the output tensor. The expression `lhs.span` copies the full shape from `lhs`, so `output` automatically has shape `[4, 8]`. If you later change the input shape, the output adjusts --- a pattern that makes Croqtile functions easier to generalize.
+C: The parallel body
+P: The statement `parallel i, j by [4, 8]` declares 32 independent instances, one for each element position. An instance with `(i, j) = (1, 3)` reads that position from both inputs and writes the sum to the same position in `output`. No two instances write the same element, and none needs a result produced by another instance. That independence is what permits parallel execution.
+P: Without a space specifier, the compiler chooses how to map the instances to execution resources. The statement establishes their independence; it does not require one physical thread per element or all instances to run at once.
+C: Returning the result
+P: A `__co__` function returns its result tensor. The return type in the signature (`s32 [4, 8]`) must match what you actually return. The caller on the host side receives a `croq:`:spanned_data --- an owning buffer with shape metadata that you can index into with `[i][j]`.
 
-=== UID:F14-S04
-H: Transpilation and Compilation
-P: The Croqtile compilation process typically involves three major steps: **Pre-processing**, **Transpilation**, and **Target Compilation**. To better understand how different parts of a Croqtile program work together, the full compilation workflow is illustrated below:
-F: f14-compile-workflow.drawio.png
-P: As shown in the figure, immediately after *pre-processing*, Croqtile *transpiles* (*source-to-source* compilation) the *tileflow program* into target code, leaving the user-provided *host program* and *device program* unchanged. The *tileflow program* is *transpiled* into host and device source code, which you refer to as *croqtile-generated code*. The compiler then combines the user-provided code and *croqtile-generated* code to perform the *target compilation* process. This process can generate various outputs, such as transpiled source code, workscripts, target modules, target assembly, and executables.
-P: The Croqtile compiler functions as an end-to-end compiler, with the key step being the transpilation of the *tileflow program* into *croqtile-generated code*.
-P: One notable feature of Croqtile compilation is its support for both:
-L: **Single Source Compilation Model**: Similar to , where the target compiler allows device and host programs to be in a single source file for target compilation. | **Separate Source Compilation Model**: Similar to , where host and device code must be compiled separately.
-P: The code shown above naturally supports the *Single Source Compilation Model*. However, to support the *Separate Source Compilation Model*, Croqtile requires wrapping the Device Program with the `__cok__` block, as shown below:
-C: Transpilation and Compilation
-P: This is the code structure for a program. The `_`_cok__ wrapper enables the Croqtile compiler to handle user-provided device code properly. It helps Croqtile separate device and host code from a single Croqtile source file for different compilation processes. Therefore, do not be surprised if you encounter `__cok__` in certain Croqtile code; it is necessary for integrating support for the *Separate Source Compilation Model*.
+=== UID:F08-S08
+H: `_`_co__ auto return type
+P: Use `auto` when the result shape is easiest to describe inside the function. In `__co__ auto matmul(...)`, the compiler infers the return type from the buffer named by `return output`. The result still has an element type and a shape; `auto` saves repeating that information in the signature. An explicit return type is useful when you want the signature itself to state the required output shape.
+P: The return convention is the same for element-wise arithmetic, scalar matrix multiplication, and MMA kernels that return a buffer. It does not depend on how the function computes the elements.
 
-=== UID:F14-S07
-H: Device Program: Parallel Computation
-P: The kernel is designed to operate on input data, process it in parallel, and generate the output.
-P: You repeat the code as below:
-C: A device helper called from tileflow
-P: For targets that only support the _Separated Source Programming Model_, the code may need to be wrapped within a `_`_cok__ block. The equivalent code is shown below:
-C: The cok wrapper for separate sources
-P: Here, the `extern "C"` annotation replaces the `__device__` keyword used in target, as requires C-linkage for the device functions.
-P: Programmers must be aware that the device program follows the *Single-Program-Multiple-Data (SPMD)* paradigm. However, unlike traditional programs, the device program does not manage data movement ---whether between the host and device or across multiple storage levels within the device. Instead, the *tileflow program* orchestrates these tasks in a much simpler and safer manner.
+=== UID:F03-S05
+H: The Host Program
+P: The host supplies both storage and shape information. In the addition example, it first creates two owning buffers, fills them, and passes views to the kernel. Keeping ownership on the host lets the same input buffers remain available for checking the result after the call.
+C: Creating the shaped inputs
+P: The call `croq::make_spandata<T>(dims...)` allocates an owning host buffer. The template parameter selects the element type, and the arguments supply its dimensions. The calls to `fill_random` then initialize its elements within the specified range.
+C: Calling the kernel
+P: Calling a `__co__` function from C++ looks like a normal function call. The `.view()` method produces a non-owning `spanned_view` from an owning `spanned_data` --- this is how you pass host tensors into a Croqtile function without transferring ownership. The return value `res` is a `croq:`:spanned_data that owns its buffer.
+P: The rest of `main` verifies the result by iterating over every element and asserting equality. The host program handles setup and verification; the computation takes place in the `__co__` function.
 
-=== UID:F14-S09
+=== UID:F05-S16
+H: Host Code
+P: The host side uses the same `make_spandata` / `.view()` pattern used by the host code above:
+C: Host Code
+P: The loop after the call checks every element against a plain C++ reference computation, so an incorrect result is reported before the program prints anything.
+
+=== UID:F15-S21
+H: Parameter Passing between Croqtile and C++ Function
+P: Passing arguments between Croqtile and C++ requires the `croqtile.h` header. Combine a raw C++ pointer with its dimensions to construct Croqtile spanned data, as shown below.
+C: Parameter Passing between Croqtile and C Function
+P: The `make_spanview` utility template wraps the data without copying it. In the Croqtile function `foo`, the corresponding parameter `d` has type `f32 mdspan`2>. An implicit conversion allows `d` to be passed as the first argument to the C++ function `bar`; `|d|` supplies its total element count.
+P: Scalar values can also pass between C++ and Croqtile functions. An `ituple`, however, is used only inside a Croqtile function.
+
+=== UID:F25-S01
+
+=== UID:F25-S02
+
+=== UID:F25-S03
+H: Input Parameters
+P: A Croqtile function accepts only two kinds of input parameter, the *spanned data* and the *integer*.
+P: Similar to any C++ program, the parameter may either be named or unnamed:
+C: Input Parameters
+P: The second parameter is unnamed, so the function body cannot refer to it. The declaration is still valid.
+
+=== UID:F25-S04
+H: C++ Host: Data Argument with Shape
+P: Croqtile spanned data carries a shape in addition to its data pointer. Before passing a C/C++ pointer or array to a Croqtile function, wrap it with the required shape information.
+P: One direct method is to use the Croqtile API provided in `croqtile.h`. A program does not have to include `croqtile.h` explicitly in a Croqtile compilation environment; the compiler includes it for every Croqtile program.
+C: Passing a shaped buffer
+P: The `croqtile:`:make_spanned function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a `croqtile:`:spanned_view that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:
+C: The host-side buffer wrapper
+P: Dimensions do not have to be constants; runtime values work as well:
+C: A call built from runtime dimensions
+P: Here, `input` has a runtime shape. On entry to the Tileflow program, Croqtile checks that `M == 7` and `N == 16`. **If either condition fails, the program terminates immediately**, because the function's shape assumptions do not hold.
+P: Spanned-data inputs are **references to the original data or buffers**. Calling a Croqtile function does not copy the input data, even though the parameter syntax may resemble a declaration with value semantics.
+
+=== UID:F25-S05
+
+=== UID:F25-S06
+H: Return Type and Type Deduction
+P: Similar to the input, *spanned data* and *integer* are valid output types. The *void* type is also allowed if nothing is returned.
+P: In addition to the explicit return type annotation, Croqtile supports type inference on returns. For example:
+C: Return Type and Type Deduction
+P: Here, `auto` is inferred as `f32 [7, 16]` from `result`. This is useful when the output shape is derived inside the function: changing that derivation does not require a matching edit to the return annotation. Use an explicit type when a fixed return shape is part of the interface you want to enforce.
+
+=== UID:F25-S07
+H: C++ Host: Shape Return
+P: The C++ host code that receives the output of Croqtile function actually receives a buffer. The return has value semantics: the caller receives the buffer itself, not a reference to an object allocated inside the called function. For example:
+C: Returning a shaped buffer
+P: The example returns `output` with value semantics, but the implementation avoids copying the buffer. The returned C++ type is `croqtile:`:spanned_data, whose simplified definition is:
+C: The host-side result wrapper
+P: Unlike `croqtile:`:spanned_view, `croqtile:`:spanned_data owns the buffer it points to. **Returning it does not copy the buffer**; the implementation uses return value optimization.
+P: Use member functions such as `.rank()` and `.shape()` to query the returned buffer's shape. The host can then work with the result without depending on the implementation of the Croqtile function.
+
+=== UID:F04-S16
+H: `span` and `span(i)`
+P: The member `tensor.span` returns the whole shape, while `tensor.span(i)` returns the extent of dimension i. For matrix multiplication, the output takes its row count from the left input and its column count from the right input:
+C: span and span(i)
+P: The example builds a result whose dimensions come from two different operands. Reusing those dimensions keeps the output declaration tied to its inputs. The same approach is useful for a staging buffer that must match the shape of a moved tile.
+F: For a [4, 8] tensor, .span returns [4, 8], while .span(0) and .span(1) return 4 and 8.
+
+=== UID:F16-S01
+P: A shape in Croqtile is a value a program can name and compute with, not just an annotation on a declaration. The examples below define one, derive another from it, and leave a dimension open for the caller to fill in.
+
+=== UID:F16-S03
+H: Defining Shapes with `mdspan`
+P: The keyword `mdspan` stands for multidimensional span. It describes the extents of a shape without allocating its elements. For example, a shape `[7, 8]` has rank 2 and describes 56 positions; choosing `f32` or `s32` for those positions is a separate decision.
+P: You can explicitly define `mdspan` variables as follows:
+C: Declaring a shape
+P: The colon introduces the shape initializer, and square brackets enclose its dimensions. Thus `s0` has seven rows and eight columns, while `s1` has one dimension of size 3. A named shape can be reused in later buffer declarations.
+P: You can specify the **rank** by placing ``rank> after `mdspan`. The compiler checks that this rank matches the initialization expression and reports a compilation error if they differ:
+C: A rank mismatch
+P: Because the initializer identifies a shape, the compiler can infer the `mdspan` type when the keyword is omitted:
+C: Omitting the mdspan keyword
+P: Here `s3` has rank 3 and dimensions 7, 8, and 9. Every named shape requires an initializer, so the inferred form is often sufficient.
+
+=== UID:F16-S04
+H: Deriving *mdspan*s
+P: New shapes often derive from existing ones. **Tiling** or **blocking** divides dimensions, while **padding** increases selected dimensions by a specified amount.
+P: Shape arithmetic expresses these derivations directly:
+C: The original shape
+P: The first derived shape divides dimension 0 by 2 and dimension 1 by 4, then adds a dimension of size 1. The expression determines the new dimension order. It changes the shape description; it does not move any elements.
+P: In Croqtile, the definition of `new-shape0` is equivalent to:
+C: A derived shape
+P: This form lists the dimensions explicitly inside `[]`. The **element-of** operation `()` retrieves a dimension from the existing shape. Both forms produce the same result; the earlier form is syntactic sugar for the complete initialization expression.
+P: The second derived shape adds 2 to the original dimension 1 and divides dimension 0 by 16, then places them in that order.
+P: Furthermore, you may use the `mdspan` as a whole for derivations:
+C: Rebinding a shape
+P: Arithmetic on a whole shape applies to each dimension. Adding 1 to `[128, 64]` therefore gives `[129, 65]`; it does not append a dimension. The two expressions below spell out that same calculation:
+P: The expression `new-`shape1 : shape + 1;
+P: is equivalent to
+P: The expression `new-`shape1 : shape [(0) + 1, (1) + 1];
+P: The derived definition of `new-shape3` demonstrates that using an *mdspan* variable in an *mdspan initialization expression* results in **concatenation** behavior. Thus, the declaration
+P: The expression `new-`shape3 : [shape, 6];
+P: is equivalent to
+P: The expression `new-`shape3 : shape [(0), (1), 6];
+P: The shorter form is syntactic sugar for the complete shape definition.
+
+=== UID:F19-S03
+H: *mdspan* with **Anonymous Dimension**
+P: Croqtile supports shape dimensions with unknown values, similar to many high-level machine learning languages. The simplest method is to use **Anonymous Dimension** in `mdspan`:
+C: A kernel with an unknown dimension
+P: Here, the question mark `?` represents a compile-time unknown value. Any positive integer could be assumed here. However, the value must be provided at runtime, as the following example shows:
+C: The caller supplying that dimension
+P: The first dimension of `input` comes from the spanned input passed to `foo`; `bar` obtains the value from its caller at runtime. For example, it may come from a configuration file or a shape calculation in a machine learning framework.
+P: An anonymous dimension is sufficient when only its size matters within one input. It does not give two inputs a shared name for a dimension that must agree. Matrix multiplication needs precisely that relationship: the left operand's column count must equal the right operand's row count.
+
+=== UID:F19-S04
+H: Step Further: **Symbolic Dimension**
+P: In Croqtile, **symbolic dimensions** give names to dimensions whose values are unknown at compile time. For example:
+C: Step Further: Symbolic Dimension
+P: Each input dimension has a symbolic name: `M`, `K`, or `N`. Unlike anonymous dimensions, these names make relationships between shapes explicit, improving readability and maintenance. They also give the compiler more information for consistency checks.
+
+=== UID:F15-S05
+H: Scalar Types
+P: Croqtile provides **integer** and **Boolean** scalar types. Its integer type is a signed 32-bit value, like C++ `int` or `int32_t`, with range $-2^31$ to $2^31-1$. The following example uses it in variable and function declarations.
+C: Scalar Types
+P: Integers support arithmetic, shifts, and logical operations with C++ syntax. Croqtile does not provide unsigned or 8-, 16-, or 64-bit scalar control integers: a signed 32-bit integer is sufficient for the program-control tasks this type serves.
+P: The Boolean type corresponds to C++ `bool`. Boolean operations and conversions between Boolean and integer values follow C++ rules.
+
+=== UID:F15-S10
+H: I-Tuple Types
+P: An integer tuple is an ordered collection of integers, commonly used as a multidimensional index.
+P: To define an i-tuple, simply enclose its elements within '' and '' braces. That is,
+C: I-Tuple Types
+
+=== UID:F15-S11
+H: Operations over *mdspan* and *i-tuple*
+P: Croqtile supports operations between `ituple` and `mdspan` values. The following example applies fixed tiling factors to a shape:
+C: Operations over mdspan and i-tuple
+P: In Croqtile, mdspan can be defined with such **Tuple-Span Operations**. The supported operations include:
+L: *mdspan* $/$ *i-tuple* | *mdspan* $+$ *i-tuple* | *mdspan* $%$ *i-tuple* | *mdspan* $*$ *i-tuple* | *mdspan* $-$ *i-tuple*
+P: Each operation applies to corresponding dimensions. Tuple-span notation collects those calculations into one expression, so the relationship between a shape and its tiling factors remains visible.
+
+=== UID:F17-S01
+P: Integers in a kernel control loops and index arrays, and an *i-tuple* groups several of them into one index. Both are declared with an initializer and both are checked against the shape they are used with.
+
+=== UID:F17-S02
+H: Integers for Program Control
+P: Control integers describe loop ranges, indices, and related calculations. Croqtile uses a signed 32-bit `int` for these tasks. Numerical data stored in a tensor uses the separate fundamental element types described in Section 2.6.
+P: In Croqtile, an **integer**-typed variable is defined similar to C/C++:
+C: An initialized integer
+P: Croqtile can also infer the type from the *initialization expression*, so an integer variable can be declared in another style:
+C: Assignment to an integer
+P: Similar to C/C++, you can define multiple integers in a single line:
+C: Several integers at once
+P: In Croqtile, the *mdspan*-typed shape cannot be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:
+C: An integer parameter
+P: Unlike C/C++, Croqtile does not allow the declaration of integers without initialization or the reassignment of an integer. For example:
+C: A declaration without initialization
+P: This enforces that **integers must be initialized at declaration and cannot be reassigned**. In some contexts, these integers are referred to as "**immutable**" or "**constant**".
+
+=== UID:F17-S04
+
+=== UID:F17-S05
+H: Defining I-Tuples
+P: An integer tuple, written `ituple`, groups several integer values in a fixed order. Its initializer uses braces:
+C: An i-tuple literal
+P: Since Croqtile can infer types from the *initialization expression*, programmers can often omit the `ituple` keyword. However, without explicit type annotation, an *ituple* variable definition might look similar to an *mdspan* definition if you are not yet familiar with Croqtile. To distinguish them:
+L: The *initialization expression* of an *ituple* follows an assignment operation `=` (like integers), whereas an *mdspan* is initialized after `:`; | The *initialization expression* of an *ituple* is enclosed by `\`, not `[]` as for *mdspan*.
+P: Similar to `mdspan`, you may enforce rank check for *ituple*s at compile time:
+C: An inconsistent rank
+
+=== UID:F17-S06
+H: Operations on I-Tuples
+P: Operations on *i-tuple*s are similar to those on *mdspan*. You can either use the *element-of* operation `()` to retrieve the element values or use *ituple* as a whole:
+C: Assigning a new tuple
+P: Similar to *integer* and *mdspan*, an *ituple* variable must be initialized and cannot be reassigned.
+P: In practice, *ituple*s are often used with *mdspan*s. For example:
+C: Indexing an mdspan with an i-tuple
+P: Here, dividing an `mdspan` shape by an `ituple` of tiling factors produces `tiled_shape`. Adding an anonymous `ituple` to the original shape produces `padded_shape`. The shape and tuple must have matching ranks; otherwise, the compiler reports an error.
+C: An invalid shape expression
+
+=== UID:F17-S09
 H: In short
-P: You are now aware that a Croqtile program consists of three parts, with the *tileflow program* being the core. This part is transpiled into target source code during the compilation process. The call chain typically flows from the host to the tileflow program, and then from the tileflow program to the device code.
-P: You may have noticed that Croqtile not only abstracts DMA operations into higher-level semantics but also combines iteration and tiling for ease of use. This makes Croqtile code concise and expressive. In the following chapters, you will delve deeper into Croqtile's syntax and semantics to explore its full potential.
-
-=== UID:F31-S08
-H: Heterogeneity: Transpiling to program launch
-P: For targets like , the `parallel-by` block not only specifies the number of parallel threads but also defines the boundary between host and device code, leveraging Croqtile's ability to manage heterogeneity. Specifically:
-L: Code **outside** the `parallel-by` block is transpiled into **host code**. | Code **inside** the block is transpiled into **device code**, as illustrated below:
-C: Heterogeneity: Transpiling to program launch
-P: For those familiar with , this is analogous to a occurring at the `parallel-by` statement. However, Croqtile abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.
-
-=== UID:F05-S11
-H: Type System Aside: `mdspan` and `ituple`
-P: Before you build the matmul, two features of Croqtile's type system are worth mentioning. You have already used them implicitly; now is a good time to name them.
-P: The `span(i)` syntax extracts one dimension: `lhs.span(0)` is 128, `rhs.span(1)` is 256. The shorthand `lhs.span` copies the entire shape.
-P: For the full details, see 2.4 and 2.5. In the examples that follow, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.
-
-=== UID:F15-S01
-
-=== UID:F15-S02
-P: It aims to simplify the daily tasks of engineers responsible for crafting high-performance kernels. By leveraging Croqtile, the programming process becomes more accessible, allowing engineers to optimize these critical processes with greater ease and efficiency.
-
-=== UID:F15-S03
-H: Embedding Croqtile within C++
-P: Croqtile is the DSL code embedded within C++. The Croqtile compiler performs the source-to-source translation of the Croqtile function to be C++ code. It implicitly includes "croqtile.h", which bridges the translated code to work properly with other C++ code. The below code snippet showcases an example.
-C: Embedding Croqtile within C
-P: Note, a Croqtile function is prefixed with the "__co__" keyword. All code in the function scope is translated by the Croqtile compiler. Other C++ code calls the Croqtile function by its name as declared.
-P: In addition, certain Croqtile-specific types are introduced to ensure consistency between Croqtile function arguments and their respective callers. Considering that there are some important programming elements missing, you will defer the introduction of such details until the data types are explained.
-
-=== UID:F15-S04
-H: Variables and Types
-P: Croqtile introduces four fundamental type categories: scalar-type, spanned-type, integer-tuple-type (ituple-type) and bounded-type. These types serve for different purposes.
-L: **Scalar Type**. It is designed to fullfil the requirement of program control. It consist of *Integer Type* and *Boolean Type*. | **Spanned Type**. It represents the data type (normally the tensor) for computation. Apart from referencing the raw data, a *spanned type* also associates data with a shape representing by multi-dimensional ranges. The 'multi-dimensional ranges' is named 'mdspan'. It is useful for tiling, etc, which is introduced soon. | **Integer Tuple (I-Tuple) Type**. It represents a group of integer values. A common usage of *i-tuple* is to introduce the bound of multi-dimensional data. | **Bounded (Integer/ITuple) Type**. This is the special type that is used to simplify data (sub-zone) reference. And it works with loop construct to iteratively process data.
-P: Among the four type categories, *scalar* and *ituple* could be well accepted consider it maps to elements of existing general purpose programming languages. However, the *spanned type*, and *bounded type* are specific to the domain. The following sections will show the detail.
-
-=== UID:F15-S06
-H: Spanned Types
-P: A spanned type is a **Composite Type**. It consists of a **fundamental type**, and a **multi-dimensional-span(mdspan) type**. Neither the *fundamental type* nor the *mdspan* is a *complete type*. It implies that neither of them can type a data with storage. In Croqtile, you name them as *partial types*.
-P: The reason for making the type be composition of two is to specifically manipulate *mdspan* alone. This is crucial in ML scenarios where data are always organized as multi-dimensional. It is very common for the programmers to tile the data into smaller blocks/chunks, and move them across storage hierarchy. Therefore, manipulating the _shape_ (represented by _mdspan_) of multi-dimensional data plays a vital role.
-P: In the following sections, this section shows how to define such partial types and how to compose partial types into a complete type for declaring/defining multi-dimensional data purpose.
-
-=== UID:F15-S07
-H: The Partial Type: **mdspan**
-P: Unlike most type systems, *mdspan*, comes as an partial entity for typing. Here you claims it as *partial* because Croqtile program is unable to define data as a *mdspan* type. However, *mdspan* itself can be defined solely. Such design is based on the oberservation that loop tiling/blocking cares nothing but the shape of multiple dimension data. Therefore, Croqtile allows programmers to manipulate *mdspan* regardless the fundanmental type it associated with, to ease the programming about shapes.
-P: Meanwhile, croqtile compiler could apply type checking on *mdspan* to reveal code errors as early (ahead of execution, when applies) as possble.
-P: In Croqtile, a mdspan is braced by '[' and ']'. The upper-bound of dimensions inside are separated by ','. That is,
-C: An mdspan declaration
-P: As illustrated, a 'mdspan' can be explicitly defined with *mdspan* partial-type keyword as annotated, optionally with a '<' '>' enclosed total dimension value. It is also possible to define a mdspan without type annotation. As shown in definition of 'd' above. (Note: 'mds' and 'd' are of the **dependent type**, considering the type depends on the evaluation of 'a' and 'b'. Programers may provides 'a' and 'b' with runtime values. However, in this way, some runtime check are paid consequently)
-P: For C++ programmers, you may think a mdspan as the trait of a multiple dimensional array, where it describes a multi-level-range. For example, 'sp' in the above example defines two-level of ranges, ranging from 0 to 6, and 0 to 7 separately.
-P: When a mdspan is defined, it is possible to get the integer dimension value using operator '()' over the mdspan.
-C: A shape literal
-P: In the above example, the expression 'sp(0)' reasons about the first dimension value of mdspan 'sp'. The dimension values are in essence integer values, which are suitable for integer arithmetics.
-P: As a conseqeunce, you may derive a mdspan from existing one as the below code snippet:
-C: A shape with one dimension changed
-P: With such a facility, it is very convinient to apply tiling over multiple-dimensional spans in your Croqtile code. Considering that tiling operation is always required in constructing the high-performance kernels, Croqtile has provided syntax suger to make the work even easier:
-C: The same shape again
-P: This code works the same way as the previous one, but obviously in a much simpler syntax. This follows one of Croqtile's design philosophy --- To enable functionalities with minimal code whenever possible.
-P: Except for defining a mdspan in the above *dimension-wise* way, Croqtile also support to define mdspan definition with other methods. You will introduce such methods when *i-tuple* is revealed.
-
-=== UID:F15-S12
-H: Bounded Types
-P: Bounded types consists of **Bounded Scalar** and **Bounded ITuple**. Bounded Scalar takes a range of [0, ub), where 'ub' represents its upper bound. Therefore, if an integer 'p' is set as bounded, it should also be associated with a specific upper bound. To establish such associations, programmers must code explicitly inside the *Control Structures* of 'parallel-by' and 'with-in', which will be introduced later.
-P: Similarly, since *ITuple* is a group of *Integer*s, it can also be associated with a group of bounds. Specifically, in Croqtile, the *Bounded ITuple* is associated with a *mdspan* value, where a group of upper bounds are settled. In later sections, you shall illustrate the detailed syntax.
-
-=== UID:F15-S17
-
-=== UID:F15-S22
-H: In short
-P: Croqtile introduces a novel approach to SPMD programming. It favors C++-style coding and is embedded within C++. However, its primary focus is on alleviating the burden of low-level programming details, particularly those related to data manipulation across various memory layers through DMA operations. At times, it is also referred to as the dataflow programming DSL. You developed this tool to support the daily task of constructing high-performance kernels. Your aim is to enable programmers to focus less on the intricacies of language construction and more on higher-level conceptual thinking.
-P: You wish you find it functions as expected. And you are looking forward to any feedback for continuous improvement.
-
-=== UID:F17-S03
-H: Group of Ranges and Group of Integers
-P: In Croqtile, *mdspan* can be used to represent dimensional shapes. However, as introduced, *mdspan* stands for **Multi-Dimensional Span**. The elements inside are *Dimensional Spans*, which imply ranges of values.
-P: For example, an *mdspan* `[7, 14]` represents a group of two ranges `[0, 7), [0, 14)`. Therefore, an *mdspan* does not represent a list of integer values. However, grouping integer values is useful in certain scenarios:
-L: When considering the delta of two mdspans, multiple integers are needed. In high-level semantics, the delta may reflect padding differences when adjusting shape dimensions. | When tiling a shape, the multiple tiling factors are integers, not ranges.
-P: These situations motivate Croqtile to have a type for grouping integer values.
-
-=== UID:F17-S08
-H: Look-Ahead: Bounded I-Tuples
-
-=== UID:F18-S02
-H: *Spanned*: Data and Buffers
-P: The primary focus of a Tileflow program is to manipulate large datasets by moving them around. In some terminology, the input and output of a Croqtile function are classified as "input data" and "output data," respectively. Meanwhile, any other storage is referred to as "buffers." This conceptually distinguishes between "external" and "internal" memory from a function's perspective. However, both "data" and "buffer" refer to storage positions. In Croqtile, both are typed as **spanned**, reflecting that they are data/buffers associated with an
-
-=== UID:F18-S07
-H: Buffer Lifetime Management
-P: The lifetime of storage allocated inside a *croqtile function* is managed by the Croqtile compiler for efficient use. The compiler attempts to reuse buffers as much as possible if their lifetimes do not overlap. Therefore users of Croqtile are not necessary to do buffer management.
-
-=== UID:F31-S06
-H: Bounded Variable
-P: In a `parallel-by` block, the variables defined after the `parallel` keyword are referred to as **Bounded Variables**. Specifically:
-L: If the variable is an *integer*, it is called a **bounded integer**. | If the variable is an *ituple*, it is called a **bounded ituple**.
-P: This terminology indicates that the variable not only has a value but also has defined bounds. For example, in the statement `parallel p by 6`, `p` is a *bounded integer* with a bound `[0, 6)`, where `6` is the exclusive upper bound.
-P: The concept of bounded variables will be explored further in later sections, where their usage will be detailed.
-
-=== UID:F32-S09
-H: Values of Bounded Variables
-P: Understanding the values associated with a bounded variable is crucial. A bounded variable has two key values:
-L: **Current Value**: itemize[leftmargin=1.6em] | Within a `foreach` statement, the current value is determined by the loop iteration, as the bounded variable serves as the iteration variable. | Outside of a `foreach` statement, the bounded variable always has a value of zero.
-L: **Upper-Bound Value**: This is specified in the `with-in` or `parallel-by` statements.
-P: Programmers may encounter issues when using the current value of a bounded variable outside of a `foreach` statement, particularly after the loop has completed. By definition, the current value of a bounded variable is immutable except within a `foreach` loop. The following code illustrates this:
-C: Values of Bounded Variables
-
-=== UID:F37-S01
-H: Memory in Croqtile
-P: In Croqtile, the memory system is designed to handle large datasets effectively, which is crucial for high-performance computing scenarios, especially in machine learning and scientific computing.
-
-=== UID:F37-S02
-H: Spanned Types in Croqtile
-P: A **spanned type** is a composite type that includes both the fundamental data type (such as `f32`, `s32`, or `f16`) and a **multi-dimensional span (mdspan)** that describes the shape and organization of the data. The spanned type allows Croqtile to define large arrays or matrices with an efficient layout, while also enabling the programmer to manipulate the shape (i.e., dimensions) independently of the data type. This flexibility is essential for managing multi-dimensional datasets that are frequently encountered in parallel computation and machine learning workloads.
-P: The spanned type by itself does not allocate storage for the data. Instead, it serves as a blueprint for defining how the data will be organized in memory, allowing for runtime flexibility and optimizations.
-
-=== UID:F37-S03
-H: Storage Qualifiers in Croqtile
-P: In Croqtile, **storage qualifiers** annotate the memory allocation and specify which memory region the data will reside in. Croqtile defines three primary storage qualifiers:
-
-=== UID:F16-S02
-H: First-Class Citizen: Shape
-P: Croqtile's primary function is to manage data movements, which are crucial for efficiently organizing and processing large datasets, especially in machine learning and high-performance computing scenarios. However, most C++ programming environments handle data in a casual manner ---either as flat (pointers) or hierarchical structures (arrays), without a native representation of associated shapes.
-P: In contrast, Croqtile enforces code safety and simplifies the programming of shaped data by requiring that **any data declared or used must be associated with a shape**. This motivates Croqtile to treat shape as a first-class citizen.
-
-=== UID:F16-S05
-H: Evaluation of *mdspan*
-P: An mdspan with constant values is sufficient for many scenarios, as high-performance device kernels often require fine-tuning based on fixed input data shapes. In these cases, the `mdspan`s are evaluated at compile-time, meaning their values do not incur extra execution time or storage overhead.
-P: In some scenarios, a runtime shape (where some dimensions are determined at execution) is required for building the kernel. Croqtile supports this with **Symbolic Dimensions** for `mdspan`, which will be introduced later. In such scenarios, runtime evaluation of dimension values may be necessary. Fortunately, Croqtile manages this evaluation immediately after entering a croqtile function in the Croqtile-generated host code, resulting in negligible startup cost. **Therefore, programmers can ignore overheads related to _mdspan_ normally**.
-
-=== UID:F17-S07
-H: Evaluation of Integers and I-Tuples
-P: Similar to mdspan, both *integer*s and *i-tuple*s incur minimal runtime cost. Their values are evaluated at compile time whenever possible, so programmers can generally ignore their cost.
-
-=== UID:F19-S01
-P: n this section, you will learn about the *anonymous dimension* and *symbolic dimension* in Croqtile and how they support dynamic shapes required by certain systems.
-
-=== UID:F19-S02
-H: Fixed and Dynamic Shape
-P: Data with fixed shapes is commonly used in high-performance computing kernels, allowing for aggressive optimization with known dimensions. However, certain scenarios require handling shapes with runtime dimensions, known as dynamic shapes. This necessitates kernel generality to manage inputs of varying shapes, a feature highlighted by many machine learning frameworks.
-
-=== UID:F19-S05
-H: Improved Code Safety
-P: The reason for improved code safety of using *symbolic dimension* is that more comprehensive code checks can be applied by Croqtile compiler. For example, consider an *anonymous dimension* version of the `Matmul` function:
-C: A kernel with anonymous dimensions
-P: Croqtile performs both compile-time and runtime checks to ensure safety:
-L: **Compile-time Checks**: Croqtile verifies rank consistency. In this example, `lhs.span` has a ranked of `2`, matching the rank of `tile_`m, tile_k, so there are no issues. | **Runtime Checks**: Croqtile generates code to validate dimensions at runtime. For instance, in the declaration of `tiled_lhs`, its shape must not have a dimension of `0`, which would result in an invalid zero-sized buffer. Croqtile's *transpilation* process generates the following *target host code*:
-C: The transpiled signature
-P: Here, the `croqtile_`abort function aborts program execution if the condition is not met. This early check helps Croqtile detect issues promptly.
-P: For the *symbolic dimension* version, Croqtile compiler generates additional checks in the *target host code*:
-C: The generated shape check
-P: In addition to the checks performed in the *anonymous dimension* version, the *symbolic dimension* version verifies the consistency of dimensions between `lhs` and `rhs`, resulting in safer code.
-P: Therefore, it is recommended that programmers use symbolic dimensions not only for ease of use but also to enhance code safety.
-
-=== UID:F19-S06
-H: Cost and Limitations
-P: To support dynamic shapes, Croqtile compile has to be conservative at compile time. This limitation restricts certain compile-time checks and necessitates some checks to be performed at runtime instead. Although the implementation aims to minimize overhead by placing these checks in the host code, they **remain more conservative compared to code with fixed-sized shapes**. Programmers should be mindful of this situation and may need to add user-level assertions to enhance code safety when necessary.
-P: A significant limitation of both *anonymous dimension* and *symbolic dimension* is that they can **only be applied to the *spanned data* in parameter lists**. Dimensions of buffers declared within Croqtile functions cannot be made dynamic. For example, the following code will result in a compile-time error:
-C: Cost and Limitations
-
-=== UID:F19-S07
-H: In short
-P: Anonymous and symbolic dimensions are the two ways Croqtile represents a shape that is not fully known when the program is written. Compared to *anonymous dimension*, using *symbolic dimension* enhance code safety through additional compile-time checks, making them the recommended choice for ease of use and improved safety.
-
-=== UID:F20-S01
-
-=== UID:F20-S02
-H: **a. Improved Readability and Clarity**
-P: Using symbolic dimensions like `M` and `N` explicitly in the shape definition makes the program **easier to read** and understand. Instead of seeing a `?` or `-1` and wondering what the dimension is supposed to represent, the reader can immediately grasp that `M` and `N` are variables that depend on runtime values. This improves **maintainability** and reduces the cognitive load for developers who are reading and modifying the code.
-P: For example, if a program uses `?` for dynamic dimensions, it's unclear whether it represents an uninitialized value, a wildcard dimension, or something else. This can lead to confusion when trying to reason about the program. In contrast, symbolic dimensions are explicit and show exactly how the shape is determined:
-C: a. Improved Readability and Clarity
-P: The latter version is ambiguous and lacks the clarity that symbolic dimensions provide.
-
-=== UID:F20-S03
-H: **b. Type Safety and Compile-Time Checking**
-P: One of the major benefits of symbolic dimensions in Croqtile is that they are **type-safe** and **checked at compile-time**. Croqtile allows you to declare symbolic dimensions and even manipulate them algebraically (e.g., `M / 2`, `N / 4`), ensuring that they adhere to the expected types and constraints. This eliminates the need for runtime checks, which can often lead to errors or performance penalties.
-P: For example, using `?` or `-1` as dynamic dimensions in other systems often leads to runtime checks for consistency, such as verifying that the dimensions are properly initialized before use. These checks can introduce overhead and make the program harder to optimize. In contrast, symbolic dimensions allow Croqtile to **check constraints at compile-time**, ensuring that shape expressions are valid before execution:
-C: b. Type Safety and Compile-Time Checking
-P: This ensures type consistency and reduces the potential for errors during runtime.
-
-=== UID:F20-S04
-H: **c. Expressiveness and Flexibility**
-P: Symbolic dimensions enable a **richer** set of expressions for describing data shapes. Instead of using arbitrary placeholders like `?` or `-1`, which are limited to basic dimensionality, symbolic dimensions can be **constrained** using complex arithmetic and relationships. For example, you can directly express how one dimension depends on another, or how it is scaled or tiled, in a much more natural way.
-P: In contrast, using `?` or `-1` often leads to brittle code, where developers need to manually calculate or infer the actual size at runtime, introducing potential errors and making the code harder to reason about.
-P: For example, you can easily express relationships between dimensions using symbolic variables:
-C: c. Expressiveness and Flexibility
-P: If you were using `?` or `-1`, expressing the same relationships would require convoluted workarounds or additional runtime logic.
-
-=== UID:F20-S05
-H: **d. Compile-Time Optimization**
-P: One of the significant benefits of symbolic dimensions is that they can help with **compile-time optimizations**. Since Croqtile allows symbolic dimensions to be evaluated at compile time, it can potentially optimize memory layouts and kernel execution plans based on these dimensions. This can result in more efficient code generation and better performance compared to using `?` or `-1`, which may require runtime evaluation and dynamic memory allocation, hindering optimization opportunities.
-
-=== UID:F21-S01
-H: Introduction to Croqtile Value Numbering
-P: In Croqtile, the value numbering process serves to facilitate Shape Inference by either directly inferring shapes known at compile time or generating shape computation expressions.
-P: While many value numbering approaches focus on eliminating redundant computations (expressions that consistently produce the same value), Croqtile's value numbering aims to establish a progressive method for simplifying the Croqtile domain-specific construct 'mdspan'. In this context, the application of constant propagation, algebraic simplification, and other techniques becomes more essential.
-P: In terms of the implementation method, Croqtile utilizes a simple **scope-based** value numbering approach, an extension of the local value numbering method, complemented by a lexical-scoped value number table[1]. Unlike other value numbering methods, Croqtile does not necessitate the construction of basic blocks, pruned-SSA, or a compiler backend, as it applies value numbering directly onto the Abstract Syntax Tree (AST). However, to facilitate this approach, certain restrictions must be imposed on Croqtile's syntax rules, particularly to prevent value mutation.
-
-=== UID:F21-S02
-H: Quick Example
-P: The value numbering process assigns a value number to all entities containing a list of values, including for mdspan and ituple. For example,
-C: A shape expression
-P: The value numbering process would produce values including:
-C: Its value-number graph
-P: In this illustration, the number after "VN #" is the value number of an expression. I either represents a constant integer value (known at compile time), a symbolic value (like variable 'a', 'b'), or composition of other value numbers. Here, value number #0 and #3 represents a reference to constant value, where #1, and #2 represents reference to the integer-typed variable "b" and "c". #4 represents the value of an addition expression, which gives the sum of #2 and #3. That is the expression of 'c + 3' when dereferencing all the value numbers. And lastly, value number #5 represents the list of values defined by mdspan 'a' symbolically. With such a definition, you may translate the indexing operations, e.g. "a(0)", results in value number #0 and thus a constant of 1.
-
-=== UID:F21-S03
-
-=== UID:F21-S04
-H: From Expressions to Value Numbers
-P: In current implement, the value numbering process in a syntax-directed way. It traverse the Abstract Syntax Tree nodes and generate value numbers when the node contains an expression.
-P: The method of generating value numbers is simple. For each expression, it takes the expression as the input, and returns corresponding value number.
-P: More specifically, it:
-L: Generates a signature from an expression. | If the signature has already existed, return the associated value number by looking up the value number table. | Or else, it associates the signature with a new value number in the value number table, and return it.
-P: Notably, for simplicity, current signature is an string of expression. This can be improved by hashing later (like most value numbering process does).
-P: In addition, to handle the symbol definition and symbol reference, it follows the below rules:
-L: When an expression is to initialize a symbol (variable or partial type), the symbol is assign the same value number of the expression. More specifically, it associate the signature of the *scoped* symbol name with the value number in the value number table. | When an expression references a symbol, it looks up its corresponding signature in the value number table, and return it.
-P: Note the symbol must use its *scoped name* for signature generation, since identical names are allowed to be defined in different scope.
-
-=== UID:F21-S05
-H: Simplifications
-P: Every time the value numbering process generates a signature, it tries to simplify the expression. For example,
-C: A constant expression
-P: Given the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:
-C: The simplified graph
-P: Here, without optimizations, two constant values #0 and #1, and a new value number #2, which is an addition of #0 and #1 are generated. #2 has the signature of "+:#0:#1". However, considering that addition of constants can be evaluated at compile time, simplification could be performed. The below output showcases the optimized value numbering process:
-C: The folded graph
-P: The signature of #2 now represents a constant, which implies the algebraic simplification is applied successfully.
-
-=== UID:F21-S06
-H: From Value Numbers to Expression
-P: After value numbering and simplification, each expression is associated with its simplified value number. In Croqtile, this is important step for the shape inference process of the mdspan type.
-P: The *mdspan* type is a partial type that defines count of fundamental-typed elements. And in programming, together with a fundamental type, e.g, it decides the memory size an *spanned* object takes.
-P: The shape detail of *mdspan* could be runtime decided. However, in many scenario, the shape is possible to be fully evaluated to fixed numbers at compile time. In such a scenario, static memory allocation can also be triggered at compile time to best utilize the system memory. Or else, the it requires to generate code to calculate the shapes.
-P: Consequently, except the constant values, it is required to generate expressions back from value numbers.
-
-=== UID:F21-S07
-
-=== UID:F21-S08
-H: Lexical Scopes and Restriction
-P: In Croqtile, you applying the value numbering *GLOBALLY* but on top of AST. As it is a syntax-directed method without basic blocks and thus lack data flow analysis, it is impossible to inference a shape with varying dimensions.
-
-=== UID:F21-S09
-H: Limitations
-P: More specifically, it has to set two limitations:
-L: Any mdspan can not have element with bounded integer type, or produced from bounded ituple. | Simple integer type and ituple type can not be re-defined.
-
-=== UID:F21-S10
-H: Reference
-P: [1] Briggs P, Cooper K D, Simpson L T. Value numbering[J]. Software: Practice and Experience, 1997, 27(6): 701-724.
-
-=== UID:F05-S01
-H: Parallelism: How Croqtile Represents Parallel Work
-P: The previous two chapters kept things simple: `parallel i, j\` by [4, 8] created 32 instances, each handling one element, and you never asked where those instances actually ran. That was fine for element-wise addition and for understanding data movement --- the compiler picked sensible defaults.
-
-=== UID:F05-S02
-H: How You Think About Parallel Tasks
-P: Before you touch any Croqtile syntax, let's talk about what "parallel" actually means.
-P: Suppose you have eight independent tasks --- eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single CPU core, they execute one after another. On a 4-core CPU, maybe four run simultaneously.
-F: f05-fig1_virtual_parallelism_light.png
-P: centerThe tasks are identical*center The point is that parallelism is a **virtual** concept. If you want to change the tiling, you also have to change the launch configuration. The logical and physical are tangled together. Croqtile untangles them.
-
-=== UID:F05-S08
-H: `: group-4` --- cooperative group
-C: : group-4 --- cooperative group
-P: 3.7 puts this to work with tensor-core operations.
-
-=== UID:F05-S12
-H: Matrix Multiply: Putting It Together
-P: With `parallel`, `foreach`, `dma.copy`, `chunkat`, `#`, and space specifiers, a tiled matrix multiply is within reach.
-P: The plan: multiply a `[128, 256]` matrix by a `[256, 256]` matrix to get a `[128, 256]` result.
-
-=== UID:F15-S13
-H: Control Structures
-P: Croqtile differs from C++ in how it expresses parallelization and loops, but it follows C++ in using `if`-`else` blocks to handle branches inside a program.
-
-=== UID:F30-S01
-H: Sequentialism and Parallelism
-P: Repetitive tasks are common in programming.
-P: Currently, the most widely used parallelization paradigm is **Single Program, Multiple Data (SPMD)**. In this paradigm, code is written once but executed as multiple instances simultaneously. Each instance operates independently unless synchronization is explicitly implemented. Croqtile adopts this paradigm and abstracts parallelism using the **parallel-by** block.
-P: Looping, on the other hand, is a more straightforward concept and is the most common method for writing sequential code. In Croqtile, programmers can construct loops using the **with-in + foreach** block. This structure supports *do-while* style iterations, which are particularly useful in scenarios involving multiple buffers, given Croqtile's primary focus on orchestrating data movement.
-P: In the following sections, this section examines the details of constructing loops and implementing parallelism in Croqtile.
-
-=== UID:F31-S01
-P: A `parallel-by` block declares a set of independent instances; the space specifier says how those instances are grouped.
-
-=== UID:F31-S02
-H: Parallel Execution Block
-P: In Croqtile, the code run in parallel are placed into the *parallel execution block*, which showcasing there are multiple instances of the same code that are executed simultaneously.
-
-=== UID:F31-S07
-
-=== UID:F31-S11
-H: In short
-P: A `parallel-by` block declares independent instances and a space specifier groups them; masking then decides which of those instances actually execute a statement.
-P: Loops remain necessary for work that has to happen in order, and 2.7 introduces their Croqtile forms.
-
-=== UID:F33-S01
-
-=== UID:F33-S02
-H: Parallelization and Masking
-P: It is usually necessary to mask off some *parallel thread* in programming SPMD code. Programmers may invoke fixed number of parallel threads where the tasks can not evenly divided. Thus masking is necessary to close this gap: it makes only parts of the threads to work, while leaving the other threads wait the working threads..
-P: In Croqtile code, the code may be implicitly masked, or explicit masked. Let us dive into the detail.
-
-=== UID:F33-S03
-H: Explicit Masking/Condition
-P: Thread masking is a concept when programs have a full view of all instances of SPMD code. However, from the SPMD coding practise, which program is limited in single thread view, the thread masking appears as a boolean expression which typically is a comparison result related to thread identifiers.
-P: In the examples that follow, Croqtile experimentally supports explicit masking of the `foreach` block, which mask off loop code as a whole. For example:
-C: Explicit Masking/Condition
-
-=== UID:F33-S04
-H: Implicit Masking
-P: Some code structures in Croqtile imply implicit masking. One typical situation is the multi-level `parallel-by` block. The below code showcases an example:
-C: Implicit Masking
-P: In this example, there exists two-level of parallelization. The code inside `parallel p by 6` block but outside `parallel q by 2` blocks is only for *parallel-level-0*. However, for target like , it could invoke 2 parallel threads in practise to execute either code inside *parallel-level-0* or *parallel-level-1*. Therefore, the *parallel-level-0*-only part is as if guarded with a C++ block `if (q == 0)`.
-P: Conditional `foreach` Block Since It is possible to guard the `foreach` loop with conditions. One direct
-
-=== UID:F33-S05
-H: Experimental: Optional *Where-Binding* for `within`
-P: You can append a *where-clause* to impose **Where-Binding** constraints among different bounded variables defined in a `with-in` statement. This allows different bounded variables to be treated as aliases for each other. Below is an example:
-C: Experimental: Optional Where-Binding for within
-P: Syntactically, the ``-> operation establishes the *where-binding* between two bounded variables. Within the `with-in` block, any reference to `n_p` refers to `n`, and vice versa.
-
-=== UID:F34-S01
-P: While Croqtile primarily targets SPMD (Single-Program-Multiple-Data) programming, it also supports MPMD (Multiple-Program-Multiple-Data) execution through thread masking. In this section, you demonstrate how to write divergent code using `inthreads` block in Croqtile.
-
-=== UID:F34-S02
-
-=== UID:F34-S03
-H: Masking in SPMD
-P: It is typically necessary to mask off some *parallel threads* in SPMD programming. For example, programmers often divide data into chunks for parallel or iterative processing. However, there may be a remainder that cannot be evenly distributed across all threads.
-F: f34-masking-datachunk-dispatch.png
-P: The figure aboves showcases a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only *thread-0* is required to work. You may observe the **thread mask** for each iteration are `1111`, except for the last iteration (`1000`). The thread mask is a combination of boolean bits, where `1` stands for **active**, and `0` stands for **inactive**. So in this case, only *thread-0* is set to be *active* to avoid unnecessary data chunk processing in the last iteration.
-
-=== UID:F34-S04
-H: Uniform and Divergence
-P: Masking is an implementation-level concept. From the perspective of the SPMD programming, you typically claim the code that processes data chunks **diverges** because not all the thread instances execute the same code due to masking. And programmers should be aware of that their SPMD code is a combination of:
-L: **Uniform Code**: *All threads* execute the same code path. | **Divergent Code**: Only the *masked threads* execute the *divergent* code path.
-P: It is necessary to have the *divergent* code in SPMD code to handle different real-world requirements. And from a perspective of different programming paradigm, applying *divergent* code in SPMD programs can even mimic MPMD (Multiple Program Multiple Data) behavior. In MPMD, different threads execute different code. Therefore, *divergence* can extend SPMD to MPMD scope conceptually.
-P: In Croqtile, you are able to create divergent code via `inthreads` block. Let us dive into the detail.
-
-=== UID:F34-S05
-
-=== UID:F34-S08
-H: Masking for Multi-Levels
-P: Thread masking can be applied at different parallel levels. The following example demonstrates this:
-C: Masking for Multi-Levels
-P: This code uses two levels of parallelization:
-L: Outer level (`p`): Parallel count of 3 | Inner level (`q`): Parallel count of 4
-P: The first `inthreads` predicate (`p ` 2 && q == 0) restricts execution to:
-L: Outer parallel IDs: `0, 1` (excluding 2) | Inner parallel ID: `0` only
-P: The thread mask (`011-0001`) reflects these constraints, where the two levels are separated by a hyphen (-).
-P: The second predicate (`q == 1`) imposes no restriction on the outer level (`p`), allowing all outer IDs (`0, 1, 2`) while restricting the inner level to `q == 1`.
-
-=== UID:F34-S10
-H: In short
-P: Masking is what allows divergent execution inside an otherwise uniform parallel region. Developers can use either explicit thread masking via `inthreads` blocks or implicit control through `parallel-by` constructs to restrict execution to specific threads.
-P: While thread masking provides flexibility, it introduces thread asynchrony that complicates coordination. The next section will explore advanced techniques for managing these synchronization challenges.
-
-=== UID:F05-S13
-H: Scalar Matmul (No DMA)
-P: The first version uses only `parallel` and `.at()`, before any tiling or data movement is added
-C: Scalar Matmul (No DMA)
-F: f05-fig5_scalar_matmul_light.png
-P: centerThe [128, 256] output divided into a 16 $×$ 64 tile grid. Each (p, q) pair owns one tile.*center This is dense --- here is what each piece does. **Output shape from operand dimensions.** `s32 [lhs.`span(0), rhs.span(1)] output builds the output shape from the inputs: `lhs.span(0)` is 128 (rows of the left matrix) and `rhs.span(1)` is 256 (columns of the right matrix). **Multi-axis parallel.** `parallel p, q\` by [16, 64] declares two parallel indices of one parallel level with a comma. This creates a 16 $×$ 64 = 1024-way parallel grid. Each `(p, q)` pair owns a tile of the output. **Named tuple destructuring.** `foreach index = m, n, k\` in [128 / #p, 256 / #q, 256] introduces three nested loop indices --- `m`, `n`, `k` --- bound to a tuple called `index`. The trip counts are: itemize[leftmargin=1.6em] `128 /` #p = 128 / 16 = 8 rows per tile `256 /` #q = 256 / 64 = 4 columns per tile `256` for the full contraction dimension itemize **Composed global indices.** `p#m` composes the tile index with the within-tile offset. `p` selects which of the 16 row-tiles, `m` runs 0..7 within that tile, so `p#m` covers 0..127 across all tiles. **The arithmetic.** `output.`at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n) is the textbook dot product: for each output element, sum products along K.
-
-=== UID:F05-S17
-P: Pick global position `(row=37, col=50)` in the output. Working out which block and thread own it fixes the index arithmetic for the rest of the kernel.
-P: Blocks partition 128 rows into 8 tiles of 16: `px = 37 /` 16 = 2, offset `qx = 37 % 16 = 5`. Columns partition 256 into 16 tiles of 16: `py = 50 /` 16 = 3, offset `qy = 50 % 16 = 2`. So block `(2, 3)`, thread `(5, 2)`.
-P: For that thread, the K-loop runs 16 iterations. On iteration `tile_k = 0`, `dma.copy` loads `lhs` rows 32..47 and K columns 0..15 into shared `lhs_load`, and `rhs` K rows 0..15 and columns 48..63 into shared `rhs_load`. The inner `foreach k in [16]` accumulates `lhs_`load.data.at(5, k) * rhs_load.data.at(k, 2) for k = 0..15 into `output.`at(37, 50). Then `tile_k = 1` loads the next K-strip, and so on. After all 16 iterations, `output.`at(37, 50) holds the complete dot product --- same answer as the scalar reference.
-
-=== UID:F04-S04
-H: `chunkat`, `subspan`, and `view().from()`: Three Ways to Select a Tile
-P: Croqtile gives you three common ways to describe the tile you want to move.
-
-=== UID:F04-S13
-H: `#`: Compose and Extent
-P: Croqtile uses `#` in two related ways.
-
-=== UID:F09-S06
-H: Handling irregular access
-P: The tiling primitives introduced so far --- `chunkat`, `subspan(.`..).at(...) --- assume tensors that divide evenly into tiles. This works for textbook GEMM where M, N, K are multiples of the tile dimensions. Production kernels are rarely so tidy. Expert batches start at dynamic offsets. Convolution windows overlap. The last K-tile is almost never an exact multiple of TILE_K. Some inputs arrive as flat buffers that need reshaping before MMA can consume them.
-P: Croqtile provides four tools for these cases. Each one modifies how the compiler interprets a tensor's addressing without touching the pipeline structure --- DMA, TMA, MMA, events, swizzle all continue to work unchanged.
-
-=== UID:F29-S05
-H: Tile and Flow
-P: It is possible to use the `chunkat` expression for either the source or the destination of a *DMA statement*. When `chunkat` is used only for the source, it typically divides the input or buffer into smaller chunks to move it to storage closer to the processor. In contrast, when `chunkat` is used only for the destination, it typically moves the buffer to compose part of the output. The following code showcases an example:
-C: Tile and Flow
-P: In this example, the statement applies `chunkat` to the destination, moving the data block in `shared` and "un-tiling" each block to the output. Note that the Croqtile compiler **requires the source data and destination data to have the same shape and element type** if not using *storage* as the destination *data expression*.
-P: Using the `chunkat` expression for both the source and destination is rarely supported by any target platform at this time.
-
-=== UID:F40-S07
-H: Compose Two Bounded Variables for Tiling with `#`
-P: In the example above, there is a need to tile the matrices in a manner that involves **two bounded variables**. This is where the **`#` operator** comes into play, allowing the program to compute the **Cartesian product** of two bounded variables (**not commutative**).
-L: The code defines the tiling parameters with four bounded variables: `q`, `n`, `h`, and `w`, whose upper bounders are `6`, `N/6`, `H/16`, and `W/512`. | Suppose `N` is 18, `q` represents physical thread index. You want each thread to process data that is contiguous in the first dimension. That is, the first thread handles input[02][xxx], the second thread handles input[35][xxx], and so on. | `q # n` will result in a new bounded variable implicitly, whose upper bound is `N`: bound of `q` multiply bound of `n`. | For every data move, the stride of each dimension is 1, 3, 16, 512. In the last dimension, the index is `w`. In the first dimension, the index is `q * (bound of n) + n`.
-L: The combination of `q` and `n` ensures that physical and virtual parallelism can work together efficiently. | This helps optimize **memory access patterns**, especially when working with large matrices, where efficient memory use is crucial. | Unlike higher-level loop scheduling techniques like in TVM, which abstract away the actual data movement, Croqtile explicitly links **virtual loops** to **physical DMA operations**. This results in more efficient data movement and computation.
-
-=== UID:F09-S07
-C: A window at a constant offset
-P: The expression selects a `[16, 16]` slice starting at row 37, column 50. The origin can be any runtime value.
-F: f09-fig4_view_from_light.png
-P: The power of `view` / `from` is composability: once you carve out a window, all downstream operations --- `subspan`, `chunkat`, `dma.copy`, `tma.copy` --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
-C: A window at a runtime offset
-P: In an MoE stack, each expert's token batch starts at a dynamic row `expert_offset`. The `view` / `from` call rewires the operand at the top of the pipeline; everything below --- DMA, staging, MMA loop --- runs the same code for every expert.
-
-=== UID:F09-S08
-P: Adding `.step(sM, sK)` overrides the stride: tiles are spaced `sM` rows and `sK` columns apart instead of being packed:
-C: Strided tiles: .subspan, .step, and .at
-F: f09-fig5_subspan_step_light.png
-P: Tile `(0,0)` starts at `(0,0)`, but tile `(1,0)` starts at row 32 (not row 16), leaving a 16-row gap. Omitting `.step` uses a step equal to the tile size --- the packed case.
-
-=== UID:F09-S09
-H: Zero-padding: `.zfill`
-P: Every tiled kernel faces the same edge case: what happens when M or K is not a multiple of the tile size? The last tile along that axis is partial --- some of its elements lie beyond the tensor boundary.
-P: The brute-force fix is to add a special code path for the boundary tile. But this breaks the uniformity of the MMA loop and adds branches that the compiler cannot optimize away. `.zfill` solves this elegantly:
-C: Zero-padding: .zfill
-F: f09-fig6_zfill_light.png
-
-=== UID:F09-S10
-H: Layout reinterpretation: `span_as`
-P: Some kernels load data as a flat 1D strip but need to feed it to MMA as a 2D matrix. A naive approach would copy the data into a reshaped buffer --- `span_as` avoids this by reinterpreting the existing buffer's shape in place:
-C: A flat strip reinterpreted as a matrix
-P: Element count is preserved; only the logical rank changes. No data is moved.
-C: A movement statement using the reinterpretation
-F: f09-fig7_span_as_light.png
-
-=== UID:F09-S11
-H: In short
-T: | **Concept** | **Syntax** | **Role** | <ROW> | --- | --- | --- | <ROW> | Software DMA (Ch. 2, 6) | `dma.copy` / `dma.`copy.swiz<N> | Thread-cooperative tile transfer; | <ROW> | Swizzle | `.`swiz<N> on copy + `mma.`load.swiz<N> | layout conflict-free SMEM layout; same effect for DMA and TMA | <ROW> | Arbitrary windows | `view(M,N).`from(r,c) | Ragged or runtime-positioned slices | <ROW> | Strided tiling | `.`subspan().step().at() | Non-packed layouts, overlapping stencils | <ROW> | Partial tiles | `.zfill` | Zero-fill out-of-bounds elements | <ROW> | Shape reinterpretation | `span_`as([dims]) | Zero-copy reshape for staging buffers |
-
-=== UID:F09-S12
-H: Syntax at a glance
-T: | **Syntax** | **Meaning** | <ROW> | --- | --- | <ROW> | `tma.`copy.swiz<N> src => dst | TMA copy with swizzle mode `N` (0--3) | <ROW> | `dma.`copy.swiz<N> src => dst | DMA copy with swizzle mode `N` (0--3); same layout as TMA | <ROW> | `mma.`load.swiz<N> src | MMA operand load consistent with swizzle `N` | <ROW> | `.`view(M, N).from(r, c) | Arbitrary-offset `M x N` window | <ROW> | `.`subspan(M, K).step(sM, sK).at(i, j) | Strided tile selection | <ROW> | `.zfill` | Zero-fill out-of-bounds elements on copy source | <ROW> | `span_as(dims)` | Reinterpret linear storage as shaped tensor |
-P: 3.6 takes the tile expressions above and uses them as the source and destination of movement statements. For the cases where a program needs plain C++, 2.13 collects the `__device__` functions, preprocessor guards and injected source text.
-
-=== UID:F03-S07
-H: What You Have So Far
-P: The constructs introduced so far assemble into one skeleton: a `__co__` function with typed, shaped parameters and a return value; `parallel` and `.at()` for element-wise computation; `lhs.span` for deriving output shapes from inputs; and the host-side `make_spandata` / `.view()` API for creating and passing tensors.
-P: 2.9 introduces `dma.copy` and `chunkat` to express block-level data movement.
-
-=== UID:F04-S01
-H: Data Movement: The Tile Movement Engine
-P: 1.4 used scalar indexing: pick one position, read inputs, compute, write output.
-P: Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:
-L: `dma.copy` moves a tile as-is. | `dma.`transp<...> permutes dimensions while moving it. | `dma.`pad<...> enlarges a tile and fills the border.
-P: This part of the guide introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.
-F: f04-fig1_element_vs_block_light.png
-P: centerLeft: element-by-element thinking. Right: tile-by-tile movement into fast memory.*center
-
-=== UID:F04-S10
-H: Other Operations: `transp` and `pad`
-
-=== UID:F04-S20
-H: DMA vs TMA
-P: Both engines move shaped tiles. The difference is how they do it and what constraints they require.
-T: |  | **`dma`** | **`tma`** | <ROW> | --- | --- | --- | <ROW> | Common destination | `shared` | `shared` | <ROW> | Async support | Yes | Yes |
-P: Example TMA use:
-C: DMA vs TMA
-P: The practical rule is simple:
-L: Use `dma` when tile sizes are dynamic, irregular, or you want the portable path.
-
-=== UID:F04-S21
-H: The main TMA constraint
-P: TMA tile shapes must be host-computable. Runtime tile indices are fine:
-C: A host-computable tile shape
-P: But a kernel-runtime value cannot define the tile shape itself:
-C: A runtime tile index that is rejected
-P: If the tile size truly depends on kernel-runtime state, use `dma.copy` instead.
-
-=== UID:F09-S02
-H: `tma.copy`: target tensor movement
-P: The surface syntax mirrors `dma.copy`:
-C: tma.copy: target tensor movement
-P: Same source expression, same `=` destination form. The difference is **who does the work**:
-F: f09-fig3_tma_descriptor_light.png
-L: **DMA path.** Threads cooperate to cover the tile; each lane participates in address math and load issue. | **TMA path.** One descriptor-based operation describes the tensor slice;
-F: f09-fig1_tma_vs_dma_light.png
-
-=== UID:F15-S18
-H: Async Operation: the DMA Statement
-P: Except for parallel execution, Croqtile allows one fixed form of async operation: the DMA statement.
-P: Conceptually, a DMA statement is executed asynchronously with the SPMD code. It works quite similar to CPU async thread, except its behavior is limited by the DMA configuration. (CPU allows to program the async thread as will)
-P: The below code showcases one basic DMA statement.
-C: An asynchronous DMA declaration
-P: You might observe the assignment of 'f'. This is the handler for the asynchronous DMA entity. In Croqtile, you refer to it as the 'future' of the DMA operation. Programmers have the option to code the explicit synchronization statement 'wait' to pause the current thread until the 'future' arrives. Otherwise, the thread continues execution in parallel with the DMA operation.
-P: At times, programmers may find it tedious to explicitly define temporal data. Croqtile offers an even simpler syntax:
-C: The same declaration with storage
-P: Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination memory type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
-P: DMA operations entail intricate details that demand careful programming. Programmers should refer to the DMA manual to make informed decisions for their code. Nonetheless, Croqtile compiler provides plenty of static and runtime checks to assist programmers in avoiding potential errors in this aspect.
-
-=== UID:F28-S02
-H: Data Movement Statement
-P: Croqtile aims to address multiple levels of data movement. Croqtile adopts this terminology and abstracts data movement as **DMA Operations**.
-
-=== UID:F28-S05
-H: Operation Type
-P: Croqtile maps these functionalities at the software level as different **DMA Operation Types**. The supported operations include:
-L: `dma.copy`: Copies flat memory directly. | `dma.pad`: Pads shaped data while transferring the data. | `dma.transp`: Transposes shaped data while transferring the data.
-P: The configurations, such as padding and transposing details, are programmed as parameters of the DMA operation. For example:
-C: Operation Type
-P: Here, the **DMA configuration**s are enclosed by ``>. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as , are listed below as an example:
-P: Programmers should note that support for DMA types other than `dma.copy` varies by platform. For instance, on the platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads.
-
-=== UID:F39-S01
-P: The data movement is essential for *tileflow programs*. The *DMA statement* has a form for each of those levels, from a single copy to a chained non-blocking transfer.
-
-=== UID:F39-S02
-
-=== UID:F39-S03
-
-=== UID:F39-S04
-
-=== UID:F39-S05
-H: Full Non-Blocking DMA Mode (Chain Mode in Croqtile)
-P: In Croqtile, it's possible to perform a full non-blocking DMA by chaining multiple asynchronous DMA operations and using event-based notifications with after. This enables complete non-blocking execution, where one DMA operation is triggered only after the completion of a prior one. Here's an example of such a setup:
-C: Full Non-Blocking DMA Mode (Chain Mode in Croqtile)
-P: In this example:
-L: `out_store` is the asynchronous DMA operation that transfers data from l2_out to output.chunkat(m_tile, n_tile). | `out_store_s` is another DMA operation or event that must complete before out_store can proceed. | The after out_store_s syntax specifies that `out_store` should only start after the completion of `out_store_s`, which ensures that there is no blocking in the main thread.
-P: In this case, neither `out_store` nor `out_store_s` will block the main program flow. The program continues executing while these DMA operations are handled in the background. The key difference here is that the completion of `out_store_s` triggers the start of `out_store`, creating an event-driven dependency between the two DMA operations. This model enables highly efficient and non-blocking memory transfers.
-
-=== UID:F39-S06
-
-=== UID:F39-S07
-
-=== UID:F39-S08
-
-=== UID:F05-S14
-H: DMA Matmul: Tiles in shared storage
-C: DMA Matmul: Tiles in shared storage
-F: f05-fig6_dma_matmul_light.png
-P: The scalar version indexed one element at a time. The tiled version first copies a tile into shared storage, then computes on that tile:
-L: The outer `parallel` now uses `: block` with brace-form indices `px, py\`. An 8 $×$ 16 grid of blocks covers the output.
-L: A `foreach` over `tile_k` walks the K dimension in 16 steps. Each step copies one strip of `lhs` and one strip of `rhs` into `shared` storage with `dma.`copy ... => shared.
-L: An inner `parallel qx, qy\` by [16, 16] : thread creates 256 threads within each block. Each thread owns one output element within the block's tile.
-L: The arithmetic reads from `lhs_load.data` and `rhs_load.data` --- the shared-memory copies --- instead of global `lhs` and `rhs`.
-P: The composed indices work in two layers: `px#qx` composes block index `px` with thread index `qx` to form the global row; `py#qy` does the same for columns.
-
-=== UID:F08-S02
-H: Double buffering with `swap`
-P: Give the K-loop **two** logical buffers. While the math drains buffer 0, DMA fills buffer 1 with the next tile. After the math step, **swap** the handles: what was "next" becomes "current," and the freed slot is ready for the following load.
-P: Croqtile spells this with `dma.copy.async` (non-blocking copy), `dma.any` (a placeholder future), `swap` (exchange future handles), and a three-phase loop:
-C: Double buffering with swap
-
-=== UID:F08-S03
-H: The three phases
-
-=== UID:F08-S04
-H: `swap`: names, not bytes
-
-=== UID:F08-S06
-H: `dma.any`: placeholder futures
-
-=== UID:F38-S01
-H: Multi-Buffering Optimization with Croqtile
-P: To aggressively optimize the high-performance computation kernels, one effective method is to overlap computation with DMA (Direct Memory Access) data movement. This approach, known as **multi-buffering optimization**, typically requires programmers to manage multiple buffers.
-P: In Croqtile, this method requires two key programming primitives: the 'dummy' future **dma.any**, and the **swap/rotate** function. Let's illustrate by an example:
-C: Multi-Buffering Optimization with Croqtile
-P: In croqtile function `ele_add`, there are two input parameters: 'lhs' and 'rhs', both double-buffered in local storage. You refer to these buffers as 'A' and 'B'. While buffer A is used for computation, buffer B is filled with data via a DMA operation. Once the kernel function completes computation on buffer A, the roles of A and B are swapped: A becomes the buffer for loading the next data chunk, and B becomes the buffer for computation. This process iterates until all data chunks are consumed.
-P: The implementation divides data movements and computations into three stages, including:
-L: the **prologue**(line 8-11). It (pre-)load the first chunk of data. In this example, buffer A is pre-loaded with data. | the **body**(line 12-20). It processes the data pre-loaded in last iteration or in prologue, and pre-load the data for next iteration. | and the **epilogue**(line 21-25). It processes the last data chunk only.
-P: In the code, futures 'lfB' and 'rfB' are declared as dummies. These dummy futures serve as placeholders and are replaced by DMA statements at lines 13-14. The reason for declaring dummy futures is that the futures ('lfB' and 'rfB') of the DMA invoked in the body stage are used in the epilogue stage (lines 21-22). However, from a lexical scope perspective, defining futures inside the foreach-block (lines 12-20) would not extend their lifetime to their last uses. Therefore, it is necessary to declare 'lfB' and 'rfB' early.
-P: The **swap** statements at lines 18-19 exchange futures to ensure the **wait** statement at line 15 functions correctly. Note that only futures with identical DMA operations can be swapped. Additionally, the iteration range of the *foreach* statement at line 12 is adjusted. `foreach y(1:)` means the loop over the *bounded variable* 'y' starts from the second value up to the upper bound. In line 17, the *chunkat* expression is also tuned. `y - 1` results in the current value of 'y' minus 1, setting up the body stage to work properly with the prologue stage. This adjustment is necessary because the iteration count must be reduced by 1, and the pre-load operation should fetch the 'next' chunk while computation is conducted on the 'current' chunk of data. Alternatively, you can use `foreach y(:-1)` and adjust the chunkat expression of the pre-load statements at lines 13-14 to achieve the same effect.
-P: In line 25, the expression `y(-1)` retrieves the 'last value' of 'y' within its bound.
-P: The **select** expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk.
-P: If the programmer want to enable more than two buffers, **rotate** statements is required to replace **swap**.
-
-=== UID:F09-S05
-H: Example: TMA in a pipelined matmul
-P: The pipeline skeleton from 3.8.5 is unchanged: ring of stages, `wait` / `trigger` on events, MMA commit, consumer drains tiles while producer fills the next slot. Here the producer swaps `dma.copy` for `tma.`copy.swiz<3> and the consumer swaps `mma.load` for `mma.`load.swiz<3>:
-C: Example: TMA in a pipelined matmul
-P: Compared to the 3.8.5 `dma.copy` version, only the ingress and operand load lines change; events, staging indices, and commit stay the same. --- Choose TMA or DMA for stores according to your target.
-
-=== UID:F04-S18
-H: Partial Tiles, Guarding, and `.zfill`
-P: Real kernels often end with a partial tile. The important distinction is whether the **source tile shape** and **destination tile shape** are the same.
+P: Use an integer for one control value and an `ituple` for an ordered group of values. A shape such as `[7, 14]` describes ranges, while a tuple such as `1, 2` can describe a position or a pair of tiling factors. The matching ranks let shape arithmetic apply each factor to the corresponding dimension.
+P: Both integers and ordinary tuples must be initialized and cannot be reassigned. This restriction concerns the names used for control and shape calculations. A buffer element is different: the addition example writes to `output.at(i, j)`, and a matrix multiplication updates its accumulator. Keeping these roles distinct avoids treating an immutable index as though it were a mutable accumulator.
+
+=== UID:F15-S08
+H: Fully-Typing
+P: A buffer declaration needs both an element type and a shape. The shape determines how many positions the buffer contains, while the fundamental type determines what each position stores. The examples below reuse a named shape for half-precision data and use a literal shape for single-precision data.
+C: Complete Types
+P: The basic element types include:
+L: Unsigned Integers: *u8/u16/u32* | Signed Integers: *s8/s16/s32* | Floating-points: *f16/bf16/f32*
+P: The types `s32` and `int` serve different purposes in Croqtile. The fundamental element type `s32` must be combined with a shape to declare a fully typed buffer.
+
+=== UID:F15-S09
+H: The Storage Qualifier
+P: A tile may be shared by cooperating threads or used privately by one thread. Its element type and shape do not express that distinction; a storage specifier does.
+P: The three storage specifiers used in these examples are:
+L: **global**, | **shared**, | and **local**.
 P: For example:
-C: Partial Tiles, Guarding, and .zfill
-P: Here `lhs_load_s` might have shape `[group_`M, TILE_K], while the source view has shape `[ROWS_`M, TILE_K] and `ROWS_M` may be smaller than `group_M` on the last tile. That is a real shape mismatch, so `.zfill` means: copy the valid source rows and write zero into the remaining rows of the destination tile.
-P: That is the right use for `.zfill`.
-P: What happens when the shapes are the same:
-L: If the source view and destination tile have the same shape, the compiler already guards runtime tails automatically. | In that case it generates masking so out-of-bounds elements are not read or written. | This is enough for cases like tiling a `[100]` tensor into `[64]` tiles: the last tile simply has 36 valid elements.
-P: The `.zfill` form is **not** the general mechanism for ``any partial tile.'' It is specifically for cases where the destination tile is larger than the valid source region and the extra part of the destination must be filled with zeros.
-P: Why `.zfill` matters:
-L: If the consumer reads only the valid region, the compiler's automatic masking is usually enough. | If the consumer reads the whole destination tile, especially an MMA fragment, the invalid region must hold a known value. | `.zfill` makes that extra region zero.
-P: Use `.zfill` when the valid source region is smaller than the destination tile and the consumer will treat the destination as a full dense tile. This is the common case for GEMM-style pipelines with dynamic row counts or padded edge tiles.
-P: If you add `.zfill` when the source and destination shapes are already the same, the compiler can warn that the `.zfill` is redundant. Conversely, when the shapes differ, the compiler can also warn that `.zfill` is needed to avoid using undefined values in the uncovered region.
+C: The Storage Qualifier
+P: Choose the storage specifier to match the code that uses the buffer. Defaults depend on the execution context and target; use an explicit specifier when a transfer or a cooperating group requires a particular storage location.
 
-=== UID:F04-S19
-H: `.`swiz<N>: Shared-Memory Layout for the Consumer
-P: Typical GEMM staging code looks like this:
-C: .swiz N : Shared-Memory Layout for the Consumer
-P: The load-side and compute-side swizzles need to agree. If you stage a tile with `.`swiz<128>, the consumer should usually load it with the matching swizzle.
-P: This part of the guide only introduces the idea. The MMA chapters go deeper into which swizzle values pair well with which matrix layouts.
+=== UID:F18-S01
+P: A Croqtile Tileflow program describes data movement, so buffer declarations are fundamental. Each declaration specifies an element type, a shape, and, when needed, a storage location.
 
-=== UID:F06-S01
-H: Tensor Contraction: the `mma` Syntax
-P: 3.4's tiled matmul computes the inner contraction the way a CPU would: a `foreach k` loop where each iteration multiplies two scalars and accumulates into one output element. That works.
-P: The job is **2D tensor contraction** --- the operation C += A $×$ B where A, B, and C are small, fixed-shape matrix tiles. It is the inner kernel of every GEMM, every convolution expressed as an im2col matmul, every attention head's QKT.
-P: centerThe same mathematical operation --- C += A $×$ B on tile-shaped operands*center What makes this hard for programmers is not the math but the . Get the layout wrong --- say, load a column-major tile into a row-major fragment --- and the result is silently incorrect. figure[htbp] [width=0.86,height=0.42,keepaspectratio]f06-fig2_register_loading_light.png figure Croqtile's design sidesteps this complexity entirely. figure[htbp] [width=0.86,height=0.42,keepaspectratio]f06-fig3_mma_syntax_light.png figure centerThe four-step MMA syntax is an abstract interface*center
+=== UID:F18-S03
+H: Defining a *Spanned Data*
+P: Defining a *spanned data* requires both the element type and its shape. For example,
+C: A spanned-data declaration
+P: This defines a buffer with a shape of `[32, 16]`, where the element type is `f32`, which is the *IEEE-754* single-precision float. It is also possible to use a named `mdspan` to define the buffer:
+C: A standalone shape
+P: This example uses the named `mdspan` `shape` to declare the two-dimensional buffer `data0` with 32-bit integer elements. Place the shape inside `[]`; element access, arithmetic, and concatenation can also appear in the shape expression.
+P: In Croqtile terminology, the element type is referred to as the **fundamental type**. Croqtile supports multiple fundamental types, including:
+L: **Unsigned Integers**: `u8`, `u16`, `u32` | **Signed Integers**: `s8`, `s16`, `s32` | **Floating Points**: `f16`, `bf16`, `f32`
+P: The prefixes `u` and `s` mean unsigned and signed, and the numeric suffix gives the bit width. The type `f16` is IEEE 754 half precision; `bf16` is the 16-bit brain floating-point format commonly used in machine learning.
+P: The element type `s32` and the control type `int` have different roles, even though both describe 32-bit integers. An `s32` declaration needs a shape. The following standalone declaration is rejected:
+C: A rejected fundamental type
+P: This results in a compile-time failure. Consequently, `s32` cannot be used for program control like `int`, and type conversion between them is not possible.
 
-=== UID:F06-S03
-H: Scaling the cooperation scope
-P: The four-step syntax stays the same regardless of how many threads cooperate on a single contraction. What changes is the **cooperation scope** --- And that progression is the story of this section.
+=== UID:F18-S04
+P: In practical code, some buffer declarations must specify a **storage specifier**, like so:
+C: Storage Specifier
+P: Since Croqtile handles storage in a heterogeneous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.
+L: *global*: Refers to the device's global storage. | *shared*: Refers to the device block's shared storage | *local*: Refers to the thread-private storage.
+P: Other targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters.
 
-=== UID:F06-S07
-H: Beyond dense FP16: what else the four steps express
-P: The examples above use `mma.row.row` on dense FP16 tiles. The same four-step pattern extends to workloads the basic form cannot reach.
-P: But it needs a **metadata operand** `me` that encodes which elements are nonzero:
-C: A sparse contraction
-P: The `.sp` suffix adds the metadata operand; everything else is the same fill-load-multiply-store rhythm. Any layout combination works: `mma.row.col.sp`, etc. You load `me` from a separate metadata tensor alongside A and B.
-C: A scaled contraction
-P: Each result element is scaled by `sc_a` and `sc_b` after the contraction --- no separate dequant kernel needed. Alternatively, scaling can be a **standalone statement** when the scale source differs from the standard fused path:
-C: Another contraction layout
-P: The standalone `mma.scale` appears in some MoE and mixed-precision kernels.
-P: The ``N> must agree between `tma.`copy.swiz<N> and `mma.`load.swiz<N> --- a mismatch reads garbage. For output, `mma.`store.transp mc, dst writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.
-P: The table below collects every variant for reference.
+=== UID:F18-S05
+H: Initialization
+P: It is possible to initialize a buffer at the declaration site. For example:
+C: Initialization
+P: The braces after the buffer name contain one initial value, applied to every element. This form fills the whole buffer; it is not an element-by-element initializer list.
 
-=== UID:F09-S03
-H: Swizzle and layout conflicts
-C: A swizzled copy
-P: The MMA read path must use the same `swiz`N> so addresses match the staged layout:
-C: A swizzled mma load
-P: Swizzle is not a TMA-specific feature. In Croqtile, `dma.`copy.swiz<N> and `tma.`copy.swiz<N> produce identical shared-memory layouts. The difference is only in how the data gets there; the layout that arrives is the same in both cases.
-F: f09-fig2_swizzle_light.png
+=== UID:F18-S06
+H: Declaring the Parameters and Return Values
+P: Spanned data can appear in the parameter and return declarations of a Croqtile function:
+C: An explicit return shape
+P: Parameter and return declarations resemble variable declarations, but they do not allow operations on an existing `mdspan`, storage specifiers, or initializers.
+P: One useful built-in member function for the *spanned* parameters is `.span`, which provides the associated *mdspan* of the *spanned data*. The following code demonstrates how to use it for a buffer declaration:
+C: A deduced return shape
 
-=== UID:F06-S04
-H: One group, one tile: the simplest MMA matmul
-P: One cooperative group is written `: group` in Croqtile.
-C: One group, one tile: the simplest MMA matmul
-P: With all dimensions 16, extents are 1$×$1
-P: 3.6 goes deeper on `subspan` versus `chunkat`.
-B: `subspan(h, w)` declares a fixed-size rectangular view shape, and `.at(i, j)` selects which view instance you want from the parent tensor. In other words, `lhs.`subspan(TILE_M, TILE_K).at(block_m, iv_k) means "take the `[TILE_`M, TILE_K] tile at `(block_`m, iv_k)." Use `subspan` when you want an explicit tile shape; use `chunkat` when you want to slice by equal chunks of an existing dimension.
-P: The four-step syntax reads linearly and the tile geometry is obvious.
+=== UID:F18-S08
+H: In short
+P: A declaration determines the element type and shape, an initializer fills the buffer, and a storage specifier selects its location. The compiler manages the buffer's lifetime. Dynamic shapes extend these declarations to dimensions supplied at runtime.
 
-=== UID:F06-S05
-H: Widening the scope: cooperative group and mma
-P: The four-step syntax does not change. The only thing that changes in Croqtile is the space specifier: `: group-4` instead of `: group`.
-F: f06-fig4_sm86_vs_sm90_light.png
-C: Widening the scope: cooperative group and mma
-P: Fill, load, multiply, store --- the rhythm is identical. The differences are mechanical:
-P: That is the whole point of the abstraction: the same four operations, the same layout contract, the same `chunkat` / `subspan` expressions. You think about *what* contraction to perform; the cooperation width is a deployment detail.
+=== UID:F37-S04
+H: 1. `global`
+P: A `global` declaration places the buffer in the target's global storage. It is useful for data that must remain accessible beyond one thread or one cooperating block. Declaring the storage does not initialize its contents or copy data into it:
+C: 1. global
 
-=== UID:F06-S06
-H: Tiling further: two cooperative group sharing operands
-P: 3.4 introduced `parallel p1 by 2 :` group-4 --- with MMA, both groups can share the same B tile while loading different rows of A.
-C: Tiling further: two cooperative group sharing operands
-P: The four-step syntax stays invariant; only the parallel decomposition of the tile changes.
-T: | **Aspect** |  |  |  | <ROW> | --- | --- | --- | --- | <ROW> | Operand sharing | N/A | N/A | B tile shared, A rows split by `p1` | <ROW> | Threads | 32 | 128 | 256 | <ROW> | Accumulator | `mma.fill 0.0` | `mma.`fill.f16 0.0f | `mma.`fill.f32 0.0f |
+=== UID:F37-S05
+H: 2. `shared`
+P: A `shared` buffer provides a common staging area for threads in a block. In a tiled matrix multiplication, a block can load an operand tile once and let several threads read it. The reads must follow completion of the load, and the next load must wait until those reads finish.
+C: 2. shared
 
-=== UID:F06-S08
+=== UID:F37-S06
+H: 3. `local`
+P: It is particularly useful when each thread requires a small amount of data, such as scalar values or small arrays that do not need to be shared with other threads. Example:
+C: 3. local
+
+=== UID:F37-S07
+H: Default Behavior and Usage
+P: Omitting the specifier leaves storage selection to the target and the surrounding execution context. This is convenient for introductory code, but a name without a specifier does not by itself tell you which threads can share its contents. When following a data path, check the declaration together with the parallel region that contains it.
+C: A declaration without a specifier
+P: If you want to place data in a different memory space (shared or local), you need to specify the appropriate storage qualifier.
+C: Choosing local storage explicitly
+
+=== UID:F37-S08
+H: Example Code: Using Storage Qualifiers
+P: The following sketch combines the storage declarations:
+C: Example Code: Using Storage Qualifiers
+P: The declarations illustrate three storage locations. The copy lines sketch the direction of movement between them. To turn this sketch into a working transfer, select source and destination views with compatible shapes: the full arrays declared here have different sizes. A storage specifier chooses a location; it does not make differently shaped buffers interchangeable.
+
+=== UID:F05-S03
+H: Croqtile's Two-Layer Parallelism Model
+P: Croqtile gives you two separate knobs:
+L: **`parallel`** --- declares that iterations are independent and *may* run concurrently. This is a logical statement. | **Space specifiers** (`: block`, `: thread`, `: group`, `: group-4`) --- tell the compiler where each parallel axis maps. This is a physical statement.
+P: There is also `foreach`, which is the opposite of `parallel`: iterations run **sequentially**, in order. Use `foreach` when later iterations depend on earlier ones --- an accumulation loop, a K-dimension reduction, a pipeline that loads tile *k* before computing with it.
+C: Croqtile's Two-Layer Parallelism Model
+F: Space specifiers map parallel axes to blocks and threads; foreach loops remain sequential within that structure.
+P: If you omit the space specifier, as in `parallel p by 8`, the compiler chooses a default mapping. The introductory examples use this form. Explicit specifiers let you control the mapping when performance requires it.
+P: Both `parallel` and `foreach` can use multidimensional indices. Once the outer and inner ranges are established, the compose operator `#` connects their coordinates to positions in the full tensor. The bounds are part of that calculation, which is why changing the iteration geometry also changes tile selection.
+
+=== UID:F05-S05
+H: `: block` --- parallel blocks
+C: : block --- parallel blocks
+P: This declares an 8 by 16 grid, giving 128 blocks. Each block must be able to complete its assigned output tile independently; the example does not provide a communication or synchronization protocol between blocks.
+P: Use `: block` for the outermost tiling of your output. If your output is `[128, 256]` and each block handles a `[16, 16]` tile, you need `128/`16 x 256/16 = 8 x 16 = 128 blocks.
+
+=== UID:F05-S06
+H: `: thread` Threads Within a Block
+C: : thread --- Threads Within a Block
+P: This creates 16 $×$ 16 = 256 threads within the enclosing block.
+P: Use `: thread` for the finest-grain parallelism --- the per-element work within a tile.
+
+=== UID:F05-S09
+H: Nesting Specifiers
+P: Real kernels nest these levels. A common pattern:
+C: Nesting Specifiers
+P: The outer `parallel` creates the block grid. The inner `parallel` creates threads within each block. The braces `px, py\` introduce multi-dimensional indices --- shorthand for two nested `parallel` lines.
+
+=== UID:F08-S05
+H: `with tile_`k in 16
+P: The statement `with tile_k in 16` gives `tile_k` the range from 0 through 15, with upper bound `#tile_k = 16`. It does not run the body 16 times. A later `foreach tile_k` performs that iteration. Separating the binding from the loop lets a pipeline select tile 0 before the loop and then iterate over the remaining tiles.
+
+=== UID:F08-S07
+H: `foreach tile_`k(1:): sliced iteration
+P: The range expression `(1:)` starts iteration at index 1 and keeps the original exclusive upper bound. With 16 tiles, it visits 1 through 15. This is useful after a prologue has loaded tile 0: the loop issues each remaining load once, while computation consumes the previously loaded tile. The final loaded tile is handled after the loop.
+
+=== UID:F15-S14
+H: Parallel Region: the 'parallel-by' Block
+P: Systems such as CPUs can use asynchronous threads for parallel execution. Croqtile expresses parallel work with the Single Program, Multiple Data (SPMD) model.
+P: The syntax of constructing a parallel region is quite different. It employs the C-style bracket and encloses the code for parallel execution within the 'parallel-by' block.
+C: Parallel Region: the parallel-by Block
+P: The `parallel` and `by` keywords declare six execution instances. Each runs the same SPMD code with a different value of `p`. You can think of `p` as the index of a six-iteration loop whose iterations are independent and may execute in any order.
+P: The declaration also associates `p` with the range `[0, 6)`, making it a **bounded integer**. Operations such as `chunkat` use both its current value and its bound.
+
+=== UID:F15-S15
+H: The 'with-in' Block and 'where' Clause
+P: A `with-in` statement binds indices to a range without launching parallel instances. For a two-dimensional range, it can bind one tuple:
+C: Indexing a with-in block
+P: Here, `index` is an `ituple` with two elements. You can also name the elements individually:
+C: A tuple of indices
+P: The tuple and its components can also be named together:
+C: Indices derived from a tuple
+P: You name 'index' as a **bounded ituple** in such scenarios.
+P: A `with-in` statement creates bounded indices but does not introduce parallel execution. Its body executes sequentially unless it contains another construct that introduces parallel work.
+P: In addition, programmers could append a 'where' clause. For example,
+C: Nested bounded groups
+P: The relation `n `-> n_p requires the two indices to have the same value in every iteration. Within the `with-in` block, either name can be used wherever the other is required. Such bindings are useful when expressing AI kernels.
+
+=== UID:F15-S16
+H: The 'foreach' Block
+P: Once the *bounded-ituple* is defined by the 'with-in' clause, programmers can loop over the bounded-ituples/bounded-integers. In Croqtile, this is simple.
+C: The foreach Block
+P: Each iteration gives the bounded variable a current value for the duration of the loop body. The bound stays fixed. Use that current value to select data, and use the bound when deriving how many pieces the data is divided into. Declaring a parallel index instead would assign one value to each independent instance rather than visit the values in order.
+
+=== UID:F31-S03
+H: Basic Syntax: `parallel-by`
+P: The basic syntax for a `parallel-by` block is as follows:
+C: A named parallel index
+P: The braces enclose the body executed by each parallel instance. In this example:
+L: **`parallel`**: This keyword initiates the *parallel execution block*. | **`p`**: It is the **parallel variable**. It contains an integer value identifying the current *parallel thread*. Each *parallel thread* runs the same code but with a different value of *parallel variable* `p`. | **`by 6`**: It indicates that there are 6 *parallel thread*s. Thus, the *parallel variable* `p` ranges from `0` to `5` across different threads.
+P: In some scenarios, programmers may not require an explicit *parallel variable* for a simple parallel construct. It is possible to omit it:
+C: An unnamed parallel index
+P: This creates two execution instances. Without a named index, the code cannot use that index to select different data for each instance, as SPMD programs commonly need to do.
+
+=== UID:F31-S04
+H: Multiple-Level Parallelism
+P: In Croqtile, you can define multiple levels of parallelism. Here's an example:
+C: One parallel level
+P: This code defines two levels of parallelism with values `2` and `12`, respectively. This means a total of `2 x 12 = 24` parallel threads are invoked for the task. Each thread is identified by a unique combination of `p` and `q`. In Croqtile, you refer to the level of `p` as *parallel-level-0* and the level of `q` as *parallel-level-1*.
+P: The nesting determines which instances belong to the same enclosing region. Shared data and synchronization must follow that structure. Put cooperating work at a level whose instances can use the required storage and synchronization operations.
+P: In Croqtile syntax, you can define multiple-level parallelism in a single line:
+C: Two parallel levels
+P: This comma-separated form expresses the same two parallel levels as the nested version, provided there is no intervening code between those levels.
+
+=== UID:F31-S05
+H: Sub-Level Parallelism
+P: Some targets allow a single parallel level to be divided into up to three coordinate axes. Croqtile expresses these axes using `ituple` and `mdspan`:
+C: Sub-Level Parallelism
+P: In this example, two levels of parallelism are defined. The first level (*level-0*) is subdivided into three sub-levels, annotated by the `px, py, pz\` `ituple`. The second level (*level-1*) is subdivided into two sub-levels, annotated by the `qx, qy\` `ituple`, or `t_index` as a whole. For each sub-level, the parallelization count corresponds to the respective value inside the `mdspan`.
+P: The first element inside the `ituple` represents the **least significant parallel variable**. Croqtile adopts this ordering to align with developers' conventions, rather than for internal consistency.
+
+=== UID:F32-S01
+P: A `with-in` statement declares a *bounded variable*; a `foreach` statement iterates over its range. Together they describe a loop without spelling out its bounds in C++.
+
+=== UID:F32-S02
+H: Loops in Croqtile
+P: In C++, loops are typically constructed using `for`, `while`, and `do-while` blocks. These loops include conditions for termination and usually involve variable manipulations related to loop control. Programmers have the freedom to define exit conditions, loop stepping, and other aspects, allowing for flexible loop structures.
+P: Croqtile uses bounded ranges for these loops. The range is defined once and then visited by `foreach`:
+C: A foreach loop
+P: Here, `index` is a *bounded variable* (introduced in the previous section). If `index` has an upper bound of `6`, the above code is equivalent to:
+C: The equivalent C++ loop
+P: This form suits tile traversal: the loop visits the valid coordinates in a declared range, and the same bounds can be used to derive each tile's shape.
+P: In Croqtile, *bounded variables* defined within a `parallel-by` statement are immutable and cannot be used in `foreach` statements. Instead, programmers should use the `with-in` statement to define the *bounded variables* suitable for loops.
+
+=== UID:F32-S03
+
+=== UID:F32-S04
+H: Defining *Bounded Variable*s:
+P: A `with-in` statement allows you to define either a *bounded integer* or a *bounded ituple*. Syntactically, it resembles the `parallel-by` statement but only defines *bounded variable*s without invoking multiple instances for execution. Below are examples:
+C: A bounded variable
+P: Here, `x` represents a bounded integer with an upper bound of `128`. Both `y` and `index` represent bounded ituples whose upper bounds are `512` and `10, 10` respectively. Similar to the `parallel-by` statement, you can name the elements of the ituple for clarity or declare both the bounded ituple and the associated bounded integers, as shown below:
+C: A tuple of bounded variables
+P: Like the `parallel-by` statement, multiple `with-in` declarations can be combined using a comma-separated syntax, as demonstrated below:
+C: A variable derived from a tuple
+P: In this way, two bounded ituples are defined. Note that either `index` or `idx` can only be referenced within the following `with-in` block.
+
+=== UID:F32-S05
+
+=== UID:F32-S06
+P: The `with-in` statement defines *bounded variable*s, which can then be iterated over using the `foreach` statement. The basic syntax is as follows:
+C: Indexing one shape
+P: In this example, the `foreach` block iterates 6 times, with the value of the **iteration variable** `index` ranging from `0` to `5` incrementally.
+P: It is also possible to iterate over *bounded ituple*s. For example:
+C: A tuple of indices
+P: This code defines a *bounded ituple* `index`. Iterating over `index` is equivalent to a nested loop structure:
+C: The generated C++ loop
+P: The left-to-right order of indices in a bounded tuple determines the outer-to-inner nesting of the loops. Keep this ordering in mind when the order of iteration matters.
+P: The same outer-to-inner ordering applies to a comma-separated list of bounded variables:
+C: Several bounded groups
+P: In this code, two bounded variables are defined. The following `foreach` block is equivalent to a multi-level nested loop:
+C: The generated inner loop
+
+=== UID:F32-S07
+H: Syntactic Sugar
+C: A foreach loop
+P: The code above is equivalent to the following code:
+C: The with-in form it expands to
+
+=== UID:F32-S08
+H: Deriving the Loop From a Bounded Integer
+P: In certain scenarios, such as pipelining data movement, it may be necessary to modify loop iterations. In Croqtile, this can be achieved by deriving a loop from a *bounded integer* within the `foreach` statement. For example:
+C: A tuple of bounded variables
+P: In this case, the **Range Expression** `y(1::)` is used to derive the loop. This results in equivalent C/C++ code:
+C: The derived C++ loop
+P: The `y` loop starts at `1`. A range expression consists of a bounded variable followed by three colon-separated integer fields in parentheses:
+C: The bounded-variable syntax
+P: This derives a loop from the `bounded-`variable, where the `bounded-`variable serves as the *iteration variable* of the loop. Specifically:
+L: The initial value of the *iteration variable* is the `lower-offset` plus the lower bound of the `bounded-`variable. Since all bounded integers have a lower bound of `0` in Croqtile, the `lower-offset` sets the initial value of the loop. | The loop terminates when the *iteration variable* is equal to or greater than the upper bound of the `bounded-`variable plus `upper-offset`. Negative values are typically used for `upper-offset`. | The *iteration variable* increments by `stride` at the end of each iteration.
+P: Thus, `y(1:-1:2)` results in a loop like `for (y = 0 + 1; y ` 17 - 1; y += 2) in the example above. If any field of the *range expression* is not specified, it results in default values: `0` for `lower-offset` and `upper-offset`, and `1` for `stride`.
+P: Note that *range expression*s only apply to the *bounded variable*s. *Range expression* over the *bounded ituple* triggers an error at compile time.
+
+=== UID:F32-S10
+H: In short
+P: Bounded variables define iteration ranges, and range expressions adjust the starting point, ending point, and stride. Reading these loops requires distinguishing a variable's current value from its upper bound.
+P: Deriving a loop this way is useful for multi-buffered data movement, where the loop may skip a tile loaded before iteration begins. Section 3.6.2 develops this pattern.
+
+=== UID:F04-S05
+H: `chunkat(...)`: equal partitioning
+C: chunkat(...): equal partitioning
+P: The `chunkat` expression divides each dimension according to the corresponding index bound. With input shape `[64, 128]` and `parallel tr, tc by [4, 8]`, it selects a `[16, 16]` tile. The current values of `tr` and `tc` select which tile, while their bounds determine its size.
+P: That makes `chunkat` the natural tool when your tiling follows the parallel decomposition directly.
+F: chunkat(1, 3) selects rows 16–31 and columns 48–63 from a [64, 128] tensor partitioned into [4, 8] tiles.
+
+=== UID:F04-S06
+H: `subspan(.`..).at(...): explicit tile extents on a tile grid
+C: subspan(...).at(...): explicit tile extents on a tile grid
+P: The `subspan` expression supplies the tile extents explicitly, and `.at(...)` supplies tile coordinates. For a `[16, 16]` tile, coordinate `(2, 3)` begins at element `(32, 48)`. This form is useful when the tile size is a fixed algorithmic choice rather than derived from the number of parallel instances.
+
+=== UID:F04-S07
+H: `view(.`..).from(...): explicit tile extents with explicit element offsets
+C: view(...).from(...): explicit tile extents with explicit element offsets
+P: The form `view(...).from(...)` gives a window an explicit shape and an origin measured in elements. A `[16, 16]` window starting at `(37, 50)` keeps that exact origin; it does not round it to the nearest tile boundary.
+P: This is the right tool when the tile origin is already available as element offsets rather than tile indices, or when the region is not most naturally described as an equal chunk. It is especially useful for dynamic and irregular access patterns where `chunkat(...)` would be awkward or impossible.
+P: You can think of the three forms like this:
+L: Use `chunkat(...)` when the surrounding parallel decomposition already defines an equal tiling. | Use `subspan(.`..).at(...) when you want an explicit tile shape and tile coordinates. | Use `view(.`..).from(...) when you want an explicit tile shape and element-space starting offsets.
+
+=== UID:F04-S14
+H: Compose: `outer # inner`
+C: Compose: outer inner
+P: This combines a tile coordinate with an in-tile coordinate to produce a coordinate in the full tensor.
+P: For an outer tile index `tr` and an inner index `i`, `tr # i` has value `tr * #i + i`. If a tile has 16 rows, tile 2 and inner row 5 identify global row 37. Its bound is the product of the two bounds. Operand order matters because the inner bound supplies the stride.
+F: With 16 elements per tile, tile = 2 and i = 3 compose to global position 2 × 16 + 3 = 35.
+
+=== UID:F04-S15
+H: Extent: `#name`
+C: Extent: name
+P: The notation `#tile` means the extent of the `tile` axis: how many tiles exist along that dimension. If `parallel tile by 8`, then `#tile` is `8`.
+F: Prefix #tile gives the axis extent, 8; infix tile # i composes a tile coordinate and an in-tile offset.
+
+=== UID:F15-S19
+H: Bounded-ituple/integer and 'chunkat' Operation
+P: A `chunkat` expression selects a view of existing spanned data. It uses each bounded argument twice: the upper bound determines the number of chunks, and the current value selects one chunk. Selection alone does not move the elements; the surrounding DMA statement performs the transfer.
+C: Bounded-ituple/integer and chunkat Operation
+P: The example above shows one typical use of `chunkat`. Here the spanned data has type `f32 [6, 10, 100]`. The operation takes two parameters --- the *integer* `p` and the *ituple* `index` --- and divides the data into $6 × 10 × 10$ pieces, one for each combination of their ranges. Each piece holds 10 consecutive elements along the least significant dimension and is copied into local storage.
+
+=== UID:F29-S01
+P: A *chunkat expression* names one tile of a larger buffer in a DMA statement, so the movement code never has to compute an offset by hand.
+
+=== UID:F29-S02
+H: *Ubound* Operation
+P: A bounded variable declared by `parallel-by` or `with-in` is an integer or tuple with associated bounds. A `foreach` loop uses its current value as the index and its upper bound to determine the iteration range.
+P: In Croqtile, a program can use the **ubound operation** to explicitly retrieve the upper bound of a bounded variable. *Ubound* is a unary operation that uses the prefix symbol `#` before a bounded variable. For example:
+C: Ubound Operation
+P: In this code, the local buffer `a` is shaped as `[32, 16]`, since `#size` evaluates to the upper-bound of `size`. However, the declaration of `b` uses the *current value* of `size`, resulting in an incorrect shape definition.
+
+=== UID:F29-S03
+H: Use `chunkat` Expression to Tile Data
+P: A transfer can use a whole buffer, but a tiled algorithm usually needs only the portion assigned to the current instance. Put `chunkat` in the source expression to describe that portion directly:
+C: Use chunkat Expression to Tile Data
+P: In this example, the built-in member function `.chunkat` is used to create a tile or block for the source expression of the DMA statement. Each tiled block is called a **chunk** in Croqtile. The `.chunkat(...)` data expression can be considered a simpler form of `.`chunk(...).at(...), where the semantics of each part are illustrated in the figure below:
+F: f29-chunkat.png
+P: Considering the expression `input.`chunkat(p), which is equivalent to `input.`chunk(#p).at(p):
+L: `input` is the *spanned data* to be tiled. | `#p` indicates the **tiling factor**. It also specifies the total **chunk count** for each dimension to process. In this case, the 1D input is tiled by `6`, resulting in `6` chunks to be processed. | `.chunk(#p)` determines the **chunk shape**. The chunk is a 1D data segment tiled from `input`, with its size being the data *mdspan* divided by the *upper-bound* of the bounded variable. In this example, the chunk shape is calculated as `[input.`span / #p] = [6]. | `.at(p)` determines the **chunk index**. Here, `p` ranges from `[0, 6)`, allowing parallel threads to process different chunks of `input`. Specifically, parallel thread `1` processes a chunk with elements `[6, 12)` from `input`, while parallel thread `5` processes a chunk with elements `[30, 36)`, and so on.
+P: In many scenarios, it is unnecessary to use separate `.chunk` and `.at` expressions, as `.chunkat` takes bounded variables as parameters. The upper-bounds of these variables act as the *tiling factors*, and their current values act as the *chunk index*.
+
+=== UID:F29-S04
+H: Use Multiple Bounded Variables
+P: The example below uses several bounded variables at once:
+C: Use Multiple Bounded Variables
+P: In this example, there are two bounded variables: `p` is the *bounded integer* defined by the `parallel-by` statement, while `index` is the *bounded ituple* with two integers. The `chunkat` expression concatenates them to form a *bounded ituple* with upper-bounds `#`p, #index and current values `p, index\`. Thus, the shape of each chunk is calculated as `[36, 14, 8] /` #p, #index = [36, 14, 8] / 6, 7, 4 = [6, 2, 2].
+P: In addition, since `p` is the bounded variable for parallelization, there are `6` threads working in parallel, each handling a large chunk of `[6, 14, 8]`. Within a single parallel thread, it iterates `7x4` times, each time moving a `[6, 2, 2]` small chunk to a compiler-allocated `shared` storage.
+P: The same bounds now describe both the iteration space and the selected data. If the partition changes, the compiler derives the new chunk dimensions from those bounds. To review the transfer, check the input shape, divide by the bounds, and then multiply the chunk coordinates by the resulting chunk extents to recover the element origin.
+
+=== UID:F29-S06
+H: In short
+P: The `chunkat` expression divides a buffer into smaller chunks for a DMA statement, and the shape of each chunk follows from the bound used to select it. You explored how `chunkat` can be applied to either the source or destination of a DMA statement to manage data movement between memory and processors.
+P: Section 3.6.1 combines these constructs in a complete Tileflow program.
+
+=== UID:F04-S02
+H: The DMA Statement Family
+P: All of Croqtile's tile-movement operations use the same basic form:
+C: The general DMA form
+P: The important pieces are:
+T: | **Part** | **Meaning** | <ROW> | --- | --- | <ROW> | `future` | Optional handle to the transfer result. Use `future.data` to access the moved tile and `future.span` to query its shape. | <ROW> | `operation` | `copy`, `transp`...>, or `pad`...>. | <ROW> | `modifiers` | Optional flags such as `.async`, `.zfill`, or `.`swiz<N>. | <ROW> | `source =` destination | The source view and the destination memory or destination view. |
+P: Minimal examples:
+C: A concrete copy
+P: The key shift from 1.3 is that these statements move shaped regions, not individual elements.
+
+=== UID:F04-S03
+H: First Example: Tiled Addition Through shared storage
+C: Tiled Addition Through Shared Storage
+P: The arithmetic is still element-wise addition. What changed is the data path:
+L: `chunkat(tr, tc)` selects one logical tile from each input. | `dma.`copy ... => shared stages that tile into block-visible fast memory. | `tr # i` and `tc # j` map tile-local coordinates back to global output coordinates.
+P: This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.
+F: For [64, 128] inputs and a [4, 8] tile grid, tile (1, 3) stages [16, 16] operands before element-wise addition.
+
+=== UID:F04-S08
+H: Futures, `.data`, and `.span`
+P: The result of a DMA or TMA statement is a future-like handle:
+C: A future from a copy
+P: That handle gives you two important things:
+L: `f.data`: the moved tile, as a spanned tensor. | `f.span`: the shape of that tile.
+P: Example:
+C: Reading data and span
+P: Even synchronous copies are worth naming when you want to pass the moved tile to later code.
+F: The copy result exposes the destination tensor through .data and its shape through .span; asynchronous reads require completion first.
+
+=== UID:F04-S09
+H: Synchronous and Asynchronous Copies
+P: By default, copies are synchronous:
+C: A synchronous copy
+P: Add `.async` when you want the transfer to proceed in the background:
+C: An asynchronous copy
+P: The same pattern applies to TMA:
+C: An asynchronous tma copy
+P: A future identifies the destination before an asynchronous transfer necessarily finishes. Access through `f.data` does not mean the elements are ready. Place `wait f` before the first operation that reads those elements, and keep the source and destination valid while the transfer is in flight.
+P: Later chapters use async copies to overlap load and compute. In this part of the guide, the important part is the contract: `.async` creates an in-flight transfer, and `wait` makes it safe to consume.
+
+=== UID:F04-S11
+H: `dma.`transp<...>
+C: dma.transp ...
+P: This permutes dimensions during the movement itself. You do not first copy and then transpose. The transfer produces data in the transposed layout.
+
+=== UID:F04-S12
+H: `dma.`pad<...>
+C: dma.pad ...
+P: Padding creates a larger destination tile. The template arguments describe low padding, high padding, internal stride-style padding, and the fill value. Use `pad` when you want explicit border values, not just out-of-bounds protection.
+
+=== UID:F14-S08
+H: Tileflow Program: Orchestrating the Data Movement
+P: The *Tileflow Program* consists of *Croqtile functions*. As described earlier, it manages the movement of data between the host and the target device, ensuring that data is copied correctly across different storage locations.
+P: For convenience, let's revisit the code:
+C: The tileflow program
+P: The `__co__` function accepts `lhs` and `rhs`, both with shape `[6, 17, 128]` and element type `s32` (signed 32-bit integer). The output has the same shape and element type.
+P: The `parallel p by 6 .`.. block indicates that the enclosed code runs in parallel. Specifically, six instances of the code are executed concurrently. This implies a transition in the execution environment from the host to the device.
+P: Inside the `parallel-by` block, `with-in` binds `index` to the bounds `[17, 4]`. This two-dimensional bounded tuple supplies the indices for the `foreach` loop.
+P: The `foreach index .`.. statement is equivalent to the following C code:
+C: The equivalent C++ loop
+P: Within the `foreach` block, the `dma.copy` statement describes how data movement occurs. For example, consider the statement `lhs_`load = dma.copy lhs.chunkat(p, index) => local;:
+L: The symbol `lhs_load` is called **future** of the DMA operation, which contains information about the DMA destination. | `dma.copy` invokes a direct DMA data transfer without transforming the shape of the data. The expression on the left-hand side of `=` represents the DMA source, while the right-hand side represents the destination. | In this case, the destination is specified as a `local` buffer, which is automatically allocated by the Croqtile compiler. | The source expression `lhs.`chunkat(p, index) selects a chunk of `lhs`. The bounds of `p` and `index`, namely `[6, 17, 4]`, determine the partition. Dividing the input shape `[6, 17, 128]` by these bounds gives chunk shape `[1, 1, 32]`. The current values select the chunk: instance `p = 1` and iteration `index = 16, 2\` select chunk `(1, 16, 2)`, whose element origin is `(1, 16, 64)`.
+P: The following figure shows how the bounds determine the chunk shape and the indices select a chunk.
+F: Dividing shape [6, 17, 128] by bounds [6, 17, 4] gives chunks of shape [1, 1, 32]. Chunk (1, 16, 2) starts at element (1, 16, 64).
+P: With the DMA statement, different chunks of data tiled from `lhs` are moved iteratively and in parallel from the host to the device's `local` storage. Similarly, the DMA statement manages `rhs` by moving it in small chunks to `local` storage for processing.
+P: The declaration `local s32 [lhs_`load.span] l1_out; creates a buffer for each parallel instance, with the same shape as the loaded chunk. The subsequent `call` invokes the device function `kernel`, which writes its result to that buffer. A final DMA statement copies the result back to the host output, completing the iteration.
+P: In this code, each parallel thread runs `17x4` iterations, with each iteration handling a `1x1x32`-sized chunk of data. The *croqtile program* terminates when all `6` parallel threads have completed their iterations. It then returns the output buffer to its caller, the host program.
+
+=== UID:F28-S01
+P: The DMA statement describes data movement and can name its result with a future. Its syntax specifies the operation, source, and destination.
+
+=== UID:F28-S03
+P: A DMA statement can execute asynchronously, allowing subsequent code to run while the transfer is in progress. An asynchronous transfer requires explicit synchronization before its result is used.
+P: To support these features, the syntax is organized as follows:
+C: Basic Syntax
+P: The name on the left of `=` denotes a future. It identifies the transfer result and, for an asynchronous operation, provides the handle used by `wait`. A synchronous transfer may omit the name when later code does not need a handle to its destination.
+P: The right-hand side of the **DMA operation** includes the **operation type** (`dma-op`), the **data expression** for the operation source (`src-expr`), and the *data expression* for the destination (`dst-expr`). The source and destination are separated by the symbol `=`, which indicates the direction of data flow.
+
+=== UID:F28-S04
+H: Synchronous and Asynchronous
+P: An asynchronous copy is non-blocking: subsequent code can execute while the transfer is pending. A synchronous copy completes before execution proceeds past the statement. These terms describe when the issuing code can continue, not whether it may safely read an unfinished transfer's destination.
+P: In Croqtile, the `.async` suffix in a **DMA operation** indicates that the operation is asynchronous. For example:
+C: Synchronous and Asynchronous
+P: In this example, the DMA operation that produces the future `f0` is asynchronous, allowing the program to continue executing while the data transfer occurs in the background. The DMA operation that produces `f1` is synchronous, meaning the program will pause until the data is fully transferred from `data1` to `shared` storage. Meanwhile, the data copy of `data0` might still be in progress.
+P: The statement `wait f0;` waits until the transfer from `data0` to `shared` storage is complete, synchronizing subsequent execution with that transfer. Ensure that every asynchronous result is awaited before it is used.
+
+=== UID:F28-S06
+H: Data Expression
+P: The data expressions used so far have been simple, either a defined **spanned data** or a **storage location**. The **storage location** is used solely for the **destination buffer** declaration, as it requires the Croqtile compiler to allocate memory for it. For example:
+C: Data Expression
+P: The second DMA statement names `shared` as its destination, so the compiler allocates the buffer with the inferred shape. It is equivalent to the first statement's explicit buffer declaration. Naming a storage location is convenient when the compiler can infer the destination shape.
+P: The same source and destination positions can contain tile expressions. For example, `input.chunkat(p)` restricts the copy to the portion selected by `p`; an explicit destination view restricts where the result is written. Section 2.8 explains how those views are formed.
+
+=== UID:F28-S07
+H: Future and Wait
+P: Both *Sync-DMA* and *Async-DMA* operations can be used to define a *future*. As seen in earlier examples, a *future* acts as a handle for asynchronous operations and is typically used as a parameter of the `wait` statement to synchronize an *Async-DMA*.
+P: Croqtile allows the `wait` statement to take multiple *future*s. However, using a *future* from a **Sync-DMA** in a `wait` statement will result in an error. For example:
+C: Two asynchronous copies
+P: In Croqtile, another use of a *future* is to retrieve the destination buffer of the associated DMA statement. This is also the reason why **Sync-DMA** is allowed to define a future. Croqtile provides two built-in member functions for *future* variables:
+L: `.span` to retrieve the **mdspan** of the DMA destination buffer. | `.data` to retrieve the reference of the DMA destination buffer (spanned data).
+P: For example:
+C: Waiting on both futures
+P: Here, `.span` retrieves the shape of the destination buffer associated with `f0`, and `.data` retrieves the destination data associated with `f1`. Applying the element-count operation to `f1`'s destination shape returns its total number of elements.
+
+=== UID:F28-S08
+H: In short
+P: DMA statements support synchronous and asynchronous transfers and several movement operations. Futures name the results, expose destination buffers, and provide handles for waiting on asynchronous work.
+P: Section 2.8 explains how data expressions select tiles or blocks within a buffer.
+
+=== UID:F34-S06
+H: Parallel Perspective of Tileflow Programs
+P: In Croqtile, a *divergent* code region is generated with the keyword `inthreads`, followed by a comparison expression.
+P: Let us have a look at the following example:
+C: Parallel Perspective of Tileflow Programs
+P: You can examine Croqtile tileflow programs from the perspective of parallelism. It consists of
+L: *Sequential Code* | *SPMD-Styled Parallel Code* enclosed in `parallel-by` block, which consists of: itemize[leftmargin=1.6em] | *Uniform Code* | *Divergent Code* enclosed in `inthreads` block.
+P: In this example, `p `= 2 initiates the *divergent code block*, where from the implementation perspective, it creates a thread mask of `000111`, which allows only thread `0`, `1` and `2` to execute the code inside. And thread `3`, `4` and `5` will skip this path. **All threads are forced synchronized after the `inthreads` block**. In this case, it implies thread `3`, `4`, and `5` waits for the completion of the others before stepping forward.
+P: An `inthreads` block resembles a C++ conditional, but it selects participants in an SPMD region. Its placement and predicate must therefore refer to that parallel structure:
+L: Can only appear in the SPMD code region, which is enclosed in the `parallel-by` block. | Can only have a comparison result related to thread identifiers.
+P: Croqtile compiler has the checks for both the comparison expression and `inthreads`-block placement.
+
+=== UID:F34-S09
+H: Implicit Masking
+P: In Croqtile, code between multiple `parallel-by` levels can be considered as a type of implicit masking. For example:
+C: Implicit Masking
+P: In this example, there exists two levels of parallelization. The code inside `parallel p by 6` block but outside `parallel q by 2` blocks is conceptually for the outer parallelization only. This means, only one thread from the sub-level parallelization execute the code, which is equivalent to `inthreads (q == 0) .`.. . Programmers must be aware there is only single thread instance to execute the code part. Only the code inside the inner `parallel-by` is executed by all threads.
+
+=== UID:F35-S01
+P: An asynchronous region can advance independently, but a dependency on another region still needs to be expressed. An event marks that dependency: one region triggers it after completing the required work, and another waits before using the result. The event carries readiness information; the data remains in the buffer shared by the regions.
+
+=== UID:F35-S02
+H: Event Basics
+P: The meaning of an event varies between programming languages. In Croqtile, an **event** coordinates asynchronous code blocks at different execution levels.
+P: A Croqtile event has two states, **SET** and **UNSET**. A newly declared event starts in the UNSET state. For example:
+C: Declaring a shared event
+P: A `shared` event is declared inside a `parallel-by` block and used by its parallel instances. Events can also use `global` or `local` storage. The target platform determines the constraints on their declarations and references.
+P: In addition, you may declare an event array following C-style syntax:
+C: Declaring an event array
+P: A comma-separated expression can declare both an event and an event array on one line.
+P: The `trigger` statement changes an event from **UNSET** to **SET**:
+C: Triggering an event array
+P: The comma-separated statement triggers every event in array `e` and the single event `e1`.
+P: The `wait` statement blocks the current instance while the event is **UNSET**. Execution resumes once the event becomes **SET**.
+P: Triggering an event is what unblocks the code waiting on a *wait statement*. For example,
+C: Waiting on an event
+P: In this example, the triggering instance sets `e`, allowing the waiting instance to continue. Both then reach `sync.shared`. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish.
+P: In Croqtile semantics, **an event is always auto-reset by its `wait` statement**. That means when a `wait` statement is unblocked, the events that are waited are changed to *UNSET* state.
+
+=== UID:F07-S06
+H: Event arrays for multi-stage pipelines
+P: Consider a producer that loads tiles and a consumer that computes on them. Before reading a slot, the consumer needs a signal that its data is ready; before overwriting it, the producer needs a signal that the previous read has finished. Call these signals `full` and `empty`. A pipeline with several reusable slots gives each slot its own pair of events:
+C: Event arrays for multi-stage pipelines
+P: Each physical buffer slot gets its own `full`/`empty` pair. The ring index `stage = iv_`k % STAGES maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on `wait empty`.
+
+=== UID:F07-S07
+H: Bootstrap protocol
+P: The consumer must **seed** the `empty` credits before the K-loop starts:
+C: Bootstrap protocol
+P: Without this bootstrap, the producer's first `wait empty[0]` blocks forever --- a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol requires initial credits.
+P: 3.8.5 develops the full double-buffered and multi-stage pipeline kernels that put these primitives to work. The examples there compose `inthreads.`async, events, `swap`, and `mma.commit` into complete, runnable matmul pipelines.
+
+=== UID:F35-S05
+H: In short
+P: Events order asynchronous `inthreads` regions. A `trigger` sets an event or event array to **SET**. A `wait` blocks until the event is triggered, then resets it to **UNSET**.
+P: Pair event triggers and waits carefully. Incorrect ordering can cause deadlocks that are difficult to diagnose.
+
+=== UID:F07-S02
+H: Predicated execution with `if`
+P: Croqtile's `if` behaves like its C counterpart:
+C: Predicated execution with if
+P: All threads in scope evaluate the condition. Threads where it is false skip the body. Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.
+P: Use `if` for runtime decisions such as bounds checks and conditional accumulation. The condition may depend on the current tile coordinate or input values. Keep it uniform across a cooperating group when the body contains an operation that requires the group to participate together.
+P: Whenever possible, keep `if` conditions uniform across the execution group: in this example, all 32 threads should agree.
+
+=== UID:F07-S12
+H: Early return from `parallel`
+P: Use `yield` to return early from a `parallel` block. It generates a `return;` instruction that ends device execution for the current instance.
+C: Early return from parallel
+B: The `yield` keyword currently will **not** do any compile-time nor runtime checks. Be careful about synchronization safety.
+P: Check an early exit against the remaining synchronization in the region. An instance that leaves before triggering an event can strand its consumer; an instance that skips a required collective operation can strand its peers. A tail guard is easiest to reason about when all instances responsible for the same tile make the same decision.
+
+=== UID:F06-S02
+P: Every contraction kernel follows the same rhythm, and the spelling makes each step visible:
+L: **`mma.fill 0.0`** | **`mma.load`** | **`mma.`row.**row mc, ma, mb --- issue the contraction: **C += A $×$ B** into `mc`. | **`mma.`store mc, dst**
+P: You loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same `mc`), then run step 4 once to flush the completed output tile. You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (`row.row` here).
+P: The `.row.row` suffix is a **layout contract** --- Both operands are row-major. The full set of layout combinations is `row.row`, `row.col`, `col.row`, and `col.col`; in practice, `row.row` and `row.col` cover most kernels. Choosing the wrong variant produces incorrect results.
+P: For two K slices, initialize `mc` once, load the first pair of operands and accumulate, then load the second pair and accumulate into the same `mc`. Only then store the output. The load handles describe operand fragments; the accumulator holds the partial result across iterations. This distinction explains why fill and store sit outside the repeated load-and-multiply sequence.
+
+=== UID:F10-S05
+H: `__cpp__`: verbatim C++ injection
+P: The `__cpp__` form inserts a string as C++ source at the point where it appears in a Croqtile function. Use it for a short target operation that needs to sit inside a particular parallel or asynchronous region. The inserted text must be valid in that scope, with all referenced names visible to the target compiler. Croqtile passes the contents through without parsing or rewriting them.
+L: **`_`_**cpp__("...") --- Ordinary string; best for short one-liners. | **`_`_**cpp__(R"(...)") --- Raw string literal; use for `asm volatile` where escaping every `"` would be painful.
+
+=== UID:F10-S07
+H: Macros inside `__cpp__` strings
+P: A common mistake: assuming the preprocessor expands macros inside string literals.
+C: A macro inside a cpp string
+P: This fails --- the preprocessor does not expand inside strings. Use numeric literals inside `__cpp__` and `#if` / `#error` outside to enforce consistency:
+C: Its expanded form
+
+=== UID:F10-S08
+P: Croqtile's preprocessor runs before the main compiler pass. Macros expand in both `__co__` regions and host C++ in the same `.co` file, so one definition keeps tile geometry and host-side checks aligned.
+T: | **Directive** | **Role** | <ROW> | --- | --- | <ROW> | `#`define NAME value | Object-like macro: textual replacement | <ROW> | `#if` / `#elif` / `#else` / `#endif` | Conditional inclusion | <ROW> | `#ifdef` / `#ifndef` | Shorthand for whether a macro is defined | <ROW> | `#`error message | Force a compile-time failure with a message |
+P: Function-like macros (`#`define MAX(a, b) ...) are not supported. Use `constexpr` helpers in ordinary C++.
+
+=== UID:F10-S09
+H: Tile geometry as macros
+P: Production matmul sources centralize tile dimensions at the top:
+C: Tile geometry as macros
+P: The same names appear in `parallel`, shared-memory declarations, `foreach` bounds, and host-side verification.
+
+=== UID:F10-S10
+H: Compile-time assertions with `#error`
+C: Compile-time assertions with error
+P: The preprocessor evaluates this condition before the Croqtile function is parsed. An incompatible set of constants therefore stops the build with the supplied message. Use this for relationships among configuration macros; a property of input data supplied at runtime belongs in a runtime assertion instead.
+
+=== UID:F10-S11
+H: Conditional code paths
+C: Conditional code paths
+P: The preprocessor keeps one branch and discards the other before Croqtile parses the `__co__` body. Command-line defines: `croq kernel.`co -DMATMUL_TILE_K=128.
+
+=== UID:F15-S20
+H: Calling C++ Functions
+P: Croqtile functions are not allowed to call another Croqtile function. However, inside a Croqtile function, it is normal to have function calls to C++ kernels.
+C: Calling C++ Functions
+P: The example uses the Croqtile `call` keyword to invoke the existing C++ function `bar`.
+
+=== UID:F23-S01
+P: A shared configuration constant often appears in both the host allocation and the kernel declaration. Defining it once as an object-like macro keeps those uses together. The examples below show how replacement text and conditional compilation affect the source before Croqtile checks its shapes and types.
+
+=== UID:F23-S02
+H: Object-Like Macros
+P: Croqtile preprocessor supports C/C++ **object-like macros** to connect both host code and tileflow code. The *object-like macro* performs pure text replacement and accepts no parameters. The following code gives an example:
+C: An object-like macro
+P: In the code snippet, the inputs of croqtile function `matmul` are not dynamically shaped. Instead, Croqtile pre-processor substitutes `M`, `N`, `K` with values `256`, `32`, `64` ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers make different code consistent and easy to manipulate.
+P: The preprocessor currently supports only macros without parameters, so code like:
+C: A macro with parameters
+P: would not work.
+
+=== UID:F23-S03
+H: Comments
+P: Croqtile supports both C-style block comments (`/*...*/`) and line comments (`//...`) through its preprocessor.
+
+=== UID:F23-S04
+H: Conditional Compilation
+P: Croqtile supports conditional compilation with directives including `#if`, `#ifdef`, `#ifndef`, `#else`, and `#endif`:
+C: Conditional Compilation
+P: The same preprocessing conditions can control both host C++ and Croqtile code.
+P: The preprocessor is still being extended, and full C preprocessing support is not planned: a C feature is picked up only when a program actually needs it.
+
+=== UID:F24-S01
+P: Croqtile uses device functions to perform target computations. The `call` statement specifies where to invoke a device function and which arguments to pass.
+
+=== UID:F24-S02
+H: Call Device Functions
+P: To invoke a device function from a Croqtile function, use a statement beginning with `call`.
+
+=== UID:F24-S03
+H: Basic Syntax of Call Statements
+P: The general syntax for a `call` statement in Croqtile is:
+C: The general call syntax
+P: After `call`, write the function name and, optionally, comma-separated template arguments in angle brackets. Ordinary arguments follow in parentheses, separated by commas as in C/C++.
+P: The target compiler checks that the called function exists and that its signature accepts the generated arguments. Croqtile does not perform these C++ checks during transpilation. A call error may therefore mention generated source; compare it with the helper declaration and the original call site.
+P: In the following example, `call bar();` in `mou` is illegal code since it tries to call device function in a code location which is assumed to be host code area.
+C: An illegal call site
+
+=== UID:F24-S04
+H: The Convention: Allowed Argument Types
+P: In current implementation, the argument must be either:
+L: *Spanned Data* type, or | Scalar *Integer* type, or | Scalar *Floating-Point* type.
+P: Here, the scalar *integer* type only includes `int`, whereas the scalar *floating-point type* includes `float`, `double`, `half`, `bfp16`, and `half8`. However, since the target-platform differs in floating-point support, the *floating-point type* parameter also varies for different target platforms.
+P: Croqtile does not perform arithmetic on these floating-point scalar values in Tileflow code. Instead, the Tileflow program passes them to device functions for computation.
+P: For example:
+C: The Convention: Allowed Argument Types
+P: Here the spanned-data arguments become pointers to their element types. The device helper receives those pointers without shape metadata; pass any required dimensions separately. The declared pointer element type must match the data supplied by the call.
+P: For element formats without a native target type, use the corresponding Croqtile C++ type, such as `croqtile::f16` or `croqtile::bf16`, where supported.
+
+=== UID:F24-S07
+H: In short
+P: A `call` statement invokes a device function, with or without template arguments. Care is needed since no check is applied at transpilation time, which may result in more confusing error reporting since the check is applied at target compile time with generated functions.
+
+=== UID:F11-S02
+H: `print!` and `println!`: compile-time inspection
+P: The bang variants (`print!`, `println!`) run at **compile time**, not at runtime. They print to the compiler's output and are useful for inspecting shapes, extents, and type information without launching a kernel:
+C: A compile-time shape print
+P: When you compile this file, the compiler emits:
+C: The printed shape
+P: String literals are concatenated (`"wor" "ld!"` becomes `"world!"`).
+
+=== UID:F11-S03
+H: `print` and `println`: runtime device output
+C: A runtime inspect kernel
+P: Each call takes a comma-separated mix of string literals and expressions. The output order across threads is **nondeterministic**.
+P: To inspect one execution path, guard the print with a condition on its index:
+C: A print inside a parallel block
+P: Without the guard you get one line per thread --- thousands of lines for a large grid.
+
+=== UID:F11-S04
+H: `assert`: runtime invariant checks
+P: Croqtile's `assert` builtin checks an invariant at runtime and aborts the kernel with a message if it fails:
+C: assert: runtime invariant checks
+P: On the device, this compiles to a `printf` of the message followed by an abort. Use assertions to catch index-out-of-range, null pointer, and other "this should never happen" conditions early.
+
+=== UID:F04-S25
+H: Checklist
+P: The syntax collected here means the following:
+T: | **Syntax** | **Meaning** | <ROW> | --- | --- | <ROW> | `dma.`copy.async ... | Start a non-blocking DMA transfer. | <ROW> | `wait f` | Wait until future `f` is ready to consume. | <ROW> | `future.data` | Access the moved tile. | <ROW> | `future.span` | Access the moved tile's shape. | <ROW> | `dma.`transp<...> | Permute dimensions during transfer. | <ROW> | `dma.`pad<...> | Pad during transfer with an explicit fill value. | <ROW> | `.zfill` | Zero-fill out-of-bounds positions in partial tiles. | <ROW> | `.`swiz<N> | Choose a shared-memory swizzle layout. | <ROW> | `chunkat(...)` | Select one equal tile from a regular tiling. | <ROW> | `subspan(.`..).at(...) | Select a tile by explicit tile extents and tile coordinates. | <ROW> | `view(.`..).from(...) | Select a tile by explicit extents and explicit element offsets. | <ROW> | `tile # i` | Compose tile and in-tile coordinates into a global coordinate. | <ROW> | `#tile` | Ask for the extent of the `tile` axis. |
+P: When reading a movement statement, first identify the selected region and its destination, then check when the destination becomes ready. These questions remain the same in a pipeline; the extra buffers simply allow different tiles to be at different points in that sequence.
+
+=== UID:F05-S18
+H: Summary of New Syntax
+T: | **Syntax** | **Meaning** | <ROW> | --- | --- | <ROW> | `parallel p by N` | N-way parallelism, index `p` runs 0..N-1 concurrently | <ROW> | `parallel px, py\` by [M, N] | Multi-dimensional parallel level (`p` and `q` correspond to one parallel level) | <ROW> | `parallel p by A, q by B` | Comma-separated parallel levels (`p` and `q` correspond to different parallel levels) | <ROW> | `parallel q by N :` thread | Map to threads within a block | <ROW> | `foreach index = m, n, k\` in [a, b, c] | Named tuple destructuring in a `foreach` | <ROW> | `lhs.span(0)` | Extract one dimension of a tensor's shape | <ROW> | `p # m` | Compose outer tile index `p` with inner offset `m` |
+P: Section 3.7 replaces scalar arithmetic in the inner loop with matrix contraction operations.
+
+=== UID:F07-S13
 H: Syntax at a glance
-T: | **Syntax** | **Meaning** | <ROW> | --- | --- | <ROW> | `mc = mma.`fill 0.0 | Initialize accumulator tile to zero | <ROW> | `mma.`fill.f16 0.0f / `mma.`fill.f32 0.0f | Accumulator with explicit precision | <ROW> | `mma.`load.swiz<N> src | Load with swizzle mode (see *Ch 7*) | <ROW> | `mma.`row.row mc, ma, mb | C += A $×$ B (both row-major) | <ROW> | `mma.`row.col mc, ma, mb | C += A $×$ B (A row-major, B col-major) | <ROW> | `mma.`row.row.sp mc, ma, mb, me | Sparse MMA with metadata operand | <ROW> | `mma.`row.row.scale mc, ma, mb, sc_a, sc_b | Fused MMA + per-tile dequantization | <ROW> | `mma.`scale mc, sc_a, sc_b | Standalone post-MMA scaling | <ROW> | `mma.`store.transp mc, dst | Write accumulator transposed | <ROW> | `cdiv(a, b)` | Ceiling division | <ROW> | `_`_co__ void fn(...) | Kernel that writes results in-place |
+T: | **Syntax** | **Meaning** | <ROW> | --- | --- | <ROW> | `if (expr) .`.. | Predicated execution --- runtime conditional, divergent threads masked | <ROW> | `inthreads.`async (condition) | Structured concurrent region --- compile-time thread partitioning | <ROW> | `shared event name[N]` | Declare N synchronization tokens | <ROW> | `trigger name` | Signal that a condition is met | <ROW> | `wait name` | Block until the corresponding `trigger` fires | <ROW> | `tile_`id = tile_iter # block_id | Compose indices for tile striping | <ROW> | `int total_`tiles = expr | Local integer variable | <ROW> | `yield` | Early return from `parallel` block |
 
-=== UID:F06-S09
-H: In short
-T: | **Topic** | **Takeaway** | <ROW> | --- | --- | <ROW> | 2D tensor contraction | C += A $×$ B on tile-shaped operands --- the universal inner kernel | <ROW> | Four-step abstraction | **fill $→$ load $→$ multiply $→$ store**; the compiler handles fragment layouts for each target | <ROW> | Scaling cooperation | Syntax stays invariant | <ROW> | Layout contract | `mma.row.row`, `mma.row.col`, etc. | <ROW> | Sparse and quantized | `.sp` adds a metadata operand; `.scale` fuses per-tile dequantization | <ROW> | Swizzle and pipeline | `mma.`load.swiz<N> matches swizzled shared layouts; `mma.commit` fences pipeline stages |
-P: The contraction is fast, but loads and compute still take turns --- 3.8 introduces **role specialization** so different thread groups can play different roles: one group loading data while another computes, overlapping memory and math in time.
-
-=== UID:F07-S01
-H: Control Flow: Divergence, Concurrency, and Coordination
-P: Every programming language that targets a parallel machine must answer one question: **what happens when different threads need to do different things?**
-P: On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. --- It must **serialize** the divergent paths and mask inactive threads.
-P: All threads evaluate the condition; threads where it is false are masked (deactivated); This is **predicated execution** --- simple, universal, and sometimes ruinously expensive.
-P: Predicated execution is not enough. This is not a data-dependent branch --- it is two **structurally different programs** that happen to share an address space. Trying to express this with `if` means one program pauses while the other runs. There is no overlap, no pipeline.
-P: Croqtile introduces two additional control-flow primitives to fill this gap:
-L: **`inthreads.`async** --- **structured concurrent regions**: compile-time partitioning of threads into groups that run **different programs simultaneously**. The compiler generates separate instruction streams; | **`shared event` / `wait` / `trigger`** --- **inter-region signaling**: lightweight synchronization tokens that let concurrent regions communicate safely.
-
-=== UID:F07-S03
-H: Structured concurrent regions with `inthreads.`async
-C: Structured concurrent regions with inthreads.async
-P: The distinction from `if` is structural, not just performance:
-T: |  | **`if` (predicated execution)** | **`inthreads.`async** (structured concurrency) | <ROW> | --- | --- | --- | <ROW> | **Resolution** | Runtime --- every thread evaluates the condition | Compile time --- thread assignment is fixed | <ROW> | **Instruction streams** | One program; divergent threads masked | Separate programs per region | <ROW> | **PL analogy** | `if`/`else` in any language | `async`/`spawn` in structured concurrency (Trio, Go goroutines, Cilk) |
-P: The figure below shows the effect. --- The producer's DMA and the consumer's MMA overlap in time:
-F: f07-fig1_role_comparison_light.png
-P: centerEach waits for the other. Bottom: `inthreads.`async* partitions into two concurrent programs --- DMA and MMA overlap, roughly halving wall-clock time.center
-
-=== UID:F07-S05
-H: Inter-region signaling with events
-P: When `inthreads.`async creates concurrent regions, those regions need a way to communicate. Croqtile provides **events**
-C: Inter-region signaling with events
-P: Events have two operations:
-L: **`trigger name`** --- signal that a condition is met (e.g., "data is ready") | **`wait name`** --- block until the corresponding `trigger` fires
-P: The producer calls `trigger full` after writing a tile to signal "data ready." The consumer calls `wait full` before reading, blocking until the signal arrives. Symmetrically, the consumer triggers `empty` after finishing its read (the buffer can be reused), and the producer waits on `empty` before writing the next tile.
-P: This is a **credit-based bounded buffer** protocol --- `full` is the "data available" credit; `empty` is the "buffer free" credit.
-
-=== UID:F08-S01
-H: Synchronization in Practice: Pipelines, Buffers, and Events
-P: 3.8 introduced three control-flow primitives: **`if`** for predicated execution, **`inthreads.`async** for structured concurrent regions, and **events** (`shared event` / `wait` / `trigger`) for inter-region signaling. This part of the guide puts them to work. You will see two progressively complex kernel patterns, each demonstrating how the primitives compose to solve real synchronization problems.
-P: The first pattern --- **double buffering with `swap`** --- uses a single thread group that interleaves loading and computing within one program. No `inthreads.`async, no events: just two buffer handles and a rotation. The second pattern --- **the full 1P1C event pipeline** --- splits loading and computing into separate concurrent programs with `inthreads.`async and coordinates them with event arrays.
-P: Both patterns solve the same underlying problem: **you cannot read a buffer while someone is writing to it**. They differ in how they structure the solution.
-
-=== UID:F08-S09
-H: Why you cannot "just overlap" without events
-P: The `swap` pattern works because one thread group controls both loading and computing --- it knows the order. They cannot share a `swap` schedule; they need a signaling mechanism.
-P: The picture below contrasts a strict load-then-compute staircase with double-buffered overlap: same logical work, less idle time.
-F: f08-fig1_pipeline_timeline_light.png
-
-=== UID:F34-S07
-H: Make it Asynchronous
-P: Similar to the `parallel-by` statements, it is possible to make the threads with/without executing the divergent code be asynchronous. The following code showcases a example that conduct MPMD execution in the SPMD code:
-C: Make it Asynchronous
-P: In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each `inthreads` block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the `sync.shared` statement established a **synchronization point** for all threads. That makes sure code for both paths get executed after this *synchronization point*.
-P: Only the outer `inthreads` can be declared as asynchronous. Programmers will get an compile-time error when using `inthreads.`async for any inner `inthreads` block.
-
-=== UID:F35-S03
-H: Event Instances
-P: In Croqtile, events are associated with the storage specifier, either `global`, `shared`, and `local`. Such storage specifier specifies the event instances.
-C: Event Instances
-P: The comments in the above code explain the event instances. The mechanism is same to the spanned data declarations, where storage specifier is also required. From implementation perspective, event can be implement as the leveled boolean data within the specified storage. Therefore, it also takes the storage of this level. However, in concept, the event belongs to a specific level. Therefore, its instance count coresponds to its parallel level.
-
-=== UID:F35-S04
-H: DeadLocks
-P: By default, the event is lock-free for high-performance synchoronization between different asynchronous blocks. That implies it is risky when multiple threads try to update the event, especially for `wait`.
-P: For example,
-C: A single-instance deadlock
-P: In this code, two threads wait a single event `e`. However, since `wait` resets the event `e`, it is possible that `thread-0` resets the event before `thread-1` find the `e` has been triggered. As a result, `thread-1` is never unblocked and deadlocking happens.
-C: A credit-count deadlock
-P: In this code, you utilize an event array to guarantee each event is waited and reset by a single thread.
-
-=== UID:F07-S04
-H: The canonical pattern: 1 producer + 1 consumer
-P: The most common use of `inthreads.`async is the **1P1C** (one producer, one consumer) split for matmul:
-C: The canonical pattern: 1 producer 1 consumer
-P: Sharing an address space is exactly what makes this dangerous. Without coordination, the consumer might read a buffer before the producer has finished writing it. This is where events come in.
-
-=== UID:F07-S08
-H: A 1P1C matmul skeleton
-P: Event-based synchronization is left out of this skeleton; 3.8.5 adds the full pipeline protocol. Focus on the program structure:
-C: A 1P1C matmul skeleton
-
-=== UID:F07-S09
-P: In the earlier kernels, the grid grew with the problem: roughly one block per output tile. For large matrices that means large launch counts, and the last wave of blocks often leaves SMs partially idle --- **tail underutilization**.
-P: A **persistent kernel** fixes the launch size (often near the SM count) and lets each block iterate over multiple tiles:
-C: Persistent scheduling and the if guard
-F: f07-fig2_persistent_kernel_light.png
-
-=== UID:F07-S10
-H: Data-dependent vs persistent grids
-T: | **Aspect** | **One block per tile** | **Persistent (`NUM_GROUPS` blocks)** | <ROW> | --- | --- | --- | <ROW> | Grid size | Grows with problem | Fixed | <ROW> | Tail utilization | Last wave may leave SMs idle | All SMs stay busy | <ROW> | Extra constructs | Minimal | `total_tiles`, `tile_`iter # block_id, `if` | <ROW> | Complexity | Lower | Higher |
-
-=== UID:F07-S11
-H: `parallel.async`: host-level concurrency
-P: Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU.
-C: parallel.async: host-level concurrency
-P: This is **host orchestration**, orthogonal to in-kernel control flow. It does not replace `inthreads.`async for thread partitioning or `if` for runtime predicates --- it decides *when* and *where* a grid runs relative to other grids.
-
-=== UID:F31-S10
-H: Asynchronous program launch and Stream Binding
-P: By default, the host waits for a `parallel-by` kernel to complete before continuing. To launch kernels asynchronously, use `parallel.async`.
-C: Asynchronous program launch and Stream Binding
-P: 3.8.4 covers this in detail.
-
-=== UID:F36-S01
-H: Synchronization and Asynchronous `parallel-by`
-P: Similar to `inthreads`, `parallel-by` can also be made asynchronous by appending `.async`:
-C: An asynchronous launch
-P: Without `.async`, the host waits for the kernel to finish before continuing:
-C: The synchronous form
-P: With `.async`, the host code continues immediately after launching the kernel. This is essential for overlapping computation with data transfers or launching independent kernels concurrently.
-
-=== UID:F36-S02
-P: In Croqtile, you can bind a `parallel-by` block to a specific stream using angle-bracket syntax:
-C: Stream Binding
-P: In this example:
-L: **`stream s0, stream s1`**: Stream parameters passed from the host. | **`parallel.`async**s0>: Launches the kernel asynchronously on stream `s0`. | **`parallel.`async**s1>: Launches a second kernel on stream `s1`.
-
-=== UID:F36-S03
-H: Stream Binding without `.async`
-P: Stream binding also works with synchronous `parallel-by`. In this case, the host launches the kernel on the specified stream and then waits for that stream to complete:
-C: Stream Binding without .async
-
-=== UID:F36-S04
-H: Rules
-L: Stream binding is only allowed on **block-level** parallel (`: block`). | The identifier inside ``...> must be a `stream`-typed variable. | Without stream binding, synchronous `parallel-by` uses device-wide
-P: synchronization, and asynchronous `parallel-by` uses the default stream.
-
-=== UID:F08-S10
-H: The full 1P1C event pipeline
-P: This kernel combines `inthreads.`async (from 3.8) with event arrays to build a complete multi-stage pipeline. The producer and consumer run as separate concurrent programs, coordinated entirely through `wait` / `trigger`:
-C: The full 1P1C event pipeline
-
-=== UID:F08-S11
-H: Walking through the kernel
-
-=== UID:F08-S12
-H: Credit flow for one stage
-P: The diagram matches the code: bootstrap grants empty credits; the producer waits on `empty`, fills, signals `full`; the consumer waits on `full`, computes, signals `empty`. When `iv_k` wraps modulo `STAGES`, the same physical stage re-enters the cycle.
-F: f08-fig2_event_credit_flow_light.png
-
-=== UID:F07-S14
-H: In short
-T: | **Concept** | **Primitive** | **When to use** | <ROW> | --- | --- | --- | <ROW> | Predicated execution | `if` | Data-dependent decisions (bounds, conditions) | <ROW> | Structured concurrency | `inthreads.`async | Compile-time thread partitioning (producer/consumer, heterogeneous roles) | <ROW> | Inter-region signaling | `shared event` / `wait` / `trigger` | Coordination between concurrent regions | <ROW> | Host concurrency | `parallel.async` / `stream s` | Multi-kernel overlap, non-blocking launch | <ROW> | Persistent scheduling | `if` + `foreach` + `#` | Fixed grid size, tile striping with padding guard |
-P: The 1P1C skeleton above is incomplete: without `wait` / `trigger`, the consumer can read before the producer has finished writing. 3.8.5 adds the buffering and event protocols that make the pipeline safe, and walks through the resulting kernel stage by stage.
-
-=== UID:F08-S15
-H: In short
-T: | **Pattern** | **Primitives used** | **When to use** | <ROW> | --- | --- | --- | <ROW> | `swap` double buffering | `dma.any`, `swap` | Single thread group interleaving load and compute |
-P: Both patterns achieve the same goal --- overlapping memory and compute --- but at different levels of complexity. Start with `swap` for simpler kernels;
-P: The same synchronization patterns from this part of the guide, with richer data movement primitives underneath.
-
-=== UID:F10-S01
-H: C++ Interop: Device Functions, Inline Code, and the Preprocessor
-P: Every high-level language needs an escape hatch to the layer below. Python has `ctypes` and C extensions. Rust has `unsafe` blocks and `extern "C"`. Java has JNI.
-P: Croqtile's interoperability story has three parts:
-L: **`__device__` functions** --- The compiler passes them through unchanged. | **`__cpp__`** | **The preprocessor** --- `#define`, `#if`, `#ifdef`, `#error` for compile-time configuration, the same role `#define` plays in C/C++ codebases.
-P: The preceding sections have built a stack of abstractions: tiles, parallelism, MMA, pipelines, events, TMA. That is the Croqtile you want to live in. This part of the guide is about the times you need to step outside.
-
-=== UID:F10-S03
-H: `__device__` vs ordinary C++ inline
-P: Both `__device__` functions and ordinary C++ functions are passed through unchanged, but they land in different compilation paths --- and the distinction matters.
-P: A `__device__` function compiles to . The `__co__` body calls it with the `call` keyword, and the generated `__global__` kernel invokes it directly on the device.
-P: An ordinary C++ function (no `__device__` or `__co__` annotation) compiles to **CPU code**. It runs on the host --- setting up buffers, launching kernels, printing results. You cannot call a host function from inside a `__co__` body;
-P: The boundary is strict: `__device__` lives on the device side of the `c++` split, host C++ lives on the host side. The `__co__` function is the bridge --- the compiler transforms it into a `__global__` kernel (device side) and generates a host-side wrapper that launches it.
-
-=== UID:F23-S05
-H: Difference with C++ pre-processing
-P: Croqtile preprocessing runs much earlier than c++ preprocessing. The workflow of croqtile compilation is as shown below:
-C: Difference with C pre-processing
-P: The primary target of croqtile preprocessing is to make host/device macros work as a whole, but such a workflow makes it possible sometimes different. From an implementation perspective, Croqtile pre-processor only substitute/conditionally-compile code inside the tileflow function, while leaving other pre-processing to the C++ preprocessor. That could restrict Croqtile pre-processing in a limited scope.
-
-=== UID:F23-S06
-H: Pre-defined Macros
-P: To mimic a target native compilation, croqtile preprocess also takes the builtin macros from the target. Consequently, these macros can be utilized inside tileflow functions as well as the host code.
-
-=== UID:F24-S05
-
-=== UID:F24-S06
-H: Trigger C++ Template Instantiation
-P: It is possible for Croqtile code to make function call to a template function. For example:
-C: A templated device helper
-P: In this case, it defines device function template named `matmul_kernel`, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function `matmul`16, 4, 72> for the call.
-P: So in Croqtile, calling a template function is similar to those in C++. However, **the template argument passed must be able to be inferred as compile time constant value** by Croqtile compiler. Therefore, any runtime values can result in error.
-C: A call that instantiates it
-P: Croqtile compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.
-
-=== UID:F25-S08
-H: More Questions
-P: Like C++ functions, Croqtile functions can be defined anyway in the source code. One common raised question is about the **function signature**, as long as programmers may want to link the module with Croqtile function definition.
-P: The answer is that Croqtile function follows the C++ calling convention, which makes it standard C++ function with C++ name mangling. **`extern "C"`** is not possible for a Croqtile function, since it utilize C++ template-based object as its parameter type (spanned data).
-P: Some features are not supported yet:
-L: Croqtile function declaration without definition. This allows calling Croqtile function from another module. | Croqtile function with `inline`. This allows the Croqtile function be used in headers.
-
-=== UID:F26-S01
-H: *Factor* Target Specific Details
-P: In some target like *factor*, it requires the device function to follow C-linkage, where the device functions must be prefixed with `extern "C"`. Since template functions can not be applies to functions with C-linkage, Croqtile has some wrapper tricks to enable it. For example:
-C: A cok block around device code
-P: Programmers can turn `bar` into a function template, like following:
-C: The block after factoring target-specific details
-P: As the comment depicts, Croqtile compiler may generate a specialization version of function template `bar`3>, which enables the function template as well. But note that, the function template no longer requires `extern "C" decoration` as those for normal *factor* device functions.
-P: As the implementation is different with other targets, you may utilize `-kt` to enable such functionality for *croqtile-factor* compilation.
-
-=== UID:F10-S04
-H: `__device__` functions: target alongside Croqtile
-P: A custom reduction, a sorting network, a special math function --- Croqtile does not need to manage these;
-P: A `__co__` function can call a `__device__` function using the `call` keyword:
-C: device functions: target alongside Croqtile
-P: This pattern --- Croqtile handles the parallelism, tiling, and memory orchestration; --- Is common in production kernels like MoE (mixture-of-experts) top-K, custom reductions, and specialized math.
-
-=== UID:F10-S06
-H: storage hints: `setmaxnreg`
-C: storage hints: setmaxnreg
-
-=== UID:F10-S13
-H: In short
-T: | **Syntax** | **What it does** | **Runs on** | <ROW> | --- | --- | --- | <ROW> | `#`define NAME value | Object-like macro; shared across `__co__` and host regions | Preprocessor | <ROW> | `#if` / `#ifdef` / `#error` | Conditional compilation and compile-time assertions | Preprocessor | <ROW> | `-DNAME=value` | Define macros from the command line for tile sweeps | Preprocessor |
-P: 3.11 turns to the other side of the workflow: what to do when the kernel compiles but the output is wrong --- debugging, verbose modes and systematic narrowing. The two worked programs in 3.10 put the interoperability mechanisms into context.
-
-=== UID:F09-S04
-H: Why the restricted interface works: expressiveness vs performance
-P: That flexibility has a cost.
-P: Croqtile takes the opposite approach: it restricts the expressible patterns to those that are **guaranteed to be in the performance sweet spot**. There is no way to accidentally write a strided, uncoalesced global load or a layout conflict shared-memory layout --- the syntax simply does not allow it.
-F: f09-fig8_expressiveness_light.png
-P: Croqtile's `dma.copy` follows the same principle --- The trade is explicit: you give up the ability to write arbitrary data movement, and in return, every data movement you write is fast.
-
-=== UID:F13-S02
-H: Easy to Use
-P: You work on tensors and tiles, not raw buffers and pointers.
-
-=== UID:F13-S03
-H: Compile-Time Safety
-P: In development builds, 1,319 runtime assertions guard every transfer and memory access. Together they eliminate entire classes of bugs that would otherwise need `memcheck` and hours of printf debugging.
-
-=== UID:F13-S04
-H: Dynamic Shapes
-P: First-class symbolic dimensions let you write a kernel once and run it on any shape without recompilation. The compiler derives packed-K, metadata columns, grid dimensions, and shared-memory size automatically. Static and runtime memory are unified --- no template metaprogramming, no boilerplate.
-
-=== UID:F13-S05
-H: Born for AI Tuning
-P: Compact, structured syntax keeps entire kernels inside AI context windows (30--60 lines vs. Structured error messages and well-documented CLI arguments let autonomous agents compile, profile, and iterate without human intervention.
-
-=== UID:F40-S01
-H: Tiling Optimisation in Croqtile
-P: Two complete programs are enough to see why the tiling constructs are shaped the way they are.
-
-=== UID:F40-S02
-H: Example 1: `matmul`
-P: The first example is matrix multiplication on a device program. The code shows how Croqtile's tiling and memory management mechanisms work together to optimize matrix operations, including how DMA (Direct Memory Access) is leveraged for efficient data movement.
-
-=== UID:F40-S03
-H: Example Code: Matrix Multiplication with Tiling
-C: Example Code: Matrix Multiplication with Tiling
-
-=== UID:F40-S04
-H: Memory Tiling with `chunkat`
-P: In the matrix multiplication example, **memory tiling** is achieved using the `chunkat` method, which slices the input matrices `lhs` (left-hand side) and `rhs` (right-hand side) into smaller chunks to be processed in parallel.
-L: The `lhs` and `rhs` matrices are tiled using the `chunkat` method. The chunks are defined by `m_tile`, `k_tile`, and `n_tile`, which represent different dimensions of the matrices involved in the multiplication. | The chunks for both matrices are loaded asynchronously into the (`lhs_load` and `rhs_load`) with the `dma.copy.async` operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.
-L: The variables `m_tile`, `k_tile`, and `n_tile` are **bounded variables**. They are defined in the context of `parallel-by` and `with-in` constructs, which define the iteration space for the tiling. | These bounded variables allow the chunks to be computed in parallel, where each thread works on a different slice of the matrix. This parallelization enables efficient computation of matrix multiplications across multiple threads.
-
-=== UID:F40-S05
-H: Example 2: rgb2gray
-P: The second example is the RGB to Grayscale conversion algorithm. It converts a color (RGB) image to a grayscale image using a weighted average method. It shows how physical parallelism works together with virtual parallelism.
-
-=== UID:F40-S06
-H: Example Code
-C: Example Code
-
-=== UID:F11-S01
-H: Debug and Verbose: Printing, Assertions, and GDB
-P: The universal debugging discipline is the same everywhere: **systematically narrow the search space**, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list.
-P: Croqtile provides tools at each level: **compile-time shape printing** (`print!`, `println!`) to verify tile dimensions without launching a kernel, **runtime assertions** (`assert`) for invariant checks, **guarded device `println`** for runtime inspection of specific threads, **debug RTTI** for `debugger`, and a **verbose mode** (`-v`) to see what the compiler is actually doing under the hood.
+=== UID:F08-S14
+H: Syntax at a glance
+T: | **Syntax** | **Meaning** | <ROW> | --- | --- | <ROW> | `dma.`copy.async src => dst | Non-blocking copy (returns immediately) | <ROW> | `dma.any` | Placeholder future (no transfer in flight yet) | <ROW> | `swap(f0, f1)` | Exchange two future handles without copying data | <ROW> | `rotate(f0, f1, f2)` | Cycle three future handles | <ROW> | `with tile_`k in N ... | Scoped tile axis binding with extent N | <ROW> | `foreach tile_`k(1:) | Iterate starting from index 1 | <ROW> | `_`_co__ auto fn(...) | Return type inferred from `return` statement |
 

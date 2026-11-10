@@ -1,6 +1,6 @@
 \subsection*{Example Code: Using Storage Qualifiers}
 
-To better understand how storage qualifiers work, consider the following code example:
+The following sketch combines the storage declarations:
 
 \begin{lstlisting}[language=croqtile,caption={Example Code: Using Storage Qualifiers}]
 ndims : [20, 15];
@@ -12,4 +12,4 @@ dma.copy d0 => d1;
 dma.copy d1 => matrix;
 \end{lstlisting}
 
-In this code:
+The declarations illustrate three storage locations. The copy lines sketch the direction of movement between them. To turn this sketch into a working transfer, select source and destination views with compatible shapes: the full arrays declared here have different sizes. A storage specifier chooses a location; it does not make differently shaped buffers interchangeable.

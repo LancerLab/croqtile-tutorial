@@ -1,8 +1,8 @@
 \subsection*{\textbf{b. Type Safety and Compile-Time Checking}}
 
-One of the major benefits of symbolic dimensions in Croqtile is that they are \textbf{type-safe} and \textbf{checked at compile-time}. Croqtile allows you to declare symbolic dimensions and even manipulate them algebraically (e.g., \texttt{M / 2}, \texttt{N / 4}), ensuring that they adhere to the expected types and constraints. This eliminates the need for runtime checks, which can often lead to errors or performance penalties.
+Symbolic dimensions let the compiler reason about expressions without knowing every numerical extent. It can check ranks and simplify relationships such as repeated uses of \co@M / 2@. This does not eliminate runtime validation: whether caller-supplied dimensions agree or satisfy a required constraint may only be known when the function is entered.
 
-For example, using \texttt{?} or \texttt{-1} as dynamic dimensions in other systems often leads to runtime checks for consistency, such as verifying that the dimensions are properly initialized before use. These checks can introduce overhead and make the program harder to optimize. In contrast, symbolic dimensions allow Croqtile to \textbf{check constraints at compile-time}, ensuring that shape expressions are valid before execution:
+The expression below keeps the derived shape tied to the named input dimensions. That connection is available to the compiler and visible to the reader, instead of being maintained through separate size arguments:
 
 \begin{lstlisting}[language=croqtile,caption={b. Type Safety and Compile-Time Checking}]
 mdspan sp : [M, N];

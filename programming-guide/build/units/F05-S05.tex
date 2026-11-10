@@ -4,6 +4,6 @@
 parallel {px, py} by [8, 16] : block
 \end{lstlisting}
 
-This creates an 8 \(\times\) 16 = 128 block grid. Blocks cannot communicate with each other during execution --- they are truly independent.
+This declares an 8 by 16 grid, giving 128 blocks. Each block must be able to complete its assigned output tile independently; the example does not provide a communication or synchronization protocol between blocks.
 
 Use \texttt{: block} for the outermost tiling of your output. If your output is \texttt{[128, 256]} and each block handles a \texttt{[16, 16]} tile, you need \texttt{128/\allowbreak{}16 x 256/\allowbreak{}16 = 8 x 16 = 128} blocks.
