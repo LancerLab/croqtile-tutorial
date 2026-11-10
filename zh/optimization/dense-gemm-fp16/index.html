@@ -2598,7 +2598,7 @@
 <li>Warp 特化模式 —— 1p1c（一个生产者、一个消费者）或 1p2c</li>
 </ul>
 <p>基线内核 <code>matmul_f16_dyn_sm90.co</code> 采用 <strong>1p1c</strong> warp 特化（一个 TMA 生产者 warpgroup、一个 WGMMA 消费者 warpgroup——角色定义见 <a href="../../tutorial/ch05-branch-control/">Chapter 5</a>），<strong>WN=128</strong>，以及 <strong>4 级流水线</strong>（流水线思想见 <a href="../../tutorial/ch06-synchronization/">Chapter 6</a>）。编译并运行：</p>
-<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+<pre class="highlight"><code class="language-bash">./croq -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/matmul/matmul_f16_dyn_sm90.co \
   -o /tmp/matmul.cute.result &amp;&amp; bash /tmp/matmul.cute.result --execute</code></pre>
 <p>结果：在 8192³ 上为 <strong>208.7 TFLOPS</strong>。抽象地看并不差——但离硬件能力尚远。</p>
@@ -2711,7 +2711,7 @@ K-unroll:         enabled
 <hr />
 <h2 id="_5">发布检查点与复现<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p>在鳄霸仓库根目录执行 <code>make build</code> 之后：</p>
-<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a \
+<pre class="highlight"><code class="language-bash">./croq -gs -t cute -arch=sm_90a \
   --use-warpspec --stmatrix --hoist-offset --hoist-scale \
   --ptx-barrier --tma-cluster-aware \
   benchmark/performance/matmul/&lt;INPUT&gt;.co \

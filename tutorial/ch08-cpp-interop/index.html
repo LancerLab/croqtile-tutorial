@@ -2803,7 +2803,7 @@ int main() {   // ④
 <li><strong>③ <code>__cpp__</code> strings</strong> are spliced character-for-character into the generated CUDA at the point where they appear in the <code>__co__</code> body. The compiler does not parse their contents — they must be valid at the splice point in the generated code.</li>
 <li><strong>④ Host code</strong> (<code>main()</code> and any other non-annotated functions) is passed through as ordinary C++ and ends up in the host compilation path.</li>
 </ul>
-<p>All four regions merge into one <code>.cu</code> file. <code>nvcc</code> compiles the device code (<code>__global__</code>, <code>__device__</code>) into GPU machine code, compiles the host code into CPU code, and links them into a single binary. Run <code>croqtile kernel.co -v</code> (Chapter 9) to see the exact <code>nvcc</code> command the compiler issues.</p>
+<p>All four regions merge into one <code>.cu</code> file. <code>nvcc</code> compiles the device code (<code>__global__</code>, <code>__device__</code>) into GPU machine code, compiles the host code into CPU code, and links them into a single binary. Run <code>croq kernel.co -v</code> (Chapter 9) to see the exact <code>nvcc</code> command the compiler issues.</p>
 <h2 id="__device__-vs-ordinary-c-inline"><code>__device__</code> vs ordinary C++ inline<a class="headerlink" href="#__device__-vs-ordinary-c-inline" title="Permanent link">&para;</a></h2>
 <p>Both <code>__device__</code> functions and ordinary C++ functions are passed through unchanged, but they land in different compilation paths — and the distinction matters.</p>
 <p>A <code>__device__</code> function compiles to <strong>GPU machine code</strong>. It can use CUDA intrinsics (<code>__shfl_xor_sync</code>, <code>__frsqrt_rn</code>, <code>atomicAdd</code>), access <code>__shared__</code> memory, and run inside a <code>__global__</code> kernel. The <code>__co__</code> body calls it with the <code>call</code> keyword, and the generated <code>__global__</code> kernel invokes it directly on the device.</p>
@@ -2949,7 +2949,7 @@ __co__ foo() {
     // path 1 code
   #endif
 }</code></pre>
-<p>The preprocessor keeps one branch and discards the other before Croqtile parses the <code>__co__</code> body. Command-line defines: <code>croqtile kernel.co -DMATMUL_TILE_K=128</code>.</p>
+<p>The preprocessor keeps one branch and discards the other before Croqtile parses the <code>__co__</code> body. Command-line defines: <code>croq kernel.co -DMATMUL_TILE_K=128</code>.</p>
 <h2 id="reading-a-production-co-file">Reading a production <code>.co</code> file<a class="headerlink" href="#reading-a-production-co-file" title="Permanent link">&para;</a></h2>
 <p>When you open a benchmark kernel, read top down:</p>
 <ol>

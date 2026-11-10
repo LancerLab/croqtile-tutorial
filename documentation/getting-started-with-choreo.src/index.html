@@ -2471,17 +2471,17 @@ tests a specific operator (e.g., add, mul, relu, sigmoid, softmax, tanh).</p>
 </ul>
 <p>Species except for <em>target source code</em> and <em>work-script</em> (introduced later) are similar to those of <code>gcc</code> and <code>clang</code>. However, the availability of these output forms depends on the target platform's support and limitations.</p>
 <p>The usage of the Choreo-C++ compiler is similar to that of <code>gcc</code> or <code>clang</code>. For example:
-<pre class="highlight"><code>choreo your_program.co</code></pre>
+<pre class="highlight"><code>croq your_program.co</code></pre>
 This command generates an <code>a.out</code> executable file. The <code>-o &lt;filename&gt;</code> option can be used to specify the output filename when needed. Compiler options like <code>-c</code> and <code>-S</code> work similarly to those in C++ compilers, provided they are supported by the target platform.</p>
 <p>The <code>-t &lt;platform&gt;</code> option allows you to specify the target platform for the compilation. Additionally, the <code>-es</code> option generates <em>target source code</em> without performing the "target compilation*. For instance:
-<pre class="highlight"><code class="language-bash">choreo -t cuda your_program.co -es -o cuda_source.co</code></pre>
+<pre class="highlight"><code class="language-bash">croq -t cuda your_program.co -es -o cuda_source.co</code></pre>
 This command produces CUDA C++ source code, which can be useful for specific development tasks.</p>
 <p>Notably, Choreo allows the <code>-E</code> option to support Choreo-only preprocessing. The Choreo preprocessor handles simple macros and preprocessor directives such as <code>#if</code>, <code>#ifdef</code>, <code>#ifndef</code>, <code>#else</code>, and <code>#endif</code>, enabling Choreo functions to be integrated with other C++ code. The <code>-E</code> option outputs the preprocessed code, for example, removing code within <code>#if 0</code> and <code>#endif</code> directives inside Choreo functions.</p>
 <p>Furthermore, in development scenarios, Choreo can generate <em>work-script</em> (using the <code>-gs</code> option) to drive further low-level compilation and execution. This facilitates the development process, as many scripts are integrated for easy debugging.</p>
 <p>Lastly, options <code>--help</code> and <code>--help-hidden</code> are available for listing the full option set. Programmers and users can check the list to find their appropriate usage.</p>
 <p>Here is a example output of <code>--help</code>:</p>
 <pre class="highlight"><code class="language-bash">// --help
-Usage: choreo [options] file...
+Usage: croq [options] file...
 Options:
   --help                    Display this information.
   --help-hidden             Display hidden options.

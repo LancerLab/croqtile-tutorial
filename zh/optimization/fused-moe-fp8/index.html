@@ -4773,16 +4773,16 @@ __cpp__("  }\n");</code></pre>
 </tr>
 </tbody>
 </table>
-<p>上述文件均可用鳄霸编译器（<code>./choreo -gs</code>）编译，并在 H800 PCIe 上得到正确结果。<code>-gs</code> 会自动生成处理全部 nvcc 选项（<code>-D__USE_CUDA_TYPE__</code>、<code>--default-stream per-thread</code> 等）的构建脚本。TFLOPS 在 H800 PCIe（SM90）上测得，端到端，500 次重复。</p>
+<p>上述文件均可用鳄霸编译器（<code>./croq -gs</code>）编译，并在 H800 PCIe 上得到正确结果。<code>-gs</code> 会自动生成处理全部 nvcc 选项（<code>-D__USE_CUDA_TYPE__</code>、<code>--default-stream per-thread</code> 等）的构建脚本。TFLOPS 在 H800 PCIe（SM90）上测得，端到端，500 次重复。</p>
 <p>复现任意一次测量：</p>
 <pre class="highlight"><code class="language-bash"># All milestones use -gs (auto-generated build script):
-./choreo -gs -t cute -arch=sm_90a [choreo-flags] &lt;file&gt;.co -o /tmp/&lt;file&gt;.cute.result
+./croq -gs -t cute -arch=sm_90a [choreo-flags] &lt;file&gt;.co -o /tmp/&lt;file&gt;.cute.result
 CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     EXTRA_TARGET_CFLAGS="-DRUNMAIN --use_fast_math" \
     bash /tmp/&lt;file&gt;.cute.result --execute
 
 # 04/05 need extra choreo flags:
-./choreo -gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale \
+./croq -gs -t cute -arch=sm_90a --disable-runtime-check --hoist-offset --hoist-scale \
     05_cuda_optimized.co -o /tmp/05.cute.result
 CUDA_VISIBLE_DEVICES=1 CHOREO_ENABLE_TIMING=1 \
     EXTRA_TARGET_CFLAGS="-DRUNMAIN --use_fast_math" \

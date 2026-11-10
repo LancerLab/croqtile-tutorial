@@ -2833,7 +2833,7 @@
 </table>
 <p>These document that scale DMA to SMEM is a viable alternative when register pressure or load scheduling hurts WGMMA issue interval.</p>
 <h2 id="reproduction">Reproduction<a class="headerlink" href="#reproduction" title="Permanent link">&para;</a></h2>
-<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+<pre class="highlight"><code class="language-bash">./croq -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/blockscale_gemm_v2/blockscale_gemm_e4m3_dyn_sm90_warpspec_1p1c.co \
   -o /tmp/bs.cute.result &amp;&amp; bash /tmp/bs.cute.result --execute</code></pre>
 <p>Pre-generated iter049/051/053/066 trees ship with <code>run.sh</code> for bit-identical reproduction. Full iteration history: 71 iterations in <code>README_blockscale_gemm_e4m3_aitune_2026-03-22.md</code>.</p>

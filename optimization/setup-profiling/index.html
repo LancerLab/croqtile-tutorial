@@ -2680,7 +2680,7 @@ std::cout &lt;&lt; "HW efficiency: " &lt;&lt; eff &lt;&lt; "%\n";</code></pre>
 <p>Use <code>CROQTILE_SKIP_VERIFY=1</code> only when you trust correctness. A fast wrong kernel sends the optimization search backward — always re-enable verification after changing data layout, precision, or tiling.</p>
 <h2 id="compile-and-run">Compile and Run<a class="headerlink" href="#compile-and-run" title="Permanent link">&para;</a></h2>
 <p>Performance <code>.co</code> files are built through the Croqtile driver. A typical invocation:</p>
-<pre class="highlight"><code class="language-bash">./croqtile -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
+<pre class="highlight"><code class="language-bash">./croq -gs -t cute -arch=sm_90a --use-warpspec --stmatrix \
   benchmark/performance/matmul/matmul_f16_dyn_sm90.co \
   -o /tmp/matmul.cute.result &amp;&amp; bash /tmp/matmul.cute.result --execute</code></pre>
 <p>Common SM90 flags: <code>--use-warpspec</code>, <code>--stmatrix</code>, <code>--hoist-offset</code>, <code>--hoist-scale</code>, <code>--ptx-barrier</code>, <code>--tma-cluster-aware</code>, <code>--wgmma-wait-depth=N</code>. Exact semantics live in Croqtile's CLI help. Copy the recipe from the benchmark you are reproducing, then vary one flag at a time.</p>

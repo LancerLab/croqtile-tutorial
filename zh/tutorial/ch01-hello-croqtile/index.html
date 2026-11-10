@@ -2645,7 +2645,7 @@ int main() {
   std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
 }</code></pre>
 <p>将此代码保存为 <code>ele_add.co</code>，编译并运行：</p>
-<pre class="highlight"><code class="language-bash">croqtile ele_add.co -o ele_add
+<pre class="highlight"><code class="language-bash">croq ele_add.co -o ele_add
 ./ele_add</code></pre>
 <p>你应该看到 <code>Test Passed</code>。现在让我们仔细看看每个部分。</p>
 <h2 id="_3">鳄霸函数<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
@@ -2677,12 +2677,12 @@ rhs.fill_random(-10, 10);</code></pre>
 <p><code>main</code> 的其余部分是普通的验证：遍历每个元素并断言相等。宿主程序故意很无聊——有趣的工作发生在 <code>__co__</code> 函数中。</p>
 <h2 id="_5">构建与编译<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p>鳄霸文件使用 <code>.co</code> 扩展名。编译器的使用方式类似 <code>gcc</code> 或 <code>clang</code>：</p>
-<pre class="highlight"><code class="language-bash">croqtile ele_add.co                          # 生成 a.out
-croqtile ele_add.co -o ele_add               # 指定输出文件名
-croqtile -es -t cuda ele_add.co -o out.cu    # 仅输出 CUDA 源码</code></pre>
+<pre class="highlight"><code class="language-bash">croq ele_add.co                          # 生成 a.out
+croq ele_add.co -o ele_add               # 指定输出文件名
+croq -es -t cuda ele_add.co -o out.cu    # 仅输出 CUDA 源码</code></pre>
 <p><code>-es</code> 标志在转译后停止，让你检查生成的 CUDA 代码。<code>-t</code> 标志选择目标平台。</p>
-<p>要查看所有可用选项，运行 <code>croqtile --help</code>：</p>
-<pre class="highlight"><code class="language-bash">croqtile --help</code></pre>
+<p>要查看所有可用选项，运行 <code>croq --help</code>：</p>
+<pre class="highlight"><code class="language-bash">croq --help</code></pre>
 <p>这会打印完整的编译器标志列表——输出命名、目标选择、详细度和诊断选项。值得浏览一遍，这样你在需要时知道有什么可用的。</p>
 <p><img alt="终端：编译并运行鳄霸" src="../../../assets/images/ch01/compile_and_run_dark.png#only-dark" />
 <img alt="终端：编译并运行鳄霸" src="../../../assets/images/ch01/compile_and_run_light.png#only-light" /></p>

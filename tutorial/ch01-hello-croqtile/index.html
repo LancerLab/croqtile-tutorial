@@ -2645,7 +2645,7 @@ int main() {
   std::cout &lt;&lt; "Test Passed\n" &lt;&lt; std::endl;
 }</code></pre>
 <p>Save this as <code>ele_add.co</code>, compile, and run:</p>
-<pre class="highlight"><code class="language-bash">croqtile ele_add.co -o ele_add
+<pre class="highlight"><code class="language-bash">croq ele_add.co -o ele_add
 ./ele_add</code></pre>
 <p>You should see <code>Test Passed</code>. Now for a closer look at each part.</p>
 <h2 id="the-croqtile-function">The Croqtile Function<a class="headerlink" href="#the-croqtile-function" title="Permanent link">&para;</a></h2>
@@ -2678,12 +2678,12 @@ rhs.fill_random(-10, 10);</code></pre>
 <p>The rest of <code>main</code> is ordinary verification: loop over every element and assert equality. The host program is deliberately boring — the interesting work happens in the <code>__co__</code> function.</p>
 <h2 id="build-and-compile">Build and Compile<a class="headerlink" href="#build-and-compile" title="Permanent link">&para;</a></h2>
 <p>Croqtile files use the <code>.co</code> extension. The compiler works like <code>gcc</code> or <code>clang</code>:</p>
-<pre class="highlight"><code class="language-bash">croqtile ele_add.co                          # produces a.out
-croqtile ele_add.co -o ele_add               # specify output name
-croqtile -es -t cuda ele_add.co -o out.cu    # emit CUDA source only</code></pre>
+<pre class="highlight"><code class="language-bash">croq ele_add.co                          # produces a.out
+croq ele_add.co -o ele_add               # specify output name
+croq -es -t cuda ele_add.co -o out.cu    # emit CUDA source only</code></pre>
 <p>The <code>-es</code> flag stops after transpilation, letting you inspect the generated CUDA code. The <code>-t</code> flag selects the target platform.</p>
-<p>To see all available options, run <code>croqtile --help</code>:</p>
-<pre class="highlight"><code class="language-bash">croqtile --help</code></pre>
+<p>To see all available options, run <code>croq --help</code>:</p>
+<pre class="highlight"><code class="language-bash">croq --help</code></pre>
 <p>This prints the full set of compiler flags — output naming, target selection, verbosity, and diagnostic options. It is worth scanning once so you know what is available when you need it.</p>
 <p><img alt="Terminal: compile and run Croqtile" src="../../assets/images/ch01/compile_and_run_dark.png#only-dark" />
 <img alt="Terminal: compile and run Croqtile" src="../../assets/images/ch01/compile_and_run_light.png#only-light" /></p>

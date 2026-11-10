@@ -3198,7 +3198,7 @@
 <strong><a href="../../../optimization/assets/matmul_tutorial_kernels.tar.gz">matmul_tutorial_kernels.tar.gz</a></strong></p>
 </div>
 <p>编译和运行任意内核：</p>
-<pre class="highlight"><code class="language-bash">croqtile -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
+<pre class="highlight"><code class="language-bash">croq -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
 bash kernel.cute.result --execute</code></pre>
 <hr />
 <h2 id="_1">性能一览<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
@@ -4069,7 +4069,7 @@ gpu__dram_throughput:    38%   ← TMA 隐藏了延迟</code></pre>
 <hr />
 <h2 id="_3">运行内核<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <pre class="highlight"><code class="language-bash"># 编译 — 生成包装 nvcc 的自包含脚本
-croqtile -gs -t cute -arch=sm_90a \
+croq -gs -t cute -arch=sm_90a \
     matmul_f16_v4_auto_tuned.co -o v4.cute.result
 
 # 运行（编译 + 链接 + 执行一步完成）

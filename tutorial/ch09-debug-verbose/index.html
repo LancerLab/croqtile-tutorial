@@ -2711,11 +2711,11 @@
 <p>On the device, this compiles to a <code>printf</code> of the message followed by an abort. Use assertions to catch index-out-of-range, null pointer, and other "this should never happen" conditions early.</p>
 <h2 id="verbose-mode-v">Verbose mode: <code>-v</code><a class="headerlink" href="#verbose-mode-v" title="Permanent link">&para;</a></h2>
 <p>Pass <code>-v</code> (or <code>--verbose</code>) to the compiler to see the external commands it invokes — which preprocessor, which code generator, which <code>nvcc</code> invocation:</p>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -v -o kernel</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -v -o kernel</code></pre>
 <p>This is useful when you suspect the compiler is passing wrong flags to <code>nvcc</code> or when you need to see the exact generated file paths for manual inspection.</p>
 <h2 id="runtime-checks-rtc">Runtime checks: <code>-rtc</code><a class="headerlink" href="#runtime-checks-rtc" title="Permanent link">&para;</a></h2>
 <p>The compiler supports graduated runtime checking with <code>-rtc</code> (or <code>--runtime-check</code>):</p>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -rtc=high -o kernel</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -rtc=high -o kernel</code></pre>
 <p>Levels: <code>none</code>, <code>entry</code> (default), <code>low</code>, <code>medium</code>, <code>high</code>, <code>all</code>. Each level is a superset of the previous. Use <code>high</code> or <code>all</code> during development, <code>none</code> for production.</p>
 <h2 id="debugging-mma-heavy-kernels">Debugging MMA-heavy kernels<a class="headerlink" href="#debugging-mma-heavy-kernels" title="Permanent link">&para;</a></h2>
 <p>When the wrong answer comes from a tensor-core path, suspect <strong>layout first</strong> — row versus column major, and whether the RHS is <code>[N, K]</code> versus <code>[K, N]</code> in memory. Then check <strong>indexing</strong> (which <code>block_m</code>, <code>block_n</code>, and K slice you attached with <code>.at</code> / <code>chunkat</code>). Then check <strong>async ordering</strong> if you introduced asynchronous copies or split producer and consumer warps.</p>
@@ -2723,7 +2723,7 @@
 <h2 id="debug-rtti-and-cuda-gdb">Debug RTTI and <code>cuda-gdb</code><a class="headerlink" href="#debug-rtti-and-cuda-gdb" title="Permanent link">&para;</a></h2>
 <p>When <code>print</code> / <code>println</code> is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to <code>cuda-gdb</code>.</p>
 <p>Compile with <code>-g</code> to enable debug symbols:</p>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -g -o kernel_debug</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -g -o kernel_debug</code></pre>
 <p>The generated code includes RTTI structs for Croqtile types:</p>
 <table>
 <thead>
@@ -2776,8 +2776,8 @@ $3 = true</code></pre>
 <pre class="highlight"><code class="language-choreo">#ifdef DEBUG_PRINT
   println("tile_k=", iv_k, " accum=", mc);
 #endif</code></pre>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -DDEBUG_PRINT -o kernel    # debug build
-croqtile kernel.co -o kernel                   # production build</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -DDEBUG_PRINT -o kernel    # debug build
+croq kernel.co -o kernel                   # production build</code></pre>
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

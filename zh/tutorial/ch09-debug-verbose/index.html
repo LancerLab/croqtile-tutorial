@@ -2711,11 +2711,11 @@
 <p>在设备上，这会编译为先 <code>printf</code> 消息再 <code>abort</code>。可用断言尽早捕获越界索引、空指针及其他「本不应发生」的情形。</p>
 <h2 id="-v">详细模式：<code>-v</code><a class="headerlink" href="#-v" title="Permanent link">&para;</a></h2>
 <p>向编译器传入 <code>-v</code>（或 <code>--verbose</code>）可查看其调用的外部命令——哪个预处理器、哪个代码生成器、哪次 <code>nvcc</code> 调用：</p>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -v -o kernel</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -v -o kernel</code></pre>
 <p>当你怀疑编译器向 <code>nvcc</code> 传错了标志，或需要查看生成文件的确切路径以便手动检查时，这很有用。</p>
 <h2 id="-rtc">运行时检查：<code>-rtc</code><a class="headerlink" href="#-rtc" title="Permanent link">&para;</a></h2>
 <p>编译器支持通过 <code>-rtc</code>（或 <code>--runtime-check</code>）进行分级运行时检查：</p>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -rtc=high -o kernel</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -rtc=high -o kernel</code></pre>
 <p>级别：<code>none</code>、<code>entry</code>（默认）、<code>low</code>、<code>medium</code>、<code>high</code>、<code>all</code>。每一级是上一级的超集。开发阶段可使用 <code>high</code> 或 <code>all</code>，生产环境使用 <code>none</code>。</p>
 <h2 id="mma">调试大量依赖 MMA 的内核<a class="headerlink" href="#mma" title="Permanent link">&para;</a></h2>
 <p>若错误答案来自 Tensor Core 路径，应<strong>先怀疑布局</strong>——行主序与列主序，以及右操作数在内存中是 <code>[N, K]</code> 还是 <code>[K, N]</code>。再检查<strong>索引</strong>（你用 <code>.at</code> / <code>chunkat</code> 绑定的 <code>block_m</code>、<code>block_n</code> 与 K 分块）。若引入了异步拷贝或拆分了生产者与消费者 warp，再检查<strong>异步顺序</strong>。</p>
@@ -2723,7 +2723,7 @@
 <h2 id="debug-rtti-cuda-gdb">Debug RTTI 与 <code>cuda-gdb</code><a class="headerlink" href="#debug-rtti-cuda-gdb" title="Permanent link">&para;</a></h2>
 <p>当 <code>print</code> / <code>println</code> 仍不足时，Croqtile 支持 debug RTTI（Runtime Type Information），使其类型对 <code>cuda-gdb</code> 可见。</p>
 <p>使用 <code>-g</code> 编译以启用调试符号：</p>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -g -o kernel_debug</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -g -o kernel_debug</code></pre>
 <p>生成代码包含 Croqtile 类型的 RTTI 结构：</p>
 <table>
 <thead>
@@ -2776,8 +2776,8 @@ $3 = true</code></pre>
 <pre class="highlight"><code class="language-choreo">#ifdef DEBUG_PRINT
   println("tile_k=", iv_k, " accum=", mc);
 #endif</code></pre>
-<pre class="highlight"><code class="language-bash">croqtile kernel.co -DDEBUG_PRINT -o kernel    # 调试构建
-croqtile kernel.co -o kernel                   # 生产构建</code></pre>
+<pre class="highlight"><code class="language-bash">croq kernel.co -DDEBUG_PRINT -o kernel    # 调试构建
+croq kernel.co -o kernel                   # 生产构建</code></pre>
 <h2 id="_2">小结<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

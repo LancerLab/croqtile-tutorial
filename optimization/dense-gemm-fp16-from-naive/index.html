@@ -3198,7 +3198,7 @@
 <strong><a href="../assets/matmul_tutorial_kernels.tar.gz">matmul_tutorial_kernels.tar.gz</a></strong></p>
 </div>
 <p>Compile and run any kernel:</p>
-<pre class="highlight"><code class="language-bash">croqtile -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
+<pre class="highlight"><code class="language-bash">croq -gs -t cute -arch=sm_90a kernel.co -o kernel.cute.result
 bash kernel.cute.result --execute</code></pre>
 <hr />
 <h2 id="performance-at-a-glance">Performance at a glance<a class="headerlink" href="#performance-at-a-glance" title="Permanent link">&para;</a></h2>
@@ -4069,7 +4069,7 @@ gpu__dram_throughput:    38%   ← TMA is hiding latency</code></pre>
 <hr />
 <h2 id="running-the-kernels">Running the kernels<a class="headerlink" href="#running-the-kernels" title="Permanent link">&para;</a></h2>
 <pre class="highlight"><code class="language-bash"># Compile — produces a self-contained script wrapping nvcc
-croqtile -gs -t cute -arch=sm_90a \
+croq -gs -t cute -arch=sm_90a \
     matmul_f16_v4_auto_tuned.co -o v4.cute.result
 
 # Run (compile + link + execute in one step)

@@ -2627,7 +2627,7 @@ make setup-core</code></pre>
 <pre class="highlight"><code class="language-bash">make</code></pre>
 <p>然后运行测试套件以确认一切正常：</p>
 <pre class="highlight"><code class="language-bash">make test</code></pre>
-<p>如果所有测试通过，<code>croqtile</code> 二进制文件已就绪，位于构建目录中。将其添加到 <code>PATH</code> 或使用完整路径调用。</p>
+<p>如果所有测试通过，<code>croq</code> 二进制文件已就绪，位于构建目录中。将其添加到 <code>PATH</code> 或使用完整路径调用。</p>
 <h2 id="_3">验证安装<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>创建一个最简 <code>.co</code> 文件以确认编译器可以运行：</p>
 <pre class="highlight"><code class="language-choreo">__co__ s32 [4] identity(s32 [4] input) {
@@ -2646,15 +2646,15 @@ int main() {
   std::cout &lt;&lt; "OK\n";
 }</code></pre>
 <p>编译并运行：</p>
-<pre class="highlight"><code class="language-bash">croqtile verify.co -o verify
+<pre class="highlight"><code class="language-bash">croq verify.co -o verify
 ./verify</code></pre>
 <p>你应该看到 <code>OK</code>。如果看到了，说明编译器、链接器和运行时都已正常工作。</p>
 <h2 id="_4">编译器用法<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p><code>croqtile</code> 命令的使用方式类似 <code>gcc</code> 或 <code>clang</code>：</p>
-<pre class="highlight"><code class="language-bash">croqtile program.co                     # 编译并链接 → a.out
-croqtile program.co -o my_kernel        # 指定输出文件名
-croqtile -es -t cuda program.co -o out.cu  # 仅输出 CUDA 源码
-croqtile -E program.co                  # 仅预处理</code></pre>
+<p><code>croq</code> 命令的使用方式类似 <code>gcc</code> 或 <code>clang</code>：</p>
+<pre class="highlight"><code class="language-bash">croq program.co                     # 编译并链接 → a.out
+croq program.co -o my_kernel        # 指定输出文件名
+croq -es -t cuda program.co -o out.cu  # 仅输出 CUDA 源码
+croq -E program.co                  # 仅预处理</code></pre>
 <p>主要标志：</p>
 <table>
 <thead>

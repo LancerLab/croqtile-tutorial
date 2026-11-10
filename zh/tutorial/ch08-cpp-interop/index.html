@@ -2823,7 +2823,7 @@ int main() {   // ④
 <li><strong>③ <code>__cpp__</code> 字符串</strong> 在它们出现于 <code>__co__</code> 主体中的位置被逐字符拼接到生成的 CUDA。编译器不解析其内容——它们在生成代码的拼接点处必须合法。</li>
 <li><strong>④ Host 代码</strong>（<code>main()</code> 及任何其他无注解函数）作为普通 C++ 透传，进入 host 编译路径。</li>
 </ul>
-<p>四个区域合并进一个 <code>.cu</code> 文件。<code>nvcc</code> 将 device 代码（<code>__global__</code>、<code>__device__</code>）编译为 GPU 机器码，将 host 代码编译为 CPU 代码，最终链接为单一二进制。运行 <code>croqtile kernel.co -v</code>（第 9 章）可查看编译器发出的完整 <code>nvcc</code> 命令。</p>
+<p>四个区域合并进一个 <code>.cu</code> 文件。<code>nvcc</code> 将 device 代码（<code>__global__</code>、<code>__device__</code>）编译为 GPU 机器码，将 host 代码编译为 CPU 代码，最终链接为单一二进制。运行 <code>croq kernel.co -v</code>（第 9 章）可查看编译器发出的完整 <code>nvcc</code> 命令。</p>
 <h2 id="__device__-c-inline"><code>__device__</code> 与普通 C++ inline 的区别<a class="headerlink" href="#__device__-c-inline" title="Permanent link">&para;</a></h2>
 <p><code>__device__</code> 函数与普通 C++ 函数都被原样透传，但它们落入不同的编译路径——这一区别至关重要。</p>
 <p><code>__device__</code> 函数编译为 <strong>GPU 机器码</strong>。它可以使用 CUDA 内建（<code>__shfl_xor_sync</code>、<code>__frsqrt_rn</code>、<code>atomicAdd</code>），访问 <code>__shared__</code> 内存，在 <code>__global__</code> kernel 内部运行。<code>__co__</code> 主体通过 <code>call</code> 关键字调用它，生成的 <code>__global__</code> kernel 在设备端直接调用。</p>
@@ -2975,7 +2975,7 @@ __co__ foo() {
     // path 1 code
   #endif
 }</code></pre>
-<p>预处理器在鳄霸解析 <code>__co__</code> 主体之前保留一分支并丢弃另一分支。命令行定义：<code>croqtile kernel.co -DMATMUL_TILE_K=128</code>。</p>
+<p>预处理器在鳄霸解析 <code>__co__</code> 主体之前保留一分支并丢弃另一分支。命令行定义：<code>croq kernel.co -DMATMUL_TILE_K=128</code>。</p>
 <h2 id="co_1">如何阅读生产级 <code>.co</code> 文件<a class="headerlink" href="#co_1" title="Permanent link">&para;</a></h2>
 <p>打开基准 kernel 时，自上而下阅读：</p>
 <ol>
