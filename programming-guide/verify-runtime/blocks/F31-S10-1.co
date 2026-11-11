@@ -1,0 +1,6 @@
+__co__ void foo(stream s, f32[M] a) {
+  parallel.async<s> p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host continues immediately (no synchronization)
+}

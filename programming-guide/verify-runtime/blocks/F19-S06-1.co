@@ -1,0 +1,1 @@
+__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer

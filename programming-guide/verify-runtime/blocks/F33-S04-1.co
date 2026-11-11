@@ -1,0 +1,12 @@
+__co__  void foo() {
+  parallel p by 6 {
+    // parallel-level-0:
+    //   code here is as if implicitly masked 'if (q == 0)'
+    parallel q by 2 {
+      // parallel-level-1:
+      //   code here is for all 'q' threads
+    }
+    // parallel-level-0:
+    //   code here is as if implicitly masked 'if (q == 0)'
+  }
+}

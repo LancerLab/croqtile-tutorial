@@ -1,0 +1,46 @@
+F02-S04-1    | FAIL | global data access 'output[i]` is not allowed.
+F03-S03-1    | FAIL | On GCU300, the total thread parallel-by count must not exceed 12.
+F03-S04-1    | FAIL | un-terminated '__co__' function is detected.
+F04-S03-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
+F05-S13-1    | FAIL | On GCU300, the total thread parallel-by count must not exceed 12.
+F05-S14-1    | FAIL | On GCU300, the total block parallel-by count must not exceed 2.
+Aborted
+F06-S04-1    | CRASH(134) | Assertion `(vty->Dims() != 0) && IsValidRank(vty->Dims())' failed.
+Aborted
+F07-S08-1    | CRASH(134) | Assertion `(vty->Dims() != 0) && IsValidRank(vty->Dims())' failed.
+Aborted
+F07-S09-1    | CRASH(134) | Assertion `!isa<UnknownType>(ety) && "no type for an init expression."' failed.
+F08-S02-1    | FAIL | On GCU300, the total block parallel-by count must not exceed 2.
+F08-S10-1    | FAIL | MMA load on GCU requires source in LOCAL (L1) storage, but found shared. Use dma.copy to move d
+Aborted
+F10-S04-1    | CRASH(134) | 
+F10-S11-1    | ok   |
+F11-S02-1    | ok   |
+F11-S03-1    | FAIL | global data access 'data[i]` is not allowed.
+F14-S08-1    | ok   |
+F15-S03-1    | ok   |
+F15-S05-1    | FAIL | syntax error, unexpected ;, expecting {
+F15-S21-1    | FAIL | function call 'bar` with global data 'd` is not allowed.
+Segmentation fault
+F19-S06-1    | CRASH(139) | 
+F24-S03-1    | FAIL | unable to call kernel function outside the parallel-by block(s).
+F24-S04-1    | FAIL | in operation "dataof": expect a future type but got `f32 mdspan<2> []'.
+F24-S06-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
+F24-S06-2    | FAIL | 'M' is a runtime value
+F26-S01-1    | ok   |
+F26-S01-2    | ok   |
+F29-S03-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
+F29-S04-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
+F29-S05-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
+F31-S10-1    | FAIL | global data access 'a[p]` is not allowed.
+F33-S03-1    | ok   |
+F33-S04-1    | FAIL | On GCU300, the total block parallel-by count must not exceed 2.
+F34-S07-1    | ok   |
+F34-S08-1    | FAIL | On GCU300, the total block parallel-by count must not exceed 2.
+F35-S03-1    | ok   |
+F36-S02-1    | FAIL | global data access 'a[p]` is not allowed.
+F36-S03-1    | FAIL | global data access 'a[p]` is not allowed.
+F38-S01-1    | ok   |
+Aborted
+F40-S03-1    | CRASH(134) | Assertion failed: unable to find symbol `out_store_s' in the symbol table.
+F40-S06-1    | ok   |

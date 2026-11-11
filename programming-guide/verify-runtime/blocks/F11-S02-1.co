@@ -1,0 +1,4 @@
+__co__ void check_shapes(f32 [3, 2] b) {
+  print!("shape of b: ");
+  println!("b.span = ", b.span);
+}

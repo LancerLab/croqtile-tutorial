@@ -1,0 +1,11 @@
+__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
+  s32 [lhs.span] output;
+  parallel {tr, tc} by [4, 8] {
+    lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
+    rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
+    foreach {i, j} in lhs_load.span
+      output.at(tr # i, tc # j) =
+          lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
+  }
+  return output;
+}

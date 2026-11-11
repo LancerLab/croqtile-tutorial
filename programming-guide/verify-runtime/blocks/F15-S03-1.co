@@ -1,0 +1,8 @@
+// some C++ code
+__co__ void croqtile_function() {
+  // croqtile code
+}
+// another C++ code
+void foo() {
+  croqtile_function();
+}

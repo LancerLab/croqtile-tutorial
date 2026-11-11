@@ -1,0 +1,9 @@
+__co__ void foo(f32 [36, 14, 8] input) {
+  parallel p by 6 {
+    with index in [7, 4] {
+      foreach index {
+        dma.copy input.chunkat(p, index) => shared;
+      }
+    }
+  }
+}

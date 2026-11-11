@@ -1,0 +1,8 @@
+__co__ void foo() {
+  parallel p by 1 {
+    call bar();  // ok
+  }
+}
+__co__ void mou() {
+  call bar();  // error: not able to call device function from host
+}

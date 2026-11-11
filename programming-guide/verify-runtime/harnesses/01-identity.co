@@ -1,0 +1,27 @@
+// Block F02-S04 "A minimal Croqtile program"
+// Published body accesses global parameters directly, which the GCU target
+// rejects. This port stages through local/shared with dma.copy.
+#include <cstdio>
+
+__co__ auto identity(s32 [4] input) {
+  s32 [4] output;
+  parallel by 1 : thread {
+    local s32 [4] in_l;
+    local s32 [4] out_l;
+    dma.copy input => in_l;
+    foreach i in [4] { out_l.at(i) = in_l.at(i); }
+    dma.copy out_l => output;
+  }
+  return output;
+}
+
+int main() {
+  auto input = choreo::make_spandata<choreo::s32, 1>({4});
+  for (int i = 0; i < 4; ++i) input[i] = i + 1;
+  auto result = identity(input.view());
+  int bad = 0;
+  for (int i = 0; i < 4; ++i) if (result[i] != input[i]) ++bad;
+  printf("bad=%d out=%d %d %d %d\n", bad, (int)result[0], (int)result[1],
+         (int)result[2], (int)result[3]);
+  return bad != 0;
+}

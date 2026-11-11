@@ -1,0 +1,47 @@
+// Block F05-S14 "DMA Matmul: Tiles in Shared Storage"
+// GCU port of the published 4-level tiling, scaled to a 64x64 problem so the
+// accumulator fits one thread's shared budget.  The chunkat grid and the
+// accumulate order are unchanged.
+#include <cstdio>
+
+__co__ auto matmul(s32 [64, 64] lhs, s32 [64, 64] rhs) {
+  s32 [64, 64] output;
+  parallel by 1 : thread {
+    shared s32 [64, 64] acc_s;
+    foreach i in [64] { foreach j in [64] { acc_s.at(i, j) = 0; } }
+    foreach px in [4] {
+      foreach py in [4] {
+        foreach tile_k in [4] {
+          lhs_load = dma.copy lhs.chunkat(px, tile_k) => shared;
+          rhs_load = dma.copy rhs.chunkat(tile_k, py) => shared;
+          foreach qx in [16] {
+            foreach qy in [16] {
+              foreach k in [16]
+                acc_s.at(px # qx, py # qy) +=
+                    lhs_load.data.at(qx, k) * rhs_load.data.at(k, qy);
+            }
+          }
+        }
+      }
+    }
+    dma.copy acc_s => output;
+  }
+  return output;
+}
+
+int main() {
+  auto lhs = choreo::make_spandata<choreo::s32, 2>({64, 64});
+  auto rhs = choreo::make_spandata<choreo::s32, 2>({64, 64});
+  lhs.fill_random(-4, 4);
+  rhs.fill_random(-4, 4);
+  auto res = matmul(lhs.view(), rhs.view());
+  int bad = 0;
+  for (int i = 0; i < 64; ++i)
+    for (int j = 0; j < 64; ++j) {
+      int ref = 0;
+      for (int k = 0; k < 64; ++k) ref += lhs[i][k] * rhs[k][j];
+      if (res[i][j] != ref) ++bad;
+    }
+  printf("bad=%d\n", bad);
+  return bad != 0;
+}

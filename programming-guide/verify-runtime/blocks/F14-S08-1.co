@@ -1,0 +1,17 @@
+__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
+  s32 [lhs.span] output; // Use same shape as lhs
+  parallel p by 6 {
+    with index in [17, 4] { // Tiling factors
+      foreach index {
+        lhs_load = dma.copy lhs.chunkat(p, index) => local;
+        rhs_load = dma.copy rhs.chunkat(p, index) => local;
+        local s32 [lhs_load.span] l1_out;
+        // Call kernel with loaded data
+        call kernel(lhs_load.data, rhs_load.data, l1_out, |lhs_load.span|);
+        // Store result back to output
+        dma.copy l1_out => output.chunkat(p, index);
+      }
+    }
+  }
+  return output;
+}

@@ -1,0 +1,9 @@
+__co__ void foo() {
+  global event ge;     // single instance in the tileflow program
+  parallel p by 2 {    // shared level
+    shared event se;   // two instances, 1 for each shared instance
+    parallel q by 6 {  // local level
+      local event le;  // 12 instances in total, 6 for each shared instance
+    }
+  }
+}

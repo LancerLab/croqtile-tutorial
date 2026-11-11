@@ -1,0 +1,5 @@
+__co__ void inspect(s32 [4, 8] data) {
+  foreach i in [data.span] {
+    println("element ", i, " = ", data.at(i));
+  }
+}

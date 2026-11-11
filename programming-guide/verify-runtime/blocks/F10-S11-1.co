@@ -1,0 +1,8 @@
+#define PATH0
+__co__ auto foo() {
+  #ifdef PATH0
+    // path 0 code
+  #else
+    // path 1 code
+  #endif
+}

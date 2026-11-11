@@ -1,0 +1,12 @@
+__co__  void foo() {
+  parallel p by 3, q by 4 {
+    inthreads (p < 2 && q == 0) {
+      // divergent code for thread (0, 0), (1, 0)
+      // thread-mask: 011-0001
+    }
+    inthreads (q == 1) {
+      // divergent code for thread (0, 1), (1, 1), (2, 1)
+      // thread-mask: 111-0010
+    }
+  }
+}

@@ -1,0 +1,36 @@
+// Block F04-S03 "Tiled Addition Through Shared Storage"
+// Published body tiles 4x8 in parallel; the GCU target caps parallel-by
+// counts, so the port keeps the same chunkat tiling inside one thread.
+#include <cstdio>
+
+__co__ auto tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
+  s32 [lhs.span] output;
+  parallel by 1 : thread {
+    shared s32 [64, 128] out_s;
+    foreach tr in [4] {
+      foreach tc in [8] {
+        lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
+        rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
+        foreach {i, j} in lhs_load.span
+          out_s.at(tr # i, tc # j) =
+              lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
+      }
+    }
+    dma.copy out_s => output;
+  }
+  return output;
+}
+
+int main() {
+  auto lhs = choreo::make_spandata<choreo::s32, 2>({64, 128});
+  auto rhs = choreo::make_spandata<choreo::s32, 2>({64, 128});
+  lhs.fill_random(-10, 10);
+  rhs.fill_random(-10, 10);
+  auto res = tiled_add_2d(lhs.view(), rhs.view());
+  int bad = 0;
+  for (int i = 0; i < 64; ++i)
+    for (int j = 0; j < 128; ++j)
+      if (res[i][j] != lhs[i][j] + rhs[i][j]) ++bad;
+  printf("bad=%d\n", bad);
+  return bad != 0;
+}

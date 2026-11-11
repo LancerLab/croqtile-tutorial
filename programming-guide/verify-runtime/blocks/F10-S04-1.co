@@ -1,0 +1,31 @@
+template <int K>
+__device__ void warp_topk(f32* vals, s32* idxs);
+template <typename T>
+__device__ __forceinline__ T SHFL_XOR(T var, int lane_mask, int width) {
+  return __shfl_xor_sync(uint32_t(-1), var, lane_mask, width);
+}
+__co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
+                     s32 [N_TOKENS, K]& topk_ids,
+                     f32 [N_TOKENS, K]& topk_scores,
+                     int N_BLOCK) {
+  parallel n by N_BLOCK : block {
+    foreach m in [ |scores.span| / N_THREAD / N_BLOCK ] {
+      shared_scores = dma.copy scores.chunkat(n#m, _) => shared;
+      parallel gid by [N_THREAD / 32] : group
+        parallel tid by 32 : thread {
+          flat_scores = shared_scores.span_as([|shared_scores.span|]);
+          score = flat_scores.at(gid # tid);
+          local s32 [K] frag_idx{-1};
+          local f32 [K] frag_val{-1.0f};
+          frag_idx.at(0) = tid;
+          frag_val.at(0) = score;
+          call warp_topk<8>(frag_val, frag_idx);
+          inthreads (tid == 0)
+            foreach k in K {
+              topk_ids.at(n#m, gid#k) = frag_idx.at(k);
+              topk_scores.at(n#m, gid#k) = frag_val.at(k);
+            }
+        }
+    }
+  }
+}

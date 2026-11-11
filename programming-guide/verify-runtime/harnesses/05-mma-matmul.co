@@ -1,0 +1,45 @@
+// Block F06-S04 "One group, one tile: the simplest MMA matmul"
+// GCU port: operands are staged into local storage, and the MMA consumes the
+// local buffers directly (the form the target's own end2end tests use).
+//   D[i][j] = sum_k lhs[i][k] * rhs[j][k]
+// Note: the operand tiles must cover whole MMA micro-tiles.  A 32x32 operand
+// pair or a 64x64x64 shape silently produces wrong results on this target;
+// 64x128 and 128x128 operand tiles verify exactly.
+#include <cstdio>
+#include <cmath>
+
+__co__ auto matmul(f16 [64, 128] lhs, f16 [64, 128] rhs) {
+  f16 [64, 64] output;
+  parallel by 1 : thread {
+    local f16 [64, 128] lhs_l;
+    local f16 [64, 128] rhs_l;
+    local f16 [64, 64] acc;
+    dma.copy lhs => lhs_l;
+    dma.copy rhs => rhs_l;
+    mc = mma.fill.f32 0;
+    mma.row.row mc, lhs_l, rhs_l;
+    mma.store mc, acc;
+    dma.copy acc => output;
+  }
+  return output;
+}
+
+int main() {
+  auto a = choreo::make_spandata<choreo::f16, 2>({64, 128});
+  auto b = choreo::make_spandata<choreo::f16, 2>({64, 128});
+  a.fill_random(-1.0f, 1.0f);
+  b.fill_random(-1.0f, 1.0f);
+  auto c = matmul(a.view(), b.view());
+  int bad = 0;
+  float maxerr = 0.f;
+  for (int i = 0; i < 64; ++i)
+    for (int j = 0; j < 64; ++j) {
+      double ref = 0.0;
+      for (int k = 0; k < 128; ++k) ref += (double)(float)a[i][k] * (float)b[j][k];
+      double err = std::fabs((double)(float)c[i][j] - ref);
+      if (err > 5e-2 * (1.0 + std::fabs(ref))) ++bad;
+      maxerr = std::max(maxerr, (float)err);
+    }
+  printf("bad=%d maxerr=%g\n", bad, maxerr);
+  return bad != 0;
+}

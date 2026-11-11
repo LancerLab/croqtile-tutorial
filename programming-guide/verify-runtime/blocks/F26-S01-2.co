@@ -1,0 +1,8 @@
+__cok__ {
+template <int v> void bar() {};
+// compiler generate a explicit function template specialization:
+// template<> void bar<3>() {};
+}
+__co__ void foo() {
+  parallel p by 1 { call bar<3>(); }
+}

@@ -1,0 +1,14 @@
+__co__ s32 [4] identity(s32 [4] input) {
+  s32 [input.span] output;
+  parallel i by 4
+    output.at(i) = input.at(i);
+  return output;
+}
+int main() {
+  auto input = croq::make_spandata<croq::s32>(4);
+  input[0] = 1; input[1] = 2; input[2] = 3; input[3] = 4;
+  auto result = identity(input.view());
+  for (int i = 0; i < 4; ++i)
+    if (input[i] != result[i]) { std::cerr << "FAIL\n"; return 1; }
+  std::cout << "OK\n";
+}

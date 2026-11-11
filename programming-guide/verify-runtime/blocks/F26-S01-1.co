@@ -1,0 +1,6 @@
+__cok__ {
+extern "C" void bar(int v) {};  // v is a compile-time constant
+}
+__co__ void foo() {
+  parallel p by 1 { call bar(3); }
+}

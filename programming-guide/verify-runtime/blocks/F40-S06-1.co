@@ -1,0 +1,16 @@
+__co__ auto rgb2gray(f32 [N, 3, H, W] input) {
+  f32 [N, H, W] out;
+  parallel q by 6 {
+    with index={n, h, w} in [N, H, W]/{#q, 16, 512} {
+      foreach n, h, w {
+        // _ means no tiling
+        input_L1_A = dma.copy input.chunkat(q#n, _, h, w) => local;
+        dims : input_L1_A.span[(0), (2), (3)];
+        local f32 [dims] out_L1;
+        call rgb2gray_kernel_fp32_fp32(input_L1_A.data, out_L1, |out_L1|, 1);
+        dma.copy out_L1 => out.chunkat(q#n, h, w);
+      }
+    }
+  }
+  return out;
+}

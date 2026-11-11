@@ -1,0 +1,24 @@
+// Block F29-S05 "Tile and Flow"
+// Published body tiles 6 ways in parallel and un-tiles into the destination.
+#include <cstdio>
+
+__co__ auto foo(f32 [36] input) {
+  f32 [36] output;
+  parallel by 1 : thread {
+    foreach p in [6] {
+      f0 = dma.copy input.chunkat(p) => shared;
+      dma.copy f0.data => output.chunkat(p);
+    }
+  }
+  return output;
+}
+
+int main() {
+  auto input = choreo::make_spandata<choreo::f32, 1>({36});
+  input.fill_random(-10.0f, 10.0f);
+  auto out = foo(input.view());
+  int bad = 0;
+  for (int i = 0; i < 36; ++i) if (out[i] != input[i]) ++bad;
+  printf("bad=%d\n", bad);
+  return bad != 0;
+}

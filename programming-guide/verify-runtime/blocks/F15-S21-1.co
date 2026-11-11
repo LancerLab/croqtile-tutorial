@@ -1,0 +1,10 @@
+#include "croqtile.h"
+void bar(const float* data, unsigned size) {}
+__co__ void foo(f32 mdspan<2> d) {
+  parallel p by 6 {
+    call bar(d, |d|);     // Call the C++ function
+  }
+}
+void foobar(float* a) {
+  foo(croqtile::make_spanview<2>(a, {1, 2}));
+}

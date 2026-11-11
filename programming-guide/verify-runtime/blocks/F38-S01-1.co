@@ -1,0 +1,30 @@
+__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs,
+                                s32 [6, 17, 128] rhs) {
+  s32[lhs.span] output;
+  parallel p by 6 {
+    with index = {x, y} in [17, 4] {
+      local s32 [rhs.span / {#p, #x, #y}] l_out;
+      foreach x { // first bunch
+        lfA = dma.copy.async lhs.chunkat(p, x, y) => local;
+        rfA = dma.copy.async rhs.chunkat(p, x, y) => local;
+        lfB = dma.any;  // dummy DMA used for multi-buffering
+        rfB = dma.any;
+        foreach y(1:) {
+          lfB = dma.copy.async lhs.chunkat(p, x, y) => local;
+          rfB = dma.copy.async rhs.chunkat(p, x, y) => local;
+          wait lfA, rfA;  // wait another bunch
+          call kernel(lfA.data, rfA.data, l_out, |lfB.span|);
+          dma.copy l_out => output.chunkat(p, x, y - 1);
+          swap(lfA, lfB); // exchange futures
+          swap(rfA, rfB);
+        }
+        lf = select(#y % 2, lfB, lfA);
+        rf = select(#y % 2, rfB, rfA);
+        wait lf, rf;  // handle the last bunch
+        call kernel(lf.data, rf.data, l_out, |lfB.span|);
+        dma.copy l_out => output.chunkat(p, x, y(-1));
+      }
+    }
+  }
+  return output;
+}
