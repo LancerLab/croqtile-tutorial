@@ -5,7 +5,7 @@ Every tiled kernel faces the same edge case: what happens when M or K is not a m
 A separate code path for the boundary tile adds branches and complicates a uniform MMA loop. The \texttt{.zfill} modifier handles the missing source elements during transfer:
 
 \begin{lstlisting}[language=croqtile,caption={Zero-padding: .zfill}]
-tma.copy.swiz<3> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
+tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
   => lhs_load_s;
 \end{lstlisting}
 

@@ -27,4 +27,6 @@ The standalone \texttt{mma.scale} appears in some MoE and mixed-precision kernel
 
 The \texttt{\textless{}N\textgreater{}} must agree between \texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} and \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} --- a mismatch reads garbage. For output, \texttt{mma.\allowbreak{}store.\allowbreak{}transp mc, dst} writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.
 
+In a pipelined kernel, the consumer must finish the tile's matrix operations before signalling that the shared buffers are free; releasing a stage early lets the producer overwrite operands the MMA is still reading.
+
 The table below collects every variant for reference.

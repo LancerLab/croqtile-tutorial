@@ -6,6 +6,6 @@ The producer waits on \co@empty[stage]@ before writing either operand into that 
 
 The consumer first triggers every \co@empty@ event. All events begin unset, so this bootstrap grants the producer permission to fill each slot once. No \co@full@ event is triggered here because no input has been loaded yet.
 
-The consumer waits on \co@full[stage]@, loads the operand fragments, and accumulates the slice. It then performs \co@mma.commit@ before triggering \co@empty[stage]@. That order matters: issuing a matrix operation is not sufficient evidence that it has stopped reading the shared operands.
+\textbf{Consumer path.} Each \texttt{iv\_k}: \texttt{wait full[stage]} blocks until the producer has filled that slot, then MMA over the tile and \texttt{trigger empty[stage]} to release the slot for reuse.
 
-The completion point protects buffer reuse. If the producer overwrites a slot while MMA still reads it, the consumer can mix operands from two K slices even though the tile shapes are correct. Checking the \co@full@ signal alone cannot detect this mistake; the return of the \co@empty@ credit is equally necessary.
+\textbf{Consumer ordering.} The consumer signals \texttt{empty[stage]} only after the tile's matrix operations have completed. Signalling too early lets the producer overwrite operands the MMA is still reading.

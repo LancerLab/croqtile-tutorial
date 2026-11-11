@@ -232,7 +232,7 @@ The standalone `mma.scale` appears in some MoE and mixed-precision kernels.
 
 **Swizzled loads and transposed stores.** When shared memory uses a swizzle pattern to avoid bank conflicts ([Chapter 7](ch07-advanced-movement.md)), the MMA load must use the matching swizzle mode: `mma.load.swiz<N>`. The `<N>` must agree between `tma.copy.swiz<N>` and `mma.load.swiz<N>` — a mismatch reads garbage. For output, `mma.store.transp mc, dst` writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.
 
-**Pipeline synchronization.** In pipelined kernels where producer and consumer warpgroups overlap ([Chapter 6](ch06-synchronization.md)), `mma.commit` marks the boundary between "done reading this K-slab's operands" and "safe to reuse the shared-memory buffer." It is mandatory glue in event-driven pipelines.
+In a pipelined kernel, the consumer must finish the tile's matrix operations before signalling that the shared buffers are free; releasing a stage early lets the producer overwrite operands the MMA is still reading.
 
 These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the hardware. The table below collects every variant for reference.
 
@@ -251,7 +251,6 @@ These extensions all follow the same design principle: the four-step skeleton st
 | `mma.scale mc, sc_a, sc_b` | Standalone post-MMA scaling |
 | `mma.store mc, dst` | Write accumulator to shared memory |
 | `mma.store.transp mc, dst` | Write accumulator transposed |
-| `mma.commit` | Pipeline stage fence for WGMMA (see [Ch 6](ch06-synchronization.md)) |
 | `cdiv(a, b)` | Ceiling division |
 | `__co__ void fn(...)` | Kernel that writes results in-place |
 
@@ -265,6 +264,6 @@ These extensions all follow the same design principle: the four-step skeleton st
 | Scaling cooperation | `: group` (one warp) → `: group-4` (one warpgroup) → multiple warpgroups — syntax stays invariant |
 | Layout contract | `mma.row.row`, `mma.row.col`, etc. — must match data in shared memory |
 | Sparse and quantized | `.sp` adds a metadata operand; `.scale` fuses per-tile dequantization |
-| Swizzle and pipeline | `mma.load.swiz<N>` matches swizzled shared layouts; `mma.commit` fences pipeline stages |
+| Swizzle and pipeline | `mma.load.swiz<N>` matches swizzled shared layouts |
 
 The contraction is fast, but loads and compute still take turns — while tensor cores multiply, the memory system idles. The [next chapter](ch05-branch-control.md) introduces **role specialization** so different thread groups can play different roles: one group loading data while another computes, overlapping memory and math in time.

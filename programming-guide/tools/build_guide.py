@@ -687,8 +687,9 @@ UNIT_OVERRIDES = [
     # the same section title; two sentences left duplicated or dangling by
     # the source pages.
     ('F03-S04', None, caption_names([
-        'A kernel signature', 'Allocating the output',
+        'A kernel signature (fragment)', 'Allocating the output',
         'The parallel body', 'Returning the result'])),
+    ('F15-S05', None, caption_names(['Scalar Types (fragment)'])),
     ('F03-S04',
      r'This is the heart of the program\. Here it is piece by piece\.',
      "Start with the signature, which declares more than a C++ function "

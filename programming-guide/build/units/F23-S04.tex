@@ -5,7 +5,7 @@ Croqtile supports conditional compilation with directives including \texttt{\#if
 \begin{lstlisting}[language=croqtile,caption={Conditional Compilation}]
 #define PATH0
 // some host code
-__co__ foo() {
+__co__ auto foo() {
 #ifdef PATH0
 // some code related to PATH0
 #else

@@ -40,7 +40,6 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
             mb = mma.load rhs_load_s[stage].chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
-          mma.commit;
           trigger empty[stage];
         }
         mma.store mc, output_s;

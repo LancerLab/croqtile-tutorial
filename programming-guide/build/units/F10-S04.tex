@@ -20,7 +20,8 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
       shared_scores = dma.copy scores.chunkat(n#m, _) => shared;
       parallel gid by [N_THREAD / 32] : group
         parallel tid by 32 : thread {
-          score = shared_scores.data.span_as(|shared_scores.data.span|).at(gid # tid);
+          flat_scores = shared_scores.span_as([|shared_scores.span|]);
+          score = flat_scores.at(gid # tid);
           local s32 [K] frag_idx{-1};
           local f32 [K] frag_val{-1.0f};
           frag_idx.at(0) = tid;
