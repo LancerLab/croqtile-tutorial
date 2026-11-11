@@ -4,7 +4,7 @@ The reason for improved code safety of using \emph{symbolic dimension} is that m
 
 \begin{lstlisting}[language=croqtile,caption={A kernel with anonymous dimensions}]
 __co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
-  int tile_m = 32, tile_m = 8, tile_k = 16;
+  int tile_m = 32, tile_n = 8, tile_k = 16;
   s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // 'mdspan' and 'ituple': rank must be same
   s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // 'tiled_rhs' can not have a zero dimension
   // ...
@@ -19,9 +19,9 @@ Croqtile performs both compile-time and runtime checks to ensure safety:
 \end{itemize}
 
 \begin{lstlisting}[language={},caption={The transpiled signature}]
-void __croqtile_transpiled_Matmul(choreo::spanned_view<choreo::s32, 2> lhs,
-                                choreo::spanned_view<choreo::s32, 2> rhs) {
-  choreo_assert(lhs.shape()[0] / 32 > 0,
+void __croqtile_transpiled_Matmul(croq::spanned_view<croq::s32, 2> lhs,
+                                croq::spanned_view<croq::s32, 2> rhs) {
+  croq_assert(lhs.shape()[0] / 32 > 0,
                 "the 0 dimension of 'lhs' may result in spanned data "
                 "with a dimension value of 0.");
   // ...
@@ -33,12 +33,12 @@ Here, the \texttt{croqtile\_\allowbreak{}abort} function aborts program executio
 For the \emph{symbolic dimension} version, Croqtile compiler generates additional checks in the \emph{target host code}:
 
 \begin{lstlisting}[language={},caption={The generated shape check}]
-void __croqtile_transpiled_Matmul(choreo::spanned_view<choreo::s32, 2> lhs,
-                                choreo::spanned_view<choreo::s32, 2> rhs) {
+void __croqtile_transpiled_Matmul(croq::spanned_view<croq::s32, 2> lhs,
+                                croq::spanned_view<croq::s32, 2> rhs) {
   // additional check happens only when using symbolic dimensions
-  choreo_assert(lhs.shape()[1] == rhs.shape()[0],
+  croq_assert(lhs.shape()[1] == rhs.shape()[0],
                 "dimension 'K' is not consistent.");
-  choreo_assert(lhs.shape()[0] / 32 > 0,
+  croq_assert(lhs.shape()[0] / 32 > 0,
                 "the 0 dimension of 'lhs' may result in spanned data "
                 "with a dimension value of 0.");
   // ...

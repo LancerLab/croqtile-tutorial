@@ -1095,8 +1095,8 @@
    "after": "Here the spanned-data arguments become pointers to their element types. The device helper receives those pointers without shape metadata; pass any required dimensions separately. The declared pointer element type must match the data supplied by the call."
   },
   {
-   "before": "For some types like \\texttt{f16}, and \\texttt{bf16}, there may not be native target support of such types, it is possible to utilize \\texttt{choreo::f16} and \\texttt{choreo::bf16} to handle such types.\n",
-   "after": "For element formats without a native target type, use the corresponding Croqtile C++ type, such as \\co@choreo::f16@ or \\co@choreo::bf16@, where supported."
+   "before": "For some types like \\texttt{f16}, and \\texttt{bf16}, there may not be native target support of such types, it is possible to utilize \\texttt{croq::f16} and \\texttt{croq::bf16} to handle such types.\n",
+   "after": "For element formats without a native target type, use the corresponding Croqtile C++ type, such as \\co@croq::f16@ or \\co@croq::bf16@, where supported."
   },
   {
    "before": "The following code showcases an example:",

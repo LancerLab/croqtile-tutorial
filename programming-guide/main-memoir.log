@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  11 NOV 2026 17:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  11 NOV 2026 17:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1544,25 +1544,25 @@ File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 (./build/units/F17-S01.tex) (./build/units/F17-S02.tex [18])
 (./build/units/F17-S04.tex) (./build/units/F17-S05.tex)
 (./build/units/F17-S06.tex [19]) (./build/units/F17-S09.tex)
-(./build/units/F15-S08.tex [20]) (./build/units/F15-S09.tex)
+(./build/units/F15-S08.tex) (./build/units/F15-S09.tex [20])
 (./build/units/F18-S01.tex) (./build/units/F18-S03.tex [21])
 (./build/units/F18-S04.tex) (./build/units/F18-S05.tex)
 (./build/units/F18-S06.tex [22]) (./build/units/F18-S08.tex)
 (./build/units/F37-S04.tex) (./build/units/F37-S05.tex)
-(./build/units/F37-S06.tex [23]) (./build/units/F37-S07.tex)
+(./build/units/F37-S06.tex) (./build/units/F37-S07.tex [23])
 (./build/units/F37-S08.tex) (./build/units/F05-S03.tex
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 6.
  [24]
-<figures/f05-fig2_logical_vs_physical_light.png, id=1182, 2569.6pt x 1445.4pt>
+<figures/f05-fig2_logical_vs_physical_light.png, id=1183, 2569.6pt x 1445.4pt>
 File: figures/f05-fig2_logical_vs_physical_light.png Graphic file (type png)
 <use figures/f05-fig2_logical_vs_physical_light.png>
 Package pdftex.def Info: figures/f05-fig2_logical_vs_physical_light.png  used o
 n input line 21.
 (pdftex.def)             Requested size: 432.47404pt x 243.26665pt.
 )
-(./build/units/F05-S05.tex [25 <./figures/f05-fig2_logical_vs_physical_light.pn
-g (PNG copy)>]) (./build/units/F05-S06.tex) (./build/units/F05-S09.tex)
+(./build/units/F05-S05.tex) (./build/units/F05-S06.tex [25 <./figures/f05-fig2_
+logical_vs_physical_light.png (PNG copy)>]) (./build/units/F05-S09.tex)
 (./build/units/F08-S05.tex) (./build/units/F08-S07.tex)
 (./build/units/F15-S14.tex [26]) (./build/units/F15-S15.tex)
 (./build/units/F15-S16.tex [27]) (./build/units/F31-S03.tex)
@@ -1903,10 +1903,10 @@ Package rerunfilecheck Info: File `main-memoir.out' has not changed.
 (rerunfilecheck)             Checksum: 10247C8CA6F0E46740CA850DA1954B76;3497.
  ) 
 Here is how much of TeX's memory you used:
- 35089 strings out of 483197
- 672857 string characters out of 5964729
- 1166779 words of memory out of 5000000
- 46521 multiletter control sequences out of 15000+600000
+ 35087 strings out of 483197
+ 672828 string characters out of 5964729
+ 1165779 words of memory out of 5000000
+ 46519 multiletter control sequences out of 15000+600000
  638431 words of font info for 176 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,17n,107p,1080b,1932s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1929,7 +1929,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (133 pages, 4276081 bytes).
+Output written on main-memoir.pdf (133 pages, 4276026 bytes).
 PDF statistics:
  3303 PDF objects out of 3580 (max. 8388607)
  3068 compressed objects within 31 object streams

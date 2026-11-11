@@ -66,7 +66,7 @@ H: C++ Host: Data Argument with Shape
 P: Croqtile spanned data carries a shape in addition to its data pointer. Before passing a C/C++ pointer or array to a Croqtile function, wrap it with the required shape information.
 P: One direct method is to use the Croqtile API provided in `choreo.h`. A program does not have to include `choreo.h` explicitly in a Croqtile compilation environment; the compiler includes it for every Croqtile program.
 C: Passing a shaped buffer
-P: The `choreo:`:make_spanview function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a `choreo:`:spanned_view that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:
+P: The `croq:`:make_spanview function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a `croq:`:spanned_view that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:
 C: The host-side buffer wrapper
 P: Dimensions do not have to be constants; runtime values work as well:
 C: A call built from runtime dimensions
@@ -86,9 +86,9 @@ P: Here, `auto` is inferred as `f32 [7, 16]` from `result`. This is useful when 
 H: C++ Host: Shape Return
 P: The C++ host code that receives the output of Croqtile function actually receives a buffer. The return has value semantics: the caller receives the buffer itself, not a reference to an object allocated inside the called function. For example:
 C: Returning a shaped buffer
-P: The example returns `output` with value semantics, but the implementation avoids copying the buffer. The returned C++ type is `choreo:`:spanned_data, whose simplified definition is:
+P: The example returns `output` with value semantics, but the implementation avoids copying the buffer. The returned C++ type is `croq:`:spanned_data, whose simplified definition is:
 C: The host-side result wrapper
-P: Unlike `choreo:`:spanned_view, `choreo:`:spanned_data owns the buffer it points to. **Returning it does not copy the buffer**; the implementation uses return value optimization.
+P: Unlike `croq:`:spanned_view, `croq:`:spanned_data owns the buffer it points to. **Returning it does not copy the buffer**; the implementation uses return value optimization.
 P: Use member functions such as `.rank()` and `.shape()` to query the returned buffer's shape. The host can then work with the result without depending on the implementation of the Croqtile function.
 
 === UID:F04-S16
@@ -805,7 +805,7 @@ P: Croqtile does not perform arithmetic on these floating-point scalar values in
 P: For example:
 C: The Convention: Allowed Argument Types
 P: Here the spanned-data arguments become pointers to their element types. The device helper receives those pointers without shape metadata; pass any required dimensions separately. The declared pointer element type must match the data supplied by the call.
-P: For element formats without a native target type, use the corresponding Croqtile C++ type, such as `choreo::f16` or `choreo::bf16`, where supported.
+P: For element formats without a native target type, use the corresponding Croqtile C++ type, such as `croq::f16` or `croq::bf16`, where supported.
 
 === UID:F24-S07
 H: In short

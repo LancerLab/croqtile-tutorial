@@ -75,7 +75,9 @@ correct code.
 | F15-S21 | `#include "croqtile.h"` and `croqtile::` — neither exists | `choreo.h` and `croq::` |
 | F40-S03 | `out_store_s` read after the loop that assigns it | seed with `dma.any` before the loop |
 | F40-S03 | async copies never awaited | `wait lhs_load_s, rhs_load_s;` before the dot product, `wait out_store;` before returning |
-| F15-S21, F19-S05, F23-S02, F25-S04 | runtime named `croqtile` throughout | renamed to `choreo` (see below) |
+| F15-S21, F19-S05, F23-S02, F25-S04 | runtime named `croqtile` throughout | renamed to `croq` (see below) |
+| F19-S05 | `int tile_m = 32, tile_m = 8, tile_k = 16;` declares `tile_m` twice and leaves `tile_n` undefined | `tile_m`, `tile_n`, `tile_k` |
+| F03-S03, F05-S16 | `croq::croq_assert` — the helper is a free function | `croq_assert` |
 
 Two of the fixes turned compiler crashes into ordinary diagnostics (F06-S04,
 F40-S03), which is how the remaining problems became visible. F40-S03 now clears
@@ -87,22 +89,33 @@ guide never defines.
 
 ## Runtime naming
 
-The library ships as `choreo` (aliased `croq`). The guide had spelled the
-header, the namespace, the assertion helper and a factory helper `croqtile`,
-none of which exist under that name. Round 81 renames them everywhere: code
-listings, prose, the editorial rule files, both translation trees and the
-glossary.
+The library ships as `choreo`, aliased as `croq`; the guide uses the short
+alias. The guide had spelled the header, the namespace, the assertion helper
+and a factory helper `croqtile`, none of which exist under that name. Round 81
+renames them everywhere: code listings, prose, the editorial rule files, both
+translation trees and the glossary.
 
 | Guide spelling | Actual spelling |
 |---|---|
-| `croqtile.h` | `choreo.h` |
-| `croqtile::` | `choreo::` |
-| `croqtile_assert` | `choreo_assert` |
-| `croqtile::make_spanned` | `choreo::make_spanview` |
-| `croqtile::span_view<2, T>` | `choreo::spanned_view<T, 2>` |
+| `croqtile.h` | `choreo.h` (the header file has no alias) |
+| `croqtile::` | `croq::` |
+| `croqtile_assert` | `croq_assert` (a free function — no namespace qualifier) |
+| `croqtile::make_spanned` | `croq::make_spanview` |
+| `croqtile::span_view<2, T>` | `croq::spanned_view<T, 2>` |
+
+Verified against the shipped runtime: `croq::s32`, `croq::make_spanview<2>`,
+`croq::spanned_view<T, 2>`, `croq::runtime_check` and the global `croq_assert`
+all compile; `croqtile::` does not resolve at all. The old
+`croq::croq_assert` spelling used by two listings was also wrong, since the
+assertion helper is not a member of the namespace.
 
 The `croqtile` spelling that remains in the guide is the language name itself
 and the `language=croqtile` listing tag, both intentional.
+
+Note: code the compiler itself emits says `choreo::` (for example
+`choreo::runtime_check(...)`). The two listings that illustrate transpiled
+output — F19-S05 and F19-S03 — now use `croq::` with everything else, so they
+read as the guide's spelling rather than a byte-exact capture of the compiler's.
 
 ## Harnesses
 

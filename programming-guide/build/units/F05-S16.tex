@@ -14,7 +14,7 @@ int main() {
       int ref = 0;
       for (size_t k = 0; k < lhs.shape()[1]; ++k)
         ref += lhs[i][k] * rhs[k][j];
-      croq::croq_assert(ref == res[i][j], "values are not equal.");
+      croq_assert(ref == res[i][j], "values are not equal.");
     }
   std::cout << "Test Passed\n" << std::endl;
 }

@@ -8,12 +8,12 @@ One direct method is to use the Croqtile API provided in \texttt{choreo.h}. A pr
 __co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
 void entry(float * input, float* output) {
   // foo(input, output); <-- result in error since missing shape
-  foo(choreo::make_spanview<2>(input, {7, 16}),
-      choreo::make_spanview<2>(output, {7, 16}));
+  foo(croq::make_spanview<2>(input, {7, 16}),
+      croq::make_spanview<2>(output, {7, 16}));
 }
 \end{lstlisting}
 
-The \texttt{choreo:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanview} function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a \texttt{choreo:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:
+The \texttt{croq:\allowbreak{}:\allowbreak{}make\_\allowbreak{}spanview} function template takes the rank as a template argument and the typed pointer and shape list as function arguments. It returns a \texttt{croq:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view} that wraps the pointer and dimension list, making them a valid Croqtile argument. Its simplified definition is:
 
 \begin{lstlisting}[language={},caption={The host-side buffer wrapper}]
 template <typename T, size_t Rank>
@@ -28,7 +28,7 @@ Dimensions do not have to be constants; runtime values work as well:
 \begin{lstlisting}[language=croqtile,caption={A call built from runtime dimensions}]
 __co__ void foo(f32 [7, 16] input) {...}
 void entry(float * input, float* output, int M, int N) {
-  foo(choreo::make_spanview<2>(input, {M, N})),
+  foo(croq::make_spanview<2>(input, {M, N})),
 }
 \end{lstlisting}
 

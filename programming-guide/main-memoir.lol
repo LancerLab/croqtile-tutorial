@@ -41,11 +41,11 @@
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{17}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types (fragment)}{17}{lstlisting.2.27}%
 \contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{17}{lstlisting.2.28}%
-\contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{18}{lstlisting.2.29}%
+\contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{17}{lstlisting.2.29}%
 \contentsline {lstlisting}{\numberline {2.30}An initialized integer}{18}{lstlisting.2.30}%
 \contentsline {lstlisting}{\numberline {2.31}Assignment to an integer}{18}{lstlisting.2.31}%
 \contentsline {lstlisting}{\numberline {2.32}Several integers at once}{18}{lstlisting.2.32}%
-\contentsline {lstlisting}{\numberline {2.33}An integer parameter}{19}{lstlisting.2.33}%
+\contentsline {lstlisting}{\numberline {2.33}An integer parameter}{18}{lstlisting.2.33}%
 \contentsline {lstlisting}{\numberline {2.34}A declaration without initialization}{19}{lstlisting.2.34}%
 \contentsline {lstlisting}{\numberline {2.35}An i-tuple literal}{19}{lstlisting.2.35}%
 \contentsline {lstlisting}{\numberline {2.36}An inconsistent rank}{19}{lstlisting.2.36}%
@@ -59,11 +59,11 @@
 \contentsline {lstlisting}{\numberline {2.44}A rejected fundamental type}{22}{lstlisting.2.44}%
 \contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{22}{lstlisting.2.45}%
 \contentsline {lstlisting}{\numberline {2.46}Initialization}{22}{lstlisting.2.46}%
-\contentsline {lstlisting}{\numberline {2.47}An explicit return shape}{23}{lstlisting.2.47}%
+\contentsline {lstlisting}{\numberline {2.47}An explicit return shape}{22}{lstlisting.2.47}%
 \contentsline {lstlisting}{\numberline {2.48}A deduced return shape}{23}{lstlisting.2.48}%
 \contentsline {lstlisting}{\numberline {2.49}1. global}{23}{lstlisting.2.49}%
 \contentsline {lstlisting}{\numberline {2.50}2. shared}{23}{lstlisting.2.50}%
-\contentsline {lstlisting}{\numberline {2.51}3. local}{24}{lstlisting.2.51}%
+\contentsline {lstlisting}{\numberline {2.51}3. local}{23}{lstlisting.2.51}%
 \contentsline {lstlisting}{\numberline {2.52}A declaration without a specifier}{24}{lstlisting.2.52}%
 \contentsline {lstlisting}{\numberline {2.53}Choosing local storage explicitly}{24}{lstlisting.2.53}%
 \contentsline {lstlisting}{\numberline {2.54}Example Code: Using Storage Qualifiers}{24}{lstlisting.2.54}%
@@ -71,12 +71,12 @@
 \contentsline {lstlisting}{\numberline {2.56}: block --- parallel blocks}{25}{lstlisting.2.56}%
 \contentsline {lstlisting}{\numberline {2.57}: thread --- Threads Within a Block}{26}{lstlisting.2.57}%
 \contentsline {lstlisting}{\numberline {2.58}Nesting Specifiers}{26}{lstlisting.2.58}%
-\contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{27}{lstlisting.2.59}%
+\contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{26}{lstlisting.2.59}%
 \contentsline {lstlisting}{\numberline {2.60}Indexing a with-in block}{27}{lstlisting.2.60}%
 \contentsline {lstlisting}{\numberline {2.61}A tuple of indices}{27}{lstlisting.2.61}%
 \contentsline {lstlisting}{\numberline {2.62}Indices derived from a tuple}{27}{lstlisting.2.62}%
 \contentsline {lstlisting}{\numberline {2.63}Nested bounded groups}{27}{lstlisting.2.63}%
-\contentsline {lstlisting}{\numberline {2.64}The foreach Block}{28}{lstlisting.2.64}%
+\contentsline {lstlisting}{\numberline {2.64}The foreach Block}{27}{lstlisting.2.64}%
 \contentsline {lstlisting}{\numberline {2.65}A named parallel index}{28}{lstlisting.2.65}%
 \contentsline {lstlisting}{\numberline {2.66}An unnamed parallel index}{28}{lstlisting.2.66}%
 \contentsline {lstlisting}{\numberline {2.67}One parallel level}{28}{lstlisting.2.67}%
@@ -86,7 +86,7 @@
 \contentsline {lstlisting}{\numberline {2.71}The equivalent C++ loop}{30}{lstlisting.2.71}%
 \contentsline {lstlisting}{\numberline {2.72}A bounded variable}{30}{lstlisting.2.72}%
 \contentsline {lstlisting}{\numberline {2.73}A tuple of bounded variables}{30}{lstlisting.2.73}%
-\contentsline {lstlisting}{\numberline {2.74}A variable derived from a tuple}{31}{lstlisting.2.74}%
+\contentsline {lstlisting}{\numberline {2.74}A variable derived from a tuple}{30}{lstlisting.2.74}%
 \contentsline {lstlisting}{\numberline {2.75}Indexing one shape}{31}{lstlisting.2.75}%
 \contentsline {lstlisting}{\numberline {2.76}A tuple of indices}{31}{lstlisting.2.76}%
 \contentsline {lstlisting}{\numberline {2.77}The generated C++ loop}{31}{lstlisting.2.77}%

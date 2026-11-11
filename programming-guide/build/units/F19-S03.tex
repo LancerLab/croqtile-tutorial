@@ -10,7 +10,7 @@ Here, the question mark \texttt{?} represents a compile-time unknown value. Any 
 
 \begin{lstlisting}[language={},caption={The caller supplying that dimension}]
 void bar(int * data, int dim0) {
-  foo(choreo::make_spanview<3>(data, {dim0, 1, 2}));
+  foo(croq::make_spanview<3>(data, {dim0, 1, 2}));
 }
 \end{lstlisting}
 

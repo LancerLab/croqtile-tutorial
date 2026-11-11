@@ -8,11 +8,11 @@ Croqtile preprocessor supports C/C++ \textbf{object-like macros} to connect both
 #define K 64
 __co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
 void foo() {
-  choreo::f32 a[M][K];
-  choreo::f32 b[N][K];
+  croq::f32 a[M][K];
+  croq::f32 b[N][K];
   // ...
-  auto res = matmul(choreo::make_spanview<2>(a, {M, K}),
-                    choreo::make_spanview<2>(b, {N, K}));
+  auto res = matmul(croq::make_spanview<2>(a, {M, K}),
+                    croq::make_spanview<2>(b, {N, K}));
 }
 \end{lstlisting}
 

@@ -388,20 +388,26 @@ def strip_gpu_backend(text):
 
 
 def _rename_runtime(text):
-    """Spell the runtime library the way it is actually shipped.
+    """Spell the runtime the way it is actually shipped.
 
+    The library is `choreo`, aliased as `croq`; the guide uses the short alias.
     `croqtile` appears as a header name, as a namespace written either plainly
     or with LaTeX line-break hints, and inside the assertion helper name. The
-    literal replacements cover both the listing and the prose spellings.
+    assertion helper is a free function, so it carries no namespace qualifier.
     """
     for old, new in (
+            ('croqtile::croqtile_assert', 'croq_assert'),
+            ('croq::croq_assert', 'croq_assert'),
+            ('choreo::choreo_assert', 'croq_assert'),
+            ('choreo_assert', 'croq_assert'),
+            ('croqtile_assert', 'croq_assert'),
             ('croqtile.h', 'choreo.h'),
-            ('croqtile_assert', 'choreo_assert'),
             ('make\\_\\allowbreak{}spanned', 'make\\_\\allowbreak{}spanview'),
             ('make_spanned', 'make_spanview'),
-            ('croqtile:', 'choreo:'),
-            ('choreo::span_view<2, choreo::s32>',
-             'choreo::spanned_view<choreo::s32, 2>'),
+            ('croqtile:', 'croq:'),
+            ('choreo:', 'croq:'),
+            ('croq::span_view<2, croq::s32>',
+             'croq::spanned_view<croq::s32, 2>'),
     ):
         text = text.replace(old, new)
     return text
@@ -1309,7 +1315,8 @@ UNIT_OVERRIDES = [
      'call bar(input.data, input.span(0), buffer.span(0));'),
     # The runtime header and namespace are `choreo` (aliased as `croq`).
     ('F15-S21', re.escape('#include "croqtile.h"'), '#include "choreo.h"'),
-    ('F15-S21', re.escape('croqtile::make_spanview<2>'), 'croq::make_spanview<2>'),
+    ('F19-S05', re.escape('int tile_m = 32, tile_m = 8, tile_k = 16;'),
+     'int tile_m = 32, tile_n = 8, tile_k = 16;'),
     # `out_store_s` is assigned inside the inner loop but read after it; give
     # it a placeholder before the loop, the same way the double-buffer example
     # seeds its spare futures with `dma.any`.

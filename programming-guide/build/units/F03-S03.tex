@@ -17,7 +17,7 @@ int main() {
   auto res = ele_add(lhs.view(), rhs.view());
   for (int i = 0; i < 4; ++i)
     for (int j = 0; j < 8; ++j)
-      croq::croq_assert(lhs[i][j] + rhs[i][j] == res[i][j],
+      croq_assert(lhs[i][j] + rhs[i][j] == res[i][j],
                           "values are not equal.");
   std::cout << "Test Passed\n" << std::endl;
 }
