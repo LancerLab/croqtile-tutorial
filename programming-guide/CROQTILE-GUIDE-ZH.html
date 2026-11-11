@@ -1120,7 +1120,7 @@ blockquote { margin: 10px 0; padding: 8px 12px; background: #eef4f8;
 </tbody>
 </table>
 <p>最简单的拷贝示例如下：</p>
-<pre class="code-hl"><code><span class="ln">f = <span class="k">dma</span>.<span class="k">copy</span> input.<span class="k">chunkat</span>(block) =&gt; <span class="k">shared</span>;</span><span class="ln">g = <span class="k">dma</span>.<span class="k">transp</span>&lt;1, 0&gt; matrix =&gt; <span class="k">local</span>;</span><span class="ln">h = <span class="k">dma</span>.<span class="k">pad</span>&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; <span class="k">shared</span>;</span></code></pre>
+<pre class="code-hl"><code><span class="ln">f = <span class="k">dma</span>.<span class="k">copy</span> input.<span class="k">chunkat</span>(blk) =&gt; <span class="k">shared</span>;</span><span class="ln">g = <span class="k">dma</span>.<span class="k">transp</span>&lt;1, 0&gt; matrix =&gt; <span class="k">local</span>;</span><span class="ln">h = <span class="k">dma</span>.<span class="k">pad</span>&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; <span class="k">shared</span>;</span></code></pre>
 <div class="listing-cap">清单 111：一个具体的拷贝</div>
 
 <p>沿着箭头阅读，<code>input</code> 是要搬运的区域，<code>shared</code> 指定目的存储，<code>f</code> 为传输结果命名。同步语句完成后，可以通过 <code>f.data</code> 访问目的数据；因此后续计算使用的是搬运后的缓冲区。</p>

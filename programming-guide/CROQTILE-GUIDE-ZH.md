@@ -1872,7 +1872,7 @@ future = engine.operation.modifiers source => destination;
 最简单的拷贝示例如下：
 
 ```co
-f = dma.copy input.chunkat(block) => shared;
+f = dma.copy input.chunkat(blk) => shared;
 g = dma.transp<1, 0> matrix => local;
 h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
 ```

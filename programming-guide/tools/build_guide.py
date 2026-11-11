@@ -1251,6 +1251,9 @@ UNIT_OVERRIDES = [
     ('F04-S08', r'The result of a DMA or TMA statement', 'The result of a DMA statement'),
     ('F04-S09', r'The same pattern applies to TMA:', 'The same pattern applies to asynchronous copies:'),
     ('F04-S09', r'An asynchronous tma copy', 'An asynchronous copy'),
+    # Round 79: `block` is a parallel-level keyword, so it cannot name a
+    # variable in the chunkat example.
+    ('F04-S02', r'chunkat\(block\)', 'chunkat(blk)'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
