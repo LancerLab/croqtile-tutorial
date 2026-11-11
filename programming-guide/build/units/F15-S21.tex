@@ -3,7 +3,7 @@
 Passing arguments between Croqtile and C++ requires the \texttt{croqtile.h} header. Combine a raw C++ pointer with its dimensions to construct Croqtile spanned data, as shown below.
 
 \begin{lstlisting}[language=croqtile,caption={Parameter Passing between Croqtile and C Function}]
-#include "croqtile.h"
+#include "choreo.h"
 void bar(const float* data, unsigned size) {}
 __co__ void foo(f32 mdspan<2> d) {
   parallel p by 6 {
@@ -11,7 +11,7 @@ __co__ void foo(f32 mdspan<2> d) {
   }
 }
 void foobar(float* a) {
-  foo(croqtile::make_spanview<2>(a, {1, 2}));
+  foo(croq::make_spanview<2>(a, {1, 2}));
 }
 \end{lstlisting}
 

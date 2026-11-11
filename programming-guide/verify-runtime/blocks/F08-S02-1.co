@@ -2,6 +2,7 @@ __co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
   parallel {px, py} by [8, 16] : block
     parallel {qx, qy} by [16, 16] : thread {
+    output.at(px#qx, py#qy) = 0;
     with tile_k in 16 {
       // Prologue: start loading tile 0
       lf0 = dma.copy.async lhs.chunkat(px, tile_k) => shared;

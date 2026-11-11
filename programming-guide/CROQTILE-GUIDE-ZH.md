@@ -544,7 +544,7 @@ int main() {
 C++ 指针需要与维度信息一起包装成带形状的数据，再传入 Croqtile 函数。相关工具由 `croqtile.h` 提供。
 
 ```co
-#include "croqtile.h"
+#include "choreo.h"
 void bar(const float* data, unsigned size) {}
 __co__ void foo(f32 mdspan<2> d) {
   parallel p by 6 {
@@ -552,7 +552,7 @@ __co__ void foo(f32 mdspan<2> d) {
   }
 }
 void foobar(float* a) {
-  foo(croqtile::make_spanview<2>(a, {1, 2}));
+  foo(croq::make_spanview<2>(a, {1, 2}));
 }
 ```
 
@@ -2603,7 +2603,7 @@ __device__ void foo(float *, int, unsigned, double, float) {}
 __co__ void foobar(f32 [M, 24] input, int N, float padding) {
   parallel p by 1 {
     shared f32 [14, 7] buffer;
-    call bar(input.data, M, buffer.span(0));
+    call bar(input.data, input.span(0), buffer.span(0));
     call foo(buffer.data, N, 3, 3.14, padding);
   }
 }
@@ -3536,6 +3536,8 @@ __co__  void foo() {
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
   parallel {p, q} by [16, 64] {
+    foreach {m, n} in [128 / #p, 256 / #q]
+      output.at(p#m, q#n) = 0;
     foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]
       output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);
   }
@@ -3564,7 +3566,7 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 
 组合行索引 `p#m` 的值为 `p * 8 + m`。p 遍历 16 个行分块，m 遍历每块八行，合起来覆盖第 0 到 127 行。列表达式 `q#n` 使用相同规则，每块四列。
 
-对每个输出位置，语句体沿 K 累加 `lhs.at(p#m, k) * rhs.at(k, q#n)`，所有贡献进入同一个输出元素。求和之前累加值必须为零，简略清单中的这项初始化需要补齐。
+对每个输出位置，语句体沿 K 累加 `lhs.at(p#m, k) * rhs.at(k, q#n)`，所有贡献进入同一个输出元素。清零循环在同一并行实例中先执行，因此每个累加元素都由拥有它的实例清零。
 
 ### 3.4.2 追踪一个输出元素 <a id="sec-3-4-2"></a>
 
@@ -3845,6 +3847,8 @@ out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_st
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
   parallel {px, py} by [8, 16] : block {
+    parallel {qx, qy} by [16, 16] : thread
+      output.at(px#qx, py#qy) = 0;
     foreach {tile_k} in [16] {
       lhs_load = dma.copy lhs.chunkat(px, tile_k) => shared;
       rhs_load = dma.copy rhs.chunkat(tile_k, py) => shared;
@@ -3876,7 +3880,7 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 
 块网格 `[8, 16]` 为每块分配 16 行、16 列输出。块内 `[16, 16]` 个线程各负责一个输出元素。K 方向共有 16 个分块，每块含 16 个元素，共同覆盖大小为 256 的完整收缩维度。
 
-数据复用发生在块内：装入的左侧分块为多个输出列供数，右侧分块为多个输出行供数。K 循环遍历各切片一次，将贡献累加到同一组输出位置。与标量示意代码一样，需要在累加前将输出初始化为零。暂存改变了内层循环的读取位置，点积本身保持不变。
+数据复用发生在块内：装入的左侧分块为多个输出列供数，右侧分块为多个输出行供数。K 循环遍历各切片一次，将贡献累加到同一组输出位置。与标量示意代码一样，输出在 K 循环之前清零。暂存改变了内层循环的读取位置，点积本身保持不变。
 
 ### 3.6.2 多缓冲(multi-buffering)：`dma.any`、`swap` 与 `rotate` <a id="sec-3-6-2"></a>
 
@@ -3891,6 +3895,7 @@ __co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
   parallel {px, py} by [8, 16] : block
     parallel {qx, qy} by [16, 16] : thread {
+    output.at(px#qx, py#qy) = 0;
     with tile_k in 16 {
       // Prologue: start loading tile 0
       lf0 = dma.copy.async lhs.chunkat(px, tile_k) => shared;
@@ -4151,6 +4156,9 @@ mma.scale mc, sc_a, sc_b;
 #define WARP_M 16
 #define WARP_N 16
 #define WARP_K 16
+#define MMA_M 16
+#define MMA_N 16
+#define MMA_K 16
 __co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, TILE_N)] : block {
     shared f16 [TILE_M, TILE_N] output_s;
@@ -4423,7 +4431,8 @@ parallel p1 by 2 : thread {
 这个骨架省略了基于事件的同步；3.8.5 节会补上完整的流水线协议。
 
 ```co
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
   parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
     shared f16 [WARP_M, TILE_K] lhs_load_s;
     shared f16 [WARP_N, TILE_K] rhs_load_s;
@@ -4449,6 +4458,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
       }
     }
   }
+  return output;
 }
 ```
 
@@ -4467,7 +4477,8 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 **持久核函数**把启动规模固定下来（通常接近 SM 数量），让每个块迭代处理多个分块：
 
 ```co
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
   int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
   parallel block_id by NUM_GROUPS : block {
     shared f16 [WARP_M, TILE_K] lhs_load_s;
@@ -4495,6 +4506,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
       }
     }
   }
+  return output;
 }
 ```
 
@@ -4640,7 +4652,8 @@ __co__ void bar(stream _s, f32[M] a) {
 #define WARP_N 64
 #define WARP_K 16
 #define STAGES 2
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
   parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
     shared event full[STAGES], empty[STAGES];
     shared f16 [WARP_M, TILE_K] lhs_load_s[STAGES];
@@ -4677,6 +4690,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
       }
     }
   }
+  return output;
 }
 ```
 
@@ -4973,6 +4987,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
           // Initiate DMA operations
           lhs_load = dma.copy.async lhs.chunkat(m_tile, k_tile) => shared;
           rhs_load = dma.copy.async rhs.chunkat(k_tile, n_tile) => shared;
+          out_store_s = dma.any;
           parallel q by 1 {
             with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {
               // Local buffers for tiling
@@ -4985,6 +5000,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
                 out_load_s = dma.copy.async l2_out.chunkat(m_tile_s, n_tile_s) => local;
                 wait out_load_s;
                 // Perform the matrix multiplication (dot product) operation
+                wait lhs_load_s, rhs_load_s;
                 call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 256, 256, 256, 0, 8, out_load_s.data);
                 // Store the result back to l2_out
                 out_store_s = dma.copy.async out_load_s.data => l2_out.chunkat(m_tile_s, n_tile_s);
@@ -4993,6 +5009,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
           }
           // Add "after" primitive to chain up DMA operations for the final output
           out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;
+          wait out_store;
         }
       }
     }

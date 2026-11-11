@@ -4,8 +4,7 @@ F03-S04-1    | FAIL | un-terminated '__co__' function is detected.
 F04-S03-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
 F05-S13-1    | FAIL | On GCU300, the total thread parallel-by count must not exceed 12.
 F05-S14-1    | FAIL | On GCU300, the total block parallel-by count must not exceed 2.
-Aborted
-F06-S04-1    | CRASH(134) | Assertion `(vty->Dims() != 0) && IsValidRank(vty->Dims())' failed.
+F06-S04-1    | FAIL | group level is not supported by the target architecture: gcu300.
 Aborted
 F07-S08-1    | CRASH(134) | Assertion `(vty->Dims() != 0) && IsValidRank(vty->Dims())' failed.
 Aborted
@@ -41,6 +40,5 @@ F35-S03-1    | ok   |
 F36-S02-1    | FAIL | global data access 'a[p]` is not allowed.
 F36-S03-1    | FAIL | global data access 'a[p]` is not allowed.
 F38-S01-1    | ok   |
-Aborted
-F40-S03-1    | CRASH(134) | Assertion failed: unable to find symbol `out_store_s' in the symbol table.
+F40-S03-1    | ok   |
 F40-S06-1    | ok   |

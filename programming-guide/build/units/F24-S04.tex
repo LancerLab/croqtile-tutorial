@@ -20,7 +20,7 @@ __device__ void foo(float *, int, unsigned, double, float) {}
 __co__ void foobar(f32 [M, 24] input, int N, float padding) {
   parallel p by 1 {
     shared f32 [14, 7] buffer;
-    call bar(input.data, M, buffer.span(0));
+    call bar(input.data, input.span(0), buffer.span(0));
     call foo(buffer.data, N, 3, 3.14, padding);
   }
 }

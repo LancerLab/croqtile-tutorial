@@ -10,7 +10,8 @@ This kernel combines \texttt{inthreads.\allowbreak{}async} (from Section~\ref{se
 #define WARP_N 64
 #define WARP_K 16
 #define STAGES 2
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
   parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
     shared event full[STAGES], empty[STAGES];
     shared f16 [WARP_M, TILE_K] lhs_load_s[STAGES];
@@ -47,5 +48,6 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
       }
     }
   }
+  return output;
 }
 \end{lstlisting}

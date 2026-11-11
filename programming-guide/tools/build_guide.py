@@ -1254,6 +1254,56 @@ UNIT_OVERRIDES = [
     # Round 79: `block` is a parallel-level keyword, so it cannot name a
     # variable in the chunkat example.
     ('F04-S02', r'chunkat\(block\)', 'chunkat(blk)'),
+    # Round 80: make the listings self-contained and logically correct.
+    # A declared span starts uninitialized, so accumulating into `output`
+    # with `+=` needs an explicit clearing step. The matmul listings relied
+    # on prose to say so; the code now does it.
+    ('F05-S13',
+     re.escape('  parallel {p, q} by [16, 64] {\n    foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]\n      output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);\n  }'),
+     '  parallel {p, q} by [16, 64] {\n    foreach {m, n} in [128 / #p, 256 / #q]\n      output.at(p#m, q#n) = 0;\n    foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]\n      output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);\n  }'),
+    ('F05-S14',
+     re.escape('  parallel {px, py} by [8, 16] : block {\n    foreach {tile_k} in [16] {'),
+     '  parallel {px, py} by [8, 16] : block {\n    parallel {qx, qy} by [16, 16] : thread\n      output.at(px#qx, py#qy) = 0;\n    foreach {tile_k} in [16] {'),
+    ('F08-S02',
+     re.escape('    parallel {qx, qy} by [16, 16] : thread {\n    with tile_k in 16 {'),
+     '    parallel {qx, qy} by [16, 16] : thread {\n    output.at(px#qx, py#qy) = 0;\n    with tile_k in 16 {'),
+    # A void kernel with an output parameter never delivers its result: the
+    # caller receives only what the function returns.
+    ('F07-S08',
+     re.escape('__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {'),
+     '__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {\n  f16 [M, N] output;'),
+    ('F07-S09',
+     re.escape('__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {'),
+     '__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {\n  f16 [M, N] output;'),
+    ('F08-S10',
+     re.escape('__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {'),
+     '__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {\n  f16 [M, N] output;'),
+    ('F07-S08', r'\n\}\n\\end\{lstlisting\}', '\n  return output;\n}\n\\end{lstlisting}'),
+    ('F07-S09', r'\n\}\n\\end\{lstlisting\}', '\n  return output;\n}\n\\end{lstlisting}'),
+    ('F08-S10', r'\n\}\n\\end\{lstlisting\}', '\n  return output;\n}\n\\end{lstlisting}'),
+    # The MMA example uses MMA_M / MMA_N / MMA_K without defining them.
+    ('F06-S04', re.escape('#define WARP_K 16\n'),
+     '#define WARP_K 16\n#define MMA_M 16\n#define MMA_N 16\n#define MMA_K 16\n'),
+    # `M` is a symbolic extent; read it from the operand instead of naming it.
+    ('F24-S04', re.escape('call bar(input.data, M, buffer.span(0));'),
+     'call bar(input.data, input.span(0), buffer.span(0));'),
+    # The runtime header and namespace are `choreo` (aliased as `croq`).
+    ('F15-S21', re.escape('#include "croqtile.h"'), '#include "choreo.h"'),
+    ('F15-S21', re.escape('croqtile::make_spanview<2>'), 'croq::make_spanview<2>'),
+    # `out_store_s` is assigned inside the inner loop but read after it; give
+    # it a placeholder before the loop, the same way the double-buffer example
+    # seeds its spare futures with `dma.any`.
+    ('F40-S03',
+     re.escape('          parallel q by 1 {\n            with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {'),
+     '          out_store_s = dma.any;\n          parallel q by 1 {\n            with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {'),
+    # The operands must be resident before the dot product consumes them.
+    ('F40-S03',
+     re.escape('                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data,'),
+     '                wait lhs_load_s, rhs_load_s;\n                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data,'),
+    # The final store is awaited before the function returns the buffer it fills.
+    ('F40-S03',
+     re.escape('          out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;'),
+     '          out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;\n          wait out_store;'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

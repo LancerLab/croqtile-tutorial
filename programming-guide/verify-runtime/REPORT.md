@@ -6,32 +6,32 @@ Compiler: `/home/wsj/choreo/build/choreo`.
 ## How to reproduce
 
 ```sh
-./verdict.sh          # target-check every published block, write verdict.txt
-./run.sh              # build and run every harness, numeric compare
+./verdict.sh   # target-check every published block, write verdict.txt
+./run.sh       # build and run every harness, numeric compare
 ```
+
+`blocks/` is regenerated from `build/units/*.tex` after each `build_guide.py`
+run; it holds the listings exactly as the PDF prints them.
 
 ## Coverage
 
 `build/units/*.tex` contains 199 `croqtile` listings. Filtering to listings that
-contain `__co__` and no `...` yields **40 "complete" blocks**. They were extracted
-verbatim into `blocks/`.
+contain `__co__` and no `...` yields **40 "complete" blocks**.
 
 | Verdict | Count | Meaning |
 |---|---|---|
-| `ok` | 11 | no diagnostic from the front end |
-| `FAIL` | 23 | rejected by the target with a diagnostic |
-| `CRASH` | 6 | compiler abort or segfault |
+| `ok` | 12 | no diagnostic from the front end |
+| `FAIL` | 24 | rejected by the target with a diagnostic |
+| `CRASH` | 4 | compiler abort or segfault |
 
-So **no published "complete" block compiles and runs unmodified on GCU**.
-`verdict.txt` has the per-block reason.
+No published block compiles and runs unmodified on GCU. `verdict.txt` has the
+per-block reason.
 
-### The 11 that pass are mostly skeletons
+### The 12 that pass are mostly skeletons
 
 `F10-S11`, `F15-S03`, `F26-S01` (x2), `F33-S03`, `F34-S07`, `F35-S03` have
-comment-only bodies or empty bodies. `F11-S02` only prints. `F14-S08`,
-`F38-S01` and `F40-S06` call external kernels (`call kernel(...)`,
-`call dot_general_fp32(...)`, `call rgb2gray_kernel_fp32_fp32(...)`) that the
-block never defines.
+comment-only bodies. `F11-S02` only prints. `F14-S08`, `F38-S01`, `F40-S03` and
+`F40-S06` call kernels the block never defines.
 
 ## Failure categories
 
@@ -41,27 +41,59 @@ block never defines.
 | parallel-by count over the target limit | F03-S03, F05-S13, F05-S14, F08-S02, F33-S04, F34-S08 | `total thread/block parallel-by count must not exceed N` |
 | thread-indexed DMA | F04-S03, F24-S06-1, F29-S03, F29-S04, F29-S05 | `a thread-level DMA with a thread-indexed source must index the thread-level parallel variable on the destination` |
 | MMA operand in shared storage | F08-S10 | `MMA load on GCU requires source in LOCAL (L1) storage` |
-| undefined symbols | F06-S04, F07-S08, F07-S09, F10-S04, F19-S06, F24-S06-2 | `symbol 'WARP_M' is used before declaration` etc. |
-| teaching examples that must fail | F03-S04, F15-S05, F15-S21, F24-S03, F24-S04 | expected |
+| `: group` level absent on this target | F06-S04 | `group level is not supported by the target architecture` |
+| teaching examples that must fail | F03-S04, F15-S05, F15-S21, F24-S03, F24-S04, F24-S06-2, F19-S06 | expected |
 
 ### Compiler crashes
 
 | Block | Symptom |
 |---|---|
-| F06-S04 | `Assertion (vty->Dims() != 0) && IsValidRank(vty->Dims())` |
-| F07-S08 | same assertion |
+| F07-S08 | `Assertion (vty->Dims() != 0) && IsValidRank(vty->Dims())` |
 | F07-S09 | `no type for an init expression` |
 | F10-S04 | abort, no message |
 | F19-S06 | segfault (139) |
-| F40-S03 | `unable to find symbol 'out_store_s'` (also seen to pass once — nondeterministic) |
 
 These are compiler defects, not guide defects, but a reader pasting the block
 sees a crash instead of a diagnostic.
 
+## Code fixes applied to the guide
+
+Round 80 in `tools/build_guide.py` (plus matching `editorial/narrative-polish.json`
+prose edits). Each fix is target-independent — a reader on any backend gets
+correct code.
+
+| Block | Problem | Fix |
+|---|---|---|
+| F05-S13 | `+=` into a declared span that is never cleared | add a zeroing loop in the same parallel instance |
+| F05-S14 | same, across the K loop | zero at thread level before the `tile_k` loop |
+| F08-S02 | same, before the double-buffer prologue | zero at the top of the thread body |
+| F07-S08 | `void` kernel with an output parameter never returns its result | `auto`, declare and return `output` |
+| F07-S09 | same | same |
+| F08-S10 | same | same |
+| F06-S04 | `MMA_M` / `MMA_N` / `MMA_K` used but never defined | `#define` them alongside the other tile constants |
+| F24-S04 | `M` is a symbolic extent, not a name in scope | read it as `input.span(0)` |
+| F15-S21 | `#include "croqtile.h"` and `croqtile::` — neither exists | `choreo.h` and `croq::` |
+| F40-S03 | `out_store_s` read after the loop that assigns it | seed with `dma.any` before the loop |
+| F40-S03 | async copies never awaited | `wait lhs_load_s, rhs_load_s;` before the dot product, `wait out_store;` before returning |
+
+Two of the fixes turned compiler crashes into ordinary diagnostics (F06-S04,
+F40-S03), which is how the remaining problems became visible. F40-S03 now clears
+the front end entirely.
+
+**Still open in the listings:** F07-S08 deliberately omits the producer/consumer
+handoff and says so in prose; F14-S08, F38-S01 and F40-S06 call kernels the
+guide never defines.
+
+## Known-wrong: the `choreo.h` name in prose
+
+The runtime header shipped with the toolchain is `choreo.h`. Several prose
+passages still call it `croqtile.h`. The code listings now use the real name;
+the prose was left for a separate naming decision.
+
 ## Harnesses
 
 Seven blocks were ported to GCU-legal form and given a host `main` that fills
-random inputs, calls the kernel, and compares against a CPU reference.
+random inputs, calls the kernel and compares against a CPU reference.
 
 | Harness | Source block | Result |
 |---|---|---|
@@ -80,7 +112,7 @@ order and the `mma.load` spelling are unchanged.
 
 ## MMA finding
 
-MMA results were compared against a CPU reference over a range of operand shapes:
+MMA results compared against a CPU reference over a range of operand shapes:
 
 | M | N | K | Result |
 |---|---|---|---|
@@ -95,8 +127,7 @@ MMA results were compared against a CPU reference over a range of operand shapes
 | 96 | 96 | 128 | rejected (`96` is not a supported extent) |
 
 The operand tiles must cover whole micro-tiles; a partially covered tile
-silently produces wrong numbers rather than being rejected. The `16 x 16`
-tiles used by the guide's first MMA example fall in the wrong band.
+silently produces wrong numbers rather than being rejected.
 
 Both MMA read paths verify identically: passing the local buffer straight to
 `mma.row.row`, and the guide's `ma = mma.load lhs_l` spelling.

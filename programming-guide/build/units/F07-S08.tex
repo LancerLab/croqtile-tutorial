@@ -3,7 +3,8 @@
 Event-based synchronization is left out of this skeleton; Section~\ref{sec:3-8-5} adds the full pipeline protocol. Focus on the program structure:
 
 \begin{lstlisting}[language=croqtile,caption={A 1P1C matmul skeleton}]
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
   parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
     shared f16 [WARP_M, TILE_K] lhs_load_s;
     shared f16 [WARP_N, TILE_K] rhs_load_s;
@@ -29,6 +30,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
       }
     }
   }
+  return output;
 }
 \end{lstlisting}
 

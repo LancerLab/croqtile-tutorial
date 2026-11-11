@@ -4,6 +4,8 @@
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
   parallel {px, py} by [8, 16] : block {
+    parallel {qx, qy} by [16, 16] : thread
+      output.at(px#qx, py#qy) = 0;
     foreach {tile_k} in [16] {
       lhs_load = dma.copy lhs.chunkat(px, tile_k) => shared;
       rhs_load = dma.copy rhs.chunkat(tile_k, py) => shared;
@@ -38,4 +40,4 @@ The composed indices work in two layers: \texttt{px\#qx} composes block index \t
 
 The block grid \co@[8, 16]@ gives each block 16 rows and 16 columns of output. Its \co@[16, 16]@ threads assign one output element to each thread. Sixteen K tiles, each containing 16 elements along K, cover the full contraction dimension of 256.
 
-The reuse occurs inside the block. A loaded left-hand tile supplies several output columns, and a loaded right-hand tile supplies several output rows. The K loop visits every slice once and adds its contribution to the same output positions. As in the scalar sketch, initialize the output to zero before accumulating. Staging changes the source of the inner-loop reads, while the dot product remains the same.
+The reuse occurs inside the block. A loaded left-hand tile supplies several output columns, and a loaded right-hand tile supplies several output rows. The K loop visits every slice once and adds its contribution to the same output positions. As in the scalar sketch, the output is cleared before the K loop runs. Staging changes the source of the inner-loop reads, while the dot product remains the same.

@@ -1,5 +1,19 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {chapter}{Preface}{iii}{chapter*.1}\protected@file@percent }
@@ -40,7 +54,7 @@
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.1}The three regions of one source file}{8}{lstlisting.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2.2}Reading a Kernel Line by Line}{9}{section.2.2}\protected@file@percent }
 \newlabel{sec:2-2}{{2.2}{9}{Reading a Kernel Line by Line}{section.2.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.2}A kernel signature}{9}{lstlisting.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.2}A kernel signature (fragment)}{9}{lstlisting.2.2}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.3}Allocating the output}{9}{lstlisting.2.3}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.4}The parallel body}{9}{lstlisting.2.4}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.5}Returning the result}{10}{lstlisting.2.5}\protected@file@percent }
@@ -72,7 +86,7 @@
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{17}{lstlisting.2.26}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2.5}Integers, I-Tuples, and Bounded Values}{17}{section.2.5}\protected@file@percent }
 \newlabel{sec:2-5}{{2.5}{17}{Integers, I-Tuples, and Bounded Values}{section.2.5}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.27}Scalar Types}{17}{lstlisting.2.27}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.27}Scalar Types (fragment)}{17}{lstlisting.2.27}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{17}{lstlisting.2.28}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{18}{lstlisting.2.29}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.30}An initialized integer}{18}{lstlisting.2.30}\protected@file@percent }
@@ -160,7 +174,7 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces The copy result exposes the destination tensor through .data and its shape through .span; asynchronous reads require completion first.}}{41}{figure.2.7}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.99}A synchronous copy}{41}{lstlisting.2.99}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.100}An asynchronous copy}{41}{lstlisting.2.100}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.101}An asynchronous tma copy}{41}{lstlisting.2.101}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.101}An asynchronous copy}{41}{lstlisting.2.101}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.102}dma.transp ...}{42}{lstlisting.2.102}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{42}{lstlisting.2.103}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2.104}The tileflow program}{42}{lstlisting.2.104}\protected@file@percent }
@@ -189,27 +203,25 @@
 \newlabel{sec:2-12}{{2.12}{50}{The Four-Step MMA Syntax}{section.2.12}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.13}C++ Embedding, Calls, Macros, and the Preprocessor}{51}{section.2.13}\protected@file@percent }
 \newlabel{sec:2-13}{{2.13}{51}{C++ Embedding, Calls, Macros, and the Preprocessor}{section.2.13}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.121}A macro inside a cpp string}{51}{lstlisting.2.121}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.122}Its expanded form}{51}{lstlisting.2.122}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.123}Tile geometry as macros}{52}{lstlisting.2.123}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.124}Compile-time assertions with error}{52}{lstlisting.2.124}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.125}Conditional code paths}{52}{lstlisting.2.125}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.126}Calling C++ Functions}{53}{lstlisting.2.126}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.127}An object-like macro}{53}{lstlisting.2.127}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.128}A macro with parameters}{54}{lstlisting.2.128}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.129}Conditional Compilation}{54}{lstlisting.2.129}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.130}The general call syntax}{54}{lstlisting.2.130}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.131}An illegal call site}{55}{lstlisting.2.131}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.132}The Convention: Allowed Argument Types}{55}{lstlisting.2.132}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.14}Printing, Assertions, and Compile-Time Inspection}{56}{section.2.14}\protected@file@percent }
-\newlabel{sec:2-14}{{2.14}{56}{Printing, Assertions, and Compile-Time Inspection}{section.2.14}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.133}A compile-time shape print}{56}{lstlisting.2.133}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.134}The printed shape}{56}{lstlisting.2.134}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.135}A runtime inspect kernel}{56}{lstlisting.2.135}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.136}A print inside a parallel block}{56}{lstlisting.2.136}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.137}assert: runtime invariant checks}{57}{lstlisting.2.137}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.15}Syntax Quick Reference}{57}{section.2.15}\protected@file@percent }
-\newlabel{sec:2-15}{{2.15}{57}{Syntax Quick Reference}{section.2.15}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.121}Tile geometry as macros}{51}{lstlisting.2.121}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.122}Compile-time assertions with error}{52}{lstlisting.2.122}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.123}Conditional code paths}{52}{lstlisting.2.123}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.124}Calling C++ Functions}{52}{lstlisting.2.124}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.125}An object-like macro}{53}{lstlisting.2.125}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.126}A macro with parameters}{53}{lstlisting.2.126}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.127}Conditional Compilation}{53}{lstlisting.2.127}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.128}The general call syntax}{54}{lstlisting.2.128}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.129}An illegal call site}{54}{lstlisting.2.129}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.130}The Convention: Allowed Argument Types}{55}{lstlisting.2.130}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.14}Printing, Assertions, and Compile-Time Inspection}{55}{section.2.14}\protected@file@percent }
+\newlabel{sec:2-14}{{2.14}{55}{Printing, Assertions, and Compile-Time Inspection}{section.2.14}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.131}A compile-time shape print}{55}{lstlisting.2.131}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.132}The printed shape}{56}{lstlisting.2.132}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.133}A runtime inspect kernel}{56}{lstlisting.2.133}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.134}A print inside a parallel block}{56}{lstlisting.2.134}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.135}assert: runtime invariant checks}{56}{lstlisting.2.135}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.15}Syntax Quick Reference}{56}{section.2.15}\protected@file@percent }
+\newlabel{sec:2-15}{{2.15}{56}{Syntax Quick Reference}{section.2.15}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {3}Programming Guide}{59}{chapter.3}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -245,162 +257,137 @@
 \@writefile{toc}{\contentsline {section}{\numberline {3.4}Parallelism, Space Specifiers, and Masking}{74}{section.3.4}\protected@file@percent }
 \newlabel{sec:3-4}{{3.4}{74}{Parallelism, Space Specifiers, and Masking}{section.3.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces The same eight tasks take eight, two, or one time steps when one, four, or eight tasks can run at once.}}{74}{figure.3.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.23}: group-4 --- cooperative group}{75}{lstlisting.3.23}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.24}Explicit Masking/Condition}{76}{lstlisting.3.24}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.25}Implicit Masking}{76}{lstlisting.3.25}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.26}Experimental: Optional Where-Binding for within}{77}{lstlisting.3.26}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.27}Masking for Multi-Levels}{78}{lstlisting.3.27}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.23}Explicit Masking/Condition}{76}{lstlisting.3.23}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.24}Implicit Masking}{76}{lstlisting.3.24}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.25}Experimental: Optional Where-Binding for within}{77}{lstlisting.3.25}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.26}Masking for Multi-Levels}{78}{lstlisting.3.26}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Worked Example: Tiled Matrix Multiplication}{79}{subsection.3.4.1}\protected@file@percent }
 \newlabel{sec:3-4-1}{{3.4.1}{79}{Worked Example: Tiled Matrix Multiplication}{subsection.3.4.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.28}Scalar Matmul (No DMA)}{79}{lstlisting.3.28}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces The [128, 256] output has a [16, 64] tile grid. Each tile has shape [8, 4]; only the first few tiles are drawn.}}{80}{figure.3.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.27}Scalar Matmul (No DMA)}{79}{lstlisting.3.27}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces The [128, 256] output has a [16, 64] tile grid. Each tile has shape [8, 4]; only the first few tiles are drawn.}}{79}{figure.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Tracing One Output Element}{80}{subsection.3.4.2}\protected@file@percent }
 \newlabel{sec:3-4-2}{{3.4.2}{80}{Tracing One Output Element}{subsection.3.4.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{80}{section.3.5}\protected@file@percent }
 \newlabel{sec:3-5}{{3.5}{80}{Tile Selection and Data Expressions}{section.3.5}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.29}Tile and Flow}{81}{lstlisting.3.29}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.28}Tile and Flow}{81}{lstlisting.3.28}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{82}{subsection.3.5.1}\protected@file@percent }
 \newlabel{sec:3-5-1}{{3.5.1}{82}{Arbitrary-Offset Windows: view and from}{subsection.3.5.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.30}A window at a constant offset}{82}{lstlisting.3.30}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.31}A window at a runtime offset}{82}{lstlisting.3.31}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{82}{subsection.3.5.2}\protected@file@percent }
-\newlabel{sec:3-5-2}{{3.5.2}{82}{Strided Tiles: subspan, step, and at}{subsection.3.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces The small example uses a [4, 4] window from (2, 3); the same rule selects the [16, 16] window from (37, 50) in the code.}}{83}{figure.3.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.32}Strided tiles: .subspan, .step, and .at}{83}{lstlisting.3.32}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.3}Zero-Padding with zfill}{83}{subsection.3.5.3}\protected@file@percent }
-\newlabel{sec:3-5-3}{{3.5.3}{83}{Zero-Padding with zfill}{subsection.3.5.3}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.33}Zero-padding: .zfill}{83}{lstlisting.3.33}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces The small diagram contrasts packed [3, 3] tiles with step(5, 5). In the code, [16, 16] tiles with step(32, 32) leave 16-element gaps.}}{84}{figure.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.4}Layout Reinterpretation with span\_as}{84}{subsection.3.5.4}\protected@file@percent }
-\newlabel{sec:3-5-4}{{3.5.4}{84}{Layout Reinterpretation with span\_as}{subsection.3.5.4}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.34}A flat strip reinterpreted as a matrix}{84}{lstlisting.3.34}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.35}A movement statement using the reinterpretation}{84}{lstlisting.3.35}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces A [4, 4] boundary tile from a [6, 8] source keeps its valid rows and fills the two out-of-range rows with zeros.}}{85}{figure.3.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces The 16-element buffer becomes a [4, 4] view with the same linear order. The 1D strip is displayed on two lines for readability.}}{85}{figure.3.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.5}Tile Selection: Summary and Syntax}{86}{subsection.3.5.5}\protected@file@percent }
-\newlabel{sec:3-5-10}{{3.5.5}{86}{Tile Selection: Summary and Syntax}{subsection.3.5.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{86}{section.3.6}\protected@file@percent }
-\newlabel{sec:3-6}{{3.6}{86}{Data Movement: Operations, Configuration, and Async Patterns}{section.3.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Scalar indexing reads individual elements; explicit tile movement stages a selected tile into shared storage.}}{87}{figure.3.7}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.36}DMA vs TMA}{88}{lstlisting.3.36}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.37}A host-computable tile shape}{88}{lstlisting.3.37}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.38}A runtime tile index that is rejected}{88}{lstlisting.3.38}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.39}tma.copy: target tensor movement}{88}{lstlisting.3.39}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces The descriptor supplies tensor layout information, the source expression supplies tile coordinates, and the transfer writes the shared destination.}}{89}{figure.3.8}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces DMA distributes transfer work across threads; TMA delegates tensor address generation to a descriptor-based transfer engine.}}{89}{figure.3.9}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.40}An asynchronous DMA declaration}{90}{lstlisting.3.40}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.41}The same declaration with storage}{90}{lstlisting.3.41}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.42}Operation Type}{90}{lstlisting.3.42}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.43}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{91}{lstlisting.3.43}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}Worked Example: DMA Matmul}{91}{subsection.3.6.1}\protected@file@percent }
-\newlabel{sec:3-6-1}{{3.6.1}{91}{Worked Example: DMA Matmul}{subsection.3.6.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.44}DMA Matmul: Tiles in Shared Storage}{91}{lstlisting.3.44}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Each block stages [16, 16] operand tiles for one K slice; 256 threads accumulate the block’s [16, 16] output tile.}}{92}{figure.3.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.2}Multi-Buffering: dma.any, swap, and rotate}{93}{subsection.3.6.2}\protected@file@percent }
-\newlabel{sec:3-6-2}{{3.6.2}{93}{Multi-Buffering: dma.any, swap, and rotate}{subsection.3.6.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.45}Double buffering with swap}{93}{lstlisting.3.45}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.46}Multi-Buffering Optimization with Croqtile}{94}{lstlisting.3.46}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.3}Worked Example: A Pipelined Kernel}{95}{subsection.3.6.3}\protected@file@percent }
-\newlabel{sec:3-6-3}{{3.6.3}{95}{Worked Example: A Pipelined Kernel}{subsection.3.6.3}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.47}Example: TMA in a pipelined matmul}{96}{lstlisting.3.47}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.7}Contraction and Layout Contracts}{96}{section.3.7}\protected@file@percent }
-\newlabel{sec:3-7}{{3.7}{96}{Contraction and Layout Contracts}{section.3.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Operand fragments are distributed across cooperating lanes. The color pattern is schematic, not an exact instruction-level register map.}}{97}{figure.3.11}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.48}Partial Tiles, Guarding, and .zfill}{97}{lstlisting.3.48}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Initialize the accumulator, load both operands, accumulate, and store; repeat the load and accumulation steps over K slices.}}{98}{figure.3.12}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.49}.swiz N : Shared-Memory Layout for the Consumer}{99}{lstlisting.3.49}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.50}A swizzled copy}{99}{lstlisting.3.50}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.51}A swizzled mma load}{99}{lstlisting.3.51}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Eight-bank schematic: different addresses in one bank serialize, while remapping spreads accesses. Copy and MMA load must use matching swizzle.}}{100}{figure.3.13}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.52}A sparse contraction}{100}{lstlisting.3.52}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.53}A scaled contraction}{100}{lstlisting.3.53}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.54}Another contraction layout}{100}{lstlisting.3.54}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.1}Worked Example: One Cooperative Group}{101}{subsection.3.7.1}\protected@file@percent }
-\newlabel{sec:3-7-1}{{3.7.1}{101}{Worked Example: One Cooperative Group}{subsection.3.7.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.55}One group, one tile: the simplest MMA matmul}{101}{lstlisting.3.55}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.2}Worked Example: Widening the Cooperation Scope}{102}{subsection.3.7.2}\protected@file@percent }
-\newlabel{sec:3-7-2}{{3.7.2}{102}{Worked Example: Widening the Cooperation Scope}{subsection.3.7.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces The : group and : group-4 scopes use different cooperation widths while preserving the fill, load, multiply, and store interface.}}{102}{figure.3.14}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.56}Widening the scope: cooperative group and mma}{103}{lstlisting.3.56}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.3}Worked Example: Two Cooperative Groups}{103}{subsection.3.7.3}\protected@file@percent }
-\newlabel{sec:3-7-3}{{3.7.3}{103}{Worked Example: Two Cooperative Groups}{subsection.3.7.3}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.57}Tiling further: two cooperative groups sharing operands}{103}{lstlisting.3.57}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.4}MMA Syntax Summary}{104}{subsection.3.7.4}\protected@file@percent }
-\newlabel{sec:3-7-9}{{3.7.4}{104}{MMA Syntax Summary}{subsection.3.7.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.5}MMA Design Summary}{105}{subsection.3.7.5}\protected@file@percent }
-\newlabel{sec:3-7-10}{{3.7.5}{105}{MMA Design Summary}{subsection.3.7.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{105}{section.3.8}\protected@file@percent }
-\newlabel{sec:3-8}{{3.8}{105}{Coordination, Pipelines, and Persistent Scheduling}{section.3.8}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.58}Structured concurrent regions with inthreads.async}{106}{lstlisting.3.58}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Four load/compute pairs are shown in both schedules. Concurrent producer and consumer regions overlap work while preserving dependencies.}}{107}{figure.3.15}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.59}Inter-region signaling with events}{107}{lstlisting.3.59}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces The same four K tiles run sequentially or with two-buffer overlap. Timings are schematic and include pipeline startup and drain.}}{108}{figure.3.16}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.60}Make it Asynchronous}{108}{lstlisting.3.60}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.61}Event Instances}{109}{lstlisting.3.61}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.62}A single-instance deadlock}{109}{lstlisting.3.62}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.63}A credit-count deadlock}{109}{lstlisting.3.63}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.1}Canonical Pattern: One Producer and One Consumer}{110}{subsection.3.8.1}\protected@file@percent }
-\newlabel{sec:3-8-1}{{3.8.1}{110}{Canonical Pattern: One Producer and One Consumer}{subsection.3.8.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.64}The canonical pattern: 1 producer 1 consumer}{110}{lstlisting.3.64}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{110}{subsection.3.8.2}\protected@file@percent }
-\newlabel{sec:3-8-2}{{3.8.2}{110}{Worked Example: A 1P1C Kernel Skeleton}{subsection.3.8.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.65}A 1P1C matmul skeleton}{110}{lstlisting.3.65}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{111}{subsection.3.8.3}\protected@file@percent }
-\newlabel{sec:3-8-3}{{3.8.3}{111}{Persistent Scheduling}{subsection.3.8.3}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.66}Persistent scheduling and the if guard}{111}{lstlisting.3.66}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Four fixed blocks process ten tiles in three iterations; the final two padded tile IDs are skipped by the if guard.}}{112}{figure.3.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{113}{subsection.3.8.4}\protected@file@percent }
-\newlabel{sec:3-8-4}{{3.8.4}{113}{Host-Level Concurrency and Stream Binding}{subsection.3.8.4}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.67}parallel.async: host-level concurrency}{113}{lstlisting.3.67}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.68}Asynchronous program launch and Stream Binding}{113}{lstlisting.3.68}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.69}An asynchronous launch}{114}{lstlisting.3.69}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.70}The synchronous form}{114}{lstlisting.3.70}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.71}Stream Binding}{114}{lstlisting.3.71}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.72}Stream Binding without .async}{114}{lstlisting.3.72}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{115}{subsection.3.8.5}\protected@file@percent }
-\newlabel{sec:3-8-5}{{3.8.5}{115}{Worked Example: A Full Event Pipeline}{subsection.3.8.5}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.73}The full 1P1C event pipeline}{115}{lstlisting.3.73}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{116}{subsection.3.8.6}\protected@file@percent }
-\newlabel{sec:3-8-10}{{3.8.6}{116}{Coordination Pattern Summary}{subsection.3.8.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.}}{117}{figure.3.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{118}{section.3.9}\protected@file@percent }
-\newlabel{sec:3-9}{{3.9}{118}{C++ Interoperability and the Preprocessor}{section.3.9}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.74}Differences from C++ Preprocessing}{119}{lstlisting.3.74}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.75}A templated device helper}{119}{lstlisting.3.75}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.76}A call that instantiates it}{119}{lstlisting.3.76}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.77}A cok block around device code}{120}{lstlisting.3.77}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.78}The block after factoring target-specific details}{120}{lstlisting.3.78}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{120}{subsection.3.9.1}\protected@file@percent }
-\newlabel{sec:3-9-1}{{3.9.1}{120}{Worked Example: Calling a Device Helper}{subsection.3.9.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.79}device functions: target alongside Croqtile}{121}{lstlisting.3.79}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.9.2}Verbatim C++ Injection}{122}{subsection.3.9.2}\protected@file@percent }
-\newlabel{sec:3-9-2}{{3.9.2}{122}{Verbatim C++ Injection}{subsection.3.9.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.80}storage hints: setmaxnreg}{122}{lstlisting.3.80}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.9.3}Interoperability Summary}{122}{subsection.3.9.3}\protected@file@percent }
-\newlabel{sec:3-9-10}{{3.9.3}{122}{Interoperability Summary}{subsection.3.9.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{122}{section.3.10}\protected@file@percent }
-\newlabel{sec:3-10}{{3.10}{122}{Tileflow Patterns and Design Rationales}{section.3.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.19}{\ignorespaces Structured tile operations expose geometry and layout for efficient lowering; performance still depends on the chosen tiles and execution configuration.}}{123}{figure.3.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{124}{subsection.3.10.1}\protected@file@percent }
-\newlabel{sec:3-10-1}{{3.10.1}{124}{Worked Example: Tiled matmul}{subsection.3.10.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.81}Example Code: Matrix Multiplication with Tiling}{124}{lstlisting.3.81}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{126}{subsection.3.10.2}\protected@file@percent }
-\newlabel{sec:3-10-2}{{3.10.2}{126}{Worked Example: rgb2gray}{subsection.3.10.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.82}Example Code}{126}{lstlisting.3.82}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{126}{section.3.11}\protected@file@percent }
-\newlabel{sec:3-11}{{3.11}{126}{Diagnostics and Methodology}{section.3.11}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.29}A window at a constant offset}{82}{lstlisting.3.29}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces The small example uses a [4, 4] window from (2, 3); the same rule selects the [16, 16] window from (37, 50) in the code.}}{82}{figure.3.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{82}{lstlisting.3.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{83}{subsection.3.5.2}\protected@file@percent }
+\newlabel{sec:3-5-2}{{3.5.2}{83}{Strided Tiles: subspan, step, and at}{subsection.3.5.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.31}Strided tiles: .subspan, .step, and .at}{83}{lstlisting.3.31}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces The small diagram contrasts packed [3, 3] tiles with step(5, 5). In the code, [16, 16] tiles with step(32, 32) leave 16-element gaps.}}{83}{figure.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.3}Layout Reinterpretation with span\_as}{84}{subsection.3.5.3}\protected@file@percent }
+\newlabel{sec:3-5-4}{{3.5.3}{84}{Layout Reinterpretation with span\_as}{subsection.3.5.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{84}{lstlisting.3.32}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.33}A movement statement using the reinterpretation}{84}{lstlisting.3.33}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces The 16-element buffer becomes a [4, 4] view with the same linear order. The 1D strip is displayed on two lines for readability.}}{84}{figure.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.4}Tile Selection: Summary and Syntax}{84}{subsection.3.5.4}\protected@file@percent }
+\newlabel{sec:3-5-10}{{3.5.4}{84}{Tile Selection: Summary and Syntax}{subsection.3.5.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{85}{section.3.6}\protected@file@percent }
+\newlabel{sec:3-6}{{3.6}{85}{Data Movement: Operations, Configuration, and Async Patterns}{section.3.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Scalar indexing reads individual elements; explicit tile movement stages a selected tile into shared storage.}}{86}{figure.3.6}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.34}An asynchronous DMA declaration}{86}{lstlisting.3.34}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.35}The same declaration with storage}{87}{lstlisting.3.35}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.36}Operation Type}{87}{lstlisting.3.36}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.37}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{88}{lstlisting.3.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}Worked Example: DMA Matmul}{88}{subsection.3.6.1}\protected@file@percent }
+\newlabel{sec:3-6-1}{{3.6.1}{88}{Worked Example: DMA Matmul}{subsection.3.6.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.38}DMA Matmul: Tiles in Shared Storage}{88}{lstlisting.3.38}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Each block stages [16, 16] operand tiles for one K slice; 256 threads accumulate the block’s [16, 16] output tile.}}{89}{figure.3.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.2}Multi-Buffering: dma.any, swap, and rotate}{89}{subsection.3.6.2}\protected@file@percent }
+\newlabel{sec:3-6-2}{{3.6.2}{89}{Multi-Buffering: dma.any, swap, and rotate}{subsection.3.6.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.39}Double buffering with swap}{90}{lstlisting.3.39}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.40}Multi-Buffering Optimization with Croqtile}{91}{lstlisting.3.40}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}Contraction and Layout Contracts}{92}{section.3.7}\protected@file@percent }
+\newlabel{sec:3-7}{{3.7}{92}{Contraction and Layout Contracts}{section.3.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Operand fragments are distributed across cooperating lanes. The color pattern is schematic, not an exact instruction-level register map.}}{93}{figure.3.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Initialize the accumulator, load both operands, accumulate, and store; repeat the load and accumulation steps over K slices.}}{93}{figure.3.9}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.41}Partial Tiles, Guarding, and .zfill}{94}{lstlisting.3.41}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.42}.swiz N : Shared-Memory Layout for the Consumer}{95}{lstlisting.3.42}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.43}A swizzled copy}{95}{lstlisting.3.43}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.44}A swizzled mma load}{95}{lstlisting.3.44}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.45}A sparse contraction}{95}{lstlisting.3.45}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Eight-bank schematic: different addresses in one bank serialize, while remapping spreads accesses. Copy and MMA load must use matching swizzle.}}{96}{figure.3.10}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.46}A scaled contraction}{96}{lstlisting.3.46}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.47}Another contraction layout}{96}{lstlisting.3.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.1}Worked Example: One Cooperative Group}{96}{subsection.3.7.1}\protected@file@percent }
+\newlabel{sec:3-7-1}{{3.7.1}{96}{Worked Example: One Cooperative Group}{subsection.3.7.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.48}One group, one tile: the simplest MMA matmul}{97}{lstlisting.3.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.2}MMA Syntax Summary}{98}{subsection.3.7.2}\protected@file@percent }
+\newlabel{sec:3-7-9}{{3.7.2}{98}{MMA Syntax Summary}{subsection.3.7.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.3}MMA Design Summary}{98}{subsection.3.7.3}\protected@file@percent }
+\newlabel{sec:3-7-10}{{3.7.3}{98}{MMA Design Summary}{subsection.3.7.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{99}{section.3.8}\protected@file@percent }
+\newlabel{sec:3-8}{{3.8}{99}{Coordination, Pipelines, and Persistent Scheduling}{section.3.8}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.49}Structured concurrent regions with inthreads.async}{99}{lstlisting.3.49}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Four load/compute pairs are shown in both schedules. Concurrent producer and consumer regions overlap work while preserving dependencies.}}{100}{figure.3.11}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{101}{lstlisting.3.50}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{101}{lstlisting.3.51}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces The same four K tiles run sequentially or with two-buffer overlap. Timings are schematic and include pipeline startup and drain.}}{102}{figure.3.12}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.52}Event Instances}{102}{lstlisting.3.52}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{103}{lstlisting.3.53}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.54}A credit-count deadlock}{103}{lstlisting.3.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.1}Canonical Pattern: One Producer and One Consumer}{103}{subsection.3.8.1}\protected@file@percent }
+\newlabel{sec:3-8-1}{{3.8.1}{103}{Canonical Pattern: One Producer and One Consumer}{subsection.3.8.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{103}{lstlisting.3.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{104}{subsection.3.8.2}\protected@file@percent }
+\newlabel{sec:3-8-2}{{3.8.2}{104}{Worked Example: A 1P1C Kernel Skeleton}{subsection.3.8.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{104}{lstlisting.3.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{105}{subsection.3.8.3}\protected@file@percent }
+\newlabel{sec:3-8-3}{{3.8.3}{105}{Persistent Scheduling}{subsection.3.8.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.57}Persistent scheduling and the if guard}{105}{lstlisting.3.57}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Four fixed blocks process ten tiles in three iterations; the final two padded tile IDs are skipped by the if guard.}}{106}{figure.3.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{106}{subsection.3.8.4}\protected@file@percent }
+\newlabel{sec:3-8-4}{{3.8.4}{106}{Host-Level Concurrency and Stream Binding}{subsection.3.8.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.58}parallel.async: host-level concurrency}{106}{lstlisting.3.58}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.59}Asynchronous program launch and Stream Binding}{107}{lstlisting.3.59}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.60}An asynchronous launch}{107}{lstlisting.3.60}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.61}The synchronous form}{107}{lstlisting.3.61}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.62}Stream Binding}{108}{lstlisting.3.62}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.63}Stream Binding without .async}{108}{lstlisting.3.63}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{109}{subsection.3.8.5}\protected@file@percent }
+\newlabel{sec:3-8-5}{{3.8.5}{109}{Worked Example: A Full Event Pipeline}{subsection.3.8.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.64}The full 1P1C event pipeline}{109}{lstlisting.3.64}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.}}{110}{figure.3.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{111}{subsection.3.8.6}\protected@file@percent }
+\newlabel{sec:3-8-10}{{3.8.6}{111}{Coordination Pattern Summary}{subsection.3.8.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{111}{section.3.9}\protected@file@percent }
+\newlabel{sec:3-9}{{3.9}{111}{C++ Interoperability and the Preprocessor}{section.3.9}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{112}{lstlisting.3.65}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.66}A templated device helper}{112}{lstlisting.3.66}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{113}{lstlisting.3.67}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{113}{lstlisting.3.68}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.69}The block after factoring target-specific details}{114}{lstlisting.3.69}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{114}{subsection.3.9.1}\protected@file@percent }
+\newlabel{sec:3-9-1}{{3.9.1}{114}{Worked Example: Calling a Device Helper}{subsection.3.9.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{114}{lstlisting.3.70}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{115}{subsection.3.9.2}\protected@file@percent }
+\newlabel{sec:3-9-10}{{3.9.2}{115}{Interoperability Summary}{subsection.3.9.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{115}{section.3.10}\protected@file@percent }
+\newlabel{sec:3-10}{{3.10}{115}{Tileflow Patterns and Design Rationales}{section.3.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Structured tile operations expose geometry and layout for efficient lowering; performance still depends on the chosen tiles and execution configuration.}}{116}{figure.3.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{117}{subsection.3.10.1}\protected@file@percent }
+\newlabel{sec:3-10-1}{{3.10.1}{117}{Worked Example: Tiled matmul}{subsection.3.10.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{117}{lstlisting.3.71}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{119}{subsection.3.10.2}\protected@file@percent }
+\newlabel{sec:3-10-2}{{3.10.2}{119}{Worked Example: rgb2gray}{subsection.3.10.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.72}Example Code}{119}{lstlisting.3.72}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{119}{section.3.11}\protected@file@percent }
+\newlabel{sec:3-11}{{3.11}{119}{Diagnostics and Methodology}{section.3.11}{}}
 \citation{croqtileCompiler}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{128}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{121}{appendix.A}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{app:quickref}{{A}{128}{Syntax Quick Reference}{appendix.A}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.1}Declarations and shapes}{128}{appendix.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A.2}Iteration}{128}{appendix.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A.3}Tile selection and movement}{128}{appendix.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{129}{appendix.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{129}{appendix.A.5}\protected@file@percent }
+\newlabel{app:quickref}{{A}{121}{Syntax Quick Reference}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.1}Declarations and shapes}{121}{section.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.2}Iteration}{121}{section.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.3}Tile selection and movement}{121}{section.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{122}{section.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{122}{section.A.5}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{croqtileCompiler}{{1}{2026}{{LancerLab}}{{}}}
-\@writefile{toc}{\contentsline {chapter}{References}{131}{section*.4}\protected@file@percent }
-\gdef \@abspage@last{143}
+\@writefile{toc}{\contentsline {chapter}{References}{125}{section*.4}\protected@file@percent }

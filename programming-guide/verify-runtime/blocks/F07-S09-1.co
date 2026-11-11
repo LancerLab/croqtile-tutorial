@@ -1,4 +1,5 @@
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
   int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
   parallel block_id by NUM_GROUPS : block {
     shared f16 [WARP_M, TILE_K] lhs_load_s;
@@ -26,4 +27,5 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
       }
     }
   }
+  return output;
 }
