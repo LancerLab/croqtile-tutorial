@@ -26,8 +26,15 @@ make ebook           # same as plain `make`
 make manual          # output/croqtile-programming-guide-manual.pdf
 make memoir          # output/croqtile-programming-guide-memoir.pdf
 make check           # build all three, then pdfinfo summary
+make zh              # Chinese edition -> output/croqtile-programming-guide-zh.pdf
 make clean           # remove aux/log files and all output PDFs
 ```
+
+The Chinese edition is rendered by `tools/build_guide_zh.py` from
+`translation/zh/*.md` through Markdown and WeasyPrint, so it needs the
+`weasyprint` Python package (`python3 -m pip install --user weasyprint pydyf==0.10.0`).
+Listings are taken verbatim from the English units; only prose, captions and
+tables come from the translation files.
 
 Naming rule: the default edition uses `main.tex` and the unsuffixed PDF name;
 the two optional editions add a suffix (`main-manual.tex` →

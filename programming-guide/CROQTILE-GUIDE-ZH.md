@@ -2474,7 +2474,7 @@ inthreads.async (p1 == 0) {
 
 ```co
 #define PATH0
-__co__ foo() {
+__co__ auto foo() {
   #ifdef PATH0
     // path 0 code
   #else
@@ -2551,7 +2551,7 @@ void foo() {
 ```co
 #define PATH0
 // some host code
-__co__ foo() {
+__co__ auto foo() {
 #ifdef PATH0
 // some code related to PATH0
 #else
@@ -3721,7 +3721,7 @@ matrix.subspan(16, 16).step(32, 32).at(i, j);
 一种直接的办法是给边界分块加一条专用代码路径，但这会破坏 MMA 循环的一致性，还引入编译器优化不掉的分支。`.zfill` 提供了相应的零填充方式：
 
 ```co
-tma.copy.swiz<3> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
+tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
   => lhs_load_s;
 ```
 
@@ -4144,9 +4144,9 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
         foreach {iv_k} in [cdiv(K, TILE_K)] {
           stage = iv_k % STAGES;
           wait empty[stage];
-          tma.copy.swiz<3> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k)
+          tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k)
             => lhs_load_s[stage];
-          tma.copy.swiz<3> rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k)
+          tma.copy.swiz<128> rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k)
             => rhs_load_s[stage];
           trigger full[stage];
         }
@@ -4158,11 +4158,10 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           stage = iv_k % STAGES;
           wait full[stage];
           foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-            ma = mma.load.swiz<3> lhs_load_s[stage].chunkat(_, iv_warp);
-            mb = mma.load.swiz<3> rhs_load_s[stage].chunkat(_, iv_warp);
+            ma = mma.load.swiz<128> lhs_load_s[stage].chunkat(_, iv_warp);
+            mb = mma.load.swiz<128> rhs_load_s[stage].chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
-          mma.commit;
           trigger empty[stage];
         }
         mma.store mc, output_s;
@@ -4259,8 +4258,8 @@ ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 交错布局改变暂存分块的元素在共享存储中的排列。逻辑矩阵形状不变，但读取方必须使用匹配的地址映射。Croqtile 的 DMA 与 TMA 复制都提供这一选择：
 
 ```co
-dma.copy.swiz<3> src => dst;       // software DMA with swizzle
-tma.copy.swiz<3> src => dst;
+dma.copy.swiz<128> src => dst;       // software DMA with swizzle
+tma.copy.swiz<128> src => dst;
 ```
 
 <div class="listing-cap">清单 203：一次带重排的拷贝</div>
@@ -4268,7 +4267,7 @@ tma.copy.swiz<3> src => dst;
 MMA 的读取路径必须使用相同的 `swiz<N>`，让地址与暂存的布局一致：
 
 ```co
-ma = mma.load.swiz<3> lhs_load_s.chunkat(_, iv_warp);
+ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 ```
 
 <div class="listing-cap">清单 204：一次带重排的 mma 加载</div>
@@ -4502,7 +4501,7 @@ __co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, gl
 | 扩大协作规模 | 语法保持不变 |
 | 布局约定 | `mma.row.row`、`mma.row.col` 等 |
 | 稀疏与量化 | `.sp` 增加元数据操作数；`.scale` 融合逐分块反量化 |
-| 重排与流水线 | `mma.load.swiz<N>` 匹配带重排的共享布局；`mma.commit` 为流水线各级设栅 |
+| 重排与流水线 | `mma.load.swiz<N>` 匹配带重排的共享布局 |
 
 收缩执行得更快，但装载和计算仍然轮流进行——3.8 节会引入**角色专门化**，让不同的线程组各司其职：一组装载数据，另一组做计算，使内存访问和数学运算在时间上重叠。
 
@@ -4955,7 +4954,6 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
             mb = mma.load rhs_load_s[stage].chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
-          mma.commit;
           trigger empty[stage];
         }
         mma.store mc, output_s;
@@ -4976,7 +4974,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 消费者先触发所有 `empty` 事件。事件初始均未置位，因此这一步授予生产者首次填充各槽位的许可。此时尚未装入输入，所以不会触发任何 `full` 事件。
 
-消费者等待 `full[stage]`，装入操作数片段并累加当前切片，随后执行 `mma.commit`，再触发 `empty[stage]`。这个顺序不能颠倒：发出矩阵操作，并不足以证明它已经停止读取共享操作数。
+消费者等待 `full[stage]`，装入操作数片段并累加当前切片，随后触发 `empty[stage]`。这个顺序不能颠倒：发出矩阵操作，并不足以证明它已经停止读取共享操作数。
 
 完成点保护缓冲区复用。若 MMA 仍在读取时生产者就覆盖槽位，即使分块形状完全正确，消费者也可能混用两个 K 切片的操作数。仅检查 `full` 信号无法防止这一错误，归还 `empty` 许可同样必要。
 
@@ -5160,7 +5158,8 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
       shared_scores = dma.copy scores.chunkat(n#m, _) => shared;
       parallel gid by [N_THREAD / 32] : group
         parallel tid by 32 : thread {
-          score = shared_scores.data.span_as(|shared_scores.data.span|).at(gid # tid);
+          flat_scores = shared_scores.span_as([|shared_scores.span|]);
+          score = flat_scores.at(gid # tid);
           local s32 [K] frag_idx{-1};
           local f32 [K] frag_val{-1.0f};
           frag_idx.at(0) = tid;
@@ -5422,7 +5421,7 @@ Croqtile 在每一层都有工具：**编译时形状打印**（`print!`、`prin
 | `ma = mma.load src.chunkat(...)` | 装入操作数。 |
 | `mma.row.row mc, ma, mb` | 带布局约定的收缩。 |
 | `mma.store mc, dst` | 写回累加器。 |
-| `.sp` / `.scale` / `mma.commit` / `mma.scale` | 收缩变体与阶段栅栏。 |
+| `.sp` / `.scale` / `mma.scale` | 收缩变体与阶段栅栏。 |
 
 ## 协调、互操作与诊断
 

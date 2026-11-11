@@ -17,7 +17,7 @@ SOURCES := main.tex main-manual.tex main-memoir.tex body.tex croqguide.sty \
            UNIT-REGISTRY.md tools/build_guide.py tools/figure_editorial.py tools/prose_editorial.py \
            editorial/figure-captions.json editorial/prose-polish.json editorial/narrative-polish.json $(wildcard editorial/getting-started/*.md)
 
-.PHONY: all ebook manual memoir clean distclean check
+.PHONY: all ebook manual memoir zh clean distclean check
 
 # Default entry point: plain `make` builds edition A from main.tex.
 # The two optional editions keep the same recipe but use suffixed entry
@@ -28,6 +28,11 @@ ebook:  $(PDF_EBOOK)
 
 # Opt-in: build all three editions at once.
 all: ebook manual memoir
+
+# Chinese edition. Rendered from translation/zh/*.md through Markdown + HTML +
+# WeasyPrint; requires the weasyprint Python package (see README).
+zh:
+	python3 tools/build_guide_zh.py build
 
 manual: $(PDF_MANUAL)
 memoir: $(PDF_MEMOIR)
