@@ -1,6 +1,10 @@
 <div class="titlepage">
 <div class="big">Croqtile</div>
 <div class="sub">编程指南</div>
+<div class="tag">面向高性能核函数的 Croqtile 语言导读</div>
+<div class="rule"></div>
+<div class="meta">版本 1.0 — 2026 年 11 月</div>
+<div class="foot">LancerLab</div>
 </div>
 
 <div class="toc-heading">目录</div>

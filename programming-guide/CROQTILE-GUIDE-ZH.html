@@ -1,26 +1,27 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>Croqtile 编程指南</title><style>
 @page { size: A4; margin: 2.3cm 2.1cm 2.0cm 2.1cm;
-  @top-right { content: "Croqtile 编程指南"; font-family: "Noto Sans CJK SC";
+  @top-right { content: "Croqtile 编程指南"; font-family: "FandolHei", "Noto Sans CJK SC";
                font-size: 8pt; color: #6b7280; }
-  @bottom-center { content: counter(page); font-family: "Noto Serif CJK SC"; font-size: 9pt; } }
+  @bottom-center { content: counter(page); font-family: "FandolSong", "Noto Serif CJK SC"; font-size: 9pt; } }
 @page :first { @top-right { content: ""; } @bottom-center { content: ""; } }
-body { font-family: "Noto Serif CJK SC", serif; font-size: 10.5pt;
+body { font-family: "FandolSong", "Noto Serif CJK SC", serif; font-size: 10.5pt;
        line-height: 1.72; color: #1f2933; text-align: left; }
-h1 { font-family: "Noto Sans CJK SC", sans-serif; font-size: 20pt; color: #137a5b;
+h1 { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 20pt; color: #137a5b;
      border-bottom: 2px solid #137a5b; padding-bottom: 6px; margin-top: 26px;
      break-before: page; }
-h2 { font-family: "Noto Sans CJK SC", sans-serif; font-size: 14.5pt; color: #1f2933;
+h2 { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 14.5pt; color: #1f2933;
      margin-top: 20px; border-left: 4px solid #137a5b; padding-left: 8px; }
-h3 { font-family: "Noto Sans CJK SC", sans-serif; font-size: 12pt; color: #137a5b;
+h3 { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 12pt; color: #137a5b;
      margin-top: 15px; }
-h4 { font-family: "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1f2933;
+h4 { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1f2933;
      margin-top: 13px; }
-p { margin: 0 0 0.55em 0; orphans: 2; widows: 2; }
-.cap { font-family: "Noto Sans CJK SC", sans-serif; font-size: 9pt; color: #43515c;
+p { margin: 0 0 0.25em 0; text-indent: 2em; orphans: 2; widows: 2; }
+h1 + p, h2 + p, h3 + p, h4 + p, li p, blockquote p, td p { text-indent: 0; }
+.cap { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 9pt; color: #43515c;
        margin: 12px 0 4px 0; }
 pre.code-hl { counter-reset: codeline; background: #f6f8fa;
             border: 1px solid #d9dee3; border-radius: 3px; padding: 8px 10px;
-            margin: 0 0 4px 0; font-family: "Noto Sans Mono CJK SC", monospace;
+            margin: 0 0 4px 0; font-family: "DejaVu Sans Mono", "Noto Sans Mono CJK SC", monospace;
             font-size: 8.4pt; line-height: 1.42; white-space: pre-wrap;
             overflow-wrap: anywhere; color: #1f2933;
             box-decoration-break: clone; }
@@ -33,14 +34,14 @@ pre.code-hl .ln::before { counter-increment: codeline; content: counter(codeline
 pre.code-hl .k { color: #137a5b; font-weight: 700; }
 pre.code-hl .c { color: #5b6770; font-style: italic; }
 pre.code-hl .s { color: #a96400; }
-.listing-cap { font-family: "Noto Sans CJK SC", sans-serif; font-size: 9pt;
+.listing-cap { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 9pt;
                color: #43515c; text-align: center; margin: 4px 0 13px 0; }
-code { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 0.9em;
+code { font-family: "DejaVu Sans Mono", "Noto Sans Mono CJK SC", monospace; font-size: 0.9em;
        background: #f1f3f5; padding: 0 2px; }
 pre code { background: none; padding: 0; }
 table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 8px 0 12px 0; }
 th { border-top: 1.5px solid #1f2933; border-bottom: 1px solid #1f2933;
-     font-family: "Noto Sans CJK SC"; text-align: left; padding: 5px 6px; }
+     font-family: "FandolHei", "Noto Sans CJK SC"; text-align: left; padding: 5px 6px; }
 td { border-bottom: 1px solid #d9dee3; padding: 5px 6px; vertical-align: top; }
 img { width: 100%; max-width: 100%; display: block; margin: 10px auto; }
 .guide-figure { break-inside: avoid; }
@@ -50,10 +51,16 @@ ul, ol { margin: 4px 0 10px 0; padding-left: 1.5em; }
 blockquote { margin: 10px 0; padding: 8px 12px; background: #eef4f8;
              border-left: 3px solid #4d7ea8; color: #34495e; }
 .titlepage { text-align: center; break-after: page; padding-top: 4.5cm; }
-.titlepage .big { font-family: "Noto Sans CJK SC"; font-size: 30pt; color: #1f2933; }
-.titlepage .sub { font-family: "Noto Sans CJK SC"; font-size: 20pt; color: #137a5b;
+.titlepage .big { font-family: "FandolHei", "Noto Sans CJK SC"; font-size: 30pt; color: #1f2933; }
+.titlepage .sub { font-family: "FandolHei", "Noto Sans CJK SC"; font-size: 20pt; color: #137a5b;
                   margin-top: 8px; }
-.toc-heading { font-family: "Noto Sans CJK SC", sans-serif; font-size: 19pt;
+.titlepage .tag { font-family: "FandolKai", "FandolSong"; font-size: 13pt; color: #43515c;
+                  margin-top: 22px; }
+.titlepage .rule { width: 72%; margin: 1.0cm auto 0.8cm auto; border-top: 0.8pt solid #1f2933; }
+.titlepage .meta { font-family: "FandolSong"; font-size: 11pt; color: #1f2933; }
+.titlepage .foot { position: absolute; bottom: 2.6cm; left: 0; right: 0;
+                   font-family: "FandolHei"; font-size: 10pt; color: #5b6770; }
+.toc-heading { font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 19pt;
                color: #137a5b; letter-spacing: .35em; text-align: center;
                margin: 4px 0 16px 0; padding-bottom: 12px;
                border-bottom: 1.5px solid #137a5b; }
@@ -62,13 +69,13 @@ blockquote { margin: 10px 0; padding: 8px 12px; background: #eef4f8;
          color: #1f2933; line-height: 1.5; break-inside: avoid; }
 .toc-l2::after, .toc-l3::after {
   content: leader(' · ') target-counter(attr(href), page);
-  font-family: "Noto Serif CJK SC", serif; font-size: 9pt; color: #9aa6ae; }
-.toc code { font-family: "Noto Sans Mono CJK SC", monospace; font-size: .88em;
+  font-family: "FandolSong", "Noto Serif CJK SC", serif; font-size: 9pt; color: #9aa6ae; }
+.toc code { font-family: "DejaVu Sans Mono", "Noto Sans Mono CJK SC", monospace; font-size: .88em;
             background: none; padding: 0; color: #43515c; }
-.toc .tn { display: inline-block; font-family: "Noto Sans CJK SC", sans-serif;
+.toc .tn { display: inline-block; font-family: "FandolHei", "Noto Sans CJK SC", sans-serif;
            color: #8a97a0; }
 .toc-l1 { position: relative; padding-right: 2.8em;
-          font-family: "Noto Sans CJK SC", sans-serif; font-size: 12.5pt;
+          font-family: "FandolHei", "Noto Sans CJK SC", sans-serif; font-size: 12.5pt;
           font-weight: 700; color: #137a5b; margin: 12px 0 5px 0;
           padding-top: 3px; padding-bottom: 5px; padding-left: 9px;
           border-left: 3px solid #137a5b; border-bottom: .6px solid #d6e6df;
@@ -76,7 +83,7 @@ blockquote { margin: 10px 0; padding: 8px 12px; background: #eef4f8;
 .toc-l1 .tn { width: 4.4em; color: #137a5b; }
 .toc-l1::after { content: target-counter(attr(href), page);
                  position: absolute; right: 0; top: 0;
-                 font-family: "Noto Serif CJK SC", serif; font-size: 9.5pt;
+                 font-family: "FandolSong", "Noto Serif CJK SC", serif; font-size: 9.5pt;
                  color: #137a5b; font-weight: 700; }
 .toc-l2 { font-size: 10pt; padding-left: 1.4em; margin: 1px 0; }
 .toc-l2 .tn { width: 3.4em; }
@@ -87,6 +94,10 @@ blockquote { margin: 10px 0; padding: 8px 12px; background: #eef4f8;
 </style></head><body><div class="titlepage">
 <div class="big">Croqtile</div>
 <div class="sub">编程指南</div>
+<div class="tag">面向高性能核函数的 Croqtile 语言导读</div>
+<div class="rule"></div>
+<div class="meta">版本 1.0 — 2026 年 11 月</div>
+<div class="foot">LancerLab</div>
 </div>
 
 <div class="toc-heading">目录</div>
