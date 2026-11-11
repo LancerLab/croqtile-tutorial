@@ -14,7 +14,7 @@ void entry() {
 }
 \end{lstlisting}
 
-The example returns \texttt{output} with value semantics, but the implementation avoids copying the buffer. The returned C++ type is \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data}, whose simplified definition is:
+The example returns \texttt{output} with value semantics, but the implementation avoids copying the buffer. The returned C++ type is \texttt{choreo:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data}, whose simplified definition is:
 
 \begin{lstlisting}[language={},caption={The host-side result wrapper}]
 template <typename T, size_t Rank>
@@ -24,6 +24,6 @@ class spanned_data {
 };
 \end{lstlisting}
 
-Unlike \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view}, \texttt{croqtile:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data} owns the buffer it points to. \textbf{Returning it does not copy the buffer}; the implementation uses return value optimization.
+Unlike \texttt{choreo:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}view}, \texttt{choreo:\allowbreak{}:\allowbreak{}spanned\_\allowbreak{}data} owns the buffer it points to. \textbf{Returning it does not copy the buffer}; the implementation uses return value optimization.
 
 Use member functions such as \texttt{.rank()} and \texttt{.shape()} to query the returned buffer's shape. The host can then work with the result without depending on the implementation of the Croqtile function.

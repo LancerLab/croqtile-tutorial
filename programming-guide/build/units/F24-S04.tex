@@ -28,4 +28,4 @@ __co__ void foobar(f32 [M, 24] input, int N, float padding) {
 
 Here the spanned-data arguments become pointers to their element types. The device helper receives those pointers without shape metadata; pass any required dimensions separately. The declared pointer element type must match the data supplied by the call.
 
-For element formats without a native target type, use the corresponding Croqtile C++ type, such as \co@croqtile::f16@ or \co@croqtile::bf16@, where supported.
+For element formats without a native target type, use the corresponding Croqtile C++ type, such as \co@choreo::f16@ or \co@choreo::bf16@, where supported.

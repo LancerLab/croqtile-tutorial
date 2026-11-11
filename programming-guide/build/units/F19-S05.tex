@@ -19,9 +19,9 @@ Croqtile performs both compile-time and runtime checks to ensure safety:
 \end{itemize}
 
 \begin{lstlisting}[language={},caption={The transpiled signature}]
-void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
-                                croqtile::span_view<2, croqtile::s32> rhs) {
-  croqtile_assert(lhs.shape()[0] / 32 > 0,
+void __croqtile_transpiled_Matmul(choreo::spanned_view<choreo::s32, 2> lhs,
+                                choreo::spanned_view<choreo::s32, 2> rhs) {
+  choreo_assert(lhs.shape()[0] / 32 > 0,
                 "the 0 dimension of 'lhs' may result in spanned data "
                 "with a dimension value of 0.");
   // ...
@@ -33,12 +33,12 @@ Here, the \texttt{croqtile\_\allowbreak{}abort} function aborts program executio
 For the \emph{symbolic dimension} version, Croqtile compiler generates additional checks in the \emph{target host code}:
 
 \begin{lstlisting}[language={},caption={The generated shape check}]
-void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
-                                croqtile::span_view<2, croqtile::s32> rhs) {
+void __croqtile_transpiled_Matmul(choreo::spanned_view<choreo::s32, 2> lhs,
+                                choreo::spanned_view<choreo::s32, 2> rhs) {
   // additional check happens only when using symbolic dimensions
-  croqtile_assert(lhs.shape()[1] == rhs.shape()[0],
+  choreo_assert(lhs.shape()[1] == rhs.shape()[0],
                 "dimension 'K' is not consistent.");
-  croqtile_assert(lhs.shape()[0] / 32 > 0,
+  choreo_assert(lhs.shape()[0] / 32 > 0,
                 "the 0 dimension of 'lhs' may result in spanned data "
                 "with a dimension value of 0.");
   // ...

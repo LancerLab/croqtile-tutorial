@@ -474,7 +474,7 @@ return output;
 
 <div class="listing-cap">清单 21：返回结果</div>
 
-返回结果的形状与元素类型必须符合函数签名。主机侧收到的 `croqtile::spanned_data` 拥有结果缓冲区，并携带形状信息，可通过 `[i][j]` 访问元素。
+返回结果的形状与元素类型必须符合函数签名。主机侧收到的 `choreo::spanned_data` 拥有结果缓冲区，并携带形状信息，可通过 `[i][j]` 访问元素。
 
 #### `__co__ auto` 返回类型
 
@@ -541,7 +541,7 @@ int main() {
 
 #### Croqtile 与 C++ 函数之间的参数传递
 
-C++ 指针需要与维度信息一起包装成带形状的数据，再传入 Croqtile 函数。相关工具由 `croqtile.h` 提供。
+C++ 指针需要与维度信息一起包装成带形状的数据，再传入 Croqtile 函数。相关工具由 `choreo.h` 提供。
 
 ```co
 #include "choreo.h"
@@ -580,20 +580,20 @@ __co__ void foo(f32 [7] a, int) {...}
 
 普通指针或数组只描述存储，Croqtile 的带形状数据还记录各维度大小。调用前，需要把数据地址与形状组合起来。
 
-可以使用 `croqtile.h` 中的包装工具。Croqtile 编译环境会自动包含这个头文件。
+可以使用 `choreo.h` 中的包装工具。Croqtile 编译环境会自动包含这个头文件。
 
 ```co
 __co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
 void entry(float * input, float* output) {
   // foo(input, output); <-- result in error since missing shape
-  foo(croqtile::make_spanned<2>(input, {7, 16}),
-      croqtile::make_spanned<2>(output, {7, 16}));
+  foo(choreo::make_spanview<2>(input, {7, 16}),
+      choreo::make_spanview<2>(output, {7, 16}));
 }
 ```
 
 <div class="listing-cap">清单 27：传入带形状的缓冲区</div>
 
-`croqtile::make_spanned` 以秩(rank)作为模板实参，接收数据指针和维度列表，生成 `croqtile::spanned_view`。它保存指针与形状，不拥有底层缓冲区。简化定义如下。
+`choreo::make_spanview` 以秩(rank)作为模板实参，接收数据指针和维度列表，生成 `choreo::spanned_view`。它保存指针与形状，不拥有底层缓冲区。简化定义如下。
 
 ```text
 template <typename T, size_t Rank>
@@ -610,7 +610,7 @@ class spanned_view {
 ```co
 __co__ void foo(f32 [7, 16] input) {...}
 void entry(float * input, float* output, int M, int N) {
-  foo(croqtile::make_spanned<2>(input, {M, N})),
+  foo(choreo::make_spanview<2>(input, {M, N})),
 }
 ```
 
@@ -656,7 +656,7 @@ void entry() {
 
 <div class="listing-cap">清单 31：返回带形状的缓冲区</div>
 
-示例中，`output` 作为结果返回，主机侧类型为 `croqtile::spanned_data`。实现通过返回值优化避免复制整块缓冲区。简化定义如下。
+示例中，`output` 作为结果返回，主机侧类型为 `choreo::spanned_data`。实现通过返回值优化避免复制整块缓冲区。简化定义如下。
 
 ```text
 template <typename T, size_t Rank>
@@ -800,7 +800,7 @@ __co__ auto foo(s32 [?, 1, 2] input) { ... }
 
 ```text
 void bar(int * data, int dim0) {
-  foo(croqtile::make_spanview<3>(data, {dim0, 1, 2}));
+  foo(choreo::make_spanview<3>(data, {dim0, 1, 2}));
 }
 ```
 
@@ -2488,11 +2488,11 @@ __co__ void foo() {
 #define K 64
 __co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
 void foo() {
-  croqtile::f32 a[M][K];
-  croqtile::f32 b[N][K];
+  choreo::f32 a[M][K];
+  choreo::f32 b[N][K];
   // ...
-  auto res = matmul(croqtile::make_spanview<2>(a, {M, K}),
-                    croqtile::make_spanview<2>(b, {N, K}));
+  auto res = matmul(choreo::make_spanview<2>(a, {M, K}),
+                    choreo::make_spanview<2>(b, {N, K}));
 }
 ```
 
@@ -2613,7 +2613,7 @@ __co__ void foobar(f32 [M, 24] input, int N, float padding) {
 
 带形状数据传到设备函数时，参数是指向元素的指针，不再携带完整形状。例如 `bar` 的 `float *p` 对应 `input.data`；需要的维度另以整数参数传递。设备函数的声明应与这些参数类型匹配。
 
-目标平台没有对应的原生类型时，可以使用 `croqtile::f16`、`croqtile::bf16` 等类型。
+目标平台没有对应的原生类型时，可以使用 `choreo::f16`、`choreo::bf16` 等类型。
 
 #### 设备调用的检查阶段
 
@@ -2894,7 +2894,7 @@ Croqtile 不仅把 DMA 操作抽象成更高层的语义，还把迭代和分块
 
 #### 把 Croqtile 嵌入 C++
 
-Croqtile 是嵌入在 C++ 里的领域专用语言代码。Croqtile 编译器对 Croqtile 函数做源到源翻译，生成 C++ 代码，并隐式包含 `croqtile.h`，让翻译后的代码能与其他 C++ 代码正常协作。下面的代码片段是一个例子。
+Croqtile 是嵌入在 C++ 里的领域专用语言代码。Croqtile 编译器对 Croqtile 函数做源到源翻译，生成 C++ 代码，并隐式包含 `choreo.h`，让翻译后的代码能与其他 C++ 代码正常协作。下面的代码片段是一个例子。
 
 ```co
 // some C++ code
@@ -3118,9 +3118,9 @@ Croqtile 同时做编译时检查和运行时检查来保证安全：
 - **运行时检查**：Croqtile 生成的代码在运行时校验维度。例如 `tiled_lhs` 的声明里，形状不能出现 `0` 维，否则会得到非法的零大小缓冲区。Croqtile 的*转译*过程会生成如下*目标主机代码*：
 
 ```text
-void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
-                                croqtile::span_view<2, croqtile::s32> rhs) {
-  croqtile_assert(lhs.shape()[0] / 32 > 0,
+void __croqtile_transpiled_Matmul(choreo::spanned_view<choreo::s32, 2> lhs,
+                                choreo::spanned_view<choreo::s32, 2> rhs) {
+  choreo_assert(lhs.shape()[0] / 32 > 0,
                 "the 0 dimension of 'lhs' may result in spanned data "
                 "with a dimension value of 0.");
   // ...
@@ -3134,12 +3134,12 @@ void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
 对于*符号维度*版本，Croqtile 编译器会在*目标主机代码*里生成额外的检查：
 
 ```text
-void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
-                                croqtile::span_view<2, croqtile::s32> rhs) {
+void __croqtile_transpiled_Matmul(choreo::spanned_view<choreo::s32, 2> lhs,
+                                choreo::spanned_view<choreo::s32, 2> rhs) {
   // additional check happens only when using symbolic dimensions
-  croqtile_assert(lhs.shape()[1] == rhs.shape()[0],
+  choreo_assert(lhs.shape()[1] == rhs.shape()[0],
                 "dimension 'K' is not consistent.");
-  croqtile_assert(lhs.shape()[0] / 32 > 0,
+  choreo_assert(lhs.shape()[0] / 32 > 0,
                 "the 0 dimension of 'lhs' may result in spanned data "
                 "with a dimension value of 0.");
   // ...

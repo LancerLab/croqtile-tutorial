@@ -59,7 +59,7 @@ P: Croqtile aims to simplify the everyday work of developing high-performance ke
 
 === UID:F15-S03
 H: Embedding Croqtile within C++
-P: Croqtile is a DSL embedded in C++. Its compiler translates Croqtile functions into C++ and implicitly includes `croqtile.h` so the generated code can interoperate with ordinary C++. For example:
+P: Croqtile is a DSL embedded in C++. Its compiler translates Croqtile functions into C++ and implicitly includes `choreo.h` so the generated code can interoperate with ordinary C++. For example:
 C: Embedding Croqtile within C++
 P: The `__co__` prefix identifies the function body Croqtile translates. Ordinary C++ calls that function by its declared name. The host-facing interface uses shaped buffer wrappers so the call carries dimensions as well as an address.
 P: In addition, certain Croqtile-specific types are introduced to ensure consistency between Croqtile function arguments and their respective callers. Considering that there are some important programming elements missing, you will defer the introduction of such details until the data types are explained.

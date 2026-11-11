@@ -387,6 +387,26 @@ def strip_gpu_backend(text):
     return text
 
 
+def _rename_runtime(text):
+    """Spell the runtime library the way it is actually shipped.
+
+    `croqtile` appears as a header name, as a namespace written either plainly
+    or with LaTeX line-break hints, and inside the assertion helper name. The
+    literal replacements cover both the listing and the prose spellings.
+    """
+    for old, new in (
+            ('croqtile.h', 'choreo.h'),
+            ('croqtile_assert', 'choreo_assert'),
+            ('make\\_\\allowbreak{}spanned', 'make\\_\\allowbreak{}spanview'),
+            ('make_spanned', 'make_spanview'),
+            ('croqtile:', 'choreo:'),
+            ('choreo::span_view<2, choreo::s32>',
+             'choreo::spanned_view<choreo::s32, 2>'),
+    ):
+        text = text.replace(old, new)
+    return text
+
+
 UNIT_OVERRIDES = [
     ('F11-S10',
      r'(?s)You have (?:met|learned the following concepts):.*?\\end\{itemize\}',
@@ -1304,6 +1324,10 @@ UNIT_OVERRIDES = [
     ('F40-S03',
      re.escape('          out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;'),
      '          out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;\n          wait out_store;'),
+    # Round 81: the runtime library is spelled `choreo` (with `croq` as an
+    # alias). The guide used `croqtile` for the header, the namespace, the
+    # assertion helper and a factory name that does not exist in that spelling.
+    ('*', '', _rename_runtime),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

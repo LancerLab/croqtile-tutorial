@@ -75,6 +75,7 @@ correct code.
 | F15-S21 | `#include "croqtile.h"` and `croqtile::` — neither exists | `choreo.h` and `croq::` |
 | F40-S03 | `out_store_s` read after the loop that assigns it | seed with `dma.any` before the loop |
 | F40-S03 | async copies never awaited | `wait lhs_load_s, rhs_load_s;` before the dot product, `wait out_store;` before returning |
+| F15-S21, F19-S05, F23-S02, F25-S04 | runtime named `croqtile` throughout | renamed to `choreo` (see below) |
 
 Two of the fixes turned compiler crashes into ordinary diagnostics (F06-S04,
 F40-S03), which is how the remaining problems became visible. F40-S03 now clears
@@ -84,11 +85,24 @@ the front end entirely.
 handoff and says so in prose; F14-S08, F38-S01 and F40-S06 call kernels the
 guide never defines.
 
-## Known-wrong: the `choreo.h` name in prose
+## Runtime naming
 
-The runtime header shipped with the toolchain is `choreo.h`. Several prose
-passages still call it `croqtile.h`. The code listings now use the real name;
-the prose was left for a separate naming decision.
+The library ships as `choreo` (aliased `croq`). The guide had spelled the
+header, the namespace, the assertion helper and a factory helper `croqtile`,
+none of which exist under that name. Round 81 renames them everywhere: code
+listings, prose, the editorial rule files, both translation trees and the
+glossary.
+
+| Guide spelling | Actual spelling |
+|---|---|
+| `croqtile.h` | `choreo.h` |
+| `croqtile::` | `choreo::` |
+| `croqtile_assert` | `choreo_assert` |
+| `croqtile::make_spanned` | `choreo::make_spanview` |
+| `croqtile::span_view<2, T>` | `choreo::spanned_view<T, 2>` |
+
+The `croqtile` spelling that remains in the guide is the language name itself
+and the `language=croqtile` listing tag, both intentional.
 
 ## Harnesses
 
