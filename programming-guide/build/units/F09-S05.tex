@@ -1,6 +1,6 @@
 \subsection*{Example: TMA in a pipelined matmul}
 
-The pipeline skeleton from Section~\ref{sec:3-8-5} is unchanged: ring of stages, \texttt{wait} / \texttt{trigger} on events, consumer drains tiles while producer fills the next slot. Here the producer swaps \texttt{dma.copy} for \texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}128\textgreater{}} and the consumer swaps \texttt{mma.load} for \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}128\textgreater{}}:
+The pipeline skeleton from Section~\ref{sec:3-8-5} is unchanged: ring of stages, \texttt{wait} / \texttt{trigger} on events, MMA commit, consumer drains tiles while producer fills the next slot. Here the producer swaps \texttt{dma.copy} for \texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}3\textgreater{}} and the consumer swaps \texttt{mma.load} for \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}3\textgreater{}}:
 
 \begin{lstlisting}[language=croqtile,caption={Example: TMA in a pipelined matmul}]
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {

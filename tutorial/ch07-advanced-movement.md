@@ -41,21 +41,21 @@ Shared memory is striped into **32 banks** (4 bytes per bank). When multiple lan
 **Swizzle** applies a fixed XOR-style remapping to column indices within each row, spreading accesses across banks. Croqtile exposes it on **both DMA and TMA**, with the same syntax and the same effect:
 
 ```choreo
-dma.copy.swiz<128> src => dst;       // software DMA with swizzle
-tma.copy.swiz<128> src => dst;       // hardware TMA with swizzle
+dma.copy.swiz<3> src => dst;       // software DMA with swizzle
+tma.copy.swiz<3> src => dst;       // hardware TMA with swizzle
 ```
 
 The copy lands bytes in shared memory using swizzle pattern `N`. The MMA read path must use the same `swiz<N>` so addresses match the staged layout:
 
 ```choreo
-ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
+ma = mma.load.swiz<3> lhs_load_s.chunkat(_, iv_warp);
 ```
 
 Swizzle is not a TMA-specific feature. In Croqtile, `dma.copy.swiz<N>` and `tma.copy.swiz<N>` produce identical shared-memory layouts. The difference is only in how the data gets there (thread-cooperative loads vs. descriptor-based hardware transfer), not in how the data is arranged once it arrives.
 
-**Swizzle width.** The template argument is the swizzle width in bytes, and the examples use `swiz<128>`. A wider swizzle defeats wider conflict patterns but requires tile extents that line up with that width.
+**Swizzle levels.** The template argument sets the granularity: `swiz<0>` is identity, then 64B, 128B, and 256B XOR patterns for `<1>`, `<2>`, and `<3>`. Larger granularities defeat wider conflict patterns but require tile extents that line up with that granularity.
 
-**Matching rule.** The `<N>` on the copy must match `mma.load.swiz<N>`. If you load with plain `mma.load` from `swiz<128>` data, addresses disagree and you read garbage. The compiler does not enforce the pairing — it is a correctness invariant you maintain. (As introduced in [Chapter 4](ch04-mma.md#new-syntax), `mma.load.swiz<N>` is part of the MMA load family.)
+**Matching rule.** The `<N>` on the copy must match `mma.load.swiz<N>`. If you load with plain `mma.load` from `swiz<3>` data, addresses disagree and you read garbage. The compiler does not enforce the pairing — it is a correctness invariant you maintain. (As introduced in [Chapter 4](ch04-mma.md#new-syntax), `mma.load.swiz<N>` is part of the MMA load family.)
 
 ![Bank conflicts without swizzle vs XOR swizzle spreading warp lanes across banks](../assets/images/ch07/fig2_swizzle_dark.png#only-dark)
 ![Bank conflicts without swizzle vs XOR swizzle spreading warp lanes across banks](../assets/images/ch07/fig2_swizzle_light.png#only-light)
@@ -73,7 +73,7 @@ TMA's descriptor-based interface is an extreme instance of this philosophy: it s
 
 ## Example: TMA in a pipelined matmul
 
-The pipeline skeleton from Chapter 6 is unchanged: ring of stages, `wait` / `trigger` on events, consumer drains tiles while producer fills the next slot. Here the producer swaps `dma.copy` for `tma.copy.swiz<128>` and the consumer swaps `mma.load` for `mma.load.swiz<128>`:
+The pipeline skeleton from Chapter 6 is unchanged: ring of stages, `wait` / `trigger` on events, MMA commit, consumer drains tiles while producer fills the next slot. Here the producer swaps `dma.copy` for `tma.copy.swiz<3>` and the consumer swaps `mma.load` for `mma.load.swiz<3>`:
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -88,9 +88,9 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
         foreach {iv_k} in [cdiv(K, TILE_K)] {
           stage = iv_k % STAGES;
           wait empty[stage];
-          tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k)
+          tma.copy.swiz<3> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k)
             => lhs_load_s[stage];
-          tma.copy.swiz<128> rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k)
+          tma.copy.swiz<3> rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k)
             => rhs_load_s[stage];
           trigger full[stage];
         }
@@ -103,10 +103,11 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           stage = iv_k % STAGES;
           wait full[stage];
           foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-            ma = mma.load.swiz<128> lhs_load_s[stage].chunkat(_, iv_warp);
-            mb = mma.load.swiz<128> rhs_load_s[stage].chunkat(_, iv_warp);
+            ma = mma.load.swiz<3> lhs_load_s[stage].chunkat(_, iv_warp);
+            mb = mma.load.swiz<3> rhs_load_s[stage].chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
+          mma.commit;
           trigger empty[stage];
         }
         mma.store mc, output_s;
@@ -175,7 +176,7 @@ Every tiled kernel faces the same edge case: what happens when M or K is not a m
 The brute-force fix is to add a special code path for the boundary tile. But this breaks the uniformity of the MMA loop and adds branches that the compiler cannot optimize away. `.zfill` solves this elegantly:
 
 ```choreo
-tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
+tma.copy.swiz<3> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
   => lhs_load_s;
 ```
 

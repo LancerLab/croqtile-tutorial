@@ -644,6 +644,10 @@ own document.
 
 - **prose**:
 
+    QZ002QZ In pipelined kernels where producer and consumer warpgroups overlap (QZ001QZ), QZ000QZ marks the boundary between "done reading this K-slab's operands" and "safe to reuse the shared-memory buffer." It is mandatory glue in event-driven pipelines.
+
+- **prose**:
+
     These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the hardware.
 
 ## F06-S08
@@ -663,6 +667,14 @@ own document.
 - **table row**:
 
     `mma.store mc, dst` | Write accumulator to shared memory
+
+- **table**:
+
+    Pipeline stage fence for WGMMA (see QZ000QZ)
+
+- **table row**:
+
+    `mma.commit` | Pipeline stage fence for WGMMA (see [Ch 6](ch06-synchronization.md))
 
 ## F06-S09
 
@@ -888,6 +900,22 @@ own document.
 
     Warp specialization (QZ002QZ) puts them on QZ003QZ warpgroups with different program counters.
 
+## F08-S11
+
+- **prose**:
+
+    QZ003QZ Hopper WGMMA overlaps instruction issue and accumulation.
+
+## F08-S14
+
+- **table**:
+
+    Fence between pipeline stages for WGMMA
+
+- **table row**:
+
+    `mma.commit` | Fence between pipeline stages for WGMMA
+
 ## F08-S15
 
 - **table**:
@@ -896,7 +924,7 @@ own document.
 
 - **table row**:
 
-    1P1C event pipeline | `inthreads.async`, `shared event[]`, `wait`, `trigger` | Separate producer/consumer warpgroups with multi-stage pipeline
+    1P1C event pipeline | `inthreads.async`, `shared event[]`, `wait`, `trigger`, `mma.commit` | Separate producer/consumer warpgroups with multi-stage pipeline
 
 - **prose**:
 

@@ -136,6 +136,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
             mb = mma.load rhs_load_s[stage].chunkat(_, iv_warp);
             mma.row.row mc, ma, mb;
           }
+          mma.commit;
           trigger empty[stage];
         }
         mma.store mc, output_s;
@@ -154,9 +155,9 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 **Consumer bootstrap.** The loop `foreach {s} in [STAGES] { trigger empty[s]; }` runs **before** the K-loop so every stage starts with an `empty` credit. Without this, the producer blocks forever on its first `wait empty` — a deadlock.
 
-**Consumer path.** Each `iv_k`: `wait full[stage]` blocks until the producer has filled that slot, then MMA over the tile and `trigger empty[stage]` to release the slot for reuse.
+**Consumer path.** Each `iv_k`: `wait full[stage]` blocks until the producer has filled that slot, then MMA over the tile, `mma.commit`, and `trigger empty[stage]` to release the slot for reuse.
 
-**Consumer ordering.** The consumer signals `empty[stage]` only after the tile's matrix operations have completed. Signalling too early lets the producer overwrite operands the MMA is still reading.
+**`mma.commit`.** Hopper WGMMA overlaps instruction issue and accumulation. `mma.commit` is the fence that completes one K-slab's contribution to `mc` before that stage's shared buffer may be reused. Omitting it risks reading stale data — the MMA might still be consuming operands when the producer overwrites the buffer.
 
 ### Credit flow for one stage
 
@@ -179,6 +180,7 @@ If something looks wrong after editing a pipeline, verify **event order and trip
 | `rotate(f0, f1, f2)`        | Cycle three future handles                       |
 | `with tile_k in N { ... }`  | Scoped tile axis binding with extent N           |
 | `foreach tile_k(1:)`        | Iterate starting from index 1                    |
+| `mma.commit`                | Fence between pipeline stages for WGMMA          |
 | `__co__ auto fn(...)`       | Return type inferred from `return` statement     |
 
 ## Summary
@@ -186,7 +188,7 @@ If something looks wrong after editing a pipeline, verify **event order and trip
 | Pattern                 | Primitives used                                                      | When to use                                                     |
 |-------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------|
 | `swap` double buffering | `dma.any`, `swap`                                                    | Single thread group interleaving load and compute               |
-| 1P1C event pipeline     | `inthreads.async`, `shared event[]`, `wait`, `trigger` | Separate producer/consumer warpgroups with multi-stage pipeline |
+| 1P1C event pipeline     | `inthreads.async`, `shared event[]`, `wait`, `trigger`, `mma.commit` | Separate producer/consumer warpgroups with multi-stage pipeline |
 
 Both patterns achieve the same goal — overlapping memory and compute — but at different levels of complexity. Start with `swap` for simpler kernels; graduate to events when you need warp specialization.
 

@@ -8,4 +8,4 @@ The consumer first triggers every \co@empty@ event. All events begin unset, so t
 
 \textbf{Consumer path.} Each \texttt{iv\_k}: \texttt{wait full[stage]} blocks until the producer has filled that slot, then MMA over the tile and \texttt{trigger empty[stage]} to release the slot for reuse.
 
-\textbf{Consumer ordering.} The consumer signals \texttt{empty[stage]} only after the tile's matrix operations have completed. Signalling too early lets the producer overwrite operands the MMA is still reading.
+The consumer signals \co@empty[stage]@ only after the tile's matrix operations have completed; releasing a stage early lets the producer overwrite operands the MMA is still reading.

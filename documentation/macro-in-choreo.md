@@ -37,7 +37,7 @@ Choreo also support conditional compilation which C/C++ programs used a lot. Thi
 ```choreo
 #define PATH0
 // some host code
-__co__ auto foo() {
+__co__ foo() {
 #ifdef PATH0
 // some code related to PATH0
 #else

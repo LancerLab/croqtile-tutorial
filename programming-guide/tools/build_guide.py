@@ -1188,6 +1188,29 @@ UNIT_OVERRIDES = [
     ('F08-S07', '(?m)^\\\\texttt\\{\\(1:', 'The slice \\texttt{(1:'),
     ('F16-S04', '(?m)^\\\\texttt\\{new', 'The expression \\texttt{new'),
     # Round 76 (3.11): diagnostics methodology. Source prose is continuous.
+    # Round 77: code correctness. Upstream examples use syntax this toolchain
+    # rejects (swizzle modes, mma.commit) or forms the language rejects
+    # (reading .data from a buffer, a bare return type).
+    ('F09-S03', r'swiz<3>', 'swiz<128>'),
+    ('F09-S03', r'swiz\\textless\{\}3\\textgreater\{\}', r'swiz\textless{}128\textgreater{}'),
+    ('F09-S03',
+     r'\\textbf\{Swizzle levels\.\}.*?granularity\.',
+     r'\textbf{Swizzle width.} The template argument is the swizzle width in bytes, and the examples use \texttt{swiz\textless{}128\textgreater{}}. A wider swizzle defeats wider conflict patterns but requires tile extents that line up with that width.'),
+    ('F09-S05', r'swiz<3>', 'swiz<128>'),
+    ('F09-S09', r'swiz<3>', 'swiz<128>'),
+    ('F08-S10', r'(?m)^[ \t]*mma\.commit;[ \t]*\n', ''),
+    ('F09-S05', r'(?m)^[ \t]*mma\.commit;[ \t]*\n', ''),
+    ('F08-S11', r', \\texttt\{mma\.commit\}, and', ' and'),
+    ('F08-S11',
+     r'\\texttt\{mma\.commit\} is the fence.*?overwrites the buffer\.',
+     "The consumer signals \\co@empty[stage]@ only after the tile's matrix operations have completed; releasing a stage early lets the producer overwrite operands the MMA is still reading."),
+    ('F06-S09', r'; \\texttt\{mma\.commit\} fences pipeline stages', ''),
+    ('F07-S07', r'\\texttt\{swap\}, and \\texttt\{mma\.commit\} into', r'\texttt{swap} into'),
+    ('F10-S04',
+     r'score = shared_scores\.data\.span_as\(\|shared_scores\.data\.span\|\)\.at\(gid # tid\);',
+     'flat_scores = shared_scores.span_as([|shared_scores.span|]);\n          score = flat_scores.at(gid # tid);'),
+    ('F10-S11', r'__co__ foo\(\) \{', '__co__ auto foo() {'),
+    ('F23-S04', r'__co__ foo\(\) \{', '__co__ auto foo() {'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

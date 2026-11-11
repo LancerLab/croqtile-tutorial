@@ -136,7 +136,7 @@ foreach {s} in [STAGES] {
 
 Without this bootstrap, the producer's first `wait empty[0]` blocks forever — a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol requires initial credits.
 
-[Chapter 6](ch06-synchronization.md) develops the full double-buffered and multi-stage pipeline kernels that put these primitives to work. The examples there compose `inthreads.async`, events, and `swap` into complete, runnable matmul pipelines.
+[Chapter 6](ch06-synchronization.md) develops the full double-buffered and multi-stage pipeline kernels that put these primitives to work. The examples there compose `inthreads.async`, events, `swap`, and `mma.commit` into complete, runnable matmul pipelines.
 
 ## A 1P1C matmul skeleton
 
