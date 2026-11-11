@@ -260,13 +260,6 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/target/env_setting_up/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/downloads/</loc>
-        <lastmod>2026-11-11</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/downloads/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/downloads/"/>
-    </url>
-    <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/optimization/</loc>
         <lastmod>2026-11-11</lastmod>
         <changefreq>daily</changefreq>
@@ -650,13 +643,6 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/target/env_setting_up/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/target/env_setting_up/"/>
-    </url>
-    <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/downloads/</loc>
-        <lastmod>2026-11-11</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/downloads/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/downloads/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/optimization/</loc>
