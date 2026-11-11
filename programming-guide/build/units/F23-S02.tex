@@ -6,7 +6,7 @@ Croqtile preprocessor supports C/C++ \textbf{object-like macros} to connect both
 #define M 256
 #define N 32
 #define K 64
-__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
+__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }
 void foo() {
   croq::f32 a[M][K];
   croq::f32 b[N][K];

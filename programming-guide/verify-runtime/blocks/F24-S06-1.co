@@ -2,11 +2,12 @@ template<int M, int N, int K>
 __device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
 __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
-  parallel p by 6 {
-    shared s32 [output.span / #p] buffer;   // shape: [16, 4]
+  parallel {p, q} by [6, 6] : block {
+    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]
     lhs_load = dma.copy lhs.chunkat(p, _) => shared;
-    rhs_load = dma.copy rhs.chunkat(_, p) => shared;
+    rhs_load = dma.copy rhs.chunkat(_, q) => shared;
     call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);
+    dma.copy buffer => output.chunkat(p, q);
   }
   return output;
 }

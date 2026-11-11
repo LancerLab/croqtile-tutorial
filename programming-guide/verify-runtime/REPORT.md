@@ -78,6 +78,9 @@ correct code.
 | F15-S21, F19-S05, F23-S02, F25-S04 | runtime named `croqtile` throughout | renamed to `croq` (see below) |
 | F19-S05 | `int tile_m = 32, tile_m = 8, tile_k = 16;` declares `tile_m` twice and leaves `tile_n` undefined | `tile_m`, `tile_n`, `tile_k` |
 | F03-S03, F05-S16 | `croq::croq_assert` — the helper is a free function | `croq_assert` |
+| F23-S02 | left operand declared `[M, N]` but the caller passes an `[M, K]` buffer, so the shape check fails at entry | `f32 [M, K] lhs` |
+| F24-S06 | the block computed a `[16, 4]` tile, wrote it nowhere, and indexed only the row blocks — just the diagonal of the tile grid was covered | loop over `{p, q}`, write the tile back with `dma.copy buffer => output.chunkat(p, q)`, and mark the movement `: block` |
+| F19-S05 | the listing claims to quote compiler output but used the guide's spelling, a non-existent assert helper, and by-value parameters | `choreo::spanned_view<choreo::s32, 2> &`, `choreo::runtime_check`, aligned by hand |
 
 Two of the fixes turned compiler crashes into ordinary diagnostics (F06-S04,
 F40-S03), which is how the remaining problems became visible. F40-S03 now clears
@@ -113,9 +116,9 @@ The `croqtile` spelling that remains in the guide is the language name itself
 and the `language=croqtile` listing tag, both intentional.
 
 Note: code the compiler itself emits says `choreo::` (for example
-`choreo::runtime_check(...)`). The two listings that illustrate transpiled
-output — F19-S05 and F19-S03 — now use `croq::` with everything else, so they
-read as the guide's spelling rather than a byte-exact capture of the compiler's.
+`choreo::runtime_check(...)`). The one listing that quotes transpiled output,
+F19-S05, therefore keeps the compiler's spelling rather than the guide's; every
+listing that shows code a reader would write uses `croq::`.
 
 ## Harnesses
 

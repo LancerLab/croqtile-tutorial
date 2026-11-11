@@ -28,9 +28,9 @@
 \contentsline {subsection}{\numberline {3.4.1}Worked Example: Tiled Matrix Multiplication}{79}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Tracing One Output Element}{80}{subsection.3.4.2}%
 \contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{80}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{81}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{82}{subsection.3.5.1}%
 \contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{83}{subsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.5.3}Layout Reinterpretation with span\_as}{83}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.3}Layout Reinterpretation with span\_as}{84}{subsection.3.5.3}%
 \contentsline {subsection}{\numberline {3.5.4}Tile Selection: Summary and Syntax}{84}{subsection.3.5.4}%
 \contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{85}{section.3.6}%
 \contentsline {subsection}{\numberline {3.6.1}Worked Example: DMA Matmul}{88}{subsection.3.6.1}%
@@ -39,19 +39,19 @@
 \contentsline {subsection}{\numberline {3.7.1}Worked Example: One Cooperative Group}{96}{subsection.3.7.1}%
 \contentsline {subsection}{\numberline {3.7.2}MMA Syntax Summary}{98}{subsection.3.7.2}%
 \contentsline {subsection}{\numberline {3.7.3}MMA Design Summary}{98}{subsection.3.7.3}%
-\contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{98}{section.3.8}%
+\contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{99}{section.3.8}%
 \contentsline {subsection}{\numberline {3.8.1}Canonical Pattern: One Producer and One Consumer}{103}{subsection.3.8.1}%
-\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{103}{subsection.3.8.2}%
-\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{104}{subsection.3.8.3}%
-\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{105}{subsection.3.8.4}%
-\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{108}{subsection.3.8.5}%
-\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{110}{subsection.3.8.6}%
+\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{104}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{105}{subsection.3.8.3}%
+\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{106}{subsection.3.8.4}%
+\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{109}{subsection.3.8.5}%
+\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{111}{subsection.3.8.6}%
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{111}{section.3.9}%
 \contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{114}{subsection.3.9.1}%
 \contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{115}{subsection.3.9.2}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{115}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{117}{subsection.3.10.1}%
-\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{118}{subsection.3.10.2}%
+\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{119}{subsection.3.10.2}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{119}{section.3.11}%
 \contentsline {chapter}{\numberline {A}Syntax Quick Reference}{121}{appendix.A}%
 \contentsline {section}{\numberline {A.1}Declarations and shapes}{121}{section.A.1}%

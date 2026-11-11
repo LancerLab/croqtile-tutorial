@@ -1335,6 +1335,31 @@ UNIT_OVERRIDES = [
     # alias). The guide used `croqtile` for the header, the namespace, the
     # assertion helper and a factory name that does not exist in that spelling.
     ('*', '', _rename_runtime),
+    # Round 82: residual code defects the runtime pass turned up.
+    # F23-S02 declares the left operand `[M, N]` but passes an `[M, K]` buffer.
+    ('F23-S02', re.escape('__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }'),
+     '__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }'),
+    # F24-S06 computed a [16, 4] tile per block, wrote it nowhere, and looped
+    # over the row blocks only, so just the diagonal of the tile grid was
+    # covered. Index both axes, write the tile back, and mark the movement
+    # block-uniform so the thread-level DMA rule does not apply.
+    ('F24-S06', re.escape('  parallel p by 6 {\n    shared s32 [output.span / #p] buffer;   // shape: [16, 4]\n    lhs_load = dma.copy lhs.chunkat(p, _) => shared;\n    rhs_load = dma.copy rhs.chunkat(_, p) => shared;\n    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);\n  }'), '  parallel {p, q} by [6, 6] : block {\n    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]\n    lhs_load = dma.copy lhs.chunkat(p, _) => shared;\n    rhs_load = dma.copy rhs.chunkat(_, q) => shared;\n    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);\n    dma.copy buffer => output.chunkat(p, q);\n  }'),
+    # F19-S05 quotes compiler output, so it keeps the compiler's spelling:
+    # `choreo::`, const-reference parameters, and `runtime_check`.
+    ('F19-S05', re.escape('croq::spanned_view<croq::s32, 2> lhs'),
+     'const choreo::spanned_view<choreo::s32, 2> & lhs'),
+    ('F19-S05', re.escape('croq::spanned_view<croq::s32, 2> rhs'),
+     'const choreo::spanned_view<choreo::s32, 2> & rhs'),
+    ('F19-S05', re.escape('croq_assert('), 'choreo::runtime_check('),
+    # keep the quoted listing aligned after the longer parameter type
+    ('F19-S05', re.escape('\n                                const choreo::spanned_view'),
+     '\n                                  const choreo::spanned_view'),
+    ('F19-S05', re.escape('\n                "the 0 dimension'),
+     '\n                        "the 0 dimension'),
+    ('F19-S05', re.escape('\n                "dimension \'K\''),
+     '\n                        "dimension \'K\''),
+    ('F19-S05', re.escape('\n                "with a dimension value'),
+     '\n                        "with a dimension value'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

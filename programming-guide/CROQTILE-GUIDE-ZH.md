@@ -2486,7 +2486,7 @@ __co__ void foo() {
 #define M 256
 #define N 32
 #define K 64
-__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
+__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }
 void foo() {
   croq::f32 a[M][K];
   croq::f32 b[N][K];
@@ -3118,11 +3118,11 @@ Croqtile 同时做编译时检查和运行时检查来保证安全：
 - **运行时检查**：Croqtile 生成的代码在运行时校验维度。例如 `tiled_lhs` 的声明里，形状不能出现 `0` 维，否则会得到非法的零大小缓冲区。Croqtile 的*转译*过程会生成如下*目标主机代码*：
 
 ```text
-void __croqtile_transpiled_Matmul(croq::spanned_view<croq::s32, 2> lhs,
-                                croq::spanned_view<croq::s32, 2> rhs) {
-  croq_assert(lhs.shape()[0] / 32 > 0,
-                "the 0 dimension of 'lhs' may result in spanned data "
-                "with a dimension value of 0.");
+void __croqtile_transpiled_Matmul(const choreo::spanned_view<choreo::s32, 2> & lhs,
+                                  const choreo::spanned_view<choreo::s32, 2> & rhs) {
+  choreo::runtime_check(lhs.shape()[0] / 32 > 0,
+                        "the 0 dimension of 'lhs' may result in spanned data "
+                        "with a dimension value of 0.");
   // ...
 }
 ```
@@ -3134,14 +3134,14 @@ void __croqtile_transpiled_Matmul(croq::spanned_view<croq::s32, 2> lhs,
 对于*符号维度*版本，Croqtile 编译器会在*目标主机代码*里生成额外的检查：
 
 ```text
-void __croqtile_transpiled_Matmul(croq::spanned_view<croq::s32, 2> lhs,
-                                croq::spanned_view<croq::s32, 2> rhs) {
+void __croqtile_transpiled_Matmul(const choreo::spanned_view<choreo::s32, 2> & lhs,
+                                  const choreo::spanned_view<choreo::s32, 2> & rhs) {
   // additional check happens only when using symbolic dimensions
-  croq_assert(lhs.shape()[1] == rhs.shape()[0],
-                "dimension 'K' is not consistent.");
-  croq_assert(lhs.shape()[0] / 32 > 0,
-                "the 0 dimension of 'lhs' may result in spanned data "
-                "with a dimension value of 0.");
+  choreo::runtime_check(lhs.shape()[1] == rhs.shape()[0],
+                        "dimension 'K' is not consistent.");
+  choreo::runtime_check(lhs.shape()[0] / 32 > 0,
+                        "the 0 dimension of 'lhs' may result in spanned data "
+                        "with a dimension value of 0.");
   // ...
 }
 ```
@@ -4791,11 +4791,12 @@ template<int M, int N, int K>
 __device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
 __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
-  parallel p by 6 {
-    shared s32 [output.span / #p] buffer;   // shape: [16, 4]
+  parallel {p, q} by [6, 6] : block {
+    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]
     lhs_load = dma.copy lhs.chunkat(p, _) => shared;
-    rhs_load = dma.copy rhs.chunkat(_, p) => shared;
+    rhs_load = dma.copy rhs.chunkat(_, q) => shared;
     call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);
+    dma.copy buffer => output.chunkat(p, q);
   }
   return output;
 }

@@ -179,20 +179,20 @@
 \contentsline {lstlisting}{\numberline {3.29}A window at a constant offset}{80}{lstlisting.3.29}%
 \contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{80}{lstlisting.3.30}%
 \contentsline {lstlisting}{\numberline {3.31}Strided tiles: .subspan, .step, and .at}{81}{lstlisting.3.31}%
-\contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{81}{lstlisting.3.32}%
+\contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{82}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}A movement statement using the reinterpretation}{82}{lstlisting.3.33}%
 \contentsline {lstlisting}{\numberline {3.34}An asynchronous DMA declaration}{85}{lstlisting.3.34}%
 \contentsline {lstlisting}{\numberline {3.35}The same declaration with storage}{85}{lstlisting.3.35}%
-\contentsline {lstlisting}{\numberline {3.36}Operation Type}{85}{lstlisting.3.36}%
+\contentsline {lstlisting}{\numberline {3.36}Operation Type}{86}{lstlisting.3.36}%
 \contentsline {lstlisting}{\numberline {3.37}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{86}{lstlisting.3.37}%
-\contentsline {lstlisting}{\numberline {3.38}DMA Matmul: Tiles in Shared Storage}{86}{lstlisting.3.38}%
+\contentsline {lstlisting}{\numberline {3.38}DMA Matmul: Tiles in Shared Storage}{87}{lstlisting.3.38}%
 \contentsline {lstlisting}{\numberline {3.39}Double buffering with swap}{88}{lstlisting.3.39}%
 \contentsline {lstlisting}{\numberline {3.40}Multi-Buffering Optimization with Croqtile}{89}{lstlisting.3.40}%
 \contentsline {lstlisting}{\numberline {3.41}Partial Tiles, Guarding, and .zfill}{92}{lstlisting.3.41}%
 \contentsline {lstlisting}{\numberline {3.42}.swiz N : Shared-Memory Layout for the Consumer}{93}{lstlisting.3.42}%
 \contentsline {lstlisting}{\numberline {3.43}A swizzled copy}{93}{lstlisting.3.43}%
 \contentsline {lstlisting}{\numberline {3.44}A swizzled mma load}{93}{lstlisting.3.44}%
-\contentsline {lstlisting}{\numberline {3.45}A sparse contraction}{93}{lstlisting.3.45}%
+\contentsline {lstlisting}{\numberline {3.45}A sparse contraction}{94}{lstlisting.3.45}%
 \contentsline {lstlisting}{\numberline {3.46}A scaled contraction}{94}{lstlisting.3.46}%
 \contentsline {lstlisting}{\numberline {3.47}Another contraction layout}{94}{lstlisting.3.47}%
 \contentsline {lstlisting}{\numberline {3.48}One group, one tile: the simplest MMA matmul}{95}{lstlisting.3.48}%
@@ -200,7 +200,7 @@
 \contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{98}{lstlisting.3.50}%
 \contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{100}{lstlisting.3.51}%
 \contentsline {lstlisting}{\numberline {3.52}Event Instances}{100}{lstlisting.3.52}%
-\contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{100}{lstlisting.3.53}%
+\contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{101}{lstlisting.3.53}%
 \contentsline {lstlisting}{\numberline {3.54}A credit-count deadlock}{101}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{101}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{102}{lstlisting.3.56}%
@@ -212,7 +212,7 @@
 \contentsline {lstlisting}{\numberline {3.62}Stream Binding}{105}{lstlisting.3.62}%
 \contentsline {lstlisting}{\numberline {3.63}Stream Binding without .async}{106}{lstlisting.3.63}%
 \contentsline {lstlisting}{\numberline {3.64}The full 1P1C event pipeline}{106}{lstlisting.3.64}%
-\contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{109}{lstlisting.3.65}%
+\contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{110}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}A templated device helper}{110}{lstlisting.3.66}%
 \contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{110}{lstlisting.3.67}%
 \contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{111}{lstlisting.3.68}%

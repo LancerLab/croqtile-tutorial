@@ -24,7 +24,7 @@ Segmentation fault
 F19-S06-1    | CRASH(139) | 
 F24-S03-1    | FAIL | unable to call kernel function outside the parallel-by block(s).
 F24-S04-1    | FAIL | in operation "dataof": expect a future type but got `f32 mdspan<2> []'.
-F24-S06-1    | FAIL | a thread-level DMA with a thread-indexed source must index the thread-level parallel variable o
+F24-S06-1    | FAIL | On GCU300, the total block parallel-by count must not exceed 2.
 F24-S06-2    | FAIL | 'M' is a runtime value
 F26-S01-1    | ok   |
 F26-S01-2    | ok   |
