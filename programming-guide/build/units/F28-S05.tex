@@ -18,4 +18,4 @@ dma.pad<{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f> input => shared; // Result shape 
 
 DMA configurations appear in angle brackets, and their contents depend on the operation. The supported syntax and constraints also depend on the target platform.
 
-Support for operations other than \texttt{dma.copy} varies by platform. A transfer may map to TMA or to a sequence of load instructions issued by cooperating threads.
+Support for operations other than \texttt{dma.copy} varies by platform. A transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads.

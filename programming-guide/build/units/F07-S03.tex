@@ -3,7 +3,7 @@
 The form \co@inthreads.async@ assigns different thread groups to separately progressing regions. Its predicate identifies the group responsible for each region. This is useful for a producer and consumer whose roles are fixed even though their progress depends on which buffers are ready.
 
 \begin{lstlisting}[language=croqtile,caption={Structured concurrent regions with inthreads.async}]
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
   }
   inthreads.async (p1 == 1) {

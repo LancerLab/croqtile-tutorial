@@ -32,7 +32,20 @@ REG = os.path.join(PG, 'UNIT-REGISTRY.md')
 
 # These introductory interop units repeat material covered in chapters 2 and 3.
 # Keep their upstream sources and source-map entries, but omit them from the book.
-OMITTED_UNITS = {'F10-S02', 'F10-S12', 'F14-S05', 'F14-S06'}
+OMITTED_UNITS = {
+    'F10-S02', 'F10-S12', 'F14-S05', 'F14-S06',
+    # GPU-backend-only features, not part of the portable language:
+    'F10-S06',  # setmaxnreg register hints
+    'F09-S02',  # tma.copy
+    'F09-S05',  # TMA in a pipelined matmul
+    'F09-S09',  # .zfill demonstrated through a TMA copy
+    'F04-S20',  # DMA vs TMA
+    'F04-S21',  # the main TMA constraint
+    'F06-S05',  # cooperative group and mma (wgmma)
+    'F06-S06',  # two cooperative groups sharing operands
+    'F05-S08',  # : group-4 cooperative group level
+    'F10-S07',  # macros lesson taught through a setmaxnreg string
+}
 
 os.makedirs(UNITS_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
@@ -360,6 +373,20 @@ def caption_names(names):
 
 # A very small number of source units are meta-narrative about the old
 # tutorial (its chapter list).  They are replaced, not summarised.
+def strip_gpu_backend(text):
+    """Replace GPU-backend-only spellings with their portable equivalents.
+
+    tma.copy is the GPU tensor-memory engine; dma.copy is the same source
+    operation on the other backends. group-4 is a GPU warpgroup level; the
+    portable form of the same role split is a thread level.
+    """
+    text = text.replace('tma.copy', 'dma.copy')
+    text = text.replace('tma.\\allowbreak{}copy', 'dma.\\allowbreak{}copy')
+    text = text.replace('group-4', 'thread')
+    text = text.replace('Group-4', 'Thread')
+    return text
+
+
 UNIT_OVERRIDES = [
     ('F11-S10',
      r'(?s)You have (?:met|learned the following concepts):.*?\\end\{itemize\}',
@@ -1211,6 +1238,19 @@ UNIT_OVERRIDES = [
      'flat_scores = shared_scores.span_as([|shared_scores.span|]);\n          score = flat_scores.at(gid # tid);'),
     ('F10-S11', r'__co__ foo\(\) \{', '__co__ auto foo() {'),
     ('F23-S04', r'__co__ foo\(\) \{', '__co__ auto foo() {'),
+    # Round 78: drop GPU-backend-only vocabulary that the tma.copy / group-4
+    # rewrite leaves behind in prose.
+    ('F28-S05', r'A transfer may map to TMA or to a sequence',
+     'A transfer may map to a dedicated copy engine or to a sequence'),
+    ('F09-S03', r'Swizzle is not a TMA-specific feature\..*?same in both cases\.',
+     r'Swizzle is a property of the copy, not of a particular engine: \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} produces the same shared-memory layout regardless of how the data gets there.'),
+    ('F04-S01', r'write DMA and TMA code', 'write DMA code'),
+    ('F09-S12', r'(?m)^\\texttt\{dma.*?& TMA copy with swizzle mode.*?\n', ''),
+    ('F09-S12', r'DMA copy with swizzle mode \\texttt\{N\} \(0--3\); same layout as TMA',
+     r'Copy with swizzle width \\texttt{N} in bytes'),
+    ('F04-S08', r'The result of a DMA or TMA statement', 'The result of a DMA statement'),
+    ('F04-S09', r'The same pattern applies to TMA:', 'The same pattern applies to asynchronous copies:'),
+    ('F04-S09', r'An asynchronous tma copy', 'An asynchronous copy'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),
@@ -1869,6 +1909,7 @@ def main():
                 continue
 
             frag = convert_body(body, uid, rel, fid, title)
+            frag = strip_gpu_backend(frag)
             if uid in OMITTED_UNITS:
                 manifest.append((uid, rel, slot, 'omitted', title))
                 continue
@@ -1906,6 +1947,7 @@ def main():
             heading_tex = heading_for(title, uid, slot) if frag.strip() else ''
             text = (heading_tex + '\n\n' if heading_tex else '') + frag
             text = polish_prose(text, uid)
+            text = strip_gpu_backend(text)
             frag_path = os.path.join(UNITS_DIR, uid + '.tex')
             open(frag_path, 'w', encoding='utf-8').write(text + '\n')
             slot_units[slot].append(uid)

@@ -13,7 +13,7 @@ The expression selects a \texttt{[16, 16]} slice starting at row 37, column 50. 
 \caption{The small example uses a [4, 4] window from (2, 3); the same rule selects the [16, 16] window from (37, 50) in the code.}
 \end{figure}
 
-The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{tma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
+The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{dma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
 
 \begin{lstlisting}[language=croqtile,caption={A window at a runtime offset}]
 expert_lhs = lhs.view(expert_M, K).from(expert_offset, 0);

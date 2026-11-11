@@ -34,8 +34,8 @@ F04-S16	tutorial/ch02-data-movement.md	2.4	kept	`span` and `span(i)`
 F04-S17	tutorial/ch02-data-movement.md	X	moved	
 F04-S18	tutorial/ch02-data-movement.md	3.7	kept	Partial Tiles, Guarding, and `.zfill`
 F04-S19	tutorial/ch02-data-movement.md	3.7	kept	`.swiz<N>`: Shared-Memory Layout for the Consumer
-F04-S20	tutorial/ch02-data-movement.md	3.6	kept	DMA vs TMA
-F04-S21	tutorial/ch02-data-movement.md	3.6	kept	The main TMA constraint
+F04-S20	tutorial/ch02-data-movement.md	3.6	omitted	DMA vs TMA
+F04-S21	tutorial/ch02-data-movement.md	3.6	omitted	The main TMA constraint
 F04-S22	tutorial/ch02-data-movement.md	X	moved	
 F04-S23	tutorial/ch02-data-movement.md	X	moved	
 F04-S24	tutorial/ch02-data-movement.md	X	moved	
@@ -47,7 +47,7 @@ F05-S04	tutorial/ch03-parallelism.md	X	moved
 F05-S05	tutorial/ch03-parallelism.md	2.7	kept	`: block` — Thread Blocks
 F05-S06	tutorial/ch03-parallelism.md	2.7	kept	`: thread` — Threads Within a Block
 F05-S07	tutorial/ch03-parallelism.md	X	moved	
-F05-S08	tutorial/ch03-parallelism.md	3.4	kept	`: group-4` — Warpgroups
+F05-S08	tutorial/ch03-parallelism.md	3.4	omitted	`: group-4` — Warpgroups
 F05-S09	tutorial/ch03-parallelism.md	2.7	kept	Nesting Specifiers
 F05-S10	tutorial/ch03-parallelism.md	X	moved	
 F05-S11	tutorial/ch03-parallelism.md	3.2	kept	Type System Aside: `mdspan` and `ituple`
@@ -62,8 +62,8 @@ F06-S01	tutorial/ch04-mma.md	3.7	kept	Tensor Contraction: the `mma` Syntax
 F06-S02	tutorial/ch04-mma.md	2.12	kept	The four-step MMA syntax
 F06-S03	tutorial/ch04-mma.md	3.7	kept	Scaling the cooperation scope
 F06-S04	tutorial/ch04-mma.md	3.7.1	kept	One warp, one tile: the simplest MMA matmul
-F06-S05	tutorial/ch04-mma.md	3.7.2	kept	Widening the scope: warpgroups and WGMMA
-F06-S06	tutorial/ch04-mma.md	3.7.3	kept	Tiling further: two warpgroups sharing operands
+F06-S05	tutorial/ch04-mma.md	3.7.2	omitted	Widening the scope: warpgroups and WGMMA
+F06-S06	tutorial/ch04-mma.md	3.7.3	omitted	Tiling further: two warpgroups sharing operands
 F06-S07	tutorial/ch04-mma.md	3.7	kept	Beyond dense FP16: what else the four steps express
 F06-S08	tutorial/ch04-mma.md	3.7.9	kept	New syntax
 F06-S09	tutorial/ch04-mma.md	3.7.10	kept	Chapter summary
@@ -97,14 +97,14 @@ F08-S13	tutorial/ch06-synchronization.md	1.5	kept	Debugging tip
 F08-S14	tutorial/ch06-synchronization.md	2.15	kept	New syntax
 F08-S15	tutorial/ch06-synchronization.md	3.8.10	kept	Summary
 F09-S01	tutorial/ch07-advanced-movement.md	X	moved	
-F09-S02	tutorial/ch07-advanced-movement.md	3.6	kept	`tma.copy`: hardware tensor movement
+F09-S02	tutorial/ch07-advanced-movement.md	3.6	omitted	`tma.copy`: hardware tensor movement
 F09-S03	tutorial/ch07-advanced-movement.md	3.7	kept	Swizzle and bank conflicts
 F09-S04	tutorial/ch07-advanced-movement.md	3.10	kept	Why the restricted interface works: expressiveness vs performance
-F09-S05	tutorial/ch07-advanced-movement.md	3.6.3	kept	Example: TMA in a pipelined matmul
+F09-S05	tutorial/ch07-advanced-movement.md	3.6.3	omitted	Example: TMA in a pipelined matmul
 F09-S06	tutorial/ch07-advanced-movement.md	3.5	kept	Handling irregular access
 F09-S07	tutorial/ch07-advanced-movement.md	3.5.1	kept	Arbitrary-offset windows: `view` and `from`
 F09-S08	tutorial/ch07-advanced-movement.md	3.5.2	kept	Strided tiles: `.subspan`, `.step`, and `.at`
-F09-S09	tutorial/ch07-advanced-movement.md	3.5.3	kept	Zero-padding: `.zfill`
+F09-S09	tutorial/ch07-advanced-movement.md	3.5.3	omitted	Zero-padding: `.zfill`
 F09-S10	tutorial/ch07-advanced-movement.md	3.5.4	kept	Layout reinterpretation: `span_as`
 F09-S11	tutorial/ch07-advanced-movement.md	3.5.10	kept	Chapter summary
 F09-S12	tutorial/ch07-advanced-movement.md	3.5.10	kept	New syntax
@@ -113,8 +113,8 @@ F10-S02	tutorial/ch08-cpp-interop.md	1.4	omitted	How `.co` files compile
 F10-S03	tutorial/ch08-cpp-interop.md	3.9	kept	`__device__` vs ordinary C++ inline
 F10-S04	tutorial/ch08-cpp-interop.md	3.9.1	kept	`__device__` functions: CUDA alongside Croqtile
 F10-S05	tutorial/ch08-cpp-interop.md	2.13	kept	`__cpp__`: verbatim C++ injection
-F10-S06	tutorial/ch08-cpp-interop.md	3.9.2	kept	Register hints: `setmaxnreg`
-F10-S07	tutorial/ch08-cpp-interop.md	2.13	kept	Macros inside `__cpp__` strings
+F10-S06	tutorial/ch08-cpp-interop.md	3.9.2	omitted	Register hints: `setmaxnreg`
+F10-S07	tutorial/ch08-cpp-interop.md	2.13	omitted	Macros inside `__cpp__` strings
 F10-S08	tutorial/ch08-cpp-interop.md	2.13	kept	The preprocessor
 F10-S09	tutorial/ch08-cpp-interop.md	2.13	kept	Tile geometry as macros
 F10-S10	tutorial/ch08-cpp-interop.md	2.13	kept	Compile-time assertions with `#error`

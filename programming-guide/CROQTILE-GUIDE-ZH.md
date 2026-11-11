@@ -40,19 +40,15 @@
 <a class="toc-l2" href="#sec-3-5"><span class="tn">3.5</span><span class="tt">分块选择与数据表达式</span></a>
 <a class="toc-l3" href="#sec-3-5-1"><span class="tn">3.5.1</span><span class="tt">任意偏移窗口：<code>view</code> 与 <code>from</code></span></a>
 <a class="toc-l3" href="#sec-3-5-2"><span class="tn">3.5.2</span><span class="tt">跨步分块：<code>subspan</code>、<code>step</code> 与 <code>at</code></span></a>
-<a class="toc-l3" href="#sec-3-5-3"><span class="tn">3.5.3</span><span class="tt">用 <code>zfill</code> 做零填充</span></a>
-<a class="toc-l3" href="#sec-3-5-4"><span class="tn">3.5.4</span><span class="tt">用 <code>span_as</code> 做布局重解释</span></a>
-<a class="toc-l3" href="#sec-3-5-10"><span class="tn">3.5.5</span><span class="tt">分块选择：小结与语法</span></a>
+<a class="toc-l3" href="#sec-3-5-4"><span class="tn">3.5.3</span><span class="tt">用 <code>span_as</code> 做布局重解释</span></a>
+<a class="toc-l3" href="#sec-3-5-10"><span class="tn">3.5.4</span><span class="tt">分块选择：小结与语法</span></a>
 <a class="toc-l2" href="#sec-3-6"><span class="tn">3.6</span><span class="tt">数据搬运：操作、配置与异步模式</span></a>
 <a class="toc-l3" href="#sec-3-6-1"><span class="tn">3.6.1</span><span class="tt">示例剖析：DMA 矩阵乘法</span></a>
 <a class="toc-l3" href="#sec-3-6-2"><span class="tn">3.6.2</span><span class="tt">多缓冲：<code>dma.any</code>、<code>swap</code> 与 <code>rotate</code></span></a>
-<a class="toc-l3" href="#sec-3-6-3"><span class="tn">3.6.3</span><span class="tt">示例剖析：流水化核函数</span></a>
 <a class="toc-l2" href="#sec-3-7"><span class="tn">3.7</span><span class="tt">收缩与布局约定</span></a>
 <a class="toc-l3" href="#sec-3-7-1"><span class="tn">3.7.1</span><span class="tt">示例剖析：单个协作组</span></a>
-<a class="toc-l3" href="#sec-3-7-2"><span class="tn">3.7.2</span><span class="tt">示例剖析：扩大协作范围</span></a>
-<a class="toc-l3" href="#sec-3-7-3"><span class="tn">3.7.3</span><span class="tt">示例剖析：两个协作组</span></a>
-<a class="toc-l3" href="#sec-3-7-9"><span class="tn">3.7.4</span><span class="tt">MMA 语法小结</span></a>
-<a class="toc-l3" href="#sec-3-7-10"><span class="tn">3.7.5</span><span class="tt">MMA 设计小结</span></a>
+<a class="toc-l3" href="#sec-3-7-9"><span class="tn">3.7.2</span><span class="tt">MMA 语法小结</span></a>
+<a class="toc-l3" href="#sec-3-7-10"><span class="tn">3.7.3</span><span class="tt">MMA 设计小结</span></a>
 <a class="toc-l2" href="#sec-3-8"><span class="tn">3.8</span><span class="tt">协调、流水线与持久调度</span></a>
 <a class="toc-l3" href="#sec-3-8-1"><span class="tn">3.8.1</span><span class="tt">典型模式：一个生产者与一个消费者</span></a>
 <a class="toc-l3" href="#sec-3-8-2"><span class="tn">3.8.2</span><span class="tt">示例剖析：1P1C 核函数骨架</span></a>
@@ -62,8 +58,7 @@
 <a class="toc-l3" href="#sec-3-8-10"><span class="tn">3.8.6</span><span class="tt">协调模式小结</span></a>
 <a class="toc-l2" href="#sec-3-9"><span class="tn">3.9</span><span class="tt">C++ 互操作与预处理器</span></a>
 <a class="toc-l3" href="#sec-3-9-1"><span class="tn">3.9.1</span><span class="tt">示例剖析：调用设备辅助函数</span></a>
-<a class="toc-l3" href="#sec-3-9-2"><span class="tn">3.9.2</span><span class="tt">原样 C++ 注入</span></a>
-<a class="toc-l3" href="#sec-3-9-10"><span class="tn">3.9.3</span><span class="tt">互操作小结</span></a>
+<a class="toc-l3" href="#sec-3-9-10"><span class="tn">3.9.2</span><span class="tt">互操作小结</span></a>
 <a class="toc-l2" href="#sec-3-10"><span class="tn">3.10</span><span class="tt">Tileflow 模式与设计依据</span></a>
 <a class="toc-l3" href="#sec-3-10-1"><span class="tn">3.10.1</span><span class="tt">示例剖析：分块矩阵乘法</span></a>
 <a class="toc-l3" href="#sec-3-10-2"><span class="tn">3.10.2</span><span class="tt">示例剖析：rgb2gray</span></a>
@@ -1235,7 +1230,7 @@ dma.copy d1 => matrix;
 阅读并行代码时，先区分两个问题：哪些工作彼此独立，以及这些工作映射到哪里。
 
 - `parallel`：声明彼此独立、可以并行执行的工作。
-- 空间说明符，如 `: block`、`: thread`、`: group`、`: group-4`：指定并行轴的执行位置。
+- 空间说明符，如 `: block`、`: thread`、`: group`：指定并行轴的执行位置。
 
 `foreach` 表示顺序迭代，适合累加、归约或有前后依赖的处理；`parallel` 表示独立的工作实例。
 
@@ -1921,7 +1916,7 @@ __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
 
 #### 期值、`.data` 与 `.span`
 
-DMA 或 TMA 传输可以返回一个期值句柄：
+DMA 传输可以返回一个期值句柄：
 
 ```co
 f = dma.copy input => shared;
@@ -1972,15 +1967,15 @@ dma.copy f.data => output;
 
 <div class="listing-cap">清单 116：异步拷贝</div>
 
-TMA 使用相同的异步形式：
+异步拷贝使用相同的形式：
 
 ```co
-f = tma.copy.async input => shared;
+f = dma.copy.async input => shared;
 wait f;
-tma.copy f.data => output;
+dma.copy f.data => output;
 ```
 
-<div class="listing-cap">清单 117：异步 TMA 拷贝</div>
+<div class="listing-cap">清单 117：异步拷贝</div>
 
 期值可以在异步搬运尚未结束时就标识目标缓冲区。能够引用 `f.data`，并不意味着元素已经就绪。应在首次读取这些元素的操作之前执行 `wait f`，并在搬运过程中保持源和目标有效。
 
@@ -2406,33 +2401,6 @@ Croqtile 嵌入在 C++ 中，因此可以与现有代码和配置配合使用。
 - `__cpp__("...")`：适合简短代码。
 - `__cpp__(R"(...)")`：原始字符串写法，适合包含引号或多行内容的代码。
 
-#### `__cpp__` 字符串中的宏
-
-宏不会在字符串字面量内部展开：
-
-```co
-#define PRODUCER_MAXNREG 40
-inthreads.async (p1 == 0) {
-  __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 PRODUCER_MAXNREG;");)");
-}
-```
-
-<div class="listing-cap">清单 137：字符串中的宏</div>
-
-因此，注入代码中的宏名不会变成数值。可以在字符串中写出数值，并在外部用 `#if` 与 `#error` 检查配置：
-
-```co
-#define PRODUCER_MAXNREG 40
-#if PRODUCER_MAXNREG > 50
-#error "Producer maxnreg too high for this tile config"
-#endif
-inthreads.async (p1 == 0) {
-  __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 40;");)");
-}
-```
-
-<div class="listing-cap">清单 138：展开后的形式</div>
-
 预处理在 Croqtile 解析之前进行。普通 C++ 和 `__co__` 区域可以共用宏定义，便于统一维度与配置。
 
 | 指令 | 作用 |
@@ -2456,7 +2424,7 @@ inthreads.async (p1 == 0) {
 #define MATMUL_STAGES 4
 ```
 
-<div class="listing-cap">清单 139：用宏表示分块参数</div>
+<div class="listing-cap">清单 137：用宏表示分块参数</div>
 
 这些名字可以在 `parallel`、缓冲区声明、循环范围和主机侧检查中共同使用。
 
@@ -2470,7 +2438,7 @@ inthreads.async (p1 == 0) {
 #endif
 ```
 
-<div class="listing-cap">清单 140：用 #error 做编译时断言</div>
+<div class="listing-cap">清单 138：用 #error 做编译时断言</div>
 
 预处理器在解析 Croqtile 函数前求值这一条件。配置常量不兼容时，构建便会停止并显示给定消息。这适合检查配置宏之间的关系；若属性取决于运行时输入数据，则应使用运行时断言。
 
@@ -2487,7 +2455,7 @@ __co__ auto foo() {
 }
 ```
 
-<div class="listing-cap">清单 141：条件代码路径</div>
+<div class="listing-cap">清单 139：条件代码路径</div>
 
 预处理器根据条件保留相应的代码分支。宏也可以从命令行定义，例如 `croq kernel.co -DMATMUL_TILE_K=128`。
 
@@ -2504,7 +2472,7 @@ __co__ void foo() {
 }
 ```
 
-<div class="listing-cap">清单 142：用 call 调用 C++ 辅助函数</div>
+<div class="listing-cap">清单 140：用 call 调用 C++ 辅助函数</div>
 
 本例用 `call bar()` 调用 C++ 辅助函数 `bar`。设备调用的作用域和参数约束见本节后面的说明。
 
@@ -2528,7 +2496,7 @@ void foo() {
 }
 ```
 
-<div class="listing-cap">清单 143：对象式宏</div>
+<div class="listing-cap">清单 141：对象式宏</div>
 
 本例的 `M`、`N`、`K` 在解析前被替换为 `256`、`32`、`64`，因此对应的形状是静态确定的。主机代码也使用相同的宏值。
 
@@ -2538,7 +2506,7 @@ void foo() {
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 ```
 
-<div class="listing-cap">清单 144：带参数的宏</div>
+<div class="listing-cap">清单 142：带参数的宏</div>
 
 这个 `MAX` 定义不能按函数式宏使用。
 
@@ -2570,7 +2538,7 @@ __co__ auto foo() {
 #endif
 ```
 
-<div class="listing-cap">清单 145：条件编译</div>
+<div class="listing-cap">清单 143：条件编译</div>
 
 同一个条件可以同时控制主机代码与 Croqtile 代码。
 
@@ -2592,7 +2560,7 @@ __co__ auto foo() {
 call func-name <optional-template-args> (arguments);
 ```
 
-<div class="listing-cap">清单 146：调用语句的一般语法</div>
+<div class="listing-cap">清单 144：调用语句的一般语法</div>
 
 函数名后可以附带尖括号中的模板实参，普通参数写在圆括号中，并用逗号分隔。
 
@@ -2613,7 +2581,7 @@ __co__ void mou() {
 }
 ```
 
-<div class="listing-cap">清单 147：非法的调用点</div>
+<div class="listing-cap">清单 145：非法的调用点</div>
 
 #### 设备调用的参数类型
 
@@ -2641,7 +2609,7 @@ __co__ void foobar(f32 [M, 24] input, int N, float padding) {
 }
 ```
 
-<div class="listing-cap">清单 148：向设备函数传递参数</div>
+<div class="listing-cap">清单 146：向设备函数传递参数</div>
 
 带形状数据传到设备函数时，参数是指向元素的指针，不再携带完整形状。例如 `bar` 的 `float *p` 对应 `input.data`；需要的维度另以整数参数传递。设备函数的声明应与这些参数类型匹配。
 
@@ -2666,7 +2634,7 @@ __co__ void check_shapes(f32 [3, 2] b) {
 }
 ```
 
-<div class="listing-cap">清单 149：编译时打印形状</div>
+<div class="listing-cap">清单 147：编译时打印形状</div>
 
 编译时得到如下输出：
 
@@ -2674,7 +2642,7 @@ __co__ void check_shapes(f32 [3, 2] b) {
 shape of b: b.span = [3, 2]
 ```
 
-<div class="listing-cap">清单 150：打印出的形状</div>
+<div class="listing-cap">清单 148：打印出的形状</div>
 
 相邻字符串字面量会拼接，例如 `"wor" "ld!"` 等价于 `"world!"`。
 
@@ -2690,7 +2658,7 @@ __co__ void inspect(s32 [4, 8] data) {
 }
 ```
 
-<div class="listing-cap">清单 151：一个运行时检视核函数</div>
+<div class="listing-cap">清单 149：一个运行时检视核函数</div>
 
 运行时打印接受字符串和表达式，参数用逗号分隔。它适合观察实际执行中的索引或数据，与编译时检视互相补充。多个并行实例的输出顺序不固定，因此读取日志时需要结合实例索引辨认来源。
 
@@ -2706,7 +2674,7 @@ parallel {px, py} by [8, 16] : block
   }
 ```
 
-<div class="listing-cap">清单 152：并行块内的打印</div>
+<div class="listing-cap">清单 150：并行块内的打印</div>
 
 调试时可以用条件限制打印的实例，避免大量重复输出。
 
@@ -2718,7 +2686,7 @@ parallel {px, py} by [8, 16] : block
 assert(stage < MATMUL_STAGES, "stage index out of bounds");
 ```
 
-<div class="listing-cap">清单 153：assert：运行时不变式检查</div>
+<div class="listing-cap">清单 151：assert：运行时不变式检查</div>
 
 可以用断言检查索引范围、指针有效性或其他必须成立的条件，以便尽早发现错误。
 
@@ -2835,7 +2803,7 @@ __co__ void croqtile_function(...) { ... }
 void foo() { ... }
 ```
 
-<div class="listing-cap">清单 154：转译与编译</div>
+<div class="listing-cap">清单 152：转译与编译</div>
 
 `__cok__` 标记需要在调用目标编译器前从主机代码中分离的设备代码。当目标平台分别编译主机与设备代码时，需要使用这一包装。源码仍可维护在一个 `.co` 文件中，由包装告诉构建过程在哪里拆分。
 
@@ -2851,7 +2819,7 @@ __device__ void kernel(int * a, int * b, int * c, int n) {
 }
 ```
 
-<div class="listing-cap">清单 155：从 tileflow 调用的设备辅助函数</div>
+<div class="listing-cap">清单 153：从 tileflow 调用的设备辅助函数</div>
 
 对于只支持*分离源编程模型*的目标平台，代码可能需要包在 `__cok__` 块里。等价的写法如下：
 
@@ -2863,7 +2831,7 @@ __cok__ {
 } // end of __cok__
 ```
 
-<div class="listing-cap">清单 156：分离源所需的 cok 包装</div>
+<div class="listing-cap">清单 154：分离源所需的 cok 包装</div>
 
 这里 `extern "C"` 标注取代了目标平台使用的 `__device__` 关键字，因为设备函数要求 C 链接。
 
@@ -2889,7 +2857,7 @@ __co__ void foo(...) {
 }
 ```
 
-<div class="listing-cap">清单 157：异构性：从转译到程序启动</div>
+<div class="listing-cap">清单 155：异构性：从转译到程序启动</div>
 
 熟悉相关目标平台的读者会看出，这里正对应着 `parallel-by` 语句处发生的程序启动。Croqtile 用统一的单程序多数据并行模型把这些细节抽象掉，让开发者专心写算法，不必操心底层异构性。
 
@@ -2898,7 +2866,7 @@ __co__ void foo(...) {
 - **程序结构**：Croqtile 程序如何组织——`__co__` 函数、主机侧 API 与 C++ 互操作。
 - **带形状数据**：Croqtile 面向多维张量的类型系统——形状、`MDSpan`、`spanned data`、符号维度与动态形状。
 - **循环与并行性**：单程序多数据并行、循环控制、分块与迭代构造。
-- **数据搬运**：DMA 语句、用 `chunkat` 分块、TMA、重排与高级数据搬运模式。
+- **数据搬运**：DMA 语句、用 `chunkat` 分块、重排与高级数据搬运模式。
 - **C++ 嵌入**：输入／输出约定、`__cpp__` 内联块、宏与预处理器集成。
 - **优化模式**：tileflow 优化、异步 DMA 模式、多缓冲与性能调优技术。
 
@@ -2939,7 +2907,7 @@ void foo() {
 }
 ```
 
-<div class="listing-cap">清单 158：在 C++ 中嵌入 Croqtile</div>
+<div class="listing-cap">清单 156：在 C++ 中嵌入 Croqtile</div>
 
 `__co__` 前缀标识需要由 Croqtile 翻译的函数体。普通 C++ 通过声明的函数名调用它。面向主机的接口使用带形状的缓冲区包装对象，使调用同时携带尺寸和地址。
 
@@ -2978,7 +2946,7 @@ mdspan<4> mds : [a, 3, 4, 1]; // 'a' is an existing integer
 d : [c, 4, 28];               // 'd' is not explicit annotated. Type is deduced.
 ```
 
-<div class="listing-cap">清单 159：一个 mdspan 声明</div>
+<div class="listing-cap">清单 157：一个 mdspan 声明</div>
 
 如上例所示，可以用 *mdspan* 部分类型关键字显式定义 mdspan，也可以选用 `<` `>` 括起的秩。还可以不加类型标注定义 mdspan，比如上面 `d` 的定义。（注意：`mds` 和 `d` 属于**依赖类型**，因为它们的类型取决于 `a` 和 `b` 的求值。程序员可以给 `a`、`b` 提供运行时值，但这样一来就要付出一些运行时检查的代价。）
 
@@ -2991,7 +2959,7 @@ sp : [7, 8];
 int b = sp(0) + sp(1);   // 'b' equals to 15 (7 + 8)
 ```
 
-<div class="listing-cap">清单 160：一个形状字面量</div>
+<div class="listing-cap">清单 158：一个形状字面量</div>
 
 上例中，表达式 `sp(0)` 求出 mdspan `sp` 第一维的取值。维度值本质上是整数，可以直接参与整数算术。
 
@@ -3002,7 +2970,7 @@ sp : [6, 8];
 spn : [1, sp(0)/2, sp(1)/4]; // define a new mdspan from the existing one.
 ```
 
-<div class="listing-cap">清单 161：改变一个维度后的形状</div>
+<div class="listing-cap">清单 159：改变一个维度后的形状</div>
 
 有了这个机制，在 Croqtile 代码里对多维跨度做分块更加方便。分块是高性能核函数中的常见操作，因此 Croqtile 提供了相应的语法糖：
 
@@ -3011,7 +2979,7 @@ sp : [6, 8];
 spn : sp [1, (0)/2, (1)/4];  // spn is defined as [1, 3, 2]
 ```
 
-<div class="listing-cap">清单 162：同样的形状，另一种写法</div>
+<div class="listing-cap">清单 160：同样的形状，另一种写法</div>
 
 这段代码和前面那段作用相同，但语法更简洁。这体现了 Croqtile 的一条设计理念：用简洁的代码表达常见操作。
 
@@ -3089,7 +3057,7 @@ with x in 6 {
 }
 ```
 
-<div class="listing-cap">清单 163：有界变量的取值</div>
+<div class="listing-cap">清单 161：有界变量的取值</div>
 
 #### Croqtile 中的内存
 
@@ -3142,7 +3110,7 @@ __co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
 }
 ```
 
-<div class="listing-cap">清单 164：使用匿名维度的核函数</div>
+<div class="listing-cap">清单 162：使用匿名维度的核函数</div>
 
 Croqtile 同时做编译时检查和运行时检查来保证安全：
 
@@ -3159,7 +3127,7 @@ void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
 }
 ```
 
-<div class="listing-cap">清单 165：转译后的函数签名</div>
+<div class="listing-cap">清单 163：转译后的函数签名</div>
 
 条件不满足时，`croqtile_abort` 函数会中止程序。这项前置检查帮助 Croqtile 及时发现问题。
 
@@ -3178,7 +3146,7 @@ void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
 }
 ```
 
-<div class="listing-cap">清单 166：生成的形状检查</div>
+<div class="listing-cap">清单 164：生成的形状检查</div>
 
 除了*匿名维度*版本已有的检查，*符号维度*版本还会校验 `lhs` 与 `rhs` 之间维度是否一致，所以代码更安全。
 
@@ -3194,7 +3162,7 @@ void __croqtile_transpiled_Matmul(croqtile::span_view<2, croqtile::s32> lhs,
 __co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer
 ```
 
-<div class="listing-cap">清单 167：代价与限制</div>
+<div class="listing-cap">清单 165：代价与限制</div>
 
 #### 小结
 
@@ -3215,7 +3183,7 @@ mdspan spn : sp [1, M / 2, N / 4];
 mdspan sp : [? , ?];
 ```
 
-<div class="listing-cap">清单 168：a. 可读性与清晰度</div>
+<div class="listing-cap">清单 166：a. 可读性与清晰度</div>
 
 维度相互独立时，匿名形式仍然有用。若维度之间的关系是操作要求的一部分，就应为它们命名。
 
@@ -3232,7 +3200,7 @@ mdspan spn : sp [1, M / 2, N / 4];
 // Compiler ensures validity of shape expressions`
 ```
 
-<div class="listing-cap">清单 169：b. 类型安全与编译时检查</div>
+<div class="listing-cap">清单 167：b. 类型安全与编译时检查</div>
 
 这保证了类型一致性，也减少了运行时出错的可能。
 
@@ -3249,7 +3217,7 @@ mdspan sp : [M, N]; // Symbolic dimensions
 mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expressions
 ```
 
-<div class="listing-cap">清单 170：c. 表达力与灵活性</div>
+<div class="listing-cap">清单 168：c. 表达力与灵活性</div>
 
 这种写法把依赖关系放在形状声明处。每次调用仍需满足由此产生的尺寸和整除要求。
 
@@ -3273,7 +3241,7 @@ mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expression
 mdspan a : {1, b, c + 3}
 ```
 
-<div class="listing-cap">清单 171：一个形状表达式</div>
+<div class="listing-cap">清单 169：一个形状表达式</div>
 
 值编号过程会产生下面这些取值：
 
@@ -3286,7 +3254,7 @@ mdspan a : {1, b, c + 3}
    VN #5:  #0,#1,#4
 ```
 
-<div class="listing-cap">清单 172：对应的值编号图</div>
+<div class="listing-cap">清单 170：对应的值编号图</div>
 
 图中「VN #」后面的数字，是某个表达式的值编号。它可能表示编译时已知的常量整数，也可能表示符号值（如变量 `a`、`b`），还可能表示其他值编号的组合。这里值编号 #0 和 #3 引用常量值，#1 和 #2 分别引用整型变量 `b` 和 `c`。#4 表示一个加法表达式的值，也就是 #2 与 #3 之和；把所有值编号解引用之后，它就是表达式 `c + 3`。最后，值编号 #5 表示由 mdspan `a` 以符号方式定义的一组取值。有了这样的定义，就可以翻译索引操作了：例如 `a(0)` 得到值编号 #0，也就是常量 1。
 
@@ -3319,7 +3287,7 @@ mdspan a : {1, b, c + 3}
    int a = 0 + 1;
 ```
 
-<div class="listing-cap">清单 173：一个常量表达式</div>
+<div class="listing-cap">清单 171：一个常量表达式</div>
 
 对这个简单的整数表达式，值编号过程可能生成下面的签名和关联值编号：
 
@@ -3330,7 +3298,7 @@ mdspan a : {1, b, c + 3}
    Alias a -> #2
 ```
 
-<div class="listing-cap">清单 174：未化简的图</div>
+<div class="listing-cap">清单 172：未化简的图</div>
 
 如果不做优化，这里会生成两个常量值 #0 和 #1，以及一个表示两者相加的新值编号 #2，它的签名是 `+:#0:#1`。但常量相加可以在编译时求值，所以可以化简。下面的输出展示了优化后的值编号过程：
 
@@ -3341,7 +3309,7 @@ mdspan a : {1, b, c + 3}
    Alias a -> #2
 ```
 
-<div class="listing-cap">清单 175：折叠后的图</div>
+<div class="listing-cap">清单 173：折叠后的图</div>
 
 #2 的签名现在表示一个常量，说明代数化简已经生效。
 
@@ -3394,18 +3362,6 @@ mdspan a : {1, b, c + 3}
 如果分块数量和启动尺寸由同一组常量表示，修改分块就会迫使资源映射一起改变。将两种描述分开后，这些选择更容易调整。
 
 Croqtile 用 `parallel` 描述独立工作，用空间说明符描述映射。因此，可以先理解工作划分，再判断某个轴应映射到块、线程还是协作组。
-
-#### `: group-4` —— 协作组
-
-```co
-parallel g by 2 : group-4
-```
-
-<div class="listing-cap">清单 176：`: group-4` —— 协作组</div>
-
-3.7 节会把它用在张量核心运算上。
-
-这里的 `group-4` 指定后续矩阵操作使用的协作范围。每个并行索引标识一个协作组，语句体中的操作也在该组范围内理解，并不是要求参与线程各自计算并写回同一矩阵分块的独立副本。
 
 #### 矩阵乘法：组合起来
 
@@ -3463,7 +3419,7 @@ __co__  void foo() {
 }
 ```
 
-<div class="listing-cap">清单 177：显式掩码／条件</div>
+<div class="listing-cap">清单 174：显式掩码／条件</div>
 
 #### 隐式掩码
 
@@ -3484,7 +3440,7 @@ __co__  void foo() {
 }
 ```
 
-<div class="listing-cap">清单 178：隐式掩码</div>
+<div class="listing-cap">清单 175：隐式掩码</div>
 
 本例有两层并行。位于 `parallel p by 6` 块内、却在 `parallel q by 2` 块之外的代码，只属于*并行层次 0*。然而在某些目标平台上，实际会启动 2 个并行线程，分别执行*并行层次 0* 或*并行层次 1* 里的代码。于是，只属于*并行层次 0* 的那部分，就好像被一个 C++ 的 `if (q == 0)` 块保护着。
 
@@ -3501,7 +3457,7 @@ where n_p <-> n {
 }
 ```
 
-<div class="listing-cap">清单 179：实验特性：within 的可选 Where-Binding</div>
+<div class="listing-cap">清单 176：实验特性：within 的可选 Where-Binding</div>
 
 语法上，`<->` 运算在两个有界变量之间建立 *where-binding*。在 `with-in` 块里，任何对 `n_p` 的引用都指向 `n`，反过来也一样。
 
@@ -3548,7 +3504,7 @@ __co__  void foo() {
 }
 ```
 
-<div class="listing-cap">清单 180：多层次的加掩码</div>
+<div class="listing-cap">清单 177：多层次的加掩码</div>
 
 这段代码用了两层并行：
 
@@ -3587,7 +3543,7 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 ```
 
-<div class="listing-cap">清单 181：标量矩阵乘法（不使用 DMA）</div>
+<div class="listing-cap">清单 178：标量矩阵乘法（不使用 DMA）</div>
 
 <div class="guide-figure">
 <img src="figures/f05-fig5_scalar_matmul_light.png" alt="[128, 256] 输出按 [16, 64] 网格划分，每块形状为 [8, 4]；图中只画出开头的一部分分块。">
@@ -3649,7 +3605,7 @@ __co__ auto foo(f32 [36] input) {
 }
 ```
 
-<div class="listing-cap">清单 182：分块与流动</div>
+<div class="listing-cap">清单 179：分块与流动</div>
 
 本例把 `chunkat` 用在目标，把 `shared` 里的数据块搬出来，「反分块」地写进输出。注意，如果目标的*数据表达式*用的不是 *storage*，Croqtile 编译器就**要求源数据和目的数据的形状、元素类型完全一致**。
 
@@ -3673,7 +3629,7 @@ __co__ auto foo(f32 [36] input) {
 patch = matrix.view(16, 16).from(37, 50);
 ```
 
-<div class="listing-cap">清单 183：常量偏移处的窗口</div>
+<div class="listing-cap">清单 180：常量偏移处的窗口</div>
 
 该表达式选取从第 37 行、第 50 列开始的 `[16, 16]` 切片。原点可以是任意运行时值。
 
@@ -3682,14 +3638,14 @@ patch = matrix.view(16, 16).from(37, 50);
 <div class="cap">图 15：图中用从 (2, 3) 开始的 [4, 4] 小窗口说明原理；正文代码从 (37, 50) 选取 [16, 16] 窗口时遵循相同规则。</div>
 </div>
 
-`view` / `from` 的优势在于可组合性：选定窗口后，后面的所有操作——`subspan`、`chunkat`、`dma.copy`、`tma.copy`——都作用在这个窗口上，就像它是一个独立的张量。流水线保持不变，只是起始位置发生变化：
+`view` / `from` 的优势在于可组合性：选定窗口后，后面的所有操作——`subspan`、`chunkat`、`dma.copy`——都作用在这个窗口上，就像它是一个独立的张量。流水线保持不变，只是起始位置发生变化：
 
 ```co
 expert_lhs = lhs.view(expert_M, K).from(expert_offset, 0);
 dma.copy expert_lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => shared;
 ```
 
-<div class="listing-cap">清单 184：运行时偏移处的窗口</div>
+<div class="listing-cap">清单 181：运行时偏移处的窗口</div>
 
 在 MoE 栈里，每个专家的 token 批次都从动态行 `expert_offset` 开始。`view` / `from` 只调整流水线入口的操作数；下面的 DMA、暂存和 MMA 循环，对每个专家都执行同一段代码。
 
@@ -3705,7 +3661,7 @@ dma.copy expert_lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => shared;
 matrix.subspan(16, 16).step(32, 32).at(i, j);
 ```
 
-<div class="listing-cap">清单 185：带步长的分块：.subspan、.step 与 .at</div>
+<div class="listing-cap">清单 182：带步长的分块：.subspan、.step 与 .at</div>
 
 <div class="guide-figure">
 <img src="figures/f09-fig5_subspan_step_light.png" alt="小图比较紧密排列的 [3, 3] 分块与 step(5, 5) 的间隔排列。正文的 [16, 16] 分块采用 step(32, 32)，留下 16 个元素的间隔。">
@@ -3716,29 +3672,7 @@ matrix.subspan(16, 16).step(32, 32).at(i, j);
 
 步长小于分块尺寸时，窗口相互重叠；步长更大时，窗口之间留下空隙。例如，16 行窗口每次前进八行，会与下一个窗口共享一半行。步长控制起点序列，不应与分块内部元素之间的存储步幅混淆。
 
-### 3.5.3 用 `zfill` 做零填充 <a id="sec-3-5-3"></a>
-
-#### 零填充：`.zfill`
-
-每个分块核函数都要面对同一个边界问题：M 或 K 不是分块尺寸的整数倍时，该怎么办？那条轴上最后一个分块是不完整的，其中一些元素落在了张量边界之外。
-
-一种直接的办法是给边界分块加一条专用代码路径，但这会破坏 MMA 循环的一致性，还引入编译器优化不掉的分支。`.zfill` 提供了相应的零填充方式：
-
-```co
-tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
-  => lhs_load_s;
-```
-
-<div class="listing-cap">清单 186：零填充：.zfill</div>
-
-当目标分块超出有效源区域时，`.zfill` 为超出部分填入零值。在矩阵乘法中，这些零不会给累加结果增加贡献，因此消费者能够处理各位置数值都已确定的完整分块。这保证了所需的数值行为；边界处理的代价仍取决于目标平台和搬运路径。
-
-<div class="guide-figure">
-<img src="figures/f09-fig6_zfill_light.png" alt="从 [6, 8] 源张量选取的边界 [4, 4] 分块保留有效行，并将超出范围的两行填为零。">
-<div class="cap">图 17：从 [6, 8] 源张量选取的边界 [4, 4] 分块保留有效行，并将超出范围的两行填为零。</div>
-</div>
-
-### 3.5.4 用 `span_as` 做布局重解释 <a id="sec-3-5-4"></a>
+### 3.5.3 用 `span_as` 做布局重解释 <a id="sec-3-5-4"></a>
 
 #### 布局重新解释：`span_as`
 
@@ -3748,7 +3682,7 @@ tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k).zfill
 flat_buffer.span_as([rows, cols])
 ```
 
-<div class="listing-cap">清单 187：扁平条带被重新解释为矩阵</div>
+<div class="listing-cap">清单 183：扁平条带被重新解释为矩阵</div>
 
 元素个数保持不变，只有逻辑秩改变，不搬运任何数据。
 
@@ -3758,23 +3692,23 @@ tile_2d = strip_load.data.span_as([tile_m, tile_k]);
 ma = mma.load tile_2d.chunkat(_, iv_warp);
 ```
 
-<div class="listing-cap">清单 188：使用重新解释结果的搬运语句</div>
+<div class="listing-cap">清单 184：使用重新解释结果的搬运语句</div>
 
 `rows * cols` 的乘积必须等于底层区域的元素数量。重解释形状会保留线性元素顺序，因此不能转置矩阵，也不能去掉行间填充。尺寸为常量时，编译器能在执行前检查元素数量；尺寸来自输入时，实际调用也必须满足同一约束。
 
 <div class="guide-figure">
 <img src="figures/f09-fig7_span_as_light.png" alt="16 个元素的缓冲区重解释为 [4, 4] 视图，线性顺序保持不变；图中将一维数据分成两行显示，便于阅读。">
-<div class="cap">图 18：16 个元素的缓冲区重解释为 [4, 4] 视图，线性顺序保持不变；图中将一维数据分成两行显示，便于阅读。</div>
+<div class="cap">图 17：16 个元素的缓冲区重解释为 [4, 4] 视图，线性顺序保持不变；图中将一维数据分成两行显示，便于阅读。</div>
 </div>
 
-### 3.5.5 分块选择：小结与语法 <a id="sec-3-5-10"></a>
+### 3.5.4 分块选择：小结与语法 <a id="sec-3-5-10"></a>
 
 #### 小结
 
 | **概念** | **语法** | **作用** |
 | --- | --- | --- |
 | 软件 DMA | `dma.copy` / `dma.copy.swiz<N>` | 线程协作的分块传输 |
-| 重排 | 拷贝上的 `.swiz<N>` 与 `mma.load.swiz<N>` | 无布局冲突的共享内存布局；对 DMA 与 TMA 效果相同 |
+| 重排 | 拷贝上的 `.swiz<N>` 与 `mma.load.swiz<N>` | 无布局冲突的共享内存布局；对不同搬运路径效果相同 |
 | 任意窗口 | `view(M,N).from(r,c)` | 不规整或运行时定位的切片 |
 | 带步长的分块 | `.subspan().step().at()` | 非紧凑布局、相互重叠的模板 |
 | 不完整分块 | `.zfill` | 把越界元素补零 |
@@ -3784,8 +3718,8 @@ ma = mma.load tile_2d.chunkat(_, iv_warp);
 
 | **语法** | **含义** |
 | --- | --- |
-| `tma.copy.swiz<N>` src => dst | 采用重排模式 `N`（0--3）的 TMA 拷贝 |
-| `dma.copy.swiz<N>` src => dst | 采用重排模式 `N`（0--3）的 DMA 拷贝；布局与 TMA 相同 |
+|
+| `dma.copy.swiz<N>` src => dst | 采用以字节计的重排宽度 `N` 的拷贝 |
 | `mma.load.swiz<N>` src | 与重排 `N` 一致的 MMA 操作数加载 |
 | `.view(M, N).from(r, c)` | 任意偏移处的 `M x N` 窗口 |
 | `.subspan(M, K).step(sM, sK).at(i, j)` | 带步长的分块选择 |
@@ -3812,86 +3746,16 @@ ma = mma.load tile_2d.chunkat(_, iv_warp);
 - `dma.transp<...>` 在搬运的同时置换维度。
 - `dma.pad<...>` 扩大分块并填充边缘。
 
-这一模型的核心语法和规则，决定了 DMA、TMA 代码能否正确、高效地转换为目标代码。
+这一模型的核心语法和规则，决定了 DMA 代码能否正确、高效地转换为目标代码。
 
 <div class="guide-figure">
 <img src="figures/f04-fig1_element_vs_block_light.png" alt="标量索引逐个读取元素；显式分块搬运先选择分块，再将其复制到 shared 存储。">
-<div class="cap">图 19：标量索引逐个读取元素；显式分块搬运先选择分块，再将其复制到 shared 存储。</div>
+<div class="cap">图 18：标量索引逐个读取元素；显式分块搬运先选择分块，再将其复制到 shared 存储。</div>
 </div>
 
 #### 其他操作：`transp` 与 `pad`
 
 普通复制保留源的形状和元素顺序。目标需要不同维度顺序时使用 `transp`，需要增加位置并填入指定值时使用 `pad`。目标形状也是操作的一部分，后续分块选择和计算应使用变换后的形状，而不是原始形状。
-
-#### DMA 与 TMA
-
-DMA 和 TMA 使用相近的源与目标表达式，但实现方式带来不同约束。DMA 路径由协作线程搬运分块；TMA 通过描述符向搬运引擎描述张量传输，因此编译器必须能在核函数使用描述符之前构造它。
-
-|  | **`dma`** | **`tma`** |
-| --- | --- | --- |
-| 常见目标 | `shared` | `shared` |
-| 异步支持 | 是 | 是 |
-
-TMA 用法示例：
-
-```co
-f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) => shared;
-wait f;
-```
-
-<div class="listing-cap">清单 189：DMA 与 TMA</div>
-
-实用规则很简单：
-
-- 当分块尺寸动态、不规整，或希望走可移植路径时，使用 `dma`。
-
-#### TMA 的主要约束
-
-TMA 的分块形状必须能由主机计算出来。分块索引可以在运行时确定：
-
-```co
-tma.copy lhs.subspan(64, 64).at(block_m, iv_k) => shared;
-```
-
-<div class="listing-cap">清单 190：可由主机计算的分块形状</div>
-
-但核函数运行时产生的值，不能用来定义分块形状本身：
-
-```co
-// Not valid for TMA if TILE_M is only known inside the kernel
-tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) => shared;
-```
-
-<div class="listing-cap">清单 191：被拒绝的运行时分块索引</div>
-
-如果分块尺寸确实依赖核函数运行时的状态，就改用 `dma.copy`。
-
-#### `tma.copy`：目标张量搬运
-
-基本语法和 `dma.copy` 一样：
-
-```co
-tma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
-```
-
-<div class="listing-cap">清单 192：tma.copy：目标张量搬运</div>
-
-源表达式和 `=>` 后的目标写法保持一致，区别在于地址计算与传输由谁完成：
-
-<div class="guide-figure">
-<img src="figures/f09-fig3_tma_descriptor_light.png" alt="描述符提供张量布局信息，源表达式提供分块坐标；传输操作将选中的分块写入 shared 目标。">
-<div class="cap">图 20：描述符提供张量布局信息，源表达式提供分块坐标；传输操作将选中的分块写入 shared 目标。</div>
-</div>
-
-- **DMA 路径**：各线程协作覆盖整个分块，每条通道都参与地址计算、发起加载。
-- **TMA 路径**：用基于描述符的操作描述张量切片，并由传输引擎生成地址。
-
-描述符携带搬运引擎所需的张量几何信息，由编译器根据函数的形状和布局构建。程序仍需等待分块就绪并保护缓冲区复用，更换搬运引擎不会消除这两项依赖。
-
-<div class="guide-figure">
-<img src="figures/f09-fig1_tma_vs_dma_light.png" alt="DMA 由线程协作完成搬运；TMA 将张量地址生成交给基于描述符的传输引擎。">
-<div class="cap">图 21：DMA 由线程协作完成搬运；TMA 将张量地址生成交给基于描述符的传输引擎。</div>
-</div>
 
 #### 异步操作：DMA 语句
 
@@ -3909,7 +3773,7 @@ f = dma.copy.async g_data => l_data;
 wait f;         // explicit wait
 ```
 
-<div class="listing-cap">清单 193：一个异步 DMA 声明</div>
+<div class="listing-cap">清单 185：一个异步 DMA 声明</div>
 
 注意对 `f` 的赋值。它是异步 DMA 实体的句柄，在 Croqtile 中称为该 DMA 操作的「期值」。程序员可以显式写出同步语句 `wait`，暂停当前线程直到期值到达；不写的话，线程就和 DMA 操作并行地继续执行。
 
@@ -3921,7 +3785,7 @@ f = dma.copy data => local;
 ... f.data;  // retrieve the 'local' data from the future
 ```
 
-<div class="listing-cap">清单 194：带存储的同一种声明</div>
+<div class="listing-cap">清单 186：带存储的同一种声明</div>
 
 这里不必指定 DMA 把数据搬到哪个确切位置，只要说明目的内存类型。要取用已搬运的数据，调用期值的 `data` 成员即可。另外，这个 dma 操作没有标 `.async`，所以对 `f` 的 `wait` 既不需要，也不能执行。
 
@@ -3947,11 +3811,11 @@ dma.transp<0, 2, 1> input => shared;  // Result shape [32, 9, 16]
 dma.pad<{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f> input => shared; // Result shape [33, 17, 14]
 ```
 
-<div class="listing-cap">清单 195：操作类型</div>
+<div class="listing-cap">清单 187：操作类型</div>
 
 这里的 **DMA 配置**用 `<...>` 括起，内容随操作不同而变化。以某个目标平台为例，具体的配置语法和限制如下：
 
-要注意，`dma.copy` 之外的 DMA 类型，支持程度因平台而异。比如在某些平台上，它可能是 TMA 的一种映射，也可能是对多个线程加载指令的编排。
+要注意，`dma.copy` 之外的 DMA 类型，支持程度因平台而异。比如在某些平台上，它可能映射到专用搬运引擎，也可能是对多个线程加载指令的编排。
 
 数据搬运对 *tileflow 程序*至关重要。*DMA 语句*为各个层次各提供一种形式，从单次拷贝一直到链式非阻塞传输。
 
@@ -3963,7 +3827,7 @@ dma.pad<{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f> input => shared; // Result shape 
 out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;
 ```
 
-<div class="listing-cap">清单 196：完全非阻塞 DMA 模式（Croqtile 中的链模式）</div>
+<div class="listing-cap">清单 188：完全非阻塞 DMA 模式（Croqtile 中的链模式）</div>
 
 这个例子里：
 
@@ -3994,11 +3858,11 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 ```
 
-<div class="listing-cap">清单 197：DMA 矩阵乘法：共享存储中的分块</div>
+<div class="listing-cap">清单 189：DMA 矩阵乘法：共享存储中的分块</div>
 
 <div class="guide-figure">
 <img src="figures/f05-fig6_dma_matmul_light.png" alt="每个 block 为当前 K 切片装入两个 [16, 16] 操作数分块，再由 256 个线程累加该 block 的 [16, 16] 输出分块。">
-<div class="cap">图 22：每个 block 为当前 K 切片装入两个 [16, 16] 操作数分块，再由 256 个线程累加该 block 的 [16, 16] 输出分块。</div>
+<div class="cap">图 19：每个 block 为当前 K 切片装入两个 [16, 16] 操作数分块，再由 256 个线程累加该 block 的 [16, 16] 输出分块。</div>
 </div>
 
 标量版本一次索引一个元素；分块版本先把一个分块复制到共享存储，再在这块数据上计算：
@@ -4053,7 +3917,7 @@ __co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
 }
 ```
 
-<div class="listing-cap">清单 198：用 swap 做双缓冲</div>
+<div class="listing-cap">清单 190：用 swap 做双缓冲</div>
 
 #### 三个阶段
 
@@ -4110,7 +3974,7 @@ __co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs,
 }
 ```
 
-<div class="listing-cap">清单 199：用 Croqtile 做多缓冲优化</div>
+<div class="listing-cap">清单 191：用 Croqtile 做多缓冲优化</div>
 
 这个加法核函数为每份输入维护两组局部缓冲区。A 句柄表示当前操作数，B 句柄接收下一次装入。当前结果计算并写回后，通过交换句柄推进两组角色。左右输入沿同一调度前进，使每次加法使用相互对应的分块。
 
@@ -4130,56 +3994,6 @@ __co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs,
 
 如果想用两个以上的缓冲区，就要用 **rotate** 语句代替 **swap**。
 
-### 3.6.3 示例剖析：流水化核函数 <a id="sec-3-6-3"></a>
-
-#### 示例：流水化矩阵乘法中的 TMA
-
-这个例子由生产者填充一组循环使用的共享缓冲区，消费者从中读取操作数并累加矩阵乘积。生产者等待空槽位，用 TMA 填充后发出已满信号；消费者等待该信号，使用匹配的交错布局装入操作数，直到矩阵操作用完缓冲区后才释放槽位。第 3.8.5 节详细展开事件协议。
-
-```co
-__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
-    shared event full[STAGES], empty[STAGES];
-    shared f16 [WARP_M, TILE_K] lhs_load_s[STAGES];
-    shared f16 [WARP_N, TILE_K] rhs_load_s[STAGES];
-    shared f16 [WARP_M, WARP_N] output_s;
-    parallel p1 by 2 : group-4 {
-      inthreads.async (p1 == 0) {
-        foreach {iv_k} in [cdiv(K, TILE_K)] {
-          stage = iv_k % STAGES;
-          wait empty[stage];
-          tma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k)
-            => lhs_load_s[stage];
-          tma.copy.swiz<128> rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k)
-            => rhs_load_s[stage];
-          trigger full[stage];
-        }
-      }
-      inthreads.async (p1 == 1) {
-        mc = mma.fill.f16 0.0f;
-        foreach {s} in [STAGES] { trigger empty[s]; }
-        foreach {iv_k} in [cdiv(K, TILE_K)] {
-          stage = iv_k % STAGES;
-          wait full[stage];
-          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-            ma = mma.load.swiz<128> lhs_load_s[stage].chunkat(_, iv_warp);
-            mb = mma.load.swiz<128> rhs_load_s[stage].chunkat(_, iv_warp);
-            mma.row.row mc, ma, mb;
-          }
-          trigger empty[stage];
-        }
-        mma.store mc, output_s;
-        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
-      }
-    }
-  }
-}
-```
-
-<div class="listing-cap">清单 200：示例：流水化矩阵乘法中的 TMA</div>
-
-更换搬运路径不会改变槽位属于哪个区域，也不会改变它何时可以复用。比较 DMA 和 TMA 时，可以保留事件顺序，再检查所选路径的描述符、分块形状和布局要求。写回操作则应根据目标平台支持情况选择。
-
 ## 3.7 收缩与布局约定 <a id="sec-3-7"></a>
 
 #### 张量收缩：`mma` 语法
@@ -4192,14 +4006,14 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 <div class="guide-figure">
 <img src="figures/f06-fig2_register_loading_light.png" alt="操作数片段分布在协作的线程之间。颜色仅示意这种分布，不代表某条指令的精确寄存器映射。">
-<div class="cap">图 23：操作数片段分布在协作的线程之间。颜色仅示意这种分布，不代表某条指令的精确寄存器映射。</div>
+<div class="cap">图 20：操作数片段分布在协作的线程之间。颜色仅示意这种分布，不代表某条指令的精确寄存器映射。</div>
 </div>
 
 Croqtile 用 `fill`、`load`、乘加和 `store` 表达收缩，由编译器处理片段元素在所选协作范围内的分布。程序员仍需选择兼容的分块形状并声明操作数布局，这层抽象以这些选择正确为前提。
 
 <div class="guide-figure">
 <img src="figures/f06-fig3_mma_syntax_light.png" alt="先初始化累加器，再装入两个操作数、执行累加，最后写回；沿 K 切片重复装入和累加步骤。">
-<div class="cap">图 24：先初始化累加器，再装入两个操作数、执行累加，最后写回；沿 K 切片重复装入和累加步骤。</div>
+<div class="cap">图 21：先初始化累加器，再装入两个操作数、执行累加，最后写回；沿 K 切片重复装入和累加步骤。</div>
 </div>
 
 #### 扩大协作范围
@@ -4218,7 +4032,7 @@ dma.copy.swiz<32>.zfill
     => lhs_load_s;
 ```
 
-<div class="listing-cap">清单 201：不完整分块、守卫与 .zfill</div>
+<div class="listing-cap">清单 192：不完整分块、守卫与 .zfill</div>
 
 这里 `lhs_load_s` 的形状可能是 `[group_M, TILE_K]`，源视图的形状却是 `[ROWS_M, TILE_K]`；在最后一个分块上，`ROWS_M` 可能小于 `group_M`。这是源区域与目的区域之间的形状差异，此时 `.zfill` 的意思是：拷贝有效的源行，把目的分块剩下的行写零。
 
@@ -4251,7 +4065,7 @@ dma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
 ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 ```
 
-<div class="listing-cap">清单 202：.swiz N：面向消费者的共享内存布局</div>
+<div class="listing-cap">清单 193：.swiz N：面向消费者的共享内存布局</div>
 
 装载侧和计算侧的重排必须一致。用 `.swiz<128>` 暂存的分块，消费者通常也要用匹配的重排来加载。
 
@@ -4259,14 +4073,14 @@ ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 
 #### 重排与布局冲突
 
-交错布局改变暂存分块的元素在共享存储中的排列。逻辑矩阵形状不变，但读取方必须使用匹配的地址映射。Croqtile 的 DMA 与 TMA 复制都提供这一选择：
+交错布局改变暂存分块的元素在共享存储中的排列。逻辑矩阵形状不变，但读取方必须使用匹配的地址映射。Croqtile 的拷贝操作都提供这一选择：
 
 ```co
 dma.copy.swiz<128> src => dst;       // software DMA with swizzle
-tma.copy.swiz<128> src => dst;
+dma.copy.swiz<128> src => dst;
 ```
 
-<div class="listing-cap">清单 203：一次带重排的拷贝</div>
+<div class="listing-cap">清单 194：一次带重排的拷贝</div>
 
 MMA 的读取路径必须使用相同的 `swiz<N>`，让地址与暂存的布局一致：
 
@@ -4274,9 +4088,9 @@ MMA 的读取路径必须使用相同的 `swiz<N>`，让地址与暂存的布局
 ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 ```
 
-<div class="listing-cap">清单 204：一次带重排的 mma 加载</div>
+<div class="listing-cap">清单 195：一次带重排的 mma 加载</div>
 
-重排不是 TMA 独有的特性。在 Croqtile 中，`dma.copy.swiz<N>` 和 `tma.copy.swiz<N>` 产生的共享内存布局完全相同；区别只在于数据怎么到达，到达之后的布局是一样的。
+重排是拷贝自身的性质，而不是某个引擎独有的特性：`dma.copy.swiz<N>` 产生的共享内存布局与数据如何到达无关。
 
 模板参数选择目标支持的交错模式。示例使用编号模式，其中模式 0 表示恒等映射。有效模式及兼容的分块尺寸取决于目标平台，搬运与 MMA 装入应采用同一套已记录的约定。
 
@@ -4284,7 +4098,7 @@ ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 
 <div class="guide-figure">
 <img src="figures/f09-fig2_swizzle_light.png" alt="八个 bank 的简化示意：同一 bank 的不同地址访问需要串行处理，重映射则分散访问。复制与 MMA 装入必须采用一致的 swizzle。">
-<div class="cap">图 25：八个 bank 的简化示意：同一 bank 的不同地址访问需要串行处理，重映射则分散访问。复制与 MMA 装入必须采用一致的 swizzle。</div>
+<div class="cap">图 22：八个 bank 的简化示意：同一 bank 的不同地址访问需要串行处理，重映射则分散访问。复制与 MMA 装入必须采用一致的 swizzle。</div>
 </div>
 
 #### 稠密 FP16 之外：四步还能表达什么
@@ -4297,7 +4111,7 @@ ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 mma.row.row.sp mc, ma, mb, me;
 ```
 
-<div class="listing-cap">清单 205：一次稀疏收缩</div>
+<div class="listing-cap">清单 196：一次稀疏收缩</div>
 
 `.sp` 后缀加上元数据操作数，其余仍是填充、加载、相乘、存储的顺序。任何布局组合都能用，比如 `mma.row.col.sp`。`me` 和 A、B 一起，从单独的元数据张量里载入。
 
@@ -4307,7 +4121,7 @@ mma.row.row.sp mc, ma, mb, me;
 mma.row.row.scale mc, ma, mb, sc_a, sc_b;
 ```
 
-<div class="listing-cap">清单 206：一次带缩放的收缩</div>
+<div class="listing-cap">清单 197：一次带缩放的收缩</div>
 
 收缩之后，每个结果元素由 `sc_a` 和 `sc_b` 缩放——不再需要单独的反量化核函数。如果缩放来源和标准的融合路径不同，缩放也可以写成**独立语句**：
 
@@ -4316,11 +4130,11 @@ mma.row.row mc, ma, mb;
 mma.scale mc, sc_a, sc_b;
 ```
 
-<div class="listing-cap">清单 207：另一种收缩布局</div>
+<div class="listing-cap">清单 198：另一种收缩布局</div>
 
 独立的 `mma.scale` 出现在某些 MoE 与混合精度核函数中。
 
-`tma.copy.swiz<N>` 和 `mma.load.swiz<N>` 里的 `N` 必须一致，不一致就会读出错误数据。输出方面，`mma.store.transp mc, dst` 会把累加器的行和列互换后写出，适合下一阶段需要列主序数据的情形。
+`dma.copy.swiz<N>` 和 `mma.load.swiz<N>` 里的 `N` 必须一致，不一致就会读出错误数据。输出方面，`mma.store.transp mc, dst` 会把累加器的行和列互换后写出，适合下一阶段需要列主序数据的情形。
 
 所有变体汇总在下表中，方便查阅。
 
@@ -4358,7 +4172,7 @@ __co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16
 }
 ```
 
-<div class="listing-cap">清单 208：一组一分块：最简单的 MMA 矩阵乘法</div>
+<div class="listing-cap">清单 199：一组一分块：最简单的 MMA 矩阵乘法</div>
 
 函数返回 `void`，因为它直接写入参数 `output`。调用方提供该缓冲区，并在操作完成后读取结果。函数内部的 `output_s` 是 `mma.store` 与最终复制之间使用的暂存缓冲区。
 
@@ -4372,109 +4186,7 @@ __co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16
 
 累加器跨越整个 K 循环。若在循环内初始化，就会丢弃此前的贡献；若在循环内写回，得到的只是部分结果。将初始化放在循环前、写回放在循环后，能清楚表示输出分块的累加过程。
 
-### 3.7.2 示例剖析：扩大协作范围 <a id="sec-3-7-2"></a>
-
-#### 扩大范围：协作组与 mma
-
-更宽的协作组使用 `: group-4`，仍保留填充、装入、乘加和写回四项操作。示例也调整了分块尺寸和暂存缓冲区，以适应该范围。共同语法便于比较两个版本，但改变协作宽度时仍需满足分块尺寸兼容性和目标支持要求。
-
-<div class="guide-figure">
-<img src="figures/f06-fig4_sm86_vs_sm90_light.png" alt=": group 与 : group-4 使用不同的协作范围，但保留相同的 fill、load、multiply、store 操作接口。">
-<div class="cap">图 26：: group 与 : group-4 使用不同的协作范围，但保留相同的 fill、load、multiply、store 操作接口。</div>
-</div>
-
-```co
-#define TILE_M 128
-#define TILE_N 128
-#define TILE_K 128
-#define WARP_M 64
-#define WARP_N 64
-#define WARP_K 16
-__co__ void matmul_wgmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
-    shared f16 [WARP_M, TILE_K] lhs_load_s;
-    shared f16 [WARP_N, TILE_K] rhs_load_s;
-    mc = mma.fill.f16 0.0f;
-    foreach {iv_k} in [cdiv(K, TILE_K)] {
-      dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
-      dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
-      foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-        parallel p by 1 : group-4 {
-          ma = mma.load lhs_load_s.chunkat(_, iv_warp);
-          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-          mma.row.row mc, ma, mb;
-        }
-      }
-    }
-    shared f16 [WARP_M, WARP_N] output_s;
-    mma.store mc, output_s;
-    dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
-  }
-}
-```
-
-<div class="listing-cap">清单 209：扩大范围：协作组与 mma</div>
-
-填充、装入、乘加和写回的顺序保持不变，空间说明符决定协作范围。
-
-填充后缀选择累加器精度。本清单使用 `mma.fill.f16 0.0f`，因此单精度初始字面量会被转换，用于 FP16 累加器。FP32 累加器是另一项选择，用 `.f32` 表达，为部分和提供更大的范围和更高的精度。累加器已有显式标注时，不能仅凭操作数类型判断其存储精度。
-
-表达式 `chunkat(_, iv_warp)` 保持行维完整，只划分 K。下划线表示不对该维进行分块。
-
-各 K 切片向同一个累加器贡献结果。因此，外层暂存分块可以大于单次矩阵操作使用的片段，而累加的输出分块不变。
-
-### 3.7.3 示例剖析：两个协作组 <a id="sec-3-7-3"></a>
-
-#### 进一步分块：两个协作组共享操作数
-
-3.4 节引入了 `parallel p1 by 2 : group-4` —— 有了 MMA，两个组可以共享同一个 B 分块，同时各自装载 A 的不同行。
-
-```co
-#define TILE_M 128
-#define TILE_N 128
-#define TILE_K 128
-#define WARP_M 64
-#define WARP_N 64
-#define WARP_K 16
-__co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, WARP_N)] : block {
-    shared f16 [TILE_M, TILE_K] lhs_load_s;
-    shared f16 [WARP_N, TILE_K] rhs_load_s;
-    shared f16 [TILE_M, WARP_N] output_s;
-    mc = mma.fill.f32 0.0f;
-    foreach {iv_k} in [cdiv(K, TILE_K)] {
-      dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
-      dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
-      parallel p1 by 2 : group-4 {
-        foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-          ma = mma.load lhs_load_s.subspan(WARP_M, TILE_K).at(p1, 0).chunkat(_, iv_warp);
-          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-          mma.row.row mc, ma, mb;
-        }
-      }
-    }
-    parallel p1 by 2 : group-4
-      mma.store mc, output_s.subspan(WARP_M, WARP_N).at(p1, 0);
-    dma.copy output_s => output.subspan(TILE_M, WARP_N).at(block_m, block_n);
-  }
-}
-```
-
-<div class="listing-cap">清单 210：进一步分块：两个协作组共享操作数</div>
-
-当 `TILE_M = 128`、每组负责 64 行时，`p1` 选择块输出行的上半部分或下半部分。两组装入 A 的不同行，共享 `rhs_load_s`，因为它们需要相同的 B 列与 K 切片。
-
-四步语法保持不变，只有分块的并行分解方式改变。
-
-| **方面** | **一个 group** | **一个 group-4** | **两个 group-4** |
-| --- | --- | --- | --- |
-| 操作数共享 | 不适用 | 不适用 | 共享 B 分块，A 的行按 `p1` 划分 |
-| 线程数 | 32 | 128 | 256 |
-| 累加器 | `mma.fill 0.0` | `mma.fill.f16 0.0f` | `mma.fill.f32 0.0f` |
-
-两个组必须写入不重叠的输出行范围。读取不会修改右操作数，因此它们可以共读同一右侧分块；但各自负责的行仍需独立累加器。这里需要区分输入复用与输出归属：共享输入并不意味着共享部分和。
-
-### 3.7.4 MMA 语法小结 <a id="sec-3-7-9"></a>
+### 3.7.2 MMA 语法小结 <a id="sec-3-7-9"></a>
 
 #### 语法速览
 
@@ -4494,7 +4206,7 @@ __co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, gl
 
 阅读修饰符时，应同时追踪数据路径。交错装入必须匹配复制产生的布局，稀疏操作需要同一操作数分块的元数据，缩放值也必须对应正在累加的分块。语句写得简短，并不意味着可以忽略这些关系。
 
-### 3.7.5 MMA 设计小结 <a id="sec-3-7-10"></a>
+### 3.7.3 MMA 设计小结 <a id="sec-3-7-10"></a>
 
 #### 小结
 
@@ -4531,7 +4243,7 @@ Croqtile 引入两个额外的控制流原语来填补这个空白：
 形式 `inthreads.async` 将不同线程组分配到各自推进的区域，谓词标识负责该区域的组。生产者和消费者的职责固定，而进度取决于哪些缓冲区就绪，适合用这种方式表达。
 
 ```co
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
   }
   inthreads.async (p1 == 1) {
@@ -4539,7 +4251,7 @@ parallel p1 by 2 : group-4 {
 }
 ```
 
-<div class="listing-cap">清单 211：用 inthreads.async 构造结构化并发区域</div>
+<div class="listing-cap">清单 200：用 inthreads.async 构造结构化并发区域</div>
 
 与 `if` 的区别是结构性的，不只是性能上的：
 
@@ -4557,7 +4269,7 @@ parallel p1 by 2 : group-4 {
 
 <div class="guide-figure">
 <img src="figures/f07-fig1_role_comparison_light.png" alt="两种调度都包含四组装入与计算任务。并发的生产者和消费者在遵守依赖关系的前提下重叠执行。">
-<div class="cap">图 27：两种调度都包含四组装入与计算任务。并发的生产者和消费者在遵守依赖关系的前提下重叠执行。</div>
+<div class="cap">图 23：两种调度都包含四组装入与计算任务。并发的生产者和消费者在遵守依赖关系的前提下重叠执行。</div>
 </div>
 
 #### 用事件做区域间通信
@@ -4569,7 +4281,7 @@ shared event full;
 shared event empty;
 ```
 
-<div class="listing-cap">清单 212：用事件做区域间通信</div>
+<div class="listing-cap">清单 201：用事件做区域间通信</div>
 
 事件有两种操作：
 
@@ -4596,7 +4308,7 @@ shared event empty;
 
 <div class="guide-figure">
 <img src="figures/f08-fig1_pipeline_timeline_light.png" alt="同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。">
-<div class="cap">图 28：同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。</div>
+<div class="cap">图 24：同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。</div>
 </div>
 
 #### 让它异步
@@ -4618,7 +4330,7 @@ __co__  void foo() {
 }
 ```
 
-<div class="listing-cap">清单 213：让它异步</div>
+<div class="listing-cap">清单 202：让它异步</div>
 
 本例把并行线程平均分成两个子组，并且不在每个 `inthreads` 块之后强制同步。这样两组的线程就能并行执行，模拟出 MPMD 的效果。不过 `sync.shared` 语句为所有线程建立了一个**同步点**，保证两条路径的代码都执行到该*同步点*之后。
 
@@ -4640,7 +4352,7 @@ __co__ void foo() {
 }
 ```
 
-<div class="listing-cap">清单 214：事件实例</div>
+<div class="listing-cap">清单 203：事件实例</div>
 
 上面代码里的注释说明了事件实例。机制和带形状数据的声明相同，后者同样要求存储说明符。从实现角度看，事件可以做成指定存储层次里的布尔数据，因此也占用该层次的存储；但在概念上，事件属于某个特定层次，实例数就对应它的并行层次。
 
@@ -4660,7 +4372,7 @@ parallel p by 1 {
 }
 ```
 
-<div class="listing-cap">清单 215：单实例死锁</div>
+<div class="listing-cap">清单 204：单实例死锁</div>
 
 这段代码里，两个线程等待同一个事件 `e`。但 `wait` 会复位事件 `e`，因此可能出现 `thread-0` 在 `thread-1` 发现 `e` 已触发之前就把它复位的情况，结果 `thread-1` 永远无法解除阻塞，形成死锁。
 
@@ -4675,7 +4387,7 @@ parallel p by 1 {
 }
 ```
 
-<div class="listing-cap">清单 216：信用计数死锁</div>
+<div class="listing-cap">清单 205：信用计数死锁</div>
 
 这段代码使用事件数组，保证每个事件只由一个线程等待和复位。
 
@@ -4686,7 +4398,7 @@ parallel p by 1 {
 `inthreads.async` 最常见的用途，是矩阵乘法里的 **1P1C**（一生产者、一消费者）划分：
 
 ```co
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
   }
   inthreads.async (p1 == 1) {
@@ -4694,9 +4406,9 @@ parallel p1 by 2 : group-4 {
 }
 ```
 
-<div class="listing-cap">清单 217：典型模式：1 生产者 1 消费者</div>
+<div class="listing-cap">清单 206：典型模式：1 生产者 1 消费者</div>
 
-声明 `parallel p1 by 2 : group-4` 在同一个外层块中建立两个协作组。`p1` 的值选择职责，并不表示 K 方向的分块编号。
+声明 `parallel p1 by 2 : thread` 在同一个外层块中建立两个线程角色。`p1` 的值选择职责，并不表示 K 方向的分块编号。
 
 `p1 == 0` 的区域承担生产者职责，负责写入共享暂存缓冲区。若写入使用另一个已空闲槽位，另一组就可以同时推进计算。
 
@@ -4716,7 +4428,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [WARP_M, TILE_K] lhs_load_s;
     shared f16 [WARP_N, TILE_K] rhs_load_s;
     shared f16 [WARP_M, WARP_N] output_s;
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, TILE_K)] {
           dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
@@ -4740,7 +4452,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-<div class="listing-cap">清单 218：一个 1P1C 矩阵乘法骨架</div>
+<div class="listing-cap">清单 207：一个 1P1C 矩阵乘法骨架</div>
 
 生产者循环遍历 `cdiv(K, TILE_K)` 个输入切片，每次填充左右暂存缓冲区。对应收缩开始之前，消费者需要确认两个操作数都已就绪。
 
@@ -4771,7 +4483,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
           dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) => rhs_load_s;
           foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-            parallel p by 1 : group-4 {
+            parallel p by 1 : thread {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
               mma.row.row mc, ma, mb;
@@ -4786,7 +4498,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-<div class="listing-cap">清单 219：持久调度与 if 守卫</div>
+<div class="listing-cap">清单 208：持久调度与 if 守卫</div>
 
 声明将工作块数量固定为 `NUM_GROUPS`。工作量变化时，调整的是循环迭代次数，而不是启动块数。
 
@@ -4796,7 +4508,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 <div class="guide-figure">
 <img src="figures/f07-fig2_persistent_kernel_light.png" alt="四个固定 block 用三轮迭代处理十个分块；最后两个补齐的分块编号由 if 条件跳过。">
-<div class="cap">图 29：四个固定 block 用三轮迭代处理十个分块；最后两个补齐的分块编号由 if 条件跳过。</div>
+<div class="cap">图 25：四个固定 block 用三轮迭代处理十个分块；最后两个补齐的分块编号由 if 条件跳过。</div>
 </div>
 
 若有四个工作块和十个输出分块，组合索引在第一次迭代为 0–3，第二次为 4–7，第三次为 8–11。最后一次只有 8 和 9 通过条件判断。这样每个有效分块恰好被处理一次，但并不保证所有工作块始终忙碌，利用率仍取决于分块开销和剩余工作量。
@@ -4822,7 +4534,7 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 }
 ```
 
-<div class="listing-cap">清单 220：parallel.async：主机层并发</div>
+<div class="listing-cap">清单 209：parallel.async：主机层并发</div>
 
 异步启动在提交核函数后将控制权返回主机，完成发生在之后。流绑定选择接收工作的流，没有显式绑定时使用默认流。
 
@@ -4841,7 +4553,7 @@ __co__ void foo(stream s, f32[M] a) {
 }
 ```
 
-<div class="listing-cap">清单 221：异步程序启动与流绑定</div>
+<div class="listing-cap">清单 210：异步程序启动与流绑定</div>
 
 3.8.4 节对此有详细说明。
 
@@ -4854,7 +4566,7 @@ parallel.async p by 6 : block {
 }
 ```
 
-<div class="listing-cap">清单 222：一次异步启动</div>
+<div class="listing-cap">清单 211：一次异步启动</div>
 
 不加 `.async` 时，主机会等核函数结束后才继续：
 
@@ -4864,7 +4576,7 @@ parallel p by 6 : block {
 // host continues only after the kernel finishes
 ```
 
-<div class="listing-cap">清单 223：同步形式</div>
+<div class="listing-cap">清单 212：同步形式</div>
 
 加上 `.async` 之后，主机代码在启动核函数后立刻继续。要让计算和数据传输重叠，或者并发启动彼此独立的核函数，这一点很关键。
 
@@ -4881,7 +4593,7 @@ __co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
 }
 ```
 
-<div class="listing-cap">清单 224：流绑定</div>
+<div class="listing-cap">清单 213：流绑定</div>
 
 这个例子里：
 
@@ -4902,7 +4614,7 @@ __co__ void bar(stream _s, f32[M] a) {
 }
 ```
 
-<div class="listing-cap">清单 225：不带 .async 的流绑定</div>
+<div class="listing-cap">清单 214：不带 .async 的流绑定</div>
 
 #### 规则
 
@@ -4934,7 +4646,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [WARP_M, TILE_K] lhs_load_s[STAGES];
     shared f16 [WARP_N, TILE_K] rhs_load_s[STAGES];
     shared f16 [WARP_M, WARP_N] output_s;
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, TILE_K)] {
           stage = iv_k % STAGES;
@@ -4968,7 +4680,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-<div class="listing-cap">清单 226：完整的 1P1C 事件流水线</div>
+<div class="listing-cap">清单 215：完整的 1P1C 事件流水线</div>
 
 #### 逐段走查核函数
 
@@ -4988,7 +4700,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 <div class="guide-figure">
 <img src="figures/f08-fig2_event_credit_flow_light.png" alt="empty 信用允许填充阶段，full 信用允许读取阶段；消费者在计完成计算成后才释放该阶段供再次使用。">
-<div class="cap">图 30：empty 信用允许填充阶段，full 信用允许读取阶段；消费者在计完成计算成后才释放该阶段供再次使用。</div>
+<div class="cap">图 26：empty 信用允许填充阶段，full 信用允许读取阶段；消费者在计完成计算成后才释放该阶段供再次使用。</div>
 </div>
 
 ### 3.8.6 协调模式小结 <a id="sec-3-8-10"></a>
@@ -5028,7 +4740,7 @@ Croqtile 的互操作方案由三部分组成：
 - **`__cpp__`**
 - **预处理器** —— `#define`、`#if`、`#ifdef`、`#error` 用于编译时配置，作用与 C/C++ 代码库中的 `#define` 相同。
 
-前面几节介绍了分块、并行、MMA、流水线、事件与 TMA 等抽象。需要额外的设备函数或目标平台代码时，可以通过本节的 C++ 互操作机制补充。
+前面几节介绍了分块、并行、MMA、流水线、事件等抽象。需要额外的设备函数或目标平台代码时，可以通过本节的 C++ 互操作机制补充。
 
 #### `__device__` 与普通 C++ 内联代码
 
@@ -5048,7 +4760,7 @@ Croqtile 的预处理比 C++ 预处理早得多。Croqtile 编译流程如下图
 chore-preprocessing -> croqtile compilation -> c/c++ preprocessing -> c/c++ compilation
 ```
 
-<div class="listing-cap">清单 227：与 C 预处理的区别</div>
+<div class="listing-cap">清单 216：与 C 预处理的区别</div>
 
 Croqtile 预处理的主要目标，是让主机和设备的宏作为一个整体生效，但这样的工作流有时会带来差异。从实现角度看，Croqtile 预处理器只对 tileflow 函数内部的代码做替换或条件编译，其余预处理留给 C++ 预处理器——这就把 Croqtile 预处理限制在了较小的范围内。
 
@@ -5075,7 +4787,7 @@ __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
 }
 ```
 
-<div class="listing-cap">清单 228：一个模板化的设备辅助函数</div>
+<div class="listing-cap">清单 217：一个模板化的设备辅助函数</div>
 
 调用向 `matmul_kernel` 提供三个常量模板实参，目标编译器据此实例化对应特化，与普通 C++ 模板调用相同。
 
@@ -5089,7 +4801,7 @@ __co__ void foo(int M) {
 }
 ```
 
-<div class="listing-cap">清单 229：一次触发实例化的调用</div>
+<div class="listing-cap">清单 218：一次触发实例化的调用</div>
 
 Croqtile 编译器会尽可能在编译时推导取值。若模板实参无法推导，编译将中止并报错。
 
@@ -5117,7 +4829,7 @@ __co__ void foo() {
 }
 ```
 
-<div class="listing-cap">清单 230：包住设备代码的 cok 块</div>
+<div class="listing-cap">清单 219：包住设备代码的 cok 块</div>
 
 程序员可以把 `bar` 改成函数模板，如下所示：
 
@@ -5132,7 +4844,7 @@ __co__ void foo() {
 }
 ```
 
-<div class="listing-cap">清单 231：抽取目标特定细节之后的块</div>
+<div class="listing-cap">清单 220：抽取目标特定细节之后的块</div>
 
 正如注释所示，Croqtile 编译器可能生成函数模板 `bar<3>` 的特化版本，这样函数模板也能用。但要注意，这个函数模板不再需要普通 *factor* 设备函数所用的 `extern "C"`。
 
@@ -5180,7 +4892,7 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 }
 ```
 
-<div class="listing-cap">清单 232：device 函数：与 Croqtile 一并面向目标平台</div>
+<div class="listing-cap">清单 221：device 函数：与 Croqtile 一并面向目标平台</div>
 
 辅助函数接收指向元素存储的原始指针。因此，接口需要给出它所需的尺寸或布局约定，仅凭指针不会保留 Croqtile 形状。
 
@@ -5192,30 +4904,7 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 
 这种分工——Croqtile 管并行、分块和内存编排，设备函数管专门计算——在 MoE（专家混合）top-K、自定义归约和专用数学运算等生产核函数里很常见。
 
-### 3.9.2 原样 C++ 注入 <a id="sec-3-9-2"></a>
-
-#### 存储提示：`setmaxnreg`
-
-```co
-parallel p1 by 2 : group-4 {
-  inthreads.async (p1 == 0) {
-    __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 40;");)");
-    foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-      // ... TMA loads ...
-    }
-  }
-  inthreads.async (p1 == 1) {
-    __cpp__(R"(asm volatile("setmaxnreg.inc.sync.aligned.u32 216;");)");
-    mc = mma.fill.f16 0.0f;
-  }
-}
-```
-
-<div class="listing-cap">清单 233：存储提示：setmaxnreg</div>
-
-注入字符串将目标平台特定的寄存器提示放在生产者和消费者区域开头、长循环之前。两种职责可能有不同资源需求。Croqtile 保留指令文本，由目标编译器和设备决定提示是否合法。应将这段代码放在它影响的区域附近，并用目标工具验证结果。
-
-### 3.9.3 互操作小结 <a id="sec-3-9-10"></a>
+### 3.9.2 互操作小结 <a id="sec-3-9-10"></a>
 
 #### 小结
 
@@ -5239,7 +4928,7 @@ Croqtile 用结构化搬运操作显式描述分块形状和布局。编译器�
 
 <div class="guide-figure">
 <img src="figures/f09-fig8_expressiveness_light.png" alt="结构化分块操作显式提供形状和布局，便于编译器生成高效代码；实际性能仍取决于分块选择与执行配置。">
-<div class="cap">图 31：结构化分块操作显式提供形状和布局，便于编译器生成高效代码；实际性能仍取决于分块选择与执行配置。</div>
+<div class="cap">图 27：结构化分块操作显式提供形状和布局，便于编译器生成高效代码；实际性能仍取决于分块选择与执行配置。</div>
 </div>
 
 这里的取舍是用明确的分块表达替代任意的逐元素搬运代码，从而便于高效生成目标代码。实际性能仍取决于分块尺寸、对齐方式、布局和同步安排，并不由语法单独保证。
@@ -5312,7 +5001,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
 }
 ```
 
-<div class="listing-cap">清单 234：示例代码：带分块的矩阵乘法</div>
+<div class="listing-cap">清单 222：示例代码：带分块的矩阵乘法</div>
 
 该配置的外层分块上界都是 1，因此外层暂存缓冲区容纳完整操作数。内层范围 `[4, 4, 8]` 划分 M、K 和 N：左分块为 `[128, 256]`，右分块为 `[256, 128]`，乘积贡献给 `[128, 128]` 的输出分块。`after` 子句使内层输入复制在外层复制之后开始。这段清单用于展示结构；作为可运行核函数使用前，必须补齐并检查辅助函数定义、操作数使用与缓冲区复用前的完整等待，以及输出初始化。
 
@@ -5353,7 +5042,7 @@ __co__ auto rgb2gray(f32 [N, 3, H, W] input) {
 }
 ```
 
-<div class="listing-cap">清单 235：示例代码</div>
+<div class="listing-cap">清单 223：示例代码</div>
 
 输入形状为 `[N, 3, H, W]`，第二维包含三个颜色通道。`chunkat(q#n, _, h, w)` 中的下划线保持这些通道完整，同时选择一幅图像中的空间区域。从装入形状中去掉通道维，就得到 `out_L1` 的形状，辅助函数为每个空间位置写入一个灰度值。
 
@@ -5394,7 +5083,7 @@ Croqtile 在每一层都有工具：**编译时形状打印**（`print!`、`prin
 | 构造 | 含义 |
 | --- | --- |
 | `parallel p by N` / `parallel p, q by [M, N]` | 相互独立的实例。 |
-| `: block` / `: thread` / `: group` / `: group-4` | 并行轴上的标注。 |
+| `: block` / `: thread` / `: group` | 并行轴上的标注。 |
 | `foreach idx in [N]` / `foreach t(1:)` | 有序迭代 / 切片迭代。 |
 | `with idx in [a, b]` | 有作用域的索引绑定。 |
 | `p # m` / `#p` | 组合索引 / 轴范围。 |
@@ -5405,8 +5094,7 @@ Croqtile 在每一层都有工具：**编译时形状打印**（`print!`、`prin
 | 构造 | 含义 |
 | --- | --- |
 | `f = dma.copy src => shared` | 分块搬运语句。 |
-| `f = tma.copy src => shared` | 另一引擎上的同一语句形式。 |
-| `a.chunkat(t)` | 规则划分中的一个分块。 |
+<ROW> | `a.chunkat(t)` | 规则划分中的一个分块。 |
 | `a.subspan(M, K).at(i, j)` | 显式范围与分块坐标。 |
 | `a.subspan(M, K).step(sM, sK).at(i, j)` | 跨步分块选择。 |
 | `a.view(M, N).from(r, c)` | 带显式元素偏移的窗口。 |

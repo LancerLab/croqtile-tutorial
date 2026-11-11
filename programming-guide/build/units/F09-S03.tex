@@ -1,10 +1,10 @@
 \subsection*{Swizzle and layout conflicts}
 
-A swizzle changes how elements of a staged tile are arranged in shared storage. The logical matrix shape stays the same, but the reader must use the matching address mapping. Croqtile exposes this choice on both DMA and TMA copies:
+A swizzle changes how elements of a staged tile are arranged in shared storage. The logical matrix shape stays the same, but the reader must use the matching address mapping. Croqtile exposes this choice on the copy operation:
 
 \begin{lstlisting}[language=croqtile,caption={A swizzled copy}]
 dma.copy.swiz<128> src => dst;       // software DMA with swizzle
-tma.copy.swiz<128> src => dst;
+dma.copy.swiz<128> src => dst;
 \end{lstlisting}
 
 The MMA read path must use the same \texttt{swiz\textless{}N\textgreater{}} so addresses match the staged layout:
@@ -13,7 +13,7 @@ The MMA read path must use the same \texttt{swiz\textless{}N\textgreater{}} so a
 ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 \end{lstlisting}
 
-Swizzle is not a TMA-specific feature. In Croqtile, \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} and \texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} produce identical shared-memory layouts. The difference is only in how the data gets there; the layout that arrives is the same in both cases.
+Swizzle is a property of the copy, not of a particular engine: \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} produces the same shared-memory layout regardless of how the data gets there.
 
 \textbf{Swizzle width.} The template argument is the swizzle width in bytes, and the examples use \texttt{swiz\textless{}128\textgreater{}}. A wider swizzle defeats wider conflict patterns but requires tile extents that line up with that width.
 

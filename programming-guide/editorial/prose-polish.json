@@ -696,7 +696,7 @@
   },
   {
    "before": "Programmers should note that support for DMA types other than \\texttt{dma.copy} varies by platform. For instance, on the  platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads.",
-   "after": "Support for operations other than \\texttt{dma.copy} varies by platform. A transfer may map to TMA or to a sequence of load instructions issued by cooperating threads."
+   "after": "Support for operations other than \\texttt{dma.copy} varies by platform. A transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads."
   }
  ],
  "F38-S01": [
@@ -794,7 +794,7 @@
  "F10-S01": [
   {
    "before": "The preceding sections have built a stack of abstractions: tiles, parallelism, MMA, pipelines, events, TMA. That is the Croqtile you want to live in. This part of the guide is about the times you need to step outside.",
-   "after": "The preceding sections introduced tiles, parallelism, MMA, pipelines, events, and TMA. C++ interoperability extends these abstractions when a kernel needs additional device functions or target-specific code."
+   "after": "The preceding sections introduced tiles, parallelism, MMA, pipelines, and events. C++ interoperability extends these abstractions when a kernel needs additional device functions or target-specific code."
   }
  ],
  "F10-S03": [

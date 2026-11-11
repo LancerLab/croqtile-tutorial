@@ -4,7 +4,7 @@ Croqtile gives you two separate knobs:
 
 \begin{enumerate}[leftmargin=1.6em]
 \item \textbf{\texttt{parallel}} --- declares that iterations are independent and \emph{may} run concurrently. This is a logical statement.
-\item \textbf{Space specifiers} (\texttt{: block}, \texttt{: thread}, \texttt{: group}, \texttt{: group-4}) --- tell the compiler where each parallel axis maps. This is a physical statement.
+\item \textbf{Space specifiers} (\texttt{: block}, \texttt{: thread}, \texttt{: group}, \texttt{: thread}) --- tell the compiler where each parallel axis maps. This is a physical statement.
 \end{enumerate}
 
 There is also \texttt{foreach}, which is the opposite of \texttt{parallel}: iterations run \textbf{sequentially}, in order. Use \texttt{foreach} when later iterations depend on earlier ones --- an accumulation loop, a K-dimension reduction, a pipeline that loads tile \emph{k} before computing with it.

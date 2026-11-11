@@ -3,7 +3,7 @@
 The most common use of \texttt{inthreads.\allowbreak{}async} is the \textbf{1P1C} (one producer, one consumer) split for matmul:
 
 \begin{lstlisting}[language=croqtile,caption={The canonical pattern: 1 producer 1 consumer}]
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
   }
   inthreads.async (p1 == 1) {
@@ -11,7 +11,7 @@ parallel p1 by 2 : group-4 {
 }
 \end{lstlisting}
 
-The declaration \co@parallel p1 by 2 : group-4@ creates two cooperating groups in the same surrounding block. The value of \co@p1@ selects a role; it does not identify a tile along K.
+The declaration \co@parallel p1 by 2 : thread@ creates two cooperating groups in the same surrounding block. The value of \co@p1@ selects a role; it does not identify a tile along K.
 
 The region for \co@p1 == 0@ is the producer. It owns the writes that fill the shared staging buffers. The other group can proceed with computation while those writes target a different, available slot.
 

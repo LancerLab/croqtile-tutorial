@@ -15,12 +15,12 @@ wait f;
 dma.copy f.data => output;
 \end{lstlisting}
 
-The same pattern applies to TMA:
+The same pattern applies to asynchronous copies:
 
-\begin{lstlisting}[language=croqtile,caption={An asynchronous tma copy}]
-f = tma.copy.async input => shared;
+\begin{lstlisting}[language=croqtile,caption={An asynchronous copy}]
+f = dma.copy.async input => shared;
 wait f;
-tma.copy f.data => output;
+dma.copy f.data => output;
 \end{lstlisting}
 
 A future identifies the destination before an asynchronous transfer necessarily finishes. Access through \co@f.data@ does not mean the elements are ready. Place \co@wait f@ before the first operation that reads those elements, and keep the source and destination valid while the transfer is in flight.

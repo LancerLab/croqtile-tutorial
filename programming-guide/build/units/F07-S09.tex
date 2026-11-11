@@ -19,7 +19,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
           dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) => rhs_load_s;
           foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-            parallel p by 1 : group-4 {
+            parallel p by 1 : thread {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
               mma.row.row mc, ma, mb;

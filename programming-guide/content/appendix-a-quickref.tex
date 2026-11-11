@@ -35,7 +35,7 @@ Construct & Meaning \\
 Construct & Meaning \\
 \midrule
 \co@parallel p by N@ / \co@parallel {p, q} by [M, N]@ & Independent instances. \\
-\co@: block@ / \co@: thread@ / \co@: group@ / \co@: group-4@ & Annotations on a parallel axis. \\
+\co@: block@ / \co@: thread@ / \co@: group@ & Annotations on a parallel axis. \\
 \co@foreach idx in [N]@ / \co@foreach t(1:)@ & Ordered / sliced iteration. \\
 \co@with idx in [a, b]@ & Scoped index binding. \\
 \co@p # m@ / \co@#p@ & Compose indices / axis extent. \\
@@ -53,7 +53,6 @@ Construct & Meaning \\
 Construct & Meaning \\
 \midrule
 \co@f = dma.copy src => shared@ & Tile movement statement. \\
-\co@f = tma.copy src => shared@ & The same statement form on the other engine. \\
 \co@a.chunkat(t)@ & One tile of a regular partition. \\
 \co@a.subspan(M, K).at(i, j)@ & Explicit extents and tile coordinates. \\
 \co@a.subspan(M, K).step(sM, sK).at(i, j)@ & Strided tile selection. \\

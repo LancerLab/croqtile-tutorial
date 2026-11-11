@@ -25,6 +25,6 @@ mma.scale mc, sc_a, sc_b;
 
 The standalone \texttt{mma.scale} appears in some MoE and mixed-precision kernels.
 
-The \texttt{\textless{}N\textgreater{}} must agree between \texttt{tma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} and \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} --- a mismatch reads garbage. For output, \texttt{mma.\allowbreak{}store.\allowbreak{}transp mc, dst} writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.
+The \texttt{\textless{}N\textgreater{}} must agree between \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} and \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} --- a mismatch reads garbage. For output, \texttt{mma.\allowbreak{}store.\allowbreak{}transp mc, dst} writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.
 
 The table below collects every variant for reference.

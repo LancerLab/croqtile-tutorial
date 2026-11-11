@@ -1,9 +1,0 @@
-\subsection*{\texttt{: group-4} --- cooperative group}
-
-\begin{lstlisting}[language=croqtile,caption={: group-4 --- cooperative group}]
-parallel g by 2 : group-4
-\end{lstlisting}
-
-Section~\ref{sec:3-7} puts this to work with tensor-core operations.
-
-Here \co@group-4@ names a cooperation scope used by the matrix operations below. Each parallel index identifies a cooperating group, so an operation in the body is understood in that group's scope. It is not a request for every participating thread to compute and store an independent copy of the same matrix tile.
