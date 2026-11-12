@@ -754,11 +754,11 @@
   },
   {
    "before": "In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each \\texttt{inthreads} block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the \\texttt{sync.shared} statement established a \\textbf{synchronization point} for all threads. That makes sure code for both paths get executed after this \\emph{synchronization point}.",
-   "after": "The example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues."
+   "after": "The example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.barrier} establishes a synchronization point that both paths must reach before execution continues."
   },
   {
-   "before": "\n\nThe example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues.\n\nOnly the outer \\texttt{inthreads} can be declared as asynchronous. Programmers will get an compile-time error when using \\texttt{inthreads.\\allowbreak{}async} for any inner \\texttt{inthreads} block.",
-   "after": "\n\nThe example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.shared} establishes a synchronization point that both paths must reach before execution continues.\n\nOnly the outer \\texttt{inthreads} can be declared as asynchronous. Programmers will get a compile-time error when using \\texttt{inthreads.\\allowbreak{}async} for any inner \\texttt{inthreads} block."
+   "before": "\n\nThe example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.barrier} establishes a synchronization point that both paths must reach before execution continues.\n\nOnly the outer \\texttt{inthreads} can be declared as asynchronous. Programmers will get an compile-time error when using \\texttt{inthreads.\\allowbreak{}async} for any inner \\texttt{inthreads} block.",
+   "after": "\n\nThe example divides the parallel instances into two groups without synchronizing after each \\texttt{inthreads} block, allowing the groups to execute concurrently. The subsequent \\texttt{sync.barrier} establishes a synchronization point that both paths must reach before execution continues.\n\nOnly the outer \\texttt{inthreads} can be declared as asynchronous. Programmers will get a compile-time error when using \\texttt{inthreads.\\allowbreak{}async} for any inner \\texttt{inthreads} block."
   }
  ],
  "F35-S03": [
@@ -1054,7 +1054,7 @@
   },
   {
    "before": "You have observed similar code in last section, except for that there are \\texttt{wait} and \\texttt{trigger} statements. In this code snippet, once the event \\texttt{e} is triggered by the \\emph{trigger-thread}, the \\emph{wait-thread} is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by \\texttt{sync.shared}, where thread \\texttt{0} completes its \\texttt{inthreads} block before thread \\texttt{1}. From another perspective, the events here \\textbf{chains the asynchronous \\texttt{inthreads}}. This is useful in many scenarios.",
-   "after": "In this example, the triggering instance sets \\texttt{e}, allowing the waiting instance to continue. Both then reach \\texttt{sync.shared}. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish."
+   "after": "In this example, the triggering instance sets \\texttt{e}, allowing the waiting instance to continue. Both then reach \\texttt{sync.barrier}. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish."
   }
  ],
  "F15-S10": [

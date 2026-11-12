@@ -74,6 +74,7 @@ After the fix, F08-S02, F08-S10 and F38-S01 all compile clean.
 | F23-S02 | said a macro with parameters "would not work"; parameterized macros expand, including inside a shape expression |
 | F15-S20 | said one `__co__` function may not call another; the compiler warns that it cannot find a device function, and the program still builds |
 | F32-S02 | said a `parallel-by` variable cannot be used in `foreach`; it can bound a loop, it just cannot be the iterated variable |
+| F34-S07, F35-S02 | used `sync.shared`, which the compiler reports as deprecated; the barrier takes an explicit level now, so the listings use `sync.barrier : thread` |
 | F29-S05 | said a DMA requires source and destination of the same shape; the compiler only rejects a source dimension larger than the destination, and a smaller source is accepted |
 | F19-S06 | the comment promised an error the code did not produce: `f32 [M]` compiles once `M` is known. The listing now shows a derived buffer next to a rejected anonymous one, so the comment matches what the compiler reports |
 | F40-S03 | staged whole matrices in shared storage (8 MB); the outer tiling is now `[4, 4, 8]`, so each staging buffer is one tile |

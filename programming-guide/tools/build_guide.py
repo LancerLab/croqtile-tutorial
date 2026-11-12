@@ -1365,6 +1365,10 @@ UNIT_OVERRIDES = [
     ('F32-S02',
      re.escape('are immutable and cannot be used in \\texttt{foreach} statements. Instead, programmers should use the \\texttt{with-in} statement to define the \\emph{bounded variables} suitable for loops.'),
      'are immutable. They can bound a \\texttt{foreach} loop, but they cannot be the variable that \\texttt{foreach} iterates; declare that variable with \\texttt{with-in}.'),
+    # `sync.<storage>` is deprecated; the barrier takes an explicit level.
+    ('F34-S07', re.escape('    sync.shared; // sync point'), '    sync.barrier : thread; // sync point'),
+    ('F35-S02', re.escape('  sync.shared;                             // sync point'),
+     '  sync.barrier : thread;                   // sync point'),
     # The compiler bounds the source by the destination; it does not require equal shapes.
     ('F29-S05', re.escape('Note that the Croqtile compiler \\textbf{requires the source data and destination data to have the same shape and element type} if not using \\emph{storage} as the destination \\emph{data expression}.'), 'Note that the element types must agree, and that no source dimension may exceed the corresponding destination dimension; a smaller source is accepted.'),
     # A parameterized macro does expand, including in a shape expression.

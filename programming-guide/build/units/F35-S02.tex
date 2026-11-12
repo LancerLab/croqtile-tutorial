@@ -38,10 +38,10 @@ parallel p by 2 {
                                            // once unblocked, change 'e' to 'UNSET'
   inthreads.async (p == 0) { trigger e; }  // trigger-thread
                                            // convert 'e' to 'SET'
-  sync.shared;                             // sync point
+  sync.barrier : thread;                   // sync point
 }
 \end{lstlisting}
 
-In this example, the triggering instance sets \texttt{e}, allowing the waiting instance to continue. Both then reach \texttt{sync.shared}. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish.
+In this example, the triggering instance sets \texttt{e}, allowing the waiting instance to continue. Both then reach \texttt{sync.barrier}. The event establishes a dependency between the two asynchronous regions: the trigger must occur before the wait can finish.
 
 In Croqtile semantics, \textbf{an event is always auto-reset by its \texttt{wait} statement}. That means when a \texttt{wait} statement is unblocked, the events that are waited are changed to \emph{UNSET} state.
