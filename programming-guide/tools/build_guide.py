@@ -1360,6 +1360,10 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Round 87: scalar parameters are not limited to integers.
+    ('F25-S03',
+     re.escape('A Croqtile function accepts only two kinds of input parameter, the \\emph{spanned data} and the \\emph{integer}.'),
+     'A Croqtile function takes its operands as spanned data and everything else as scalar parameters. A scalar may be an integer, a Boolean, or one of the floating-point element types.'),
     # Round 86: the two listings left after the audit.
     # The top-k excerpt relies on three macros it never defines.
     ('F10-S04', re.escape('template <int K>\n__device__ void warp_topk(f32* vals, s32* idxs);'),

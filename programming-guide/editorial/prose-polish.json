@@ -908,7 +908,7 @@
  "F25-S06": [
   {
    "before": "\\subsection*{Return Type and Type Deduction}\n\nSimilar to the input, \\emph{spanned data} and \\emph{integer} are valid output types. The \\emph{void} type is also allowed if nothing is returned.\n\nIn addition to the explicit return type annotation, Croqtile support type inference on returns. For example:",
-   "after": "\\subsection*{Return Type and Type Deduction}\n\nSimilar to the input, \\emph{spanned data} and \\emph{integer} are valid output types. The \\emph{void} type is also allowed if nothing is returned.\n\nIn addition to the explicit return type annotation, Croqtile supports type inference on returns. For example:"
+   "after": "\\subsection*{Return Type and Type Deduction}\n\nLike the input, the result may be \\emph{spanned data}, a scalar, or nothing at all. A scalar return uses the same set of types as a scalar parameter.\n\nIn addition to the explicit return type annotation, Croqtile supports type inference on returns. For example:"
   }
  ],
  "F18-S04": [

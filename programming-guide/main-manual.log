@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 12:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 14:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1284,7 +1284,7 @@ Chapter 2.
 (./build/units/F25-S04.tex [12]) (./build/units/F25-S05.tex)
 (./build/units/F25-S06.tex) (./build/units/F25-S07.tex [13])
 (./build/units/F04-S16.tex
-<figures/f04-fig_span_light.png, id=1077, 2569.6pt x 1445.4pt>
+<figures/f04-fig_span_light.png, id=1076, 2569.6pt x 1445.4pt>
 File: figures/f04-fig_span_light.png Graphic file (type png)
 <use figures/f04-fig_span_light.png>
 Package pdftex.def Info: figures/f04-fig_span_light.png  used on input line 12.
@@ -1692,7 +1692,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (137 pages, 4273811 bytes).
+Output written on main-manual.pdf (137 pages, 4273880 bytes).
 PDF statistics:
  3125 PDF objects out of 3580 (max. 8388607)
  2888 compressed objects within 29 object streams
