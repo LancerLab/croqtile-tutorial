@@ -1344,8 +1344,8 @@ UNIT_OVERRIDES = [
     # covered. Index both axes, write the tile back, and mark the movement
     # block-uniform so the thread-level DMA rule does not apply.
     ('F24-S06', re.escape('  parallel p by 6 {\n    shared s32 [output.span / #p] buffer;   // shape: [16, 4]\n    lhs_load = dma.copy lhs.chunkat(p, _) => shared;\n    rhs_load = dma.copy rhs.chunkat(_, p) => shared;\n    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);\n  }'), '  parallel {p, q} by [6, 6] : block {\n    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]\n    lhs_load = dma.copy lhs.chunkat(p, _) => shared;\n    rhs_load = dma.copy rhs.chunkat(_, q) => shared;\n    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);\n    dma.copy buffer => output.chunkat(p, q);\n  }'),
-    # F19-S05 quotes compiler output, so it keeps the compiler's spelling:
-    # `choreo::`, const-reference parameters, and `runtime_check`.
+    # F19-S05 quotes compiler output: const-reference parameters and
+    # `runtime_check` rather than the free `croq_assert` helper.
     ('F19-S05', re.escape('croq::spanned_view<croq::s32, 2> lhs'),
      'const choreo::spanned_view<choreo::s32, 2> & lhs'),
     ('F19-S05', re.escape('croq::spanned_view<croq::s32, 2> rhs'),
@@ -1360,6 +1360,8 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Spell the quoted output with the same alias the rest of the guide uses.
+    ('F19-S05', re.escape('choreo::'), 'croq::'),
     # A parallel-by variable can bound a foreach loop; it cannot be the one
     # foreach iterates.
     ('F32-S02',

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 15:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 17:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1901,10 +1901,10 @@ Package rerunfilecheck Info: File `main-memoir.out' has not changed.
 (rerunfilecheck)             Checksum: 10247C8CA6F0E46740CA850DA1954B76;3497.
  ) 
 Here is how much of TeX's memory you used:
- 35112 strings out of 483197
- 673208 string characters out of 5964729
+ 35111 strings out of 483197
+ 673197 string characters out of 5964729
  1243249 words of memory out of 5000000
- 46524 multiletter control sequences out of 15000+600000
+ 46523 multiletter control sequences out of 15000+600000
  638431 words of font info for 176 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,17n,107p,1080b,1932s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1927,7 +1927,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (135 pages, 4277965 bytes).
+Output written on main-memoir.pdf (135 pages, 4277955 bytes).
 PDF statistics:
  3332 PDF objects out of 3580 (max. 8388607)
  3095 compressed objects within 31 object streams

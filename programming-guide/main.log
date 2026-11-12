@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 15:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 17:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1433,12 +1433,12 @@ Package pdftex.def Info: figures/f14-compile-workflow.drawio.png  used on input
 (./build/units/F37-S03.tex) [64] (./build/units/F16-S02.tex)
 (./build/units/F16-S05.tex) (./build/units/F17-S07.tex)
 (./build/units/F19-S01.tex) (./build/units/F19-S02.tex)
-(./build/units/F19-S05.tex [65]) [66] (./build/units/F19-S06.tex)
+(./build/units/F19-S05.tex [65]) (./build/units/F19-S06.tex [66])
 (./build/units/F19-S07.tex) (./build/units/F20-S01.tex)
 (./build/units/F20-S02.tex) (./build/units/F20-S03.tex [67])
 (./build/units/F20-S04.tex) (./build/units/F20-S05.tex)
 (./build/units/F21-S01.tex) [68] (./build/units/F21-S02.tex)
-(./build/units/F21-S03.tex) (./build/units/F21-S04.tex [69])
+(./build/units/F21-S03.tex) (./build/units/F21-S04.tex) [69]
 (./build/units/F21-S05.tex) (./build/units/F21-S06.tex)
 (./build/units/F21-S07.tex) (./build/units/F21-S08.tex) [70]
 (./build/units/F21-S09.tex) (./build/units/F21-S10.tex)
@@ -1655,10 +1655,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 35629CCEEF0A2C979155AD6D831980D6;5274.
  ) 
 Here is how much of TeX's memory you used:
- 31374 strings out of 483197
- 614217 string characters out of 5964729
+ 31373 strings out of 483197
+ 614206 string characters out of 5964729
  1177449 words of memory out of 5000000
- 43033 multiletter control sequences out of 15000+600000
+ 43032 multiletter control sequences out of 15000+600000
  631743 words of font info for 172 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,17n,107p,1073b,1936s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1681,7 +1681,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (131 pages, 4264331 bytes).
+Output written on main.pdf (131 pages, 4264291 bytes).
 PDF statistics:
  3100 PDF objects out of 3580 (max. 8388607)
  2869 compressed objects within 29 object streams
