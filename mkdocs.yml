@@ -83,7 +83,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - What is Good in Croqtile: documentation/what-is-choreo.md
+  - What is Good in Croqtile: documentation/what-is-croqtile.md
 
   - "Part I — Tutorial":
     - Overview: tutorial/index.md
@@ -110,15 +110,15 @@ nav:
   - "Part III — Coding Reference":
     - Home: documentation/index.md
     - "Program Structure":
-      - Croqtile-C++ Program Structure: documentation/choreo-program-structure.md
+      - Croqtile-C++ Program Structure: documentation/croqtile-program-structure.md
     - "Shaped Data":
-      - Shape and MDSpan: documentation/shape-in-choreo.md
+      - Shape and MDSpan: documentation/shape-in-croqtile.md
       - Integers and I-Tuples: documentation/integer-ituple.md
       - Spanned Data and Buffers: documentation/spanned-data.md
       - Dynamic Shape and Symbolic Dimension: documentation/symbolic-shape.md
     - "Loop and Parallelism":
       - About Parallelism and Iterations: documentation/intro-loop-parallel.md
-      - SPMD Parallelism: documentation/parallel-in-choreo.md
+      - SPMD Parallelism: documentation/parallel-in-croqtile.md
       - Loop Control: documentation/within-loops.md
     - "Data Movement":
       - The DMA Statement: documentation/basic-dma.md
@@ -126,7 +126,7 @@ nav:
       - Advanced Data Movement: documentation/dma-in-advance.md
     - "C++ Embeddings":
       - Inputs and Output: documentation/input-output.md
-      - Macro and Preprocessing: documentation/macro-in-choreo.md
+      - Macro and Preprocessing: documentation/macro-in-croqtile.md
     - "MPMD Programming":
       - Thread Masking: documentation/thread-masking.md
       - Events for Async Execution: documentation/events.md
@@ -139,7 +139,7 @@ nav:
       - Multi-buffering Patterns: documentation/multi-buffering-patterns.md
     - Reference Palette: documentation/operator-samples.md
     - "Design Rationales":
-      - Syntax Design: documentation/syntax-design-of-choreo.md
+      - Syntax Design: documentation/syntax-design-of-croqtile.md
       - Why Symbolic Shapes: documentation/why-symbolic-shapes.md
       - Symbolic Evaluation System: documentation/value-numbering.md
       - Dynamism Support: documentation/dynamic-design.md

@@ -133,47 +133,47 @@ F11-S09	tutorial/ch09-debug-verbose.md	1.5	kept	Putting it together
 F11-S10	tutorial/ch09-debug-verbose.md	1.5	kept	Summary
 F12-S01	documentation/index.md	1.1	kept	Croqtile Coding Reference
 F12-S02	documentation/index.md	3.1	kept	What You Will Find Here
-F13-S01	documentation/what-is-choreo.md	1.1	kept	What is Good in CroqTile?
-F13-S02	documentation/what-is-choreo.md	3.10	kept	Easy to Use
-F13-S03	documentation/what-is-choreo.md	3.10	kept	Compile-Time Safety
-F13-S04	documentation/what-is-choreo.md	3.10	kept	Dynamic Shapes
-F13-S05	documentation/what-is-choreo.md	3.10	kept	Born for AI Tuning
-F14-S01	documentation/choreo-program-structure.md	3.1	kept	Overview
-F14-S02	documentation/choreo-program-structure.md	3.1	kept	Construct a Choreo-C++ Program
-F14-S03	documentation/choreo-program-structure.md	2.1	kept	Host, Device and Tileflow
-F14-S04	documentation/choreo-program-structure.md	3.1	kept	Transpilation and Compilation
-F14-S05	documentation/choreo-program-structure.md	1.4	omitted	A Full Choreo-Cute C++ Code Example
-F14-S06	documentation/choreo-program-structure.md	1.4	omitted	Host Program - the Control Center
-F14-S07	documentation/choreo-program-structure.md	3.1	kept	Device Program: Parallel Computation
-F14-S08	documentation/choreo-program-structure.md	2.9	kept	Tileflow Program: Orchestrating the Data Movement
-F14-S09	documentation/choreo-program-structure.md	3.1	kept	Quick Summary
-F15-S01	documentation/syntax-design-of-choreo.md	3.2	kept	Syntax Design of Choreo
-F15-S02	documentation/syntax-design-of-choreo.md	3.2	kept	Introduction
-F15-S03	documentation/syntax-design-of-choreo.md	3.2	kept	Embedding Choreo within C++
-F15-S04	documentation/syntax-design-of-choreo.md	3.2	kept	Variables and Types
-F15-S05	documentation/syntax-design-of-choreo.md	2.5	kept	Scalar Types
-F15-S06	documentation/syntax-design-of-choreo.md	3.2	kept	Spanned Types
-F15-S07	documentation/syntax-design-of-choreo.md	3.2	kept	The Partial Type: **mdspan**
-F15-S08	documentation/syntax-design-of-choreo.md	2.6	kept	Fully-Typing
-F15-S09	documentation/syntax-design-of-choreo.md	2.6	kept	The Storage Qualifier
-F15-S10	documentation/syntax-design-of-choreo.md	2.5	kept	I-Tuple Types
-F15-S11	documentation/syntax-design-of-choreo.md	2.5	kept	Operations over *mdspan* and *i-tuple*
-F15-S12	documentation/syntax-design-of-choreo.md	3.2	kept	Bounded Types
-F15-S13	documentation/syntax-design-of-choreo.md	3.4	kept	Control Structures
-F15-S14	documentation/syntax-design-of-choreo.md	2.7	kept	Parallel Region: the 'parallel-by' Block
-F15-S15	documentation/syntax-design-of-choreo.md	2.7	kept	The 'with-in' Block and 'where' Clause
-F15-S16	documentation/syntax-design-of-choreo.md	2.7	kept	The 'foreach' Block
-F15-S17	documentation/syntax-design-of-choreo.md	3.2	kept	The 'upper-bound' Operation
-F15-S18	documentation/syntax-design-of-choreo.md	3.6	kept	Async Operation: the DMA Statement
-F15-S19	documentation/syntax-design-of-choreo.md	2.8	kept	Bounded-ituple/integer and 'chunkat' Operation
-F15-S20	documentation/syntax-design-of-choreo.md	2.13	kept	Function Calls and Call Choreo Function
-F15-S21	documentation/syntax-design-of-choreo.md	2.3	kept	Parameters Passing between Choreo and C++ Function
-F15-S22	documentation/syntax-design-of-choreo.md	3.2	kept	Summary
-F16-S01	documentation/shape-in-choreo.md	2.4	kept	Overview
-F16-S02	documentation/shape-in-choreo.md	3.3	kept	First-Class Citizen: Shape
-F16-S03	documentation/shape-in-choreo.md	2.4	kept	Defining Shapes with `mdspan`
-F16-S04	documentation/shape-in-choreo.md	2.4	kept	Deriving *mdspan*s
-F16-S05	documentation/shape-in-choreo.md	3.3	kept	Evaluation of *mdspan*
+F13-S01	documentation/what-is-croqtile.md	1.1	kept	What is Good in Croqtile?
+F13-S02	documentation/what-is-croqtile.md	3.10	kept	Easy to Use
+F13-S03	documentation/what-is-croqtile.md	3.10	kept	Compile-Time Safety
+F13-S04	documentation/what-is-croqtile.md	3.10	kept	Dynamic Shapes
+F13-S05	documentation/what-is-croqtile.md	3.10	kept	Born for AI Tuning
+F14-S01	documentation/croqtile-program-structure.md	3.1	kept	Overview
+F14-S02	documentation/croqtile-program-structure.md	3.1	kept	Construct a Choreo-C++ Program
+F14-S03	documentation/croqtile-program-structure.md	2.1	kept	Host, Device and Tileflow
+F14-S04	documentation/croqtile-program-structure.md	3.1	kept	Transpilation and Compilation
+F14-S05	documentation/croqtile-program-structure.md	1.4	omitted	A Full Choreo-Cute C++ Code Example
+F14-S06	documentation/croqtile-program-structure.md	1.4	omitted	Host Program - the Control Center
+F14-S07	documentation/croqtile-program-structure.md	3.1	kept	Device Program: Parallel Computation
+F14-S08	documentation/croqtile-program-structure.md	2.9	kept	Tileflow Program: Orchestrating the Data Movement
+F14-S09	documentation/croqtile-program-structure.md	3.1	kept	Quick Summary
+F15-S01	documentation/syntax-design-of-croqtile.md	3.2	kept	Syntax Design of Choreo
+F15-S02	documentation/syntax-design-of-croqtile.md	3.2	kept	Introduction
+F15-S03	documentation/syntax-design-of-croqtile.md	3.2	kept	Embedding Choreo within C++
+F15-S04	documentation/syntax-design-of-croqtile.md	3.2	kept	Variables and Types
+F15-S05	documentation/syntax-design-of-croqtile.md	2.5	kept	Scalar Types
+F15-S06	documentation/syntax-design-of-croqtile.md	3.2	kept	Spanned Types
+F15-S07	documentation/syntax-design-of-croqtile.md	3.2	kept	The Partial Type: **mdspan**
+F15-S08	documentation/syntax-design-of-croqtile.md	2.6	kept	Fully-Typing
+F15-S09	documentation/syntax-design-of-croqtile.md	2.6	kept	The Storage Qualifier
+F15-S10	documentation/syntax-design-of-croqtile.md	2.5	kept	I-Tuple Types
+F15-S11	documentation/syntax-design-of-croqtile.md	2.5	kept	Operations over *mdspan* and *i-tuple*
+F15-S12	documentation/syntax-design-of-croqtile.md	3.2	kept	Bounded Types
+F15-S13	documentation/syntax-design-of-croqtile.md	3.4	kept	Control Structures
+F15-S14	documentation/syntax-design-of-croqtile.md	2.7	kept	Parallel Region: the 'parallel-by' Block
+F15-S15	documentation/syntax-design-of-croqtile.md	2.7	kept	The 'with-in' Block and 'where' Clause
+F15-S16	documentation/syntax-design-of-croqtile.md	2.7	kept	The 'foreach' Block
+F15-S17	documentation/syntax-design-of-croqtile.md	3.2	kept	The 'upper-bound' Operation
+F15-S18	documentation/syntax-design-of-croqtile.md	3.6	kept	Async Operation: the DMA Statement
+F15-S19	documentation/syntax-design-of-croqtile.md	2.8	kept	Bounded-ituple/integer and 'chunkat' Operation
+F15-S20	documentation/syntax-design-of-croqtile.md	2.13	kept	Function Calls and Call Choreo Function
+F15-S21	documentation/syntax-design-of-croqtile.md	2.3	kept	Parameters Passing between Choreo and C++ Function
+F15-S22	documentation/syntax-design-of-croqtile.md	3.2	kept	Summary
+F16-S01	documentation/shape-in-croqtile.md	2.4	kept	Overview
+F16-S02	documentation/shape-in-croqtile.md	3.3	kept	First-Class Citizen: Shape
+F16-S03	documentation/shape-in-croqtile.md	2.4	kept	Defining Shapes with `mdspan`
+F16-S04	documentation/shape-in-croqtile.md	2.4	kept	Deriving *mdspan*s
+F16-S05	documentation/shape-in-croqtile.md	3.3	kept	Evaluation of *mdspan*
 F17-S01	documentation/integer-ituple.md	2.5	kept	Overview
 F17-S02	documentation/integer-ituple.md	2.5	kept	Integers for Program Control
 F17-S03	documentation/integer-ituple.md	3.2	kept	Group of Ranges and Group of Integers
@@ -213,24 +213,24 @@ F21-S07	documentation/value-numbering.md	3.3	kept	Design Considerations
 F21-S08	documentation/value-numbering.md	3.3	kept	Lexical Scopes and Restriction
 F21-S09	documentation/value-numbering.md	3.3	kept	Limitations
 F21-S10	documentation/value-numbering.md	3.3	kept	Reference
-F22-S01	documentation/getting-started-with-choreo.src.md	1.2	kept	Build Choreo From Source Code and Compile Choreo Program
-F22-S02	documentation/getting-started-with-choreo.src.md	1.2	kept	Build Choreo from Scratch
-F22-S03	documentation/getting-started-with-choreo.src.md	1.2	kept	Prerequisitions
-F22-S04	documentation/getting-started-with-choreo.src.md	1.3	kept	Environment
-F22-S05	documentation/getting-started-with-choreo.src.md	1.3	kept	Compile Choreo-C++ Program
-F23-S01	documentation/macro-in-choreo.md	2.13	kept	Overview
-F23-S02	documentation/macro-in-choreo.md	2.13	kept	Object-Like Macros
-F23-S03	documentation/macro-in-choreo.md	2.13	kept	Comments
-F23-S04	documentation/macro-in-choreo.md	2.13	kept	Conditional Compilation
-F23-S05	documentation/macro-in-choreo.md	3.9	kept	Difference with C++ pre-processing
-F23-S06	documentation/macro-in-choreo.md	3.9	kept	Pre-defined Macros
-F24-S01	documentation/call-in-choreo.src.md	2.13	kept	Overview
-F24-S02	documentation/call-in-choreo.src.md	2.13	kept	Call Device Functions
-F24-S03	documentation/call-in-choreo.src.md	2.13	kept	Basic Syntax of Call Statements
-F24-S04	documentation/call-in-choreo.src.md	2.13	kept	The Convention: Allowed Argument Types
-F24-S05	documentation/call-in-choreo.src.md	3.9	kept	Instantiate the Function Template for Call
-F24-S06	documentation/call-in-choreo.src.md	3.9	kept	Trigger C++ Template Instantiation
-F24-S07	documentation/call-in-choreo.src.md	2.13	kept	Quick Summary
+F22-S01	documentation/getting-started-with-croqtile.src.md	1.2	kept	Build Choreo From Source Code and Compile Choreo Program
+F22-S02	documentation/getting-started-with-croqtile.src.md	1.2	kept	Build Choreo from Scratch
+F22-S03	documentation/getting-started-with-croqtile.src.md	1.2	kept	Prerequisitions
+F22-S04	documentation/getting-started-with-croqtile.src.md	1.3	kept	Environment
+F22-S05	documentation/getting-started-with-croqtile.src.md	1.3	kept	Compile Choreo-C++ Program
+F23-S01	documentation/macro-in-croqtile.md	2.13	kept	Overview
+F23-S02	documentation/macro-in-croqtile.md	2.13	kept	Object-Like Macros
+F23-S03	documentation/macro-in-croqtile.md	2.13	kept	Comments
+F23-S04	documentation/macro-in-croqtile.md	2.13	kept	Conditional Compilation
+F23-S05	documentation/macro-in-croqtile.md	3.9	kept	Difference with C++ pre-processing
+F23-S06	documentation/macro-in-croqtile.md	3.9	kept	Pre-defined Macros
+F24-S01	documentation/call-in-croqtile.src.md	2.13	kept	Overview
+F24-S02	documentation/call-in-croqtile.src.md	2.13	kept	Call Device Functions
+F24-S03	documentation/call-in-croqtile.src.md	2.13	kept	Basic Syntax of Call Statements
+F24-S04	documentation/call-in-croqtile.src.md	2.13	kept	The Convention: Allowed Argument Types
+F24-S05	documentation/call-in-croqtile.src.md	3.9	kept	Instantiate the Function Template for Call
+F24-S06	documentation/call-in-croqtile.src.md	3.9	kept	Trigger C++ Template Instantiation
+F24-S07	documentation/call-in-croqtile.src.md	2.13	kept	Quick Summary
 F25-S01	documentation/input-output.md	2.3	kept	Overview
 F25-S02	documentation/input-output.md	2.3	kept	Choreo Function Input
 F25-S03	documentation/input-output.md	2.3	kept	Input Parameters
@@ -256,17 +256,17 @@ F29-S04	documentation/tiling-chunkat.md	2.8	kept	Use Multiple Bounded Variables
 F29-S05	documentation/tiling-chunkat.md	3.5	kept	Tile and Flow
 F29-S06	documentation/tiling-chunkat.md	2.8	kept	Quick Summary
 F30-S01	documentation/intro-loop-parallel.md	3.4	kept	Sequentialism and Parallelism
-F31-S01	documentation/parallel-in-choreo.md	3.4	kept	Overview
-F31-S02	documentation/parallel-in-choreo.md	3.4	kept	Parallel Execution Block
-F31-S03	documentation/parallel-in-choreo.md	2.7	kept	Basic Syntax: `parallel-by`
-F31-S04	documentation/parallel-in-choreo.md	2.7	kept	Multiple-Level Parallelism
-F31-S05	documentation/parallel-in-choreo.md	2.7	kept	Sub-Level Parallelism
-F31-S06	documentation/parallel-in-choreo.md	3.2	kept	Bounded Variable
-F31-S07	documentation/parallel-in-choreo.md	3.4	kept	The Implications
-F31-S08	documentation/parallel-in-choreo.md	3.1	kept	Heterogeneity: Transpiling to Kernel Launch
-F31-S09	documentation/parallel-in-choreo.md	X	moved	
-F31-S10	documentation/parallel-in-choreo.md	3.8.4	kept	Asynchronous Kernel Launch and Stream Binding
-F31-S11	documentation/parallel-in-choreo.md	3.4	kept	Quick Summary
+F31-S01	documentation/parallel-in-croqtile.md	3.4	kept	Overview
+F31-S02	documentation/parallel-in-croqtile.md	3.4	kept	Parallel Execution Block
+F31-S03	documentation/parallel-in-croqtile.md	2.7	kept	Basic Syntax: `parallel-by`
+F31-S04	documentation/parallel-in-croqtile.md	2.7	kept	Multiple-Level Parallelism
+F31-S05	documentation/parallel-in-croqtile.md	2.7	kept	Sub-Level Parallelism
+F31-S06	documentation/parallel-in-croqtile.md	3.2	kept	Bounded Variable
+F31-S07	documentation/parallel-in-croqtile.md	3.4	kept	The Implications
+F31-S08	documentation/parallel-in-croqtile.md	3.1	kept	Heterogeneity: Transpiling to Kernel Launch
+F31-S09	documentation/parallel-in-croqtile.md	X	moved	
+F31-S10	documentation/parallel-in-croqtile.md	3.8.4	kept	Asynchronous Kernel Launch and Stream Binding
+F31-S11	documentation/parallel-in-croqtile.md	3.4	kept	Quick Summary
 F32-S01	documentation/within-loops.md	2.7	kept	Overview
 F32-S02	documentation/within-loops.md	2.7	kept	Loops in Choreo
 F32-S03	documentation/within-loops.md	2.7	kept	The **With-In** Block
@@ -301,14 +301,14 @@ F36-S01	documentation/general-async.md	3.8.4	kept	Synchronization and Asynchrono
 F36-S02	documentation/general-async.md	3.8.4	kept	Stream Binding
 F36-S03	documentation/general-async.md	3.8.4	kept	Stream Binding without `.async`
 F36-S04	documentation/general-async.md	3.8.4	kept	Rules
-F37-S01	documentation/memory-in-choreo.md	3.2	kept	Memory in Choreo
-F37-S02	documentation/memory-in-choreo.md	3.2	kept	Spanned Types in Choreo
-F37-S03	documentation/memory-in-choreo.md	3.2	kept	Storage Qualifiers in Choreo
-F37-S04	documentation/memory-in-choreo.md	2.6	kept	1. `global`
-F37-S05	documentation/memory-in-choreo.md	2.6	kept	2. `shared`
-F37-S06	documentation/memory-in-choreo.md	2.6	kept	3. `local`
-F37-S07	documentation/memory-in-choreo.md	2.6	kept	Default Behavior and Usage
-F37-S08	documentation/memory-in-choreo.md	2.6	kept	Example Code: Using Storage Qualifiers
+F37-S01	documentation/memory-in-croqtile.md	3.2	kept	Memory in Choreo
+F37-S02	documentation/memory-in-croqtile.md	3.2	kept	Spanned Types in Choreo
+F37-S03	documentation/memory-in-croqtile.md	3.2	kept	Storage Qualifiers in Choreo
+F37-S04	documentation/memory-in-croqtile.md	2.6	kept	1. `global`
+F37-S05	documentation/memory-in-croqtile.md	2.6	kept	2. `shared`
+F37-S06	documentation/memory-in-croqtile.md	2.6	kept	3. `local`
+F37-S07	documentation/memory-in-croqtile.md	2.6	kept	Default Behavior and Usage
+F37-S08	documentation/memory-in-croqtile.md	2.6	kept	Example Code: Using Storage Qualifiers
 F38-S01	documentation/multi-buffering-patterns.md	3.6.2	kept	Multi-Buffering Optimization with Choreo
 F39-S01	documentation/dma-in-advance.md	3.6	kept	Overview
 F39-S02	documentation/dma-in-advance.md	3.6	kept	Advances in *Data Expression*

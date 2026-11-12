@@ -240,7 +240,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F12-S01` | [# Croqtile Coding Reference] | P×1: welcome and DSL overview | A | 1.1 | — |
 | `F12-S02` | [## What You Will Find Here] | P×1: coverage statement, no detail ; L×1: (7, "**Program structure**: ... `__co__` function, host-side APIs") | C | 3.1 | 拆分：移出硬件句，保留 DSL 单元 |
 
-### F13 `documentation/what-is-choreo.md`
+### F13 `documentation/what-is-croqtile.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -250,7 +250,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F13-S04` | [## Dynamic Shapes] | P×1: symbolic dimensions, no recompilation | C | 3.10 | 拆分：移出硬件句，保留 DSL 单元 |
 | `F13-S05` | [## Born for AI Tuning] | P×1: compact syntax, AI agents, TFLOPS | C | 3.10 | 拆分：移出硬件句，保留 DSL 单元 |
 
-### F14 `documentation/choreo-program-structure.md`
+### F14 `documentation/croqtile-program-structure.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -264,7 +264,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F14-S08` | [### Tileflow Program: Orchestrating the Data Movement] | P×11: tileflow manages host-device movement; code revisit intro; `__co__` inputs, s32 shapes; parallel-by analogous kernel launch; with-in, bounded-ituple; foreach equivalent C loops; dma.copy statement intro; figure intro; chunks host to local memory; local buffer, call kernel, DMA back; 17x4 iterations, 6 threads ; C×2: (choreo, ~24, "__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {"); (cpp, ~4, "for (int x = 0; x < 17; x++)  // assume 'x' represents the 1st element of 'index'") ; L×1: (4, "The symbol `lhs_load` is called **future** of the DMA operation") ; F×1: (assets/figures/chunkat-6-17-4.drawio.png, "Choreo-Structure-Chunkat" = chunkat 6/17/4 切块示意) | B | 2.9 | 拆分：移出硬件句，保留 DSL 单元 |
 | `F14-S09` | [## Quick Summary] | P×2: three parts, call chain; DMA abstraction, tiling, next chapters | C | 3.1 | — |
 
-### F15 `documentation/syntax-design-of-choreo.md`
+### F15 `documentation/syntax-design-of-croqtile.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -291,7 +291,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F15-S21` | [## Parameters Passing between Choreo and C++ Function] | P×3: choreo.h, wrap pointer with dims; make_spanview, \|d\| size; scalar passable, ituple internal ; C×1: (plain, ~15, "#include \"choreo.h\"") | B | 2.3 | — |
 | `F15-S22` | [## Summary] | P×2: SPMD, dataflow DSL summary; closing, feedback request | C | 3.2 | 拆分：移出硬件句，保留 DSL 单元 |
 
-### F16 `documentation/shape-in-choreo.md`
+### F16 `documentation/shape-in-croqtile.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -365,7 +365,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F21-S09` | [## Limitations] | P×1: two limitations intro ; L×1: (2, "Any mdspan can not have element with bounded integer type") | C | 3.3 | — |
 | `F21-S10` | [# Reference] | P×1: value numbering paper citation | C | 3.3 | — |
 
-### F22 `documentation/getting-started-with-choreo.src.md`
+### F22 `documentation/getting-started-with-croqtile.src.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -375,7 +375,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F22-S04` | [### Environment] | P×9: make setup intro; fetches flex, bison, FileCheck, gtest; make build intro; unit tests intro; tests halt on errors; additional Makefile utilities; help description, sample-test intro; sample-test description; specific operator list ; C×6: (plain, ~3, "make setup"); (plain, ~3, "make"); (plain, ~3, "make test"); (plain, ~3, "make help"); (plain, ~3, "make sample-test"); (plain, ~3, "make sample-test-operator OPERATOR=add") ; A×1: !INCLUDE_IF_EXISTS "target/env_setting_up.md" | A | 1.3 | — |
 | `F22-S05` | [## Compile Choreo-C++ Program] | P×12: transpilation to CUDA/Cute; end-to-end compiler; output forms intro; output forms, target limits; gcc-like usage; a.out, -o, -c, -S; -t, -es options; CUDA C++ output; -E preprocessor, #if/#ifdef; -gs work-script; --help options; help output intro ; L×1: (5, "Target source code") ; C×3: (plain, ~3, "croq your_program.co"); (bash, ~3, "croq -t cuda your_program.co -es -o cuda_source.co"); (bash, ~20, "// --help") | A | 1.3 | 拆分：移出硬件句，保留 DSL 单元 |
 
-### F23 `documentation/macro-in-choreo.md`
+### F23 `documentation/macro-in-croqtile.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -386,7 +386,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F23-S05` | [## Difference with C++ pre-processing] | P×2: earlier than C++ preprocessing; only tileflow scope, limited ; C×1: (plain, ~3, "chore-preprocessing -> choreo compilation -> c/c++ preprocessing -> c/c++ compilation") | C | 3.9 | — |
 | `F23-S06` | [## Pre-defined Macros] | P×2: target builtin macros; usable in tileflow and host | C | 3.9 | 拆分：移出硬件句，保留 DSL 单元 |
 
-### F24 `documentation/call-in-choreo.src.md`
+### F24 `documentation/call-in-croqtile.src.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -453,7 +453,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 |---|---|---|---|---|---|
 | `F30-S01` | **## Sequentialism and Parallelism** (L1) | 1) P×4 — repetitive tasks: loops vs parallel, SPMD paradigm + `parallel-by`, `with-in`+`foreach` do-while style, section roadmap | C | 3.4 | — |
 
-### F31 `documentation/parallel-in-choreo.md`
+### F31 `documentation/parallel-in-croqtile.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
@@ -528,7 +528,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F36-S03` | **### Stream Binding without `.async`** (L50) | 1) P×1 — (3 行连续) sync `parallel-by` + stream: host launches then waits on stream; 2) C×1 — (choreo, ~8行, `__co__ void bar(stream _s, f32[M] a) {`) | C | 3.8.4 | 拆分：移出硬件句，保留 DSL 单元 |
 | `F36-S04` | **### Rules** (L65) | 1) L×1 — (3 项, "Stream binding is only allowed on **block-level** parallel (`: block`)") | C | 3.8.4 | 拆分：移出硬件句，保留 DSL 单元 |
 
-### F37 `documentation/memory-in-choreo.md`
+### F37 `documentation/memory-in-croqtile.md`
 
 | 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
 |---|---|---|---|---|---|
