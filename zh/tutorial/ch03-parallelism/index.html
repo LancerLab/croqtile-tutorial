@@ -319,7 +319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/what-is-choreo/" class="md-nav__link">
+      <a href="../../documentation/what-is-croqtile/" class="md-nav__link">
         
   
   
@@ -1345,7 +1345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/choreo-program-structure/" class="md-nav__link">
+      <a href="../../documentation/croqtile-program-structure/" class="md-nav__link">
         
   
   
@@ -1438,7 +1438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/shape-in-choreo/" class="md-nav__link">
+      <a href="../../documentation/shape-in-croqtile/" class="md-nav__link">
         
   
   
@@ -1641,7 +1641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/parallel-in-choreo/" class="md-nav__link">
+      <a href="../../documentation/parallel-in-croqtile/" class="md-nav__link">
         
   
   
@@ -1933,7 +1933,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/macro-in-choreo/" class="md-nav__link">
+      <a href="../../documentation/macro-in-croqtile/" class="md-nav__link">
         
   
   
@@ -2435,7 +2435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+      <a href="../../documentation/syntax-design-of-croqtile/" class="md-nav__link">
         
   
   
@@ -2953,7 +2953,7 @@
 <p><strong><code>mdspan</code></strong> — 鳄霸中的每个张量都将形状作为类型的一部分。当你写 <code>s32 [128, 256] lhs</code> 时，形状 <code>[128, 256]</code> 不是运行时值——它是编译期属性。编译器利用它来验证每一个 <code>.at()</code>、<code>chunkat</code> 和 <code>dma.copy</code> 在维度上的一致性。如果你对一个 2D 张量使用 <code>lhs.at(i, j, k)</code>，编译器会直接拒绝。表达式 <code>output.at(px#qx, py#qy)</code> 会被验证生成的索引在输出的边界范围内。</p>
 <p><code>span(i)</code> 语法提取某一个维度：<code>lhs.span(0)</code> 是 128，<code>rhs.span(1)</code> 是 256。简写 <code>lhs.span</code> 复制整个形状。</p>
 <p><strong><code>ituple</code></strong> — <code>parallel {px, py} by [8, 16]</code> 中的 <code>{px, py}</code> 语法引入了一个 <code>ituple</code>（编译期整数元组）。组合运算符 <code>px#qx</code> 将两个 ituple 元素组合为全局索引。范围运算符 <code>#p</code> 提取并行变量的范围。这些都在编译期解析——没有运行时开销。</p>
-<p>完整细节请参阅 <a href="../../documentation/shape-in-choreo/">mdspan 参考</a> 和 <a href="../../documentation/integer-ituple/">ituple 参考</a>。目前的关键要点是：鳄霸在编译期捕获形状不匹配，而非在运行时。</p>
+<p>完整细节请参阅 <a href="../documentation/shape-in-choreo.md">mdspan 参考</a> 和 <a href="../../documentation/integer-ituple/">ituple 参考</a>。目前的关键要点是：鳄霸在编译期捕获形状不匹配，而非在运行时。</p>
 <h2 id="_6">矩阵乘法：综合运用<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <p>有了 <code>parallel</code>、<code>foreach</code>、<code>dma.copy</code>、<code>chunkat</code>、<code>#</code> 和空间标注符，分块矩阵乘法就在眼前了。这是教程中第一个真正展示 GPU 强项的程序。</p>
 <p>计划：将 <code>[128, 256]</code> 矩阵乘以 <code>[256, 256]</code> 矩阵，得到 <code>[128, 256]</code> 的结果。</p>

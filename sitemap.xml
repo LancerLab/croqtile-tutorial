@@ -36,18 +36,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/basic-dma/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/call-in-choreo.src/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/call-in-croqtile.src/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/call-in-choreo.src/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/call-in-choreo.src/"/>
-    </url>
-    <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/choreo-program-structure/</loc>
-        <lastmod>2026-11-12</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/choreo-program-structure/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/choreo-program-structure/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/call-in-croqtile.src/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/call-in-croqtile.src/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/contribute/</loc>
@@ -55,6 +48,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/contribute/"/>
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/contribute/"/>
+    </url>
+    <url>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/croqtile-program-structure/</loc>
+        <lastmod>2026-11-12</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/croqtile-program-structure/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/croqtile-program-structure/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/dma-in-advance/</loc>
@@ -92,11 +92,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/general-async/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/getting-started-with-choreo.src/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/getting-started-with-croqtile.src/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/getting-started-with-choreo.src/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/getting-started-with-choreo.src/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/getting-started-with-croqtile.src/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/getting-started-with-croqtile.src/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/input-output/</loc>
@@ -127,18 +127,18 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/loop-in-advance/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/macro-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/macro-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/macro-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/macro-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/macro-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/macro-in-croqtile/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/memory-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/memory-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/memory-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/memory-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/memory-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/memory-in-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/multi-buffering-patterns/</loc>
@@ -155,18 +155,18 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/operator-samples/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/parallel-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/parallel-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/parallel-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/parallel-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/parallel-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/parallel-in-croqtile/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/shape-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/shape-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/shape-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/shape-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/shape-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/shape-in-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/spanned-data/</loc>
@@ -190,11 +190,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/symbolic-shape/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/syntax-design-of-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/syntax-design-of-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/syntax-design-of-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/syntax-design-of-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/syntax-design-of-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/syntax-design-of-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/thread-masking/</loc>
@@ -225,11 +225,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/value-numbering/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/what-is-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/what-is-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/what-is-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/what-is-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/what-is-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/what-is-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/why-symbolic-shapes/</loc>
@@ -421,18 +421,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/basic-dma/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/call-in-choreo.src/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/call-in-croqtile.src/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/call-in-choreo.src/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/call-in-choreo.src/"/>
-    </url>
-    <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/choreo-program-structure/</loc>
-        <lastmod>2026-11-12</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/choreo-program-structure/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/choreo-program-structure/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/call-in-croqtile.src/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/call-in-croqtile.src/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/contribute/</loc>
@@ -440,6 +433,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/contribute/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/contribute/"/>
+    </url>
+    <url>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/croqtile-program-structure/</loc>
+        <lastmod>2026-11-12</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/croqtile-program-structure/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/croqtile-program-structure/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/dma-in-advance/</loc>
@@ -477,11 +477,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/general-async/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/getting-started-with-choreo.src/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/getting-started-with-croqtile.src/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/getting-started-with-choreo.src/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/getting-started-with-choreo.src/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/getting-started-with-croqtile.src/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/getting-started-with-croqtile.src/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/input-output/</loc>
@@ -512,18 +512,18 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/loop-in-advance/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/macro-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/macro-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/macro-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/macro-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/macro-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/macro-in-croqtile/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/memory-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/memory-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/memory-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/memory-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/memory-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/memory-in-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/multi-buffering-patterns/</loc>
@@ -540,18 +540,18 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/operator-samples/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/parallel-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/parallel-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/parallel-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/parallel-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/parallel-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/parallel-in-croqtile/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/shape-in-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/shape-in-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/shape-in-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/shape-in-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/shape-in-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/shape-in-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/spanned-data/</loc>
@@ -575,11 +575,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/symbolic-shape/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/syntax-design-of-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/syntax-design-of-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/syntax-design-of-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/syntax-design-of-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/syntax-design-of-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/syntax-design-of-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/thread-masking/</loc>
@@ -610,11 +610,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/value-numbering/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/what-is-choreo/</loc>
+        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/what-is-croqtile/</loc>
         <lastmod>2026-11-12</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/what-is-choreo/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/what-is-choreo/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/documentation/what-is-croqtile/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/documentation/what-is-croqtile/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/why-symbolic-shapes/</loc>

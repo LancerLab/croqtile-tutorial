@@ -319,7 +319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/what-is-choreo/" class="md-nav__link">
+      <a href="../../documentation/what-is-croqtile/" class="md-nav__link">
         
   
   
@@ -1345,7 +1345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/choreo-program-structure/" class="md-nav__link">
+      <a href="../../documentation/croqtile-program-structure/" class="md-nav__link">
         
   
   
@@ -1438,7 +1438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/shape-in-choreo/" class="md-nav__link">
+      <a href="../../documentation/shape-in-croqtile/" class="md-nav__link">
         
   
   
@@ -1641,7 +1641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/parallel-in-choreo/" class="md-nav__link">
+      <a href="../../documentation/parallel-in-croqtile/" class="md-nav__link">
         
   
   
@@ -1933,7 +1933,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/macro-in-choreo/" class="md-nav__link">
+      <a href="../../documentation/macro-in-croqtile/" class="md-nav__link">
         
   
   
@@ -2435,7 +2435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../documentation/syntax-design-of-choreo/" class="md-nav__link">
+      <a href="../../documentation/syntax-design-of-croqtile/" class="md-nav__link">
         
   
   
@@ -2953,7 +2953,7 @@
 <p><strong><code>mdspan</code></strong> — every tensor in Croqtile carries its shape as part of its type. When you write <code>s32 [128, 256] lhs</code>, the shape <code>[128, 256]</code> is not a runtime value — it is a compile-time property. The compiler uses it to verify that every <code>.at()</code>, <code>chunkat</code>, and <code>dma.copy</code> is dimensionally consistent. If you try <code>lhs.at(i, j, k)</code> on a 2D tensor, the compiler rejects it. The expression <code>output.at(px#qx, py#qy)</code> is verified to produce indices within the output's bounds.</p>
 <p>The <code>span(i)</code> syntax extracts one dimension: <code>lhs.span(0)</code> is 128, <code>rhs.span(1)</code> is 256. The shorthand <code>lhs.span</code> copies the entire shape.</p>
 <p><strong><code>ituple</code></strong> — the <code>{px, py}</code> syntax in <code>parallel {px, py} by [8, 16]</code> introduces an <code>ituple</code>, a compile-time integer tuple. The compose operator <code>px#qx</code> combines two ituple elements into a global index. The extent operator <code>#p</code> extracts the upper bound of a parallel variable. These are all resolved at compile time — no runtime overhead.</p>
-<p>For the full details, see the <a href="../../documentation/shape-in-choreo/">mdspan reference</a> and the <a href="../../documentation/integer-ituple/">ituple reference</a>. For now, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.</p>
+<p>For the full details, see the <a href="../documentation/shape-in-choreo.md">mdspan reference</a> and the <a href="../../documentation/integer-ituple/">ituple reference</a>. For now, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.</p>
 <h2 id="matrix-multiply-putting-it-together">Matrix Multiply: Putting It Together<a class="headerlink" href="#matrix-multiply-putting-it-together" title="Permanent link">&para;</a></h2>
 <p>With <code>parallel</code>, <code>foreach</code>, <code>dma.copy</code>, <code>chunkat</code>, <code>#</code>, and space specifiers, a tiled matrix multiply is within reach. This is the first program in the tutorial that does something GPUs are famous for.</p>
 <p>The plan: multiply a <code>[128, 256]</code> matrix by a <code>[256, 256]</code> matrix to get a <code>[128, 256]</code> result.</p>
