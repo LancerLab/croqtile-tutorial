@@ -56,7 +56,7 @@
 \contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{21}{lstlisting.2.41}%
 \contentsline {lstlisting}{\numberline {2.42}A spanned-data declaration}{21}{lstlisting.2.42}%
 \contentsline {lstlisting}{\numberline {2.43}A standalone shape}{21}{lstlisting.2.43}%
-\contentsline {lstlisting}{\numberline {2.44}A rejected fundamental type}{21}{lstlisting.2.44}%
+\contentsline {lstlisting}{\numberline {2.44}Element type without a shape}{21}{lstlisting.2.44}%
 \contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{22}{lstlisting.2.45}%
 \contentsline {lstlisting}{\numberline {2.46}Initialization}{22}{lstlisting.2.46}%
 \contentsline {lstlisting}{\numberline {2.47}An explicit return shape}{22}{lstlisting.2.47}%

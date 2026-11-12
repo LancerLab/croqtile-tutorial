@@ -21,8 +21,13 @@ the front end (`choreo -t cc -es`). There are 222 listings; 199 are CroqTile and
 
 | Result | Count |
 |---|---|
-| compiles clean | 180 |
-| flagged | 19 |
+| compiles clean | 186 |
+| flagged | 13 |
+
+A listing counts as flagged only when the compiler emits a diagnostic in its
+`file.co:line.col: error:` form. Matching the word "error" anywhere in the
+output is wrong: the compiler echoes the offending source line, so a listing
+whose comment reads `// error: ...` looks like a failure when it compiles.
 
 Nothing is excused merely for being labelled a fragment. A listing is only
 allowed to fail when the failure is an unterminated construct, which happens
@@ -33,7 +38,8 @@ on purpose, a target limitation, a compiler defect, or a defect in the listing.
 |---|---|---|
 | unterminated `__co__` signature | F03-S04 | intentional fragment |
 | ellipsis placeholder `...` | F14-S03, F14-S04, F18-S06, F19-S03, F25-S03, F25-S04 (x2), F31-S08 | intentional abbreviation |
-| deliberate error example | F16-S03, F17-S02, F17-S05, F17-S06, F18-S03, F19-S06, F24-S03, F24-S06 | intentional |
+| deliberate error example | F24-S03 | intentional |
+| bare statement outside any `__co__` body, so the front end never sees it | F16-S03, F17-S02, F17-S05, F17-S06 | fragment; each does report the documented error once placed inside a function |
 | `: group` unsupported on x86_64 | F06-S04 | needs a GPU target; the text now says so |
 | undefined macro plus a third parallel level | F10-S04 | open, see below |
 
@@ -62,6 +68,9 @@ After the fix, F08-S02, F08-S10 and F38-S01 all compile clean.
 | F07-S08, F07-S09 | use `WARP_M`, `WARP_N`, `TILE_K`, `WARP_K` (and `NUM_GROUPS`) without defining them |
 | F25-S04 | a stray comma ends a statement |
 | F10-S04 | uses `N_TOKENS`, `N_EXPERTS` and `N_THREAD` without defining them |
+| F18-S03 | claimed `s32 a;` is rejected; it compiles to a control integer, and the diagnostic the comment quotes no longer exists in the compiler |
+| F24-S04 | said the scalar integer type "only includes `int`"; `s32` and `u32` are accepted too |
+| F24-S06 | said a runtime template argument is an error; the compiler now reports a warning |
 | F19-S06 | the comment promised an error the code did not produce: `f32 [M]` compiles once `M` is known. The listing now shows a derived buffer next to a rejected anonymous one, so the comment matches what the compiler reports |
 | F40-S03 | staged whole matrices in shared storage (8 MB); the outer tiling is now `[4, 4, 8]`, so each staging buffer is one tile |
 

@@ -25,9 +25,9 @@ Template arguments must be evaluable as constants during Croqtile compilation. A
 \begin{lstlisting}[language=croqtile,caption={A call that instantiates it}]
 __co__ void foo(int M) {
   parallel p by 1 {
-    call bar<M>();  // error: 'M' is a runtime value
+    call bar<M>();  // warning: 'M' cannot be evaluated at compile time
   }
 }
 \end{lstlisting}
 
-The Croqtile compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, compilation stops with an error.
+The Croqtile compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, the compiler reports a warning that the argument cannot be evaluated at compile time.

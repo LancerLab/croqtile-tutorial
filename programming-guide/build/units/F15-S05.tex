@@ -7,6 +7,6 @@ int a;
 __co__ int foo(int b) { return b; }
 \end{lstlisting}
 
-Integers support arithmetic, shifts, and logical operations with C++ syntax. Croqtile does not provide unsigned or 8-, 16-, or 64-bit scalar control integers: a signed 32-bit integer is sufficient for the program-control tasks this type serves.
+Integers support arithmetic, shifts, and logical operations with C++ syntax. The plain \texttt{int} is a signed 32-bit value; when a control value needs a different range or signedness, \texttt{s8}, \texttt{s16}, \texttt{s64} and \texttt{u8}, \texttt{u16}, \texttt{u32}, \texttt{u64} are available.
 
 The Boolean type corresponds to C++ \texttt{bool}. Boolean operations and conversions between Boolean and integer values follow C++ rules.

@@ -28,10 +28,11 @@ In Croqtile terminology, the element type is referred to as the \textbf{fundamen
 
 The prefixes \texttt{u} and \texttt{s} mean unsigned and signed, and the numeric suffix gives the bit width. The type \texttt{f16} is IEEE 754 half precision; \texttt{bf16} is the 16-bit brain floating-point format commonly used in machine learning.
 
-The element type \co@s32@ and the control type \co@int@ have different roles, even though both describe 32-bit integers. An \co@s32@ declaration needs a shape. The following standalone declaration is rejected:
+The element type \co@s32@ and the control type \co@int@ have different roles, even though both describe 32-bit integers. A declaration that adds a shape creates a buffer; without one, the same element type declares an ordinary control integer:
 
-\begin{lstlisting}[language=croqtile,caption={A rejected fundamental type}]
-s32 a;  // error: the fundamental type can not be used for variable definition alone
+\begin{lstlisting}[language=croqtile,caption={Element type without a shape}]
+s32 a;    // a control integer, the same as 'int a'
+s32 [4] b; // a buffer of four elements
 \end{lstlisting}
 
-This results in a compile-time failure. Consequently, \texttt{s32} cannot be used for program control like \texttt{int}, and type conversion between them is not possible.
+Both forms compile. The shape decides which one you get, not the type name.

@@ -8,7 +8,7 @@ In current implementation, the argument must be either:
 \item Scalar \emph{Floating-Point} type.
 \end{itemize}
 
-Here, the scalar \emph{integer} type only includes \texttt{int}, whereas the scalar \emph{floating-point type} includes \texttt{float}, \texttt{double}, \texttt{half}, \texttt{bfp16}, and \texttt{half8}. However, since the target-platform differs in floating-point support, the \emph{floating-point type} parameter also varies for different target platforms.
+Here, the scalar \emph{integer} types include \texttt{int}, \texttt{s32} and \texttt{u32}, whereas the scalar \emph{floating-point type} includes \texttt{float}, \texttt{double}, \texttt{half}, \texttt{bfp16}, and \texttt{half8}. However, since the target-platform differs in floating-point support, the \emph{floating-point type} parameter also varies for different target platforms.
 
 Croqtile does not perform arithmetic on these floating-point scalar values in Tileflow code. Instead, the Tileflow program passes them to device functions for computation.
 

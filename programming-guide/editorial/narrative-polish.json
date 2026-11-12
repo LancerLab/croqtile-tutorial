@@ -1062,7 +1062,7 @@
  "F18-S03": [
   {
    "before": "Note \\texttt{s32} is different from \\texttt{int}. Although they occupy the same amount of storage, in Croqtile, \\texttt{s32} cannot be used alone to define programming entities. For example:",
-   "after": "The element type \\co@s32@ and the control type \\co@int@ have different roles, even though both describe 32-bit integers. An \\co@s32@ declaration needs a shape. The following standalone declaration is rejected:"
+   "after": "The element type \\co@s32@ and the control type \\co@int@ have different roles, even though both describe 32-bit integers. A declaration that adds a shape creates a buffer; without one, the same element type declares an ordinary control integer:"
   }
  ],
  "F18-S05": [

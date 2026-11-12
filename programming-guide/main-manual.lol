@@ -56,7 +56,7 @@
 \contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{21}{lstlisting.2.41}%
 \contentsline {lstlisting}{\numberline {2.42}A spanned-data declaration}{21}{lstlisting.2.42}%
 \contentsline {lstlisting}{\numberline {2.43}A standalone shape}{22}{lstlisting.2.43}%
-\contentsline {lstlisting}{\numberline {2.44}A rejected fundamental type}{22}{lstlisting.2.44}%
+\contentsline {lstlisting}{\numberline {2.44}Element type without a shape}{22}{lstlisting.2.44}%
 \contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{22}{lstlisting.2.45}%
 \contentsline {lstlisting}{\numberline {2.46}Initialization}{23}{lstlisting.2.46}%
 \contentsline {lstlisting}{\numberline {2.47}An explicit return shape}{23}{lstlisting.2.47}%
@@ -218,5 +218,5 @@
 \contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{114}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}The block after factoring target-specific details}{114}{lstlisting.3.69}%
 \contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{114}{lstlisting.3.70}%
-\contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{117}{lstlisting.3.71}%
+\contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{118}{lstlisting.3.71}%
 \contentsline {lstlisting}{\numberline {3.72}Example Code}{119}{lstlisting.3.72}%

@@ -1360,6 +1360,18 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Round 88: three claims the current compiler no longer supports.
+    # F18-S03: an element type without a shape is an ordinary control integer.
+    ('F18-S03', re.escape('caption={A rejected fundamental type}'), 'caption={Element type without a shape}'),
+    ('F18-S03',
+     re.escape('s32 a;  // error: the fundamental type can not be used for variable definition alone'),
+     's32 a;    // a control integer, the same as \'int a\'\ns32 [4] b; // a buffer of four elements'),
+    ('F18-S03',
+     re.escape('This results in a compile-time failure. Consequently, \\texttt{s32} cannot be used for program control like \\texttt{int}, and type conversion between them is not possible.'),
+     'Both forms compile. The shape decides which one you get, not the type name.'),
+    # F24-S06: a runtime template argument is a warning, not an error.
+    ('F24-S06', re.escape("call bar<M>();  // error: 'M' is a runtime value"),
+     "call bar<M>();  // warning: 'M' cannot be evaluated at compile time"),
     # Round 87: scalar parameters are not limited to integers.
     ('F25-S03',
      re.escape('A Croqtile function accepts only two kinds of input parameter, the \\emph{spanned data} and the \\emph{integer}.'),
