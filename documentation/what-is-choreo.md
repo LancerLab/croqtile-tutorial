@@ -1,4 +1,4 @@
-# What is Good in CroqTile?
+# What is Good in Croqtile?
 
 Croqtile is a C++ embedded DSL for writing high-performance GPU and DSA kernels. You write Croqtile functions in `.co` files alongside your existing C++ code, and the compiler transpiles them into efficient target code (CUDA today, more backends planned) with full interoperability to CUDA, CuTe, and any C++ library.
 
