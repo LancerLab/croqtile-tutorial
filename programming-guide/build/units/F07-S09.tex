@@ -3,6 +3,11 @@ In the earlier kernels, the grid grew with the problem: roughly one block per ou
 A \textbf{persistent kernel} fixes the launch size (often near the SM count) and lets each block iterate over multiple tiles:
 
 \begin{lstlisting}[language=croqtile,caption={Persistent scheduling and the if guard}]
+#define WARP_M 64
+#define WARP_N 64
+#define TILE_K 128
+#define WARP_K 16
+#define NUM_GROUPS 4
 __co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
   f16 [M, N] output;
   int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);

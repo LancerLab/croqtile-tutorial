@@ -205,7 +205,7 @@
 \contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{101}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{102}{lstlisting.3.56}%
 \contentsline {lstlisting}{\numberline {3.57}Persistent scheduling and the if guard}{103}{lstlisting.3.57}%
-\contentsline {lstlisting}{\numberline {3.58}parallel.async: host-level concurrency}{104}{lstlisting.3.58}%
+\contentsline {lstlisting}{\numberline {3.58}parallel.async: host-level concurrency}{105}{lstlisting.3.58}%
 \contentsline {lstlisting}{\numberline {3.59}Asynchronous program launch and Stream Binding}{105}{lstlisting.3.59}%
 \contentsline {lstlisting}{\numberline {3.60}An asynchronous launch}{105}{lstlisting.3.60}%
 \contentsline {lstlisting}{\numberline {3.61}The synchronous form}{105}{lstlisting.3.61}%
@@ -214,9 +214,9 @@
 \contentsline {lstlisting}{\numberline {3.64}The full 1P1C event pipeline}{106}{lstlisting.3.64}%
 \contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{110}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}A templated device helper}{110}{lstlisting.3.66}%
-\contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{110}{lstlisting.3.67}%
+\contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{111}{lstlisting.3.67}%
 \contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{111}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}The block after factoring target-specific details}{111}{lstlisting.3.69}%
-\contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{111}{lstlisting.3.70}%
-\contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{114}{lstlisting.3.71}%
-\contentsline {lstlisting}{\numberline {3.72}Example Code}{116}{lstlisting.3.72}%
+\contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{112}{lstlisting.3.70}%
+\contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{115}{lstlisting.3.71}%
+\contentsline {lstlisting}{\numberline {3.72}Example Code}{117}{lstlisting.3.72}%

@@ -25,8 +25,9 @@ In Croqtile, the \emph{mdspan}-typed shape cannot be used as the function parame
 
 \begin{lstlisting}[language=croqtile,caption={An integer parameter}]
 __co__ void foo(int a) {
-  // ...
-  call kernel(a, 3);
+  parallel p by 1 {
+    call kernel(a, 3);
+  }
 }
 \end{lstlisting}
 

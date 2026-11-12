@@ -5,7 +5,7 @@ It is possible to use the \texttt{chunkat} expression for either the source or t
 \begin{lstlisting}[language=croqtile,caption={Tile and Flow}]
 __co__ auto foo(f32 [36] input) {
   f32 [36] output;
-  parallel p by 6 {
+  parallel p by 6 : block {
     f0 = dma.copy input.chunkat(p) => shared;  // tile the source
     dma.copy f0.data => output.chunkat(p);     // un-tile the destination
   }

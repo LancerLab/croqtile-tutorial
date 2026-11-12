@@ -4,7 +4,7 @@ A transfer can use a whole buffer, but a tiled algorithm usually needs only the 
 
 \begin{lstlisting}[language=croqtile,caption={Use chunkat Expression to Tile Data}]
 __co__ void foo(f32 [36] input) {
-  parallel p by 6 {
+  parallel p by 6 : block {
     dma.copy input.chunkat(p) => shared;
   }
 }

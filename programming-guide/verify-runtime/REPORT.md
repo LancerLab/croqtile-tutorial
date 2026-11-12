@@ -13,6 +13,52 @@ Compiler: `/home/wsj/choreo/build/choreo`.
 `blocks/` is regenerated from `build/units/*.tex` after each `build_guide.py`
 run; it holds the listings exactly as the PDF prints them.
 
+## Full listing audit
+
+Every `croqtile` listing in `build/units/*.tex` is compiled standalone against
+the front end (`choreo -t cc -es`). There are 222 listings; 199 are CroqTile and
+23 are host C++, which the CroqTile front end does not apply to.
+
+| Result | Count |
+|---|---|
+| compiles clean | 176 |
+| flagged | 23 |
+
+Nothing is excused merely for being labelled a fragment. A listing is only
+allowed to fail when the failure is an unterminated construct, which happens
+exactly once (F03-S04). Everything else is either a placeholder the author wrote
+on purpose, a target limitation, a compiler defect, or a defect in the listing.
+
+| Cause | Listings | Verdict |
+|---|---|---|
+| unterminated `__co__` signature | F03-S04 | intentional fragment |
+| ellipsis placeholder `...` | F14-S03, F14-S04, F18-S06, F19-S03, F25-S03, F25-S04 (x2), F31-S08 | intentional abbreviation |
+| deliberate error example | F16-S03, F17-S02, F17-S05, F17-S06, F18-S03, F19-S06, F24-S03, F24-S06 | intentional |
+| `: group` unsupported on x86_64 | F06-S04 | needs a GPU target |
+| CPU backend assertion | F08-S02, F08-S10, F38-S01 | compiler defect |
+| undefined macro plus a third parallel level | F10-S04 | open, see below |
+| shared buffer exceeds capacity | F40-S03 | open, see below |
+
+### Fixed in this pass
+
+| Listing | Defect |
+|---|---|
+| F19-S04 | declares `tile_m` twice and uses an undeclared `tile_n` — the same text as F19-S05, which had already been fixed |
+| F24-S04 | passes `.data` of an mdspan parameter and of a declared buffer; `.data` belongs to a future, so both calls pass the buffer itself |
+| F17-S02 | calls a device function outside any `parallel-by` block |
+| F04-S03, F29-S03, F29-S04, F29-S05 | move one tile per instance without saying so, so the compiler reads the instances as lanes of one thread and every lane copies the whole tile into the same buffer; annotated `: block` |
+| F07-S08, F07-S09 | use `WARP_M`, `WARP_N`, `TILE_K`, `WARP_K` (and `NUM_GROUPS`) without defining them |
+
+### Open
+
+- **F10-S04** uses `N_TOKENS`, `N_EXPERTS` and `N_THREAD` without defining them,
+  and nests three parallel levels where the CPU target supports two. The second
+  point means it can only be checked against a GPU target.
+- **F40-S03** declares a `[512, 1024]` s32 staging buffer, which is far past the
+  shared-memory budget, so the compiler rejects it before any other check. The
+  prose calls the listing a structural illustration; fixing it means rescaling
+  the tile bounds, which changes the numbers the surrounding text quotes.
+
 ## Coverage
 
 `build/units/*.tex` contains 199 `croqtile` listings. Filtering to listings that

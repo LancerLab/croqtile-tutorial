@@ -4,7 +4,7 @@ The example below uses several bounded variables at once:
 
 \begin{lstlisting}[language=croqtile,caption={Use Multiple Bounded Variables}]
 __co__ void foo(f32 [36, 14, 8] input) {
-  parallel p by 6 {
+  parallel p by 6 : block {
     with index in [7, 4] {
       foreach index {
         dma.copy input.chunkat(p, index) => shared;

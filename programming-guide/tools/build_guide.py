@@ -1360,6 +1360,36 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Round 84: full audit of every listing against the front end.
+    # F19-S04 carries the same duplicated tile variable as F19-S05 had.
+    ('F19-S04', re.escape('int tile_m = 32, tile_m = 8, tile_k = 16;'),
+     'int tile_m = 32, tile_n = 8, tile_k = 16;'),
+    # `.data` belongs to a future; an mdspan parameter and a declared buffer
+    # are passed as they are.
+    ('F24-S04', re.escape('call bar(input.data, input.span(0), buffer.span(0));'),
+     'call bar(input, input.span(0), buffer.span(0));'),
+    ('F24-S04', re.escape('call foo(buffer.data, N, 3, 3.14, padding);'),
+     'call foo(buffer, N, 3, 3.14, padding);'),
+    # The DMA moves one tile per instance, so the movement is block-uniform;
+    # without the annotation the instances are read as lanes of one thread and
+    # each lane would copy the whole tile into the same buffer.
+    ('F04-S03', re.escape('parallel {tr, tc} by [4, 8] {'),
+     'parallel {tr, tc} by [4, 8] : block {'),
+    ('F29-S03', re.escape('  parallel p by 6 {'),
+     '  parallel p by 6 : block {'),
+    ('F29-S04', re.escape('  parallel p by 6 {'),
+     '  parallel p by 6 : block {'),
+    ('F29-S05', re.escape('  parallel p by 6 {'),
+     '  parallel p by 6 : block {'),
+    # `call` only runs inside a parallel-by block.
+    ('F17-S02',
+     re.escape('__co__ void foo(int a) {\n  // ...\n  call kernel(a, 3);\n}'),
+     '__co__ void foo(int a) {\n  parallel p by 1 {\n    call kernel(a, 3);\n  }\n}'),
+    # The 1P1C listings use tile constants without defining them.
+    ('F07-S08', re.escape('__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
+     '#define WARP_M 64\n#define WARP_N 64\n#define TILE_K 128\n#define WARP_K 16\n__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
+    ('F07-S09', re.escape('__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
+     '#define WARP_M 64\n#define WARP_N 64\n#define TILE_K 128\n#define WARP_K 16\n#define NUM_GROUPS 4\n__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
     # Round 83: `__co__` functions must carry a body; only `__device__`
     # helpers may be declared without one.
     ('F15-S05', re.escape('__co__ int foo(int b);'),

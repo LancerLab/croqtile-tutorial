@@ -205,17 +205,17 @@
 \contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{103}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{104}{lstlisting.3.56}%
 \contentsline {lstlisting}{\numberline {3.57}Persistent scheduling and the if guard}{105}{lstlisting.3.57}%
-\contentsline {lstlisting}{\numberline {3.58}parallel.async: host-level concurrency}{106}{lstlisting.3.58}%
+\contentsline {lstlisting}{\numberline {3.58}parallel.async: host-level concurrency}{107}{lstlisting.3.58}%
 \contentsline {lstlisting}{\numberline {3.59}Asynchronous program launch and Stream Binding}{107}{lstlisting.3.59}%
-\contentsline {lstlisting}{\numberline {3.60}An asynchronous launch}{107}{lstlisting.3.60}%
-\contentsline {lstlisting}{\numberline {3.61}The synchronous form}{107}{lstlisting.3.61}%
+\contentsline {lstlisting}{\numberline {3.60}An asynchronous launch}{108}{lstlisting.3.60}%
+\contentsline {lstlisting}{\numberline {3.61}The synchronous form}{108}{lstlisting.3.61}%
 \contentsline {lstlisting}{\numberline {3.62}Stream Binding}{108}{lstlisting.3.62}%
 \contentsline {lstlisting}{\numberline {3.63}Stream Binding without .async}{108}{lstlisting.3.63}%
 \contentsline {lstlisting}{\numberline {3.64}The full 1P1C event pipeline}{109}{lstlisting.3.64}%
 \contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{112}{lstlisting.3.65}%
-\contentsline {lstlisting}{\numberline {3.66}A templated device helper}{112}{lstlisting.3.66}%
+\contentsline {lstlisting}{\numberline {3.66}A templated device helper}{113}{lstlisting.3.66}%
 \contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{113}{lstlisting.3.67}%
-\contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{113}{lstlisting.3.68}%
+\contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{114}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}The block after factoring target-specific details}{114}{lstlisting.3.69}%
 \contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{114}{lstlisting.3.70}%
 \contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{117}{lstlisting.3.71}%

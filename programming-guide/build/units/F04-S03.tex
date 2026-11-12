@@ -3,7 +3,7 @@
 \begin{lstlisting}[language=croqtile,caption={Tiled Addition Through Shared Storage}]
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
-  parallel {tr, tc} by [4, 8] {
+  parallel {tr, tc} by [4, 8] : block {
     lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
     rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
     foreach {i, j} in lhs_load.span
