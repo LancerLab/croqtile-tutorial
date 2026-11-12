@@ -13,6 +13,6 @@ __co__ auto foo(f32 [36] input) {
 }
 \end{lstlisting}
 
-In this example, the statement applies \texttt{chunkat} to the destination, moving the data block in \texttt{shared} and "un-tiling" each block to the output. Note that the Croqtile compiler \textbf{requires the source data and destination data to have the same shape and element type} if not using \emph{storage} as the destination \emph{data expression}.
+In this example, the statement applies \texttt{chunkat} to the destination, moving the data block in \texttt{shared} and "un-tiling" each block to the output. Note that the element types must agree, and that no source dimension may exceed the corresponding destination dimension; a smaller source is accepted.
 
 Using the \texttt{chunkat} expression for both the source and destination is rarely supported by any target platform at this time.
