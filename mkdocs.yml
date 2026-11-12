@@ -83,7 +83,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - What is Good in CroqTile: documentation/what-is-choreo.md
+  - What is Good in Croqtile: documentation/what-is-choreo.md
 
   - "Part I — Tutorial":
     - Overview: tutorial/index.md
