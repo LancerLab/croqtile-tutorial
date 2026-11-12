@@ -564,7 +564,7 @@ void foobar(float* a) {
 
 #### 输入参数
 
-Croqtile 函数的输入参数包括带形状数据和整数。
+Croqtile 函数的输入参数包括带形状数据，以及标量：整数、布尔值或浮点元素类型。
 
 参数可以具名，也可以省略名字：
 
@@ -610,7 +610,7 @@ class spanned_view {
 ```co
 __co__ void foo(f32 [7, 16] input) {...}
 void entry(float * input, float* output, int M, int N) {
-  foo(croq::make_spanview<2>(input, {M, N})),
+  foo(croq::make_spanview<2>(input, {M, N}));
 }
 ```
 
@@ -622,7 +622,7 @@ void entry(float * input, float* output, int M, int N) {
 
 #### 返回类型与类型推导
 
-带形状数据和整数都可以作为返回值；不返回结果时，使用 `void`。
+返回值和输入一样，可以是带形状数据、标量，或者不返回结果（`void`）。
 
 除了显式声明返回类型，也可以让编译器推断：
 
@@ -816,7 +816,7 @@ void bar(int * data, int dim0) {
 
 ```co
 __co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
-  int tile_m = 32, tile_m = 8, tile_k = 16;
+  int tile_m = 32, tile_n = 8, tile_k = 16;
   s32 [M / tile_m, K / tile_k] tiled_lhs;
   s32 [K / tile_k, N / tile_n] tiled_rhs;
   // ...
@@ -839,7 +839,7 @@ __co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
 
 ```co
 int a;
-__co__ int foo(int b);
+__co__ int foo(int b) { return b; }
 ```
 
 <div class="listing-cap">清单 43：标量类型</div>
@@ -918,8 +918,9 @@ d = 4, e = 5;
 
 ```co
 __co__ void foo(int a) {
-  // ...
-  call kernel(a, 3);
+  parallel p by 1 {
+    call kernel(a, 3);
+  }
 }
 ```
 
@@ -1087,12 +1088,13 @@ s16 [shape, 8] data3;           // shaped as [72, 14, 8]
 `s32` 用于声明数据元素，`int` 用于程序控制。虽然位宽相同，它们的声明方式不同：
 
 ```co
-s32 a;  // error: the fundamental type can not be used for variable definition alone
+s32 a;    // a control integer, the same as 'int a'
+s32 [4] b; // a buffer of four elements
 ```
 
 <div class="listing-cap">清单 60：被拒绝的基础类型</div>
 
-单独用 `s32` 声明控制变量会导致编译失败；它不能替代 `int`，两者也不能按控制整数的方式转换。
+两种写法都能通过编译：带形状的声明得到缓冲区，不带形状的声明得到普通控制整数；区别在形状，不在类型名。
 
 要明确缓冲区的存储位置，可以加上说明符：
 
@@ -1492,7 +1494,7 @@ for (int index = 0; index < 6; ++index) {
 
 有界索引把循环范围明确写在程序中，便于分块选择与数据搬运使用。
 
-`parallel-by` 中的索引标识并行实例，不能再用 `foreach` 遍历。要声明循环索引，应使用 `with-in`。
+`parallel-by` 中的索引标识并行实例，不可修改；它可以作为 `foreach` 的上界，但不能作为被遍历的变量。要声明循环索引，应使用 `with-in`。
 
 #### 定义有界变量
 
@@ -1792,7 +1794,7 @@ with size in [32] {
 
 ```co
 __co__ void foo(f32 [36] input) {
-  parallel p by 6 {
+  parallel p by 6 : block {
     dma.copy input.chunkat(p) => shared;
   }
 }
@@ -1822,7 +1824,7 @@ __co__ void foo(f32 [36] input) {
 
 ```co
 __co__ void foo(f32 [36, 14, 8] input) {
-  parallel p by 6 {
+  parallel p by 6 : block {
     with index in [7, 4] {
       foreach index {
         dma.copy input.chunkat(p, index) => shared;
@@ -1888,7 +1890,7 @@ h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
 ```co
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
-  parallel {tr, tc} by [4, 8] {
+  parallel {tr, tc} by [4, 8] : block {
     lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
     rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
     foreach {i, j} in lhs_load.span
@@ -2282,13 +2284,13 @@ parallel p by 2 {
                                            // once unblocked, change 'e' to 'UNSET'
   inthreads.async (p == 0) { trigger e; }  // trigger-thread
                                            // convert 'e' to 'SET'
-  sync.shared;                             // sync point
+  sync.barrier : thread;                   // sync point
 }
 ```
 
 <div class="listing-cap">清单 132：等待事件</div>
 
-索引 `1` 的区域先等待 `e`，索引 `0` 的区域触发它后，等待才能结束。两个区域随后到达 `sync.shared` 同步点。事件明确了触发操作必须先于等待结束的顺序。
+索引 `1` 的区域先等待 `e`，索引 `0` 的区域触发它后，等待才能结束。两个区域随后到达 `sync.barrier` 同步点。事件明确了触发操作必须先于等待结束的顺序。
 
 等待完成后，事件自动恢复为 *UNSET*，可以用于下一次触发与等待。
 
@@ -2461,7 +2463,7 @@ __co__ auto foo() {
 
 #### 调用 C++ 辅助函数
 
-Croqtile 函数可以调用设备辅助函数，但不能直接调用另一个 Croqtile 函数。
+Croqtile 函数不是设备函数：在另一个函数里调用它不会产生设备调用，编译器会警告找不到同名的设备函数；调用 C++ 辅助函数才是常规用法。
 
 ```co
 void bar() {...}    // C++ kernel function
@@ -2480,7 +2482,7 @@ __co__ void foo() {
 
 #### 对象式宏
 
-对象式宏执行文本替换，不接受参数：
+参数化宏同样会展开，参数在形状求值前完成替换：
 
 ```co
 #define M 256
@@ -2591,7 +2593,7 @@ __co__ void mou() {
 - 标量整数。
 - 目标平台支持的标量浮点值。
 
-控制整数使用 `int`。可传递的浮点类型取决于目标平台，例如 `float`、`double`、`half`、`bfp16` 或 `half8`。
+控制整数可以使用 `int`、`s32` 或 `u32`。可传递的浮点类型取决于目标平台，例如 `float`、`double`、`half`、`bfp16` 或 `half8`。
 
 Tileflow 侧不进行这些浮点值的算术运算，而是把它们传给设备函数用于计算。
 
@@ -2603,8 +2605,8 @@ __device__ void foo(float *, int, unsigned, double, float) {}
 __co__ void foobar(f32 [M, 24] input, int N, float padding) {
   parallel p by 1 {
     shared f32 [14, 7] buffer;
-    call bar(input.data, input.span(0), buffer.span(0));
-    call foo(buffer.data, N, 3, 3.14, padding);
+    call bar(input, input.span(0), buffer.span(0));
+    call foo(buffer, N, 3, 3.14, padding);
   }
 }
 ```
@@ -3118,9 +3120,9 @@ Croqtile 同时做编译时检查和运行时检查来保证安全：
 - **运行时检查**：Croqtile 生成的代码在运行时校验维度。例如 `tiled_lhs` 的声明里，形状不能出现 `0` 维，否则会得到非法的零大小缓冲区。Croqtile 的*转译*过程会生成如下*目标主机代码*：
 
 ```text
-void __croqtile_transpiled_Matmul(const choreo::spanned_view<choreo::s32, 2> & lhs,
-                                  const choreo::spanned_view<choreo::s32, 2> & rhs) {
-  choreo::runtime_check(lhs.shape()[0] / 32 > 0,
+void __croqtile_transpiled_Matmul(const croq::spanned_view<croq::s32, 2> & lhs,
+                                  const croq::spanned_view<croq::s32, 2> & rhs) {
+  croq::runtime_check(lhs.shape()[0] / 32 > 0,
                         "the 0 dimension of 'lhs' may result in spanned data "
                         "with a dimension value of 0.");
   // ...
@@ -3134,12 +3136,12 @@ void __croqtile_transpiled_Matmul(const choreo::spanned_view<choreo::s32, 2> & l
 对于*符号维度*版本，Croqtile 编译器会在*目标主机代码*里生成额外的检查：
 
 ```text
-void __croqtile_transpiled_Matmul(const choreo::spanned_view<choreo::s32, 2> & lhs,
-                                  const choreo::spanned_view<choreo::s32, 2> & rhs) {
+void __croqtile_transpiled_Matmul(const croq::spanned_view<croq::s32, 2> & lhs,
+                                  const croq::spanned_view<croq::s32, 2> & rhs) {
   // additional check happens only when using symbolic dimensions
-  choreo::runtime_check(lhs.shape()[1] == rhs.shape()[0],
+  croq::runtime_check(lhs.shape()[1] == rhs.shape()[0],
                         "dimension 'K' is not consistent.");
-  choreo::runtime_check(lhs.shape()[0] / 32 > 0,
+  croq::runtime_check(lhs.shape()[0] / 32 > 0,
                         "the 0 dimension of 'lhs' may result in spanned data "
                         "with a dimension value of 0.");
   // ...
@@ -3159,7 +3161,10 @@ void __croqtile_transpiled_Matmul(const choreo::spanned_view<choreo::s32, 2> & l
 *匿名维度*和*符号维度*都有一个重要限制：它们**只能用在参数列表里的 *spanned data* 上**。内部缓冲区可以从输入派生形状，但不能用 `?` 或新的符号名引入尚未指定的维度。例如，下面的代码会产生编译时错误：
 
 ```co
-__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer
+__co__ void foo(s32 [M] input) {
+  s32 [M] derived;  // ok: the shape comes from the parameter
+  s32 [?] fresh;    // error: an internal buffer cannot introduce an anonymous dimension
+}
 ```
 
 <div class="listing-cap">清单 165：代价与限制</div>
@@ -3599,7 +3604,7 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 ```co
 __co__ auto foo(f32 [36] input) {
   f32 [36] output;
-  parallel p by 6 {
+  parallel p by 6 : block {
     f0 = dma.copy input.chunkat(p) => shared;  // tile the source
     dma.copy f0.data => output.chunkat(p);     // un-tile the destination
   }
@@ -3609,7 +3614,7 @@ __co__ auto foo(f32 [36] input) {
 
 <div class="listing-cap">清单 179：分块与流动</div>
 
-本例把 `chunkat` 用在目标，把 `shared` 里的数据块搬出来，「反分块」地写进输出。注意，如果目标的*数据表达式*用的不是 *storage*，Croqtile 编译器就**要求源数据和目的数据的形状、元素类型完全一致**。
+本例把 `chunkat` 用在目标，把 `shared` 里的数据块搬出来，「反分块」地写进输出。注意元素类型必须一致，且源的任一维度都不能大于对应的目的维度；源比目的小是允许的。
 
 同时在源和目标两端使用 `chunkat` 表达式，目前几乎没有任何目标平台支持。
 
@@ -4332,7 +4337,7 @@ __co__  void foo() {
     inthreads.async (p > 2) {
       // divergent code for thread 3, 4, 5 (thread-mask: 111000)
     }
-    sync.shared; // sync point
+    sync.barrier : thread; // sync point
                  // all 'inthreads' paths must get executed
   }
 }
@@ -4340,7 +4345,7 @@ __co__  void foo() {
 
 <div class="listing-cap">清单 202：让它异步</div>
 
-本例把并行线程平均分成两个子组，并且不在每个 `inthreads` 块之后强制同步。这样两组的线程就能并行执行，模拟出 MPMD 的效果。不过 `sync.shared` 语句为所有线程建立了一个**同步点**，保证两条路径的代码都执行到该*同步点*之后。
+本例把并行线程平均分成两个子组，并且不在每个 `inthreads` 块之后强制同步。这样两组的线程就能并行执行，模拟出 MPMD 的效果。不过 `sync.barrier` 语句为所有线程建立了一个**同步点**，保证两条路径的代码都执行到该*同步点*之后。
 
 只有外层 `inthreads` 能声明为异步。对任何内层 `inthreads` 块使用 `inthreads.async`，都会得到编译时错误。
 
@@ -4431,6 +4436,10 @@ parallel p1 by 2 : thread {
 这个骨架省略了基于事件的同步；3.8.5 节会补上完整的流水线协议。
 
 ```co
+#define WARP_M 64
+#define WARP_N 64
+#define TILE_K 128
+#define WARP_K 16
 __co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
   f16 [M, N] output;
   parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
@@ -4477,6 +4486,11 @@ __co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
 **持久核函数**把启动规模固定下来（通常接近 SM 数量），让每个块迭代处理多个分块：
 
 ```co
+#define WARP_M 64
+#define WARP_N 64
+#define TILE_K 128
+#define WARP_K 16
+#define NUM_GROUPS 4
 __co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
   f16 [M, N] output;
   int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
@@ -4806,19 +4820,19 @@ __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
 
 调用向 `matmul_kernel` 提供三个常量模板实参，目标编译器据此实例化对应特化，与普通 C++ 模板调用相同。
 
-所以，在 Croqtile 中调用模板函数与 C++ 类似。但**传入的模板实参必须能被 Croqtile 编译器推导为编译时常量**；只要带运行时值，就会出错。
+所以，在 Croqtile 中调用模板函数与 C++ 类似。但**传入的模板实参必须能被 Croqtile 编译器推导为编译时常量**；带运行时值时，编译器会给出警告，指出该实参无法在编译时求值。
 
 ```co
 __co__ void foo(int M) {
   parallel p by 1 {
-    call bar<M>();  // error: 'M' is a runtime value
+    call bar<M>();  // warning: 'M' cannot be evaluated at compile time
   }
 }
 ```
 
 <div class="listing-cap">清单 218：一次触发实例化的调用</div>
 
-Croqtile 编译器会尽可能在编译时推导取值。若模板实参无法推导，编译将中止并报错。
+Croqtile 编译器会尽可能在编译时推导取值。若模板实参无法推导，编译器会给出警告，指出该实参无法在编译时求值。
 
 #### 更多问题
 
@@ -4874,6 +4888,9 @@ __co__ void foo() {
 `__co__` 函数可以用 `call` 关键字调用 `__device__` 函数：
 
 ```co
+#define N_TOKENS 1024
+#define N_EXPERTS 8
+#define N_THREAD 128
 template <int K>
 __device__ void warp_topk(f32* vals, s32* idxs);
 template <typename T>
@@ -4981,9 +4998,9 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
   // Device program
   s32[lhs.span(0), rhs.span(1)] output; // Use same shape as lhs
   parallel p by 1 {
-    with index = {m_tile, k_tile, n_tile} in [1, 1, 1] {
+    with index = {m_tile, k_tile, n_tile} in [4, 4, 8] {
       foreach m_tile, n_tile {
-        shared s32[512, 1024] l2_out;
+        shared s32[128, 128] l2_out;
         foreach k_tile {
           // Initiate DMA operations
           lhs_load = dma.copy.async lhs.chunkat(m_tile, k_tile) => shared;
@@ -4992,8 +5009,8 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
           parallel q by 1 {
             with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {
               // Local buffers for tiling
-              local s32 [128, 256] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};
-              local s32 [256, 128] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};
+              local s32 [32, 64] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};
+              local s32 [64, 16] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};
               foreach index {
                 // Add "after" primitive to chain up paired DMA operations
                 lhs_load_s = dma.copy.async lhs_load.data.chunkat(m_tile_s, k_tile_s) => select(k_tile_s % 2, lhs_load_s_buffer_0, lhs_load_s_buffer_1) after lhs_load;
@@ -5002,7 +5019,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
                 wait out_load_s;
                 // Perform the matrix multiplication (dot product) operation
                 wait lhs_load_s, rhs_load_s;
-                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 256, 256, 256, 0, 8, out_load_s.data);
+                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 32, 16, 64, 0, 8, out_load_s.data);
                 // Store the result back to l2_out
                 out_store_s = dma.copy.async out_load_s.data => l2_out.chunkat(m_tile_s, n_tile_s);
               }
@@ -5021,7 +5038,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
 
 <div class="listing-cap">清单 222：示例代码：带分块的矩阵乘法</div>
 
-该配置的外层分块上界都是 1，因此外层暂存缓冲区容纳完整操作数。内层范围 `[4, 4, 8]` 划分 M、K 和 N：左分块为 `[128, 256]`，右分块为 `[256, 128]`，乘积贡献给 `[128, 128]` 的输出分块。`after` 子句使内层输入复制在外层复制之后开始。这段清单用于展示结构；作为可运行核函数使用前，必须补齐并检查辅助函数定义、操作数使用与缓冲区复用前的完整等待，以及输出初始化。
+外层范围 `[4, 4, 8]` 把操作数切成 `[128, 256]` 的左分块、`[256, 128]` 的右分块，以及 `[128, 128]` 的输出分块——这正是 `l2_out` 暂存缓冲区的大小。内层同样按 `[4, 4, 8]` 划分，得到 `[32, 64]`、`[64, 16]` 和 `[32, 16]` 的结果。`after` 子句使内层输入复制在外层复制之后开始。这段清单用于展示结构；作为可运行核函数使用前，必须补齐并检查辅助函数定义、操作数使用与缓冲区复用前的完整等待，以及输出初始化。
 
 #### 用 `chunkat` 做内存分块
 
