@@ -1360,6 +1360,11 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # A parallel-by variable can bound a foreach loop; it cannot be the one
+    # foreach iterates.
+    ('F32-S02',
+     re.escape('are immutable and cannot be used in \\texttt{foreach} statements. Instead, programmers should use the \\texttt{with-in} statement to define the \\emph{bounded variables} suitable for loops.'),
+     'are immutable. They can bound a \\texttt{foreach} loop, but they cannot be the variable that \\texttt{foreach} iterates; declare that variable with \\texttt{with-in}.'),
     # A parameterized macro does expand, including in a shape expression.
     ('F23-S02', re.escape('\\end{lstlisting}\n\nwould not work.'),
      '\\end{lstlisting}\n\nThe argument is substituted before the shape is evaluated, so the result is the same as writing the value out.'),

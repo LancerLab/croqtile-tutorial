@@ -20,4 +20,4 @@ for (int index = 0; index < 6; ++index) {
 
 This form suits tile traversal: the loop visits the valid coordinates in a declared range, and the same bounds can be used to derive each tile's shape.
 
-In Croqtile, \emph{bounded variables} defined within a \texttt{parallel-by} statement are immutable and cannot be used in \texttt{foreach} statements. Instead, programmers should use the \texttt{with-in} statement to define the \emph{bounded variables} suitable for loops.
+In Croqtile, \emph{bounded variables} defined within a \texttt{parallel-by} statement are immutable. They can bound a \texttt{foreach} loop, but they cannot be the variable that \texttt{foreach} iterates; declare that variable with \texttt{with-in}.

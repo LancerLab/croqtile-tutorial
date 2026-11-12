@@ -360,7 +360,7 @@
   },
   {
    "before": "\\subsection*{Function Calls and Call Croqtile Function}\n\nCroqtile functions are not allowed to call another Croqtile function. However, inside a Croqtile function, it is normal to have function calls to C++ kernels.",
-   "after": "\\subsection*{Calling C++ Functions}\n\nCroqtile functions are not allowed to call another Croqtile function. However, inside a Croqtile function, it is normal to have function calls to C++ kernels."
+   "after": "\\subsection*{Calling C++ Functions}\n\nA \\co@__co__@ function is not a device function. Calling one from inside another does not produce a device call; the compiler warns that it cannot find a device function of that name. Calls to C++ kernels are the normal case."
   },
   {
    "before": "\\begin{lstlisting}[language=croqtile,caption={Function Calls and Call Croqtile Function}]",
