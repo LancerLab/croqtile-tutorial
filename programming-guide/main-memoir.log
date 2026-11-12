@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 12:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 12:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1679,14 +1679,14 @@ Package pdftex.def Info: figures/f14-compile-workflow.drawio.png  used on input
 (./build/units/F19-S05.tex [67]) (./build/units/F19-S06.tex)
 (./build/units/F19-S07.tex) (./build/units/F20-S01.tex)
 (./build/units/F20-S02.tex [68]) (./build/units/F20-S03.tex)
-(./build/units/F20-S04.tex) (./build/units/F20-S05.tex)
-(./build/units/F21-S01.tex [69]) (./build/units/F21-S02.tex)
+(./build/units/F20-S04.tex) (./build/units/F20-S05.tex) [69]
+(./build/units/F21-S01.tex) (./build/units/F21-S02.tex)
 (./build/units/F21-S03.tex) (./build/units/F21-S04.tex [70])
-(./build/units/F21-S05.tex) [71] (./build/units/F21-S06.tex)
+(./build/units/F21-S05.tex [71]) (./build/units/F21-S06.tex)
 (./build/units/F21-S07.tex) (./build/units/F21-S08.tex)
 (./build/units/F21-S09.tex) (./build/units/F21-S10.tex)
-(./build/units/F05-S01.tex) (./build/units/F05-S02.tex [72]
-<figures/f05-fig1_virtual_parallelism_light.png, id=1980, 2569.6pt x 1445.4pt>
+(./build/units/F05-S01.tex) [72] (./build/units/F05-S02.tex
+<figures/f05-fig1_virtual_parallelism_light.png, id=1983, 2569.6pt x 1445.4pt>
 File: figures/f05-fig1_virtual_parallelism_light.png Graphic file (type png)
 <use figures/f05-fig1_virtual_parallelism_light.png>
 Package pdftex.def Info: figures/f05-fig1_virtual_parallelism_light.png  used o
@@ -1700,29 +1700,29 @@ g (PNG copy)>]) (./build/units/F31-S01.tex) (./build/units/F31-S02.tex)
 (./build/units/F33-S01.tex) (./build/units/F33-S02.tex)
 (./build/units/F33-S03.tex [74]) (./build/units/F33-S04.tex)
 (./build/units/F33-S05.tex) (./build/units/F34-S01.tex)
-(./build/units/F34-S02.tex) (./build/units/F34-S03.tex
-<figures/f34-masking-datachunk-dispatch.png, id=2010, 683.55376pt x 389.455pt>
+(./build/units/F34-S02.tex) (./build/units/F34-S03.tex [75]
+<figures/f34-masking-datachunk-dispatch.png, id=2035, 683.55376pt x 389.455pt>
 File: figures/f34-masking-datachunk-dispatch.png Graphic file (type png)
 <use figures/f34-masking-datachunk-dispatch.png>
 Package pdftex.def Info: figures/f34-masking-datachunk-dispatch.png  used on in
 put line 6.
 (pdftex.def)             Requested size: 432.48729pt x 246.40977pt.
-) [75]
+)
 (./build/units/F34-S04.tex) (./build/units/F34-S05.tex)
 (./build/units/F34-S08.tex [76 <./figures/f34-masking-datachunk-dispatch.png>])
-(./build/units/F34-S10.tex) (./build/units/F05-S13.tex
-<figures/f05-fig5_scalar_matmul_light.png, id=2047, 2569.6pt x 1445.4pt>
+(./build/units/F34-S10.tex) (./build/units/F05-S13.tex [77]
+<figures/f05-fig5_scalar_matmul_light.png, id=2070, 2569.6pt x 1445.4pt>
 File: figures/f05-fig5_scalar_matmul_light.png Graphic file (type png)
 <use figures/f05-fig5_scalar_matmul_light.png>
 Package pdftex.def Info: figures/f05-fig5_scalar_matmul_light.png  used on inpu
 t line 19.
 (pdftex.def)             Requested size: 432.47404pt x 243.26665pt.
- [77])
+)
 (./build/units/F05-S17.tex [78 <./figures/f05-fig5_scalar_matmul_light.png (PNG
  copy)>]) (./build/units/F04-S04.tex) (./build/units/F04-S13.tex)
 (./build/units/F09-S06.tex) (./build/units/F29-S05.tex [79])
 (./build/units/F40-S07.tex) (./build/units/F09-S07.tex
-<figures/f09-fig4_view_from_light.png, id=2093, 2569.6pt x 1445.4pt>
+<figures/f09-fig4_view_from_light.png, id=2089, 2569.6pt x 1445.4pt>
 File: figures/f09-fig4_view_from_light.png Graphic file (type png)
 <use figures/f09-fig4_view_from_light.png>
 Package pdftex.def Info: figures/f09-fig4_view_from_light.png  used on input li
@@ -1730,15 +1730,15 @@ ne 12.
 (pdftex.def)             Requested size: 432.47404pt x 243.26665pt.
  [80])
 (./build/units/F09-S08.tex
-<figures/f09-fig5_subspan_step_light.png, id=2105, 2569.6pt x 1445.4pt>
+<figures/f09-fig5_subspan_step_light.png, id=2106, 2569.6pt x 1445.4pt>
 File: figures/f09-fig5_subspan_step_light.png Graphic file (type png)
 <use figures/f09-fig5_subspan_step_light.png>
 Package pdftex.def Info: figures/f09-fig5_subspan_step_light.png  used on input
  line 10.
 (pdftex.def)             Requested size: 432.47404pt x 243.26665pt.
-) (./build/units/F09-S10.tex [81 <./figures/f09-fig4_view_from_light.png (PNG c
-opy)>]
-<figures/f09-fig7_span_as_light.png, id=2114, 2569.6pt x 1445.4pt>
+) [81 <./figures/f09-fig4_view_from_light.png (PNG copy)>] (./build/units/F09-S
+10.tex
+<figures/f09-fig7_span_as_light.png, id=2116, 2569.6pt x 1445.4pt>
 File: figures/f09-fig7_span_as_light.png Graphic file (type png)
 <use figures/f09-fig7_span_as_light.png>
 Package pdftex.def Info: figures/f09-fig7_span_as_light.png  used on input line
@@ -1750,10 +1750,10 @@ Underfull \hbox (badness 1661) in paragraph at lines 16--16
 load.
  []
 
-) (./build/units/F09-S12.tex) [82 <./figures/f09-fig5_subspan_step_light.png (P
-NG copy)>] [83 <./figures/f09-fig7_span_as_light.png (PNG copy)>]
-(./build/units/F03-S07.tex) (./build/units/F04-S01.tex
-<figures/f04-fig1_element_vs_block_light.png, id=2137, 2569.6pt x 1445.4pt>
+[82 <./figures/f09-fig5_subspan_step_light.png (PNG copy)>])
+(./build/units/F09-S12.tex) [83 <./figures/f09-fig7_span_as_light.png (PNG copy
+)>] (./build/units/F03-S07.tex) (./build/units/F04-S01.tex
+<figures/f04-fig1_element_vs_block_light.png, id=2140, 2569.6pt x 1445.4pt>
 File: figures/f04-fig1_element_vs_block_light.png Graphic file (type png)
 <use figures/f04-fig1_element_vs_block_light.png>
 Package pdftex.def Info: figures/f04-fig1_element_vs_block_light.png  used on i
@@ -1767,7 +1767,7 @@ PNG copy)>]) (./build/units/F15-S18.tex) (./build/units/F28-S02.tex)
 (./build/units/F39-S04.tex) (./build/units/F39-S05.tex)
 (./build/units/F39-S06.tex) (./build/units/F39-S07.tex)
 (./build/units/F39-S08.tex) (./build/units/F05-S14.tex [86]
-<figures/f05-fig6_dma_matmul_light.png, id=2171, 2569.6pt x 1445.4pt>
+<figures/f05-fig6_dma_matmul_light.png, id=2174, 2569.6pt x 1445.4pt>
 File: figures/f05-fig6_dma_matmul_light.png Graphic file (type png)
 <use figures/f05-fig6_dma_matmul_light.png>
 Package pdftex.def Info: figures/f05-fig6_dma_matmul_light.png  used on input l
@@ -1778,13 +1778,13 @@ S02.tex [88])
 (./build/units/F08-S03.tex) (./build/units/F08-S04.tex)
 (./build/units/F08-S06.tex) (./build/units/F38-S01.tex [89]) [90]
 (./build/units/F06-S01.tex
-<figures/f06-fig2_register_loading_light.png, id=2278, 2569.6pt x 1445.4pt>
+<figures/f06-fig2_register_loading_light.png, id=2281, 2569.6pt x 1445.4pt>
 File: figures/f06-fig2_register_loading_light.png Graphic file (type png)
 <use figures/f06-fig2_register_loading_light.png>
 Package pdftex.def Info: figures/f06-fig2_register_loading_light.png  used on i
 nput line 10.
 (pdftex.def)             Requested size: 432.47404pt x 243.26665pt.
-<figures/f06-fig3_mma_syntax_light.png, id=2279, 2569.6pt x 1445.4pt>
+<figures/f06-fig3_mma_syntax_light.png, id=2282, 2569.6pt x 1445.4pt>
 File: figures/f06-fig3_mma_syntax_light.png Graphic file (type png)
 <use figures/f06-fig3_mma_syntax_light.png>
 Package pdftex.def Info: figures/f06-fig3_mma_syntax_light.png  used on input l
@@ -1794,7 +1794,7 @@ ine 17.
 (./build/units/F04-S18.tex [91 <./figures/f06-fig2_register_loading_light.png (
 PNG copy)>] [92 <./figures/f06-fig3_mma_syntax_light.png (PNG copy)>])
 (./build/units/F04-S19.tex) (./build/units/F09-S03.tex
-<figures/f09-fig2_swizzle_light.png, id=2298, 2569.6pt x 1445.4pt>
+<figures/f09-fig2_swizzle_light.png, id=2302, 2569.6pt x 1445.4pt>
 File: figures/f09-fig2_swizzle_light.png Graphic file (type png)
 <use figures/f09-fig2_swizzle_light.png>
 Package pdftex.def Info: figures/f09-fig2_swizzle_light.png  used on input line
@@ -1810,7 +1810,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--26
  []
 
 [97]
-<figures/f07-fig1_role_comparison_light.png, id=2377, 2569.6pt x 1445.4pt>
+<figures/f07-fig1_role_comparison_light.png, id=2380, 2569.6pt x 1445.4pt>
 File: figures/f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures/f07-fig1_role_comparison_light.png>
 Package pdftex.def Info: figures/f07-fig1_role_comparison_light.png  used on in
@@ -1818,7 +1818,7 @@ put line 36.
 (pdftex.def)             Requested size: 432.47404pt x 243.26665pt.
 ) (./build/units/F07-S05.tex [98 <./figures/f07-fig1_role_comparison_light.png 
 (PNG copy)>]) (./build/units/F08-S01.tex) (./build/units/F08-S09.tex
-<figures/f08-fig1_pipeline_timeline_light.png, id=2386, 2569.6pt x 1445.4pt>
+<figures/f08-fig1_pipeline_timeline_light.png, id=2389, 2569.6pt x 1445.4pt>
 File: figures/f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures/f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures/f08-fig1_pipeline_timeline_light.png  used on 
@@ -1829,7 +1829,7 @@ input line 8.
 (PNG copy)>]) (./build/units/F35-S03.tex) (./build/units/F35-S04.tex [100])
 (./build/units/F07-S04.tex) [101] (./build/units/F07-S08.tex) [102]
 (./build/units/F07-S09.tex [103]
-<figures/f07-fig2_persistent_kernel_light.png, id=2533, 2569.6pt x 1445.4pt>
+<figures/f07-fig2_persistent_kernel_light.png, id=2536, 2569.6pt x 1445.4pt>
 File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures/f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures/f07-fig2_persistent_kernel_light.png  used on 
@@ -1846,7 +1846,7 @@ ng (PNG copy)>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex)
 (./build/units/F36-S02.tex [105]) (./build/units/F36-S03.tex)
 (./build/units/F36-S04.tex) (./build/units/F08-S10.tex [106])
 (./build/units/F08-S11.tex [107]) (./build/units/F08-S12.tex
-<figures/f08-fig2_event_credit_flow_light.png, id=2638, 2569.6pt x 1445.4pt>
+<figures/f08-fig2_event_credit_flow_light.png, id=2641, 2569.6pt x 1445.4pt>
 File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures/f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures/f08-fig2_event_credit_flow_light.png  used on 
@@ -1865,7 +1865,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 15--15
  []
 
 ) (./build/units/F09-S04.tex
-<figures/f09-fig8_expressiveness_light.png, id=2744, 2569.6pt x 1445.4pt>
+<figures/f09-fig8_expressiveness_light.png, id=2750, 2569.6pt x 1445.4pt>
 File: figures/f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures/f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures/f09-fig8_expressiveness_light.png  used on inp
@@ -1901,13 +1901,13 @@ Package rerunfilecheck Info: File `main-memoir.out' has not changed.
 (rerunfilecheck)             Checksum: 10247C8CA6F0E46740CA850DA1954B76;3497.
  ) 
 Here is how much of TeX's memory you used:
- 35102 strings out of 483197
- 673059 string characters out of 5964729
+ 35110 strings out of 483197
+ 673180 string characters out of 5964729
  1243249 words of memory out of 5000000
- 46521 multiletter control sequences out of 15000+600000
+ 46523 multiletter control sequences out of 15000+600000
  638431 words of font info for 176 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,17n,107p,1080b,1934s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 72i,17n,107p,1080b,1932s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/home/wsj/.local/texlive/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/
 home/wsj/.local/texlive/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/home/ws
 j/.local/texlive/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/home/wsj/.local
@@ -1927,10 +1927,10 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-memoir.pdf (135 pages, 4278198 bytes).
+Output written on main-memoir.pdf (135 pages, 4278224 bytes).
 PDF statistics:
- 3324 PDF objects out of 3580 (max. 8388607)
- 3087 compressed objects within 31 object streams
- 1901 named destinations out of 2073 (max. 500000)
+ 3331 PDF objects out of 3580 (max. 8388607)
+ 3094 compressed objects within 31 object streams
+ 1907 named destinations out of 2073 (max. 500000)
  31364 words of extra memory for PDF output out of 35830 (max. 10000000)
 

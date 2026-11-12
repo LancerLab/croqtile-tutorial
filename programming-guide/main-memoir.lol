@@ -162,22 +162,22 @@
 \contentsline {lstlisting}{\numberline {3.12}The transpiled signature}{67}{lstlisting.3.12}%
 \contentsline {lstlisting}{\numberline {3.13}The generated shape check}{67}{lstlisting.3.13}%
 \contentsline {lstlisting}{\numberline {3.14}Cost and Limitations}{68}{lstlisting.3.14}%
-\contentsline {lstlisting}{\numberline {3.15}a. Improved Readability and Clarity}{68}{lstlisting.3.15}%
+\contentsline {lstlisting}{\numberline {3.15}a. Improved Readability and Clarity}{69}{lstlisting.3.15}%
 \contentsline {lstlisting}{\numberline {3.16}b. Type Safety and Compile-Time Checking}{69}{lstlisting.3.16}%
 \contentsline {lstlisting}{\numberline {3.17}c. Expressiveness and Flexibility}{69}{lstlisting.3.17}%
 \contentsline {lstlisting}{\numberline {3.18}A shape expression}{70}{lstlisting.3.18}%
 \contentsline {lstlisting}{\numberline {3.19}Its value-number graph}{70}{lstlisting.3.19}%
 \contentsline {lstlisting}{\numberline {3.20}A constant expression}{71}{lstlisting.3.20}%
 \contentsline {lstlisting}{\numberline {3.21}The simplified graph}{71}{lstlisting.3.21}%
-\contentsline {lstlisting}{\numberline {3.22}The folded graph}{71}{lstlisting.3.22}%
+\contentsline {lstlisting}{\numberline {3.22}The folded graph}{72}{lstlisting.3.22}%
 \contentsline {lstlisting}{\numberline {3.23}Explicit Masking/Condition}{74}{lstlisting.3.23}%
 \contentsline {lstlisting}{\numberline {3.24}Implicit Masking}{75}{lstlisting.3.24}%
 \contentsline {lstlisting}{\numberline {3.25}Experimental: Optional Where-Binding for within}{75}{lstlisting.3.25}%
-\contentsline {lstlisting}{\numberline {3.26}Masking for Multi-Levels}{76}{lstlisting.3.26}%
+\contentsline {lstlisting}{\numberline {3.26}Masking for Multi-Levels}{77}{lstlisting.3.26}%
 \contentsline {lstlisting}{\numberline {3.27}Scalar Matmul (No DMA)}{77}{lstlisting.3.27}%
-\contentsline {lstlisting}{\numberline {3.28}Tile and Flow}{79}{lstlisting.3.28}%
+\contentsline {lstlisting}{\numberline {3.28}Tile and Flow}{80}{lstlisting.3.28}%
 \contentsline {lstlisting}{\numberline {3.29}A window at a constant offset}{80}{lstlisting.3.29}%
-\contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{80}{lstlisting.3.30}%
+\contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{81}{lstlisting.3.30}%
 \contentsline {lstlisting}{\numberline {3.31}Strided tiles: .subspan, .step, and .at}{81}{lstlisting.3.31}%
 \contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{82}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}A movement statement using the reinterpretation}{82}{lstlisting.3.33}%

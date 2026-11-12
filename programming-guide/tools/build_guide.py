@@ -1360,6 +1360,15 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Round 86: the two listings left after the audit.
+    # The top-k excerpt relies on three macros it never defines.
+    ('F10-S04', re.escape('template <int K>\n__device__ void warp_topk(f32* vals, s32* idxs);'),
+     '#define N_TOKENS 1024\n#define N_EXPERTS 8\n#define N_THREAD 128\ntemplate <int K>\n__device__ void warp_topk(f32* vals, s32* idxs);'),
+    # Show the legal derived buffer next to the rejected anonymous one, so
+    # the comment describes what the compiler actually reports.
+    ('F19-S06',
+     re.escape('__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer'),
+     '__co__ void foo(s32 [M] input) {\n  s32 [M] derived;  // ok: the shape comes from the parameter\n  s32 [?] fresh;    // error: an internal buffer cannot introduce an anonymous dimension\n}'),
     # Round 85: the worked example staged whole matrices in shared storage.
     # Rescale the outer tiling so each staging buffer is one tile.
     ('F40-S03', re.escape('in [1, 1, 1] {'), 'in [4, 4, 8] {'),

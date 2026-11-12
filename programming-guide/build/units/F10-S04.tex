@@ -5,6 +5,9 @@ A custom reduction, sorting network, or specialized math operation can be implem
 A \texttt{\_\_co\_\_} function can call a \texttt{\_\_device\_\_} function using the \texttt{call} keyword:
 
 \begin{lstlisting}[language=croqtile,caption={device functions: target alongside Croqtile}]
+#define N_TOKENS 1024
+#define N_EXPERTS 8
+#define N_THREAD 128
 template <int K>
 __device__ void warp_topk(f32* vals, s32* idxs);
 template <typename T>

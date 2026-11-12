@@ -49,7 +49,7 @@
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{112}{section.3.9}%
 \contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{114}{subsection.3.9.1}%
 \contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{115}{subsection.3.9.2}%
-\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{115}{section.3.10}%
+\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{116}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{117}{subsection.3.10.1}%
 \contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{119}{subsection.3.10.2}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{120}{section.3.11}%

@@ -28,12 +28,12 @@
 \contentsline {section}{\numberline {3.3}Symbolic Shapes, Shape Evaluation, and Value Numbering}{66}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Parallelism, Space Specifiers, and Masking}{72}{section.3.4}%
 \contentsline {subsection}{Worked Example: Tiled Matrix Multiplication}{77}{section*.169}%
-\contentsline {subsection}{Tracing One Output Element}{78}{section*.171}%
+\contentsline {subsection}{Tracing One Output Element}{79}{section*.171}%
 \contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{79}{section.3.5}%
 \contentsline {subsection}{Arbitrary-Offset Windows: view and from}{80}{section*.177}%
 \contentsline {subsection}{Strided Tiles: subspan, step, and at}{81}{section*.178}%
-\contentsline {subsection}{Layout Reinterpretation with span\_as}{81}{section*.179}%
-\contentsline {subsection}{Tile Selection: Summary and Syntax}{82}{section*.181}%
+\contentsline {subsection}{Layout Reinterpretation with span\_as}{82}{section*.179}%
+\contentsline {subsection}{Tile Selection: Summary and Syntax}{83}{section*.181}%
 \contentsline {section}{\numberline {3.6}Data Movement: Operations, Configuration, and Async Patterns}{84}{section.3.6}%
 \contentsline {subsection}{Worked Example: DMA Matmul}{87}{section*.191}%
 \contentsline {subsection}{Multi-Buffering: dma.any, swap, and rotate}{88}{section*.193}%

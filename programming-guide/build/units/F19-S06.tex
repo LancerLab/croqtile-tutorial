@@ -5,5 +5,8 @@ Dynamic dimensions leave less information available during compilation. Some con
 Anonymous and symbolic dimension syntax is restricted to spanned-data parameters. An internal buffer can derive its shape from an input, but it cannot introduce a new unspecified dimension with \co@?@ or a new symbolic name. The following declaration is rejected:
 
 \begin{lstlisting}[language=croqtile,caption={Cost and Limitations}]
-__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer
+__co__ void foo(s32 [M] input) {
+  s32 [M] derived;  // ok: the shape comes from the parameter
+  s32 [?] fresh;    // error: an internal buffer cannot introduce an anonymous dimension
+}
 \end{lstlisting}

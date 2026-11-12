@@ -61,17 +61,28 @@ After the fix, F08-S02, F08-S10 and F38-S01 all compile clean.
 | F04-S03, F29-S03, F29-S04, F29-S05 | move one tile per instance without saying so, so the compiler reads the instances as lanes of one thread and every lane copies the whole tile into the same buffer; annotated `: block` |
 | F07-S08, F07-S09 | use `WARP_M`, `WARP_N`, `TILE_K`, `WARP_K` (and `NUM_GROUPS`) without defining them |
 | F25-S04 | a stray comma ends a statement |
+| F10-S04 | uses `N_TOKENS`, `N_EXPERTS` and `N_THREAD` without defining them |
+| F19-S06 | the comment promised an error the code did not produce: `f32 [M]` compiles once `M` is known. The listing now shows a derived buffer next to a rejected anonymous one, so the comment matches what the compiler reports |
 | F40-S03 | staged whole matrices in shared storage (8 MB); the outer tiling is now `[4, 4, 8]`, so each staging buffer is one tile |
 
 ### Open
 
-- **F10-S04** uses `N_TOKENS`, `N_EXPERTS` and `N_THREAD` without defining them,
-  and nests three parallel levels where the CPU target supports two. The second
-  point means it can only be checked against a GPU target.
+- **F10-S04** nests three parallel levels, where the CPU target supports two.
+  The macros it used to leave undefined are now defined; what remains is a
+  target limitation, not a defect in the listing.
 - **F40-S03** declares a `[512, 1024]` s32 staging buffer, which is far past the
   shared-memory budget, so the compiler rejects it before any other check. The
   prose calls the listing a structural illustration; fixing it means rescaling
   the tile bounds, which changes the numbers the surrounding text quotes.
+
+### A second target
+
+`choreo -t gpu -es` is not usable: the NVPTX path runs CoIR rather than AST
+codegen. `-t cute -es` does work, so the same audit was repeated there:
+175 compile clean against 24 flagged. The extra failures are CUDA-target
+capabilities the CPU target does not model — an unsupported MMA shape, local
+buffers past the GPU's limit, and async copies the GPU target does not allow
+in those directions. None of them contradicts the CPU-target result.
 
 ## Coverage
 
