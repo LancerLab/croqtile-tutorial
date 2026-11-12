@@ -1360,6 +1360,18 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Round 85: the worked example staged whole matrices in shared storage.
+    # Rescale the outer tiling so each staging buffer is one tile.
+    ('F40-S03', re.escape('in [1, 1, 1] {'), 'in [4, 4, 8] {'),
+    ('F40-S03', re.escape('shared s32[512, 1024] l2_out;'), 'shared s32[128, 128] l2_out;'),
+    ('F40-S03', re.escape('local s32 [128, 256] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};'),
+     'local s32 [32, 64] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};'),
+    ('F40-S03', re.escape('local s32 [256, 128] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};'),
+     'local s32 [64, 16] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};'),
+    ('F40-S03', re.escape('256, 256, 256, 0, 8'), '32, 16, 64, 0, 8'),
+    # A stray comma at the end of the statement.
+    ('F25-S04', re.escape('foo(croq::make_spanview<2>(input, {M, N})),'),
+     'foo(croq::make_spanview<2>(input, {M, N}));'),
     # Round 84: full audit of every listing against the front end.
     # F19-S04 carries the same duplicated tile variable as F19-S05 had.
     ('F19-S04', re.escape('int tile_m = 32, tile_m = 8, tile_k = 16;'),

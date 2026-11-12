@@ -21,8 +21,8 @@ the front end (`choreo -t cc -es`). There are 222 listings; 199 are CroqTile and
 
 | Result | Count |
 |---|---|
-| compiles clean | 176 |
-| flagged | 23 |
+| compiles clean | 180 |
+| flagged | 19 |
 
 Nothing is excused merely for being labelled a fragment. A listing is only
 allowed to fail when the failure is an unterminated construct, which happens
@@ -34,10 +34,22 @@ on purpose, a target limitation, a compiler defect, or a defect in the listing.
 | unterminated `__co__` signature | F03-S04 | intentional fragment |
 | ellipsis placeholder `...` | F14-S03, F14-S04, F18-S06, F19-S03, F25-S03, F25-S04 (x2), F31-S08 | intentional abbreviation |
 | deliberate error example | F16-S03, F17-S02, F17-S05, F17-S06, F18-S03, F19-S06, F24-S03, F24-S06 | intentional |
-| `: group` unsupported on x86_64 | F06-S04 | needs a GPU target |
-| CPU backend assertion | F08-S02, F08-S10, F38-S01 | compiler defect |
+| `: group` unsupported on x86_64 | F06-S04 | needs a GPU target; the text now says so |
 | undefined macro plus a third parallel level | F10-S04 | open, see below |
-| shared buffer exceeds capacity | F40-S03 | open, see below |
+
+### Compiler defects found
+
+Three listings crashed the CPU backend rather than failing it. Both crashes
+reduce to a few lines and are fixed in the compiler, not in the guide:
+
+- A bounded integer derived by arithmetic (`st = k % STAGES`) used as an array
+  subscript hit `unsupported CC type: int->[0,2]`; the backend mapped the
+  bounded tuple but not the bounded integer.
+- A future seeded with `dma.any` and later reassigned in a loop, with `swap`
+  between the two, hit `MapHostSymbol: symbol existed`; the placeholder and the
+  copy that replaces it name the same buffer, which is not a conflict.
+
+After the fix, F08-S02, F08-S10 and F38-S01 all compile clean.
 
 ### Fixed in this pass
 
@@ -48,6 +60,8 @@ on purpose, a target limitation, a compiler defect, or a defect in the listing.
 | F17-S02 | calls a device function outside any `parallel-by` block |
 | F04-S03, F29-S03, F29-S04, F29-S05 | move one tile per instance without saying so, so the compiler reads the instances as lanes of one thread and every lane copies the whole tile into the same buffer; annotated `: block` |
 | F07-S08, F07-S09 | use `WARP_M`, `WARP_N`, `TILE_K`, `WARP_K` (and `NUM_GROUPS`) without defining them |
+| F25-S04 | a stray comma ends a statement |
+| F40-S03 | staged whole matrices in shared storage (8 MB); the outer tiling is now `[4, 4, 8]`, so each staging buffer is one tile |
 
 ### Open
 

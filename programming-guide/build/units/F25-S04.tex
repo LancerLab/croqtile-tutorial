@@ -28,7 +28,7 @@ Dimensions do not have to be constants; runtime values work as well:
 \begin{lstlisting}[language=croqtile,caption={A call built from runtime dimensions}]
 __co__ void foo(f32 [7, 16] input) {...}
 void entry(float * input, float* output, int M, int N) {
-  foo(croq::make_spanview<2>(input, {M, N})),
+  foo(croq::make_spanview<2>(input, {M, N}));
 }
 \end{lstlisting}
 

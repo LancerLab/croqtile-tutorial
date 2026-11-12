@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 11:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 12:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1670,7 +1670,7 @@ Package rerunfilecheck Info: File `main-manual.out' has not changed.
 Here is how much of TeX's memory you used:
  31375 strings out of 483197
  614340 string characters out of 5964729
- 1165146 words of memory out of 5000000
+ 1167146 words of memory out of 5000000
  43031 multiletter control sequences out of 15000+600000
  631956 words of font info for 174 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1694,7 +1694,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (137 pages, 4272981 bytes).
+Output written on main-manual.pdf (137 pages, 4273198 bytes).
 PDF statistics:
  3118 PDF objects out of 3580 (max. 8388607)
  2881 compressed objects within 29 object streams

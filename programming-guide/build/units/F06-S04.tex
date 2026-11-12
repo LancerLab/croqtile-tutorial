@@ -1,6 +1,6 @@
 \subsection*{One group, one tile: the simplest MMA matmul}
 
-The smallest example assigns one output tile to a cooperative group, written \co@: group@. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position.
+The smallest example assigns one output tile to a cooperative group, written \co@: group@. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position. The \co@: group@ level is a hardware-warp concept; a target without warps rejects it, so read this listing against a GPU target.
 
 \begin{lstlisting}[language=croqtile,caption={One group, one tile: the simplest MMA matmul}]
 #define TILE_M 16

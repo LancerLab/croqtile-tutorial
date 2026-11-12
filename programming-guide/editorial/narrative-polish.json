@@ -586,7 +586,7 @@
  "F06-S04": [
   {
    "before": "One cooperative group is written \\texttt{: group} in Croqtile.",
-   "after": "The smallest example assigns one output tile to a cooperative group, written \\co@: group@. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position."
+   "after": "The smallest example assigns one output tile to a cooperative group, written \\co@: group@. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position. The \\co@: group@ level is a hardware-warp concept; a target without warps rejects it, so read this listing against a GPU target."
   },
   {
    "before": "\\textbf{\\texttt{\\_\\allowbreak{}\\_\\allowbreak{}co\\_\\allowbreak{}\\_\\allowbreak{} void} and in-place output.} The kernel returns nothing;",
@@ -814,7 +814,7 @@
  "F40-S03": [
   {
    "before": "er out_store_s;\n          wait out_store;\n        }\n      }\n    }\n  }\n  return output;\n}\n\\end{lstlisting}\n",
-   "after": "er out_store_s;\n          wait out_store;\n        }\n      }\n    }\n  }\n  return output;\n}\n\\end{lstlisting}\n\nThe outer staging buffers hold full operands in this configuration because the outer tile bounds are all 1. The inner bounds \\co@[4, 4, 8]@ divide M, K, and N: a left tile is \\co@[128, 256]@, a right tile is \\co@[256, 128]@, and their product contributes to a \\co@[128, 128]@ output tile. The \\co@after@ clauses order the inner input copies after the outer copies. This listing is a structural illustration: helper definitions, the handoff that keeps a buffer from being overwritten while still in use, and output initialization must still be supplied and checked before treating it as a runnable kernel.\n"
+   "after": "er out_store_s;\n          wait out_store;\n        }\n      }\n    }\n  }\n  return output;\n}\n\\end{lstlisting}\n\nThe outer bounds \\co@[4, 4, 8]@ cut the operands into \\co@[128, 256]@ left tiles, \\co@[256, 128]@ right tiles and a \\co@[128, 128]@ output tile, which is the staging buffer \\co@l2_out@ holds. The same bounds applied inside the block give \\co@[32, 64]@, \\co@[64, 16]@ and a \\co@[32, 16]@ result. The \\co@after@ clauses order the inner input copies after the outer copies. This listing is a structural illustration: helper definitions, the handoff that keeps a buffer from being overwritten while still in use, and output initialization must still be supplied and checked before treating it as a runnable kernel.\n"
   }
  ],
  "F40-S06": [

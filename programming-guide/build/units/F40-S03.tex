@@ -5,9 +5,9 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
   // Device program
   s32[lhs.span(0), rhs.span(1)] output; // Use same shape as lhs
   parallel p by 1 {
-    with index = {m_tile, k_tile, n_tile} in [1, 1, 1] {
+    with index = {m_tile, k_tile, n_tile} in [4, 4, 8] {
       foreach m_tile, n_tile {
-        shared s32[512, 1024] l2_out;
+        shared s32[128, 128] l2_out;
         foreach k_tile {
           // Initiate DMA operations
           lhs_load = dma.copy.async lhs.chunkat(m_tile, k_tile) => shared;
@@ -16,8 +16,8 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
           parallel q by 1 {
             with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {
               // Local buffers for tiling
-              local s32 [128, 256] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};
-              local s32 [256, 128] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};
+              local s32 [32, 64] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};
+              local s32 [64, 16] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};
               foreach index {
                 // Add "after" primitive to chain up paired DMA operations
                 lhs_load_s = dma.copy.async lhs_load.data.chunkat(m_tile_s, k_tile_s) => select(k_tile_s % 2, lhs_load_s_buffer_0, lhs_load_s_buffer_1) after lhs_load;
@@ -26,7 +26,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
                 wait out_load_s;
                 // Perform the matrix multiplication (dot product) operation
                 wait lhs_load_s, rhs_load_s;
-                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 256, 256, 256, 0, 8, out_load_s.data);
+                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 32, 16, 64, 0, 8, out_load_s.data);
                 // Store the result back to l2_out
                 out_store_s = dma.copy.async out_load_s.data => l2_out.chunkat(m_tile_s, n_tile_s);
               }
@@ -43,4 +43,4 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
 }
 \end{lstlisting}
 
-The outer staging buffers hold full operands in this configuration because the outer tile bounds are all 1. The inner bounds \co@[4, 4, 8]@ divide M, K, and N: a left tile is \co@[128, 256]@, a right tile is \co@[256, 128]@, and their product contributes to a \co@[128, 128]@ output tile. The \co@after@ clauses order the inner input copies after the outer copies. This listing is a structural illustration: helper definitions, the handoff that keeps a buffer from being overwritten while still in use, and output initialization must still be supplied and checked before treating it as a runnable kernel.
+The outer bounds \co@[4, 4, 8]@ cut the operands into \co@[128, 256]@ left tiles, \co@[256, 128]@ right tiles and a \co@[128, 128]@ output tile, which is the staging buffer \co@l2_out@ holds. The same bounds applied inside the block give \co@[32, 64]@, \co@[64, 16]@ and a \co@[32, 16]@ result. The \co@after@ clauses order the inner input copies after the outer copies. This listing is a structural illustration: helper definitions, the handoff that keeps a buffer from being overwritten while still in use, and output initialization must still be supplied and checked before treating it as a runnable kernel.
