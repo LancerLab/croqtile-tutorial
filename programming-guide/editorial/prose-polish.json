@@ -1024,7 +1024,7 @@
   },
   {
    "before": "\n\nIn the code snippet, the inputs of croqtile function \\texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \\texttt{M}, \\texttt{N}, \\texttt{K} with values \\texttt{256}, \\texttt{32}, \\texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers makes different code consistent and easy to manipulate.\n\nThe preprocessor currently supports only macros without parameters, so code like:",
-   "after": "\n\nIn the code snippet, the inputs of croqtile function \\texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \\texttt{M}, \\texttt{N}, \\texttt{K} with values \\texttt{256}, \\texttt{32}, \\texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers make different code consistent and easy to manipulate.\n\nThe preprocessor currently supports only macros without parameters, so code like:"
+   "after": "\n\nIn the code snippet, the inputs of croqtile function \\texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \\texttt{M}, \\texttt{N}, \\texttt{K} with values \\texttt{256}, \\texttt{32}, \\texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers make different code consistent and easy to manipulate.\n\nParameterized macros expand as well, so a derived tile size can be written as one:"
   }
  ],
  "F35-S02": [

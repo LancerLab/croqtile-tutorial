@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 14:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 14:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1403,10 +1403,10 @@ ex) (./build/units/F28-S03.tex)
 (./build/units/F24-S01.tex) (./build/units/F24-S02.tex)
 (./build/units/F24-S03.tex [52]) (./build/units/F24-S04.tex)
 (./build/units/F24-S07.tex) (./build/units/F11-S02.tex [53])
-(./build/units/F11-S03.tex) (./build/units/F11-S04.tex)
-(./build/units/F04-S25.tex [54]) (./build/units/F05-S18.tex)
-(./build/units/F07-S13.tex) (./build/units/F08-S14.tex))
-(./content/ch03-programming-guide.tex [55] [56]
+(./build/units/F11-S03.tex) (./build/units/F11-S04.tex [54])
+(./build/units/F04-S25.tex) (./build/units/F05-S18.tex)
+(./build/units/F07-S13.tex) (./build/units/F08-S14.tex) [55])
+(./content/ch03-programming-guide.tex [56]
 Chapter 3.
 (./build/units/F14-S01.tex) (./build/units/F14-S02.tex)
 (./build/units/F14-S04.tex
@@ -1681,7 +1681,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (131 pages, 4264142 bytes).
+Output written on main.pdf (131 pages, 4264357 bytes).
 PDF statistics:
  3100 PDF objects out of 3580 (max. 8388607)
  2869 compressed objects within 29 object streams

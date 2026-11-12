@@ -18,10 +18,10 @@ void foo() {
 
 In the code snippet, the inputs of croqtile function \texttt{matmul} are not dynamically shaped. Instead, Croqtile pre-processor substitutes \texttt{M}, \texttt{N}, \texttt{K} with values \texttt{256}, \texttt{32}, \texttt{64} ahead of Croqtile compilation, which produces tileflow function with statically shaped inputs. In this way, programmers make different code consistent and easy to manipulate.
 
-The preprocessor currently supports only macros without parameters, so code like:
+Parameterized macros expand as well, so a derived tile size can be written as one:
 
 \begin{lstlisting}[language={},caption={A macro with parameters}]
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 \end{lstlisting}
 
-would not work.
+The argument is substituted before the shape is evaluated, so the result is the same as writing the value out.

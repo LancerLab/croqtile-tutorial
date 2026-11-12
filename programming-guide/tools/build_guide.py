@@ -1360,6 +1360,9 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # A parameterized macro does expand, including in a shape expression.
+    ('F23-S02', re.escape('\\end{lstlisting}\n\nwould not work.'),
+     '\\end{lstlisting}\n\nThe argument is substituted before the shape is evaluated, so the result is the same as writing the value out.'),
     # Round 88: three claims the current compiler no longer supports.
     # F18-S03: an element type without a shape is an ordinary control integer.
     ('F18-S03', re.escape('caption={A rejected fundamental type}'), 'caption={Element type without a shape}'),

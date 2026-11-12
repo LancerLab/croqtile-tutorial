@@ -71,6 +71,7 @@ After the fix, F08-S02, F08-S10 and F38-S01 all compile clean.
 | F18-S03 | claimed `s32 a;` is rejected; it compiles to a control integer, and the diagnostic the comment quotes no longer exists in the compiler |
 | F24-S04 | said the scalar integer type "only includes `int`"; `s32` and `u32` are accepted too |
 | F24-S06 | said a runtime template argument is an error; the compiler now reports a warning |
+| F23-S02 | said a macro with parameters "would not work"; parameterized macros expand, including inside a shape expression |
 | F19-S06 | the comment promised an error the code did not produce: `f32 [M]` compiles once `M` is known. The listing now shows a derived buffer next to a rejected anonymous one, so the comment matches what the compiler reports |
 | F40-S03 | staged whole matrices in shared storage (8 MB); the outer tiling is now `[4, 4, 8]`, so each staging buffer is one tile |
 

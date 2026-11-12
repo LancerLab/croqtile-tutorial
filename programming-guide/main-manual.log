@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 14:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  12 NOV 2026 14:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1410,8 +1410,8 @@ Package pdftex.def Info: figures/f14-chunkat_3d_light.png  used on input line 5
 (./build/units/F24-S02.tex) (./build/units/F24-S03.tex)
 (./build/units/F24-S04.tex [54]) (./build/units/F24-S07.tex)
 (./build/units/F11-S02.tex [55]) (./build/units/F11-S03.tex)
-(./build/units/F11-S04.tex) (./build/units/F04-S25.tex)
-(./build/units/F05-S18.tex [56]) (./build/units/F07-S13.tex)
+(./build/units/F11-S04.tex) (./build/units/F04-S25.tex) [56]
+(./build/units/F05-S18.tex) (./build/units/F07-S13.tex)
 (./build/units/F08-S14.tex)) (./content/ch03-programming-guide.tex [57]
 [58]
 Chapter 3.
@@ -1692,7 +1692,7 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (137 pages, 4273834 bytes).
+Output written on main-manual.pdf (137 pages, 4273898 bytes).
 PDF statistics:
  3126 PDF objects out of 3580 (max. 8388607)
  2889 compressed objects within 29 object streams
