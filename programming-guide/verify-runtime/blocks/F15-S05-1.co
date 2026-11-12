@@ -1,2 +1,2 @@
 int a;
-__co__ int foo(int b);
+__co__ int foo(int b) { return b; }

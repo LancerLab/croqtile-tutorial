@@ -20,14 +20,14 @@ contain `__co__` and no `...` yields **40 "complete" blocks**.
 
 | Verdict | Count | Meaning |
 |---|---|---|
-| `ok` | 12 | no diagnostic from the front end |
-| `FAIL` | 24 | rejected by the target with a diagnostic |
+| `ok` | 13 | no diagnostic from the front end |
+| `FAIL` | 23 | rejected by the target with a diagnostic |
 | `CRASH` | 4 | compiler abort or segfault |
 
 No published block compiles and runs unmodified on GCU. `verdict.txt` has the
 per-block reason.
 
-### The 12 that pass are mostly skeletons
+### The 13 that pass are mostly skeletons
 
 `F10-S11`, `F15-S03`, `F26-S01` (x2), `F33-S03`, `F34-S07`, `F35-S03` have
 comment-only bodies. `F11-S02` only prints. `F14-S08`, `F38-S01`, `F40-S03` and
@@ -42,7 +42,7 @@ comment-only bodies. `F11-S02` only prints. `F14-S08`, `F38-S01`, `F40-S03` and
 | thread-indexed DMA | F04-S03, F24-S06-1, F29-S03, F29-S04, F29-S05 | `a thread-level DMA with a thread-indexed source must index the thread-level parallel variable on the destination` |
 | MMA operand in shared storage | F08-S10 | `MMA load on GCU requires source in LOCAL (L1) storage` |
 | `: group` level absent on this target | F06-S04 | `group level is not supported by the target architecture` |
-| teaching examples that must fail | F03-S04, F15-S05, F15-S21, F24-S03, F24-S04, F24-S06-2, F19-S06 | expected |
+| teaching examples that must fail | F03-S04, F15-S21, F24-S03, F24-S04, F24-S06-2, F19-S06 | expected |
 
 ### Compiler crashes
 
@@ -78,6 +78,7 @@ correct code.
 | F15-S21, F19-S05, F23-S02, F25-S04 | runtime named `croqtile` throughout | renamed to `croq` (see below) |
 | F19-S05 | `int tile_m = 32, tile_m = 8, tile_k = 16;` declares `tile_m` twice and leaves `tile_n` undefined | `tile_m`, `tile_n`, `tile_k` |
 | F03-S03, F05-S16 | `croq::croq_assert` — the helper is a free function | `croq_assert` |
+| F15-S05 | `__co__ int foo(int b);` — a `__co__` function must carry a body; only `__device__` helpers may be declared without one | `__co__ int foo(int b) { return b; }` |
 | F23-S02 | left operand declared `[M, N]` but the caller passes an `[M, K]` buffer, so the shape check fails at entry | `f32 [M, K] lhs` |
 | F24-S06 | the block computed a `[16, 4]` tile, wrote it nowhere, and indexed only the row blocks — just the diagonal of the tile grid was covered | loop over `{p, q}`, write the tile back with `dma.copy buffer => output.chunkat(p, q)`, and mark the movement `: block` |
 | F19-S05 | the listing claims to quote compiler output but used the guide's spelling, a non-existent assert helper, and by-value parameters | `choreo::spanned_view<choreo::s32, 2> &`, `choreo::runtime_check`, aligned by hand |

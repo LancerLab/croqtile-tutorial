@@ -18,7 +18,7 @@ F11-S02-1    | ok   |
 F11-S03-1    | FAIL | global data access 'data[i]` is not allowed.
 F14-S08-1    | ok   |
 F15-S03-1    | ok   |
-F15-S05-1    | FAIL | syntax error, unexpected ;, expecting {
+F15-S05-1    | ok   |
 F15-S21-1    | FAIL | function call 'bar` with global data 'd` is not allowed.
 Segmentation fault
 F19-S06-1    | CRASH(139) | 

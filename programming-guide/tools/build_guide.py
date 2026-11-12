@@ -1360,6 +1360,10 @@ UNIT_OVERRIDES = [
      '\n                        "dimension \'K\''),
     ('F19-S05', re.escape('\n                "with a dimension value'),
      '\n                        "with a dimension value'),
+    # Round 83: `__co__` functions must carry a body; only `__device__`
+    # helpers may be declared without one.
+    ('F15-S05', re.escape('__co__ int foo(int b);'),
+     '__co__ int foo(int b) { return b; }'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

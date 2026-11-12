@@ -104,7 +104,7 @@
  "F15-S05": [
   {
    "before": "Scalar types in Croqtile include the \\emph{Integer Type} and \\emph{Boolean Type}. The \\emph{Integer Type} is similar to C++ type 'int' or 'int32\\_t'. It is an signed value which takes 32-bits, ranging from $-2^{31}$ to $2^{31}-1$. The below code illustrates its usage for defining the data and function declaration.",
-   "after": "Croqtile provides \\textbf{integer} and \\textbf{Boolean} scalar types. Its integer type is a signed 32-bit value, like C++ \\texttt{int} or \\texttt{int32\\_t}, with range $-2^{31}$ to $2^{31}-1$. The following example uses it in variable and function declarations."
+   "after": "Croqtile provides \\textbf{integer} and \\textbf{Boolean} scalar types. Its integer type is a signed 32-bit value, like C++ \\texttt{int} or \\texttt{int32\\_t}, with range $-2^{31}$ to $2^{31}-1$. The following example uses it in a variable declaration and a function definition."
   },
   {
    "before": "Operations like integer arithmetics, shift and logical operation are all supported. And the syntax is identical to C++ builtin operations. In Croqtile, you neither provide equivalence of unsigned scalar integers, nor equivalence of 8-bits, 16-bits, 64-bits scalar integers. This design is simply motivated by the fact: these types are not essential for program control purposes. And normally a 32-bits signed integer can fulfill such work.",

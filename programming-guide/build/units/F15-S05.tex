@@ -1,10 +1,10 @@
 \subsection*{Scalar Types}
 
-Croqtile provides \textbf{integer} and \textbf{Boolean} scalar types. Its integer type is a signed 32-bit value, like C++ \texttt{int} or \texttt{int32\_t}, with range $-2^{31}$ to $2^{31}-1$. The following example uses it in variable and function declarations.
+Croqtile provides \textbf{integer} and \textbf{Boolean} scalar types. Its integer type is a signed 32-bit value, like C++ \texttt{int} or \texttt{int32\_t}, with range $-2^{31}$ to $2^{31}-1$. The following example uses it in a variable declaration and a function definition.
 
 \begin{lstlisting}[language=croqtile,caption={Scalar Types (fragment)}]
 int a;
-__co__ int foo(int b);
+__co__ int foo(int b) { return b; }
 \end{lstlisting}
 
 Integers support arithmetic, shifts, and logical operations with C++ syntax. Croqtile does not provide unsigned or 8-, 16-, or 64-bit scalar control integers: a signed 32-bit integer is sufficient for the program-control tasks this type serves.
