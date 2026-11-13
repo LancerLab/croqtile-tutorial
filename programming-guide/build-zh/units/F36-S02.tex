@@ -14,7 +14,7 @@ __co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
 这个例子里：
 
 \begin{itemize}[leftmargin=1.6em]
-\item **\co@stream s0, stream s1@**：由主机传入的流参数。
-\item **\co@parallel.async<s0>@**：在流 \co@s0@ 上异步启动核函数。
-\item **\co@parallel.async<s1>@**：在流 \co@s1@ 上启动第二个核函数。
+\item \textbf{\texttt{stream s0, stream s1}}：由主机传入的流参数。
+\item \textbf{\texttt{parallel.async\textless{}s0\textgreater{}}}：在流 \co@s0@ 上异步启动核函数。
+\item \textbf{\texttt{parallel.async\textless{}s1\textgreater{}}}：在流 \co@s1@ 上启动第二个核函数。
 \end{itemize}

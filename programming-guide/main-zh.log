@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 14:37
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 14:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1787,7 +1787,10 @@ Package microtype Info: Character `\textquestiondown ' is missing
 (./build-zh/units/F14-S09.tex) (./build-zh/units/F05-S11.tex)
 (./build-zh/units/F15-S01.tex) (./build-zh/units/F15-S02.tex)
 (./build-zh/units/F15-S03.tex [64]) (./build-zh/units/F15-S04.tex)
-(./build-zh/units/F15-S06.tex) (./build-zh/units/F15-S07.tex [65] [66])
+(./build-zh/units/F15-S06.tex
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 3.
+) (./build-zh/units/F15-S07.tex [65] [66])
 (./build-zh/units/F15-S12.tex) (./build-zh/units/F15-S17.tex)
 (./build-zh/units/F15-S22.tex) (./build-zh/units/F17-S03.tex)
 (./build-zh/units/F17-S08.tex) (./build-zh/units/F18-S02.tex
@@ -1939,11 +1942,11 @@ Package rerunfilecheck Info: File `main-zh.out' has not changed.
 (rerunfilecheck)             Checksum: 7B9CE8C5B14E9BED6AC43C458EF1B7CD;5399.
  ) 
 Here is how much of TeX's memory you used:
- 35737 strings out of 481819
- 789943 string characters out of 5936389
- 1285637 words of memory out of 5000000
- 51147 multiletter control sequences out of 15000+600000
- 539461 words of font info for 103 fonts, out of 8000000 for 9000
+ 35747 strings out of 481819
+ 790221 string characters out of 5936389
+ 1285644 words of memory out of 5000000
+ 51154 multiletter control sequences out of 15000+600000
+ 539477 words of font info for 105 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,17n,107p,861b,1903s stack positions out of 5000i,500n,10000p,200000b,80000s
 

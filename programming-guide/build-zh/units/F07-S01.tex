@@ -11,6 +11,6 @@ CPU 的各个核心具有独立的程序计数器；共享指令流的线程遇�
 Croqtile 引入两个额外的控制流原语来填补这个空白：
 
 \begin{itemize}[leftmargin=1.6em]
-\item **\co@inthreads.async@\textbf{ —— }结构化并发区域\textbf{：在编译时把线程分成若干组，各组}同时运行不同的程序**，编译器为它们生成彼此独立的指令流；
-\item **\co@shared event@ / \co@wait@ / \co@trigger@\textbf{ —— }区域间通信**：轻量级的同步令牌，让并发区域能安全地通信。
+\item \textbf{\texttt{inthreads.async}} —— \textbf{结构化并发区域}：在编译时把线程分成若干组，各组\textbf{同时运行不同的程序}，编译器为它们生成彼此独立的指令流；
+\item \textbf{\texttt{shared event} / \texttt{wait} / \texttt{trigger}} —— \textbf{区域间通信}：轻量级的同步令牌，让并发区域能安全地通信。
 \end{itemize}

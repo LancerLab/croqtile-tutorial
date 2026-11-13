@@ -64,17 +64,33 @@ def esc(s):
     return s
 
 
-def texify(s):
-    """Markdown marks in the translation -> LaTeX."""
+def _texify_plain(s, bold=False):
     out = []
     for part in re.split(r'(`[^`]*`)', s):
         if len(part) > 1 and part.startswith('`') and part.endswith('`'):
-            out.append(r'\co@' + part[1:-1] + r'@')
+            inner = part[1:-1]
+            # Inside bold, lstinline keeps its own font weight; a plain
+            # \texttt inherits the bold and matches the English edition.
+            out.append(r'\texttt{' + esc(inner) + '}' if bold else r'\co@' + inner + r'@')
             continue
         p = esc(part.replace('<br>', '\x00BR\x00')).replace('\x00BR\x00', '\\newline{}')
-        p = re.sub(r'\*\*([^*]+)\*\*', r'\\textbf{\1}', p)
         p = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'\\emph{\1}', p)
         out.append(p)
+    return ''.join(out)
+
+
+def texify(s):
+    """Markdown marks in the translation -> LaTeX.
+
+    Bold is resolved before inline code is split out, because the source bolds
+    spans that contain a code span, e.g. ``**`inthreads.async`**``.
+    """
+    out, pos = [], 0
+    for m in re.finditer(r'\*\*(.+?)\*\*', s):
+        out.append(_texify_plain(s[pos:m.start()]))
+        out.append(r'\textbf{' + _texify_plain(m.group(1), bold=True) + '}')
+        pos = m.end()
+    out.append(_texify_plain(s[pos:]))
     return ''.join(out)
 
 
