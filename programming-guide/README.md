@@ -30,11 +30,13 @@ make zh              # Chinese edition -> output/croqtile-programming-guide-zh.p
 make clean           # remove aux/log files and all output PDFs
 ```
 
-The Chinese edition is rendered by `tools/build_guide_zh.py` from
-`translation/zh/*.md` through Markdown and WeasyPrint, so it needs the
-`weasyprint` Python package (`python3 -m pip install --user weasyprint pydyf==0.10.0`).
-Listings are taken verbatim from the English units; only prose, captions and
-tables come from the translation files.
+The Chinese edition uses the same LaTeX pipeline as the English ones.
+`tools/build_guide_zh_tex.py` re-emits every English unit with the translated
+prose, headings and captions from `translation/zh/*.md`, keeping the listings,
+figures and tables, and writes the result to `build-zh/`; `main-zh.tex` then
+typesets it with XeLaTeX and xeCJK. Nothing beyond a TeX Live installation with
+`xeCJK` and the Fandol fonts is required. Because both editions share the unit
+fragments, they share the figure and listing numbering scheme as well.
 
 Naming rule: the default edition uses `main.tex` and the unsuffixed PDF name;
 the two optional editions add a suffix (`main-manual.tex` →
@@ -56,7 +58,7 @@ and synchronize the tutorial assets and guide copies:
 python3 tools/build_guide.py
 python3 tools/render_figures.py
 make all
-python3 tools/build_guide_zh.py build
+make zh
 ```
 
 Figure layouts live in `../figures/guide_diagrams.py`, with colors in
@@ -245,14 +247,15 @@ programming-guide/
 中文正文和标题在 `translation/zh/` 中维护，示例代码从英文源文件提取。
 
 ```bash
-python3 tools/build_guide_zh.py templates
-python3 tools/build_guide_zh.py check
-python3 tools/build_guide_zh.py build
+python3 tools/build_guide_zh.py templates   # 同步待翻译模板
+python3 tools/build_guide_zh.py check       # 覆盖率与术语检查
+make zh                                     # 生成 output/croqtile-programming-guide-zh.pdf
 ```
 
-生成 `CROQTILE-GUIDE-ZH.md`、`CROQTILE-GUIDE-ZH.html` 和
-`output/croqtile-programming-guide-zh.pdf`；构建需要 Python 的
-`markdown`、`pygments` 和 `weasyprint` 包。
+中文版与英文版共用 LaTeX 流水线：`tools/build_guide_zh_tex.py` 把译文写回
+`build-zh/` 的 LaTeX 片段，再由 `main-zh.tex` 用 XeLaTeX + xeCJK 排版。
+构建只需要 TeX Live（含 xeCJK 与 Fandol 字体），不再依赖 Python 的
+`markdown`、`pygments`、`weasyprint`。旧的 HTML/WeasyPrint 输出已下线。
 
 The Getting Started toolchain section uses the editorial Markdown in
 `editorial/getting-started/` to consolidate overlapping upstream explanations.
