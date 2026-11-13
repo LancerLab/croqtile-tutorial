@@ -2538,7 +2538,6 @@ In this case, it defines device function template named <code>matmul_kernel</cod
   }
 }</code></pre>
 <p>The Choreo compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, the compiler reports a warning that the argument cannot be evaluated at compile time.</p>
-<p>!INCLUDE_IF_EXISTS "target/calls.md"</p>
 <h3 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h3>
 <p>In this section, we learned the syntax to invoke device functions, including normal ones and those triggers function template instantiations. Programmers must code in cautious since no check is applied at transpilation time, which may result in more confusing error reporting since the check is applied at target compile time with generated functions.</p>
 
