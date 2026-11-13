@@ -15,19 +15,19 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
   s32[lhs.span(0), rhs.span(1)] output; // Use same shape as lhs
 
   parallel p by 1 {
-    with index = {m_tile, k_tile, n_tile} in [1, 1, 1] {
+    with index = {m_tile, k_tile, n_tile} in [4, 4, 8] {
       foreach m_tile, n_tile {
-        shared s32[512, 1024] l2_out;
+        shared s32[128, 128] l2_out;
         foreach k_tile {
           // Initiate DMA operations
           lhs_load = dma.copy.async lhs.chunkat(m_tile, k_tile) => shared;
           rhs_load = dma.copy.async rhs.chunkat(k_tile, n_tile) => shared;
-
+          out_store_s = dma.any;
           parallel q by 1 {
             with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {
               // Local buffers for tiling
-              local s32 [128, 256] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};
-              local s32 [256, 128] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};
+              local s32 [32, 64] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};
+              local s32 [64, 16] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};
               foreach index {
                 // Add "after" primitive to chain up paired DMA operations
                 lhs_load_s = dma.copy.async lhs_load.data.chunkat(m_tile_s, k_tile_s) => select(k_tile_s % 2, lhs_load_s_buffer_0, lhs_load_s_buffer_1) after lhs_load;
@@ -36,7 +36,8 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
                 wait out_load_s;
 
                 // Perform the matrix multiplication (dot product) operation
-                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 256, 256, 256, 0, 8, out_load_s.data);
+                wait lhs_load_s, rhs_load_s;
+                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data, 32, 16, 64, 0, 8, out_load_s.data);
 
                 // Store the result back to l2_out
                 out_store_s = dma.copy.async out_load_s.data => l2_out.chunkat(m_tile_s, n_tile_s); 
@@ -46,6 +47,7 @@ __co__ s32 [512, 1024] matmul(s32 [512, 1024] lhs, s32 [1024, 1024] rhs) {
 
           // Add "after" primitive to chain up DMA operations for the final output
           out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;
+          wait out_store;
         }
       }
     }

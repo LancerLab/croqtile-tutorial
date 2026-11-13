@@ -47,7 +47,7 @@ Note the symbol must use its *scoped name* for signature generation, since ident
 Every time the value numbering process generates a signature, it tries to simplify the expression. For example,
 
 ```
-   int a = 0 + 1;
+   int a = 3 + 8;
 ```
 Given the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:
 

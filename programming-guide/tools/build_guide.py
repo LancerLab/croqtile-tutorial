@@ -916,7 +916,7 @@ UNIT_OVERRIDES = [
     # Round 30 (2.6): spanned data and storage specifiers.
     ('F18-S03', None, caption_names([
         'A spanned-data declaration', 'A standalone shape',
-        'A rejected fundamental type'])),
+        'Element type without a shape'])),
     ('F18-S06', None, caption_names([
         'An explicit return shape', 'A deduced return shape'])),
     ('F37-S07', None, caption_names([
@@ -1184,9 +1184,6 @@ UNIT_OVERRIDES = [
     ('F05-S14', r'What changed from the scalar version:',
      "The scalar version indexed one element at a time. The tiled version "
      "first copies a tile into shared storage, then computes on that tile:"),
-    # Round 54 (3.6.2): multi-buffering.
-    ('F38-S01', r'Note that the \\textbf\{select\} expressions',
-     'The \\textbf{select} expressions'),
     # Round 55 (3.6.3): pipelined kernel. The source prose is continuous.
     # Round 56 (3.7): contraction variants and layout contracts.
     ('F06-S07', None, caption_names([
@@ -1288,29 +1285,17 @@ UNIT_OVERRIDES = [
     ('F08-S07', '(?m)^\\\\texttt\\{\\(1:', 'The slice \\texttt{(1:'),
     ('F16-S04', '(?m)^\\\\texttt\\{new', 'The expression \\texttt{new'),
     # Round 76 (3.11): diagnostics methodology. Source prose is continuous.
-    # Round 77: code correctness. Upstream examples use syntax this toolchain
-    # rejects (swizzle modes, mma.commit) or forms the language rejects
-    # (reading .data from a buffer, a bare return type).
-    ('F09-S03', r'swiz<3>', 'swiz<128>'),
-    ('F09-S03', r'swiz\\textless\{\}3\\textgreater\{\}', r'swiz\textless{}128\textgreater{}'),
-    ('F09-S03',
-     r'\\textbf\{Swizzle levels\.\}.*?granularity\.',
-     r'\textbf{Swizzle width.} The template argument is the swizzle width in bytes, and the examples use \texttt{swiz\textless{}128\textgreater{}}. A wider swizzle defeats wider conflict patterns but requires tile extents that line up with that width.'),
-    ('F09-S05', r'swiz<3>', 'swiz<128>'),
-    ('F09-S09', r'swiz<3>', 'swiz<128>'),
+    # Round 77: code correctness. The listings still carried `mma.commit` and
+    # forms the language rejects (reading .data from a buffer, a bare return
+    # type). Those fixes now live in the upstream examples.
     ('F08-S10', r'(?m)^[ \t]*mma\.commit;[ \t]*\n', ''),
     ('F09-S05', r'(?m)^[ \t]*mma\.commit;[ \t]*\n', ''),
     ('F08-S11', r', \\texttt\{mma\.commit\}, and', ' and'),
     ('F08-S11',
-     r'\\texttt\{mma\.commit\} is the fence.*?overwrites the buffer\.',
+     r'\\textbf\{\\texttt\{mma\.commit\}\.\} \\texttt\{mma\.commit\} completes.*?overwrites the buffer\.',
      "The consumer signals \\co@empty[stage]@ only after the tile's matrix operations have completed; releasing a stage early lets the producer overwrite operands the MMA is still reading."),
     ('F06-S09', r'; \\texttt\{mma\.commit\} fences pipeline stages', ''),
     ('F07-S07', r'\\texttt\{swap\}, and \\texttt\{mma\.commit\} into', r'\texttt{swap} into'),
-    ('F10-S04',
-     r'score = shared_scores\.data\.span_as\(\|shared_scores\.data\.span\|\)\.at\(gid # tid\);',
-     'flat_scores = shared_scores.span_as([|shared_scores.span|]);\n          score = flat_scores.at(gid # tid);'),
-    ('F10-S11', r'__co__ foo\(\) \{', '__co__ auto foo() {'),
-    ('F23-S04', r'__co__ foo\(\) \{', '__co__ auto foo() {'),
     # Round 78: drop GPU-backend-only vocabulary that the tma.copy / group-4
     # rewrite leaves behind in prose.
     ('F28-S05', r'A transfer may map to TMA or to a sequence',
@@ -1324,22 +1309,6 @@ UNIT_OVERRIDES = [
     ('F04-S08', r'The result of a DMA or TMA statement', 'The result of a DMA statement'),
     ('F04-S09', r'The same pattern applies to TMA:', 'The same pattern applies to asynchronous copies:'),
     ('F04-S09', r'An asynchronous tma copy', 'An asynchronous copy'),
-    # Round 79: `block` is a parallel-level keyword, so it cannot name a
-    # variable in the chunkat example.
-    ('F04-S02', r'chunkat\(block\)', 'chunkat(blk)'),
-    # Round 80: make the listings self-contained and logically correct.
-    # A declared span starts uninitialized, so accumulating into `output`
-    # with `+=` needs an explicit clearing step. The matmul listings relied
-    # on prose to say so; the code now does it.
-    ('F05-S13',
-     re.escape('  parallel {p, q} by [16, 64] {\n    foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]\n      output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);\n  }'),
-     '  parallel {p, q} by [16, 64] {\n    foreach {m, n} in [128 / #p, 256 / #q]\n      output.at(p#m, q#n) = 0;\n    foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]\n      output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);\n  }'),
-    ('F05-S14',
-     re.escape('  parallel {px, py} by [8, 16] : block {\n    foreach {tile_k} in [16] {'),
-     '  parallel {px, py} by [8, 16] : block {\n    parallel {qx, qy} by [16, 16] : thread\n      output.at(px#qx, py#qy) = 0;\n    foreach {tile_k} in [16] {'),
-    ('F08-S02',
-     re.escape('    parallel {qx, qy} by [16, 16] : thread {\n    with tile_k in 16 {'),
-     '    parallel {qx, qy} by [16, 16] : thread {\n    output.at(px#qx, py#qy) = 0;\n    with tile_k in 16 {'),
     # A void kernel with an output parameter never delivers its result: the
     # caller receives only what the function returns.
     ('F07-S08',
@@ -1354,43 +1323,14 @@ UNIT_OVERRIDES = [
     ('F07-S08', r'\n\}\n\\end\{lstlisting\}', '\n  return output;\n}\n\\end{lstlisting}'),
     ('F07-S09', r'\n\}\n\\end\{lstlisting\}', '\n  return output;\n}\n\\end{lstlisting}'),
     ('F08-S10', r'\n\}\n\\end\{lstlisting\}', '\n  return output;\n}\n\\end{lstlisting}'),
-    # The MMA example uses MMA_M / MMA_N / MMA_K without defining them.
-    ('F06-S04', re.escape('#define WARP_K 16\n'),
-     '#define WARP_K 16\n#define MMA_M 16\n#define MMA_N 16\n#define MMA_K 16\n'),
     # `M` is a symbolic extent; read it from the operand instead of naming it.
-    ('F24-S04', re.escape('call bar(input.data, M, buffer.span(0));'),
-     'call bar(input.data, input.span(0), buffer.span(0));'),
     # The runtime header and namespace are `choreo` (aliased as `croq`).
     ('F15-S21', re.escape('#include "croqtile.h"'), '#include "choreo.h"'),
-    ('F19-S05', re.escape('int tile_m = 32, tile_m = 8, tile_k = 16;'),
-     'int tile_m = 32, tile_n = 8, tile_k = 16;'),
-    # `out_store_s` is assigned inside the inner loop but read after it; give
-    # it a placeholder before the loop, the same way the double-buffer example
-    # seeds its spare futures with `dma.any`.
-    ('F40-S03',
-     re.escape('          parallel q by 1 {\n            with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {'),
-     '          out_store_s = dma.any;\n          parallel q by 1 {\n            with index = {m_tile_s, k_tile_s, n_tile_s} in [4, 4, 8] {'),
-    # The operands must be resident before the dot product consumes them.
-    ('F40-S03',
-     re.escape('                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data,'),
-     '                wait lhs_load_s, rhs_load_s;\n                call dot_general_fp32(lhs_load_s.data, rhs_load_s.data,'),
-    # The final store is awaited before the function returns the buffer it fills.
-    ('F40-S03',
-     re.escape('          out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;'),
-     '          out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;\n          wait out_store;'),
     # Round 81: the runtime library is spelled `choreo` (with `croq` as an
     # alias). The guide used `croqtile` for the header, the namespace, the
     # assertion helper and a factory name that does not exist in that spelling.
     ('*', '', _rename_runtime),
     # Round 82: residual code defects the runtime pass turned up.
-    # F23-S02 declares the left operand `[M, N]` but passes an `[M, K]` buffer.
-    ('F23-S02', re.escape('__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }'),
-     '__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }'),
-    # F24-S06 computed a [16, 4] tile per block, wrote it nowhere, and looped
-    # over the row blocks only, so just the diagonal of the tile grid was
-    # covered. Index both axes, write the tile back, and mark the movement
-    # block-uniform so the thread-level DMA rule does not apply.
-    ('F24-S06', re.escape('  parallel p by 6 {\n    shared s32 [output.span / #p] buffer;   // shape: [16, 4]\n    lhs_load = dma.copy lhs.chunkat(p, _) => shared;\n    rhs_load = dma.copy rhs.chunkat(_, p) => shared;\n    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);\n  }'), '  parallel {p, q} by [6, 6] : block {\n    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]\n    lhs_load = dma.copy lhs.chunkat(p, _) => shared;\n    rhs_load = dma.copy rhs.chunkat(_, q) => shared;\n    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);\n    dma.copy buffer => output.chunkat(p, q);\n  }'),
     # F19-S05 quotes compiler output: const-reference parameters and
     # `runtime_check` rather than the free `croq_assert` helper.
     ('F19-S05', re.escape('croq::spanned_view<croq::s32, 2> lhs'),
@@ -1414,101 +1354,39 @@ UNIT_OVERRIDES = [
     ('F32-S02',
      re.escape('are immutable and cannot be used in \\texttt{foreach} statements. Instead, programmers should use the \\texttt{with-in} statement to define the \\emph{bounded variables} suitable for loops.'),
      'are immutable. They can bound a \\texttt{foreach} loop, but they cannot be the variable that \\texttt{foreach} iterates; declare that variable with \\texttt{with-in}.'),
-    # The value-number graphs use 3 and 8, so the source must too.
-    ('F21-S05', re.escape('   int a = 0 + 1;'), '   int a = 3 + 8;'),
-    # `sync.<storage>` is deprecated; the barrier takes an explicit level.
-    ('F34-S07', re.escape('    sync.shared; // sync point'), '    sync.barrier : thread; // sync point'),
-    ('F35-S02', re.escape('  sync.shared;                             // sync point'),
-     '  sync.barrier : thread;                   // sync point'),
     # The compiler bounds the source by the destination; it does not require equal shapes.
     ('F29-S05', re.escape('Note that the Croqtile compiler \\textbf{requires the source data and destination data to have the same shape and element type} if not using \\emph{storage} as the destination \\emph{data expression}.'), 'Note that the element types must agree, and that no source dimension may exceed the corresponding destination dimension; a smaller source is accepted.'),
-    # A parameterized macro does expand, including in a shape expression.
     ('F23-S02', re.escape('\\end{lstlisting}\n\nwould not work.'),
      '\\end{lstlisting}\n\nThe argument is substituted before the shape is evaluated, so the result is the same as writing the value out.'),
-    ('F07-S07', re.escape('every bounded buffer protocol requires initial credits.'), 'every bounded buffer protocol needs its events triggered before the first wait.'),
     # Round 90: an event is the type; trigger and wait are its only operations.
-    ('F07-S05', re.escape('This is a \\textbf{credit-based bounded buffer} protocol --- \\texttt{full} is the "data available" credit; \\texttt{empty} is the "buffer free" credit.'),
-     'This is a \\textbf{bounded buffer} built from two events --- \\texttt{full} records that a slot holds data; \\texttt{empty} records that it is free to fill.'),
-    ('F07-S05', re.escape('\\item \\textbf{\\texttt{trigger name}} --- signal that a condition is met (e.g., "data is ready")'),
-     '\\item \\textbf{\\texttt{trigger name}} --- record that a condition is met (e.g., "data is ready")'),
-    ('F07-S05', re.escape('after writing a tile to signal "data ready."'),
-     'after writing a tile to record "data ready."'),
-    ('F07-S05', re.escape('blocking until the signal arrives.'),
-     'blocking until that trigger arrives.'),
     ('F07-S06', re.escape('the consumer needs a signal that its data is ready; before overwriting it, the producer needs a signal that the previous read has finished. Call these signals'),
      'the consumer needs to know its data is ready; before overwriting it, the producer needs to know the previous read has finished. Call these two events'),
-    ('F07-S07', re.escape('The consumer must \\textbf{seed} the \\texttt{empty} credits before the K-loop starts:'),
-     'The consumer must \\textbf{trigger} every \\texttt{empty} event before the K-loop starts:'),
-    ('F07-S13', re.escape('\\texttt{trigger name} & Signal that a condition is met \\\\'),
-     '\\texttt{trigger name} & Record that a condition is met \\\\'),
     ('F08-S01', re.escape('Events then carry the readiness and reuse signals that'),
      'Events then carry the readiness and reuse information that'),
     ('F08-S11', re.escape('The consumer signals \\co@empty[stage]@'),
      'The consumer triggers \\co@empty[stage]@'),
-    ('F08-S12', re.escape('\\subsection*{Credit flow for one stage}'),
-     '\\subsection*{Event flow for one stage}'),
-    ('F08-S12', re.escape('The diagram matches the code: bootstrap grants empty credits; the producer waits on \\texttt{empty}, fills, signals \\texttt{full}; the consumer waits on \\texttt{full}, computes, signals \\texttt{empty}.'),
-     'The diagram matches the code: the bootstrap triggers every \\texttt{empty} event; the producer waits on \\texttt{empty}, fills, triggers \\texttt{full}; the consumer waits on \\texttt{full}, computes, triggers \\texttt{empty}.'),
     ('F08-S12', re.escape('\\caption{An empty credit permits filling a stage; a full credit permits reading it.'),
      '\\caption{\\texttt{empty[s]} lets the producer fill slot s; \\texttt{full[s]} lets the consumer read it.'),
     ('F35-S04', re.escape('caption={A credit-count deadlock}'),
      'caption={One trigger per waiter}'),
     # Drop the duplicate line left by the tma.copy -> dma.copy rewrite.
     ('F09-S03', re.escape('dma.copy.swiz<128> src => dst;       // software DMA with swizzle\ndma.copy.swiz<128> src => dst;'), 'dma.copy.swiz<128> src => dst;'),
-    # Round 89: the epilogue always needs the buffer the swap left newest.
-    ('F38-S01', re.escape('        lf = select(#y % 2, lfB, lfA);\n        rf = select(#y % 2, rfB, rfA);\n        wait lf, rf;  // handle the last bunch\n        call kernel(lf.data, rf.data, l_out, |lfB.span|);'), '        wait lfA, rfA;  // handle the last bunch\n        call kernel(lfA.data, rfA.data, l_out, |lfB.span|);'),
-    ('F38-S01', re.escape('the \\textbf{epilogue}(line 21-25)'),
-     'the \\textbf{epilogue} (lines 21-23)'),
-    ('F38-S01', re.escape('In line 25, the expression \\texttt{y(-1)}'),
-     'In line 23, the expression \\texttt{y(-1)}'),
-    ('F38-S01', re.escape("The \\textbf{select} expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk."), 'By the end of the loop the newest chunk is always held by \\co@lfA@ and \\co@rfA@: each iteration loads the next chunk into \\co@lfB@ and \\co@rfB@ and then swaps, so the epilogue waits on \\co@lfA@, \\co@rfA@ directly, whatever the tile count.'),
     # Round 88: three claims the current compiler no longer supports.
     # F18-S03: an element type without a shape is an ordinary control integer.
-    ('F18-S03', re.escape('caption={A rejected fundamental type}'), 'caption={Element type without a shape}'),
-    ('F18-S03',
-     re.escape('s32 a;  // error: the fundamental type can not be used for variable definition alone'),
-     's32 a;    // a control integer, the same as \'int a\'\ns32 [4] b; // a buffer of four elements'),
-    ('F18-S03',
-     re.escape('This results in a compile-time failure. Consequently, \\texttt{s32} cannot be used for program control like \\texttt{int}, and type conversion between them is not possible.'),
-     'Both forms compile. The shape decides which one you get, not the type name.'),
-    # F24-S06: a runtime template argument is a warning, not an error.
-    ('F24-S06', re.escape("call bar<M>();  // error: 'M' is a runtime value"),
-     "call bar<M>();  // warning: 'M' cannot be evaluated at compile time"),
     # Round 87: scalar parameters are not limited to integers.
     ('F25-S03',
      re.escape('A Croqtile function accepts only two kinds of input parameter, the \\emph{spanned data} and the \\emph{integer}.'),
      'A Croqtile function takes its operands as spanned data and everything else as scalar parameters. A scalar may be an integer, a Boolean, or one of the floating-point element types.'),
     # Round 86: the two listings left after the audit.
-    # The top-k excerpt relies on three macros it never defines.
-    ('F10-S04', re.escape('template <int K>\n__device__ void warp_topk(f32* vals, s32* idxs);'),
-     '#define N_TOKENS 1024\n#define N_EXPERTS 8\n#define N_THREAD 128\ntemplate <int K>\n__device__ void warp_topk(f32* vals, s32* idxs);'),
-    # Show the legal derived buffer next to the rejected anonymous one, so
-    # the comment describes what the compiler actually reports.
-    ('F19-S06',
-     re.escape('__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer'),
-     '__co__ void foo(s32 [M] input) {\n  s32 [M] derived;  // ok: the shape comes from the parameter\n  s32 [?] fresh;    // error: an internal buffer cannot introduce an anonymous dimension\n}'),
     # Round 85: the worked example staged whole matrices in shared storage.
     # Rescale the outer tiling so each staging buffer is one tile.
-    ('F40-S03', re.escape('in [1, 1, 1] {'), 'in [4, 4, 8] {'),
-    ('F40-S03', re.escape('shared s32[512, 1024] l2_out;'), 'shared s32[128, 128] l2_out;'),
-    ('F40-S03', re.escape('local s32 [128, 256] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};'),
-     'local s32 [32, 64] lhs_load_s_buffer_0 {0}, lhs_load_s_buffer_1 {0};'),
-    ('F40-S03', re.escape('local s32 [256, 128] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};'),
-     'local s32 [64, 16] rhs_load_s_buffer_0 {0}, rhs_load_s_buffer_1 {0};'),
-    ('F40-S03', re.escape('256, 256, 256, 0, 8'), '32, 16, 64, 0, 8'),
     # A stray comma at the end of the statement.
     ('F25-S04', re.escape('foo(croq::make_spanview<2>(input, {M, N})),'),
      'foo(croq::make_spanview<2>(input, {M, N}));'),
     # Round 84: full audit of every listing against the front end.
     # F19-S04 carries the same duplicated tile variable as F19-S05 had.
-    ('F19-S04', re.escape('int tile_m = 32, tile_m = 8, tile_k = 16;'),
-     'int tile_m = 32, tile_n = 8, tile_k = 16;'),
     # `.data` belongs to a future; an mdspan parameter and a declared buffer
     # are passed as they are.
-    ('F24-S04', re.escape('call bar(input.data, input.span(0), buffer.span(0));'),
-     'call bar(input, input.span(0), buffer.span(0));'),
-    ('F24-S04', re.escape('call foo(buffer.data, N, 3, 3.14, padding);'),
-     'call foo(buffer, N, 3, 3.14, padding);'),
     # The DMA moves one tile per instance, so the movement is block-uniform;
     # without the annotation the instances are read as lanes of one thread and
     # each lane would copy the whole tile into the same buffer.
@@ -1521,9 +1399,6 @@ UNIT_OVERRIDES = [
     ('F29-S05', re.escape('  parallel p by 6 {'),
      '  parallel p by 6 : block {'),
     # `call` only runs inside a parallel-by block.
-    ('F17-S02',
-     re.escape('__co__ void foo(int a) {\n  // ...\n  call kernel(a, 3);\n}'),
-     '__co__ void foo(int a) {\n  parallel p by 1 {\n    call kernel(a, 3);\n  }\n}'),
     # The 1P1C listings use tile constants without defining them.
     ('F07-S08', re.escape('__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
      '#define WARP_M 64\n#define WARP_N 64\n#define TILE_K 128\n#define WARP_K 16\n__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
@@ -1531,8 +1406,6 @@ UNIT_OVERRIDES = [
      '#define WARP_M 64\n#define WARP_N 64\n#define TILE_K 128\n#define WARP_K 16\n#define NUM_GROUPS 4\n__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {'),
     # Round 83: `__co__` functions must carry a body; only `__device__`
     # helpers may be declared without one.
-    ('F15-S05', re.escape('__co__ int foo(int b);'),
-     '__co__ int foo(int b) { return b; }'),
     # Generic fallbacks, applied to every unit after the specific ones.
     ('*', r'\\emph\{next chapter\}', 'the next section'),
     ('*', r'\\emph\{previous chapter\}', 'the previous section'),

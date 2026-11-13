@@ -51,6 +51,9 @@ On Ampere (SM86), tensor-core MMA is scoped to a **single warp** (32 threads). I
 #define WARP_M 16
 #define WARP_N 16
 #define WARP_K 16
+#define MMA_M 16
+#define MMA_N 16
+#define MMA_K 16
 
 __co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, TILE_N)] : block {

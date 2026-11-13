@@ -27,8 +27,9 @@ In Choreo, the *mdspan*-typed shape can not be used as the function parameter. H
 
 ```choreo
 __co__ void foo(int a) {
-  // ...
-  call kernel(a, 3);
+  parallel p by 1 {
+    call kernel(a, 3);
+  }
 }
 ```
 

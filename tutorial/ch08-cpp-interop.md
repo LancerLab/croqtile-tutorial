@@ -65,6 +65,9 @@ When an algorithm needs a helper function that operates at the warp or thread le
 A `__co__` function can call a `__device__` function using the `call` keyword:
 
 ```choreo
+#define N_TOKENS 1024
+#define N_EXPERTS 8
+#define N_THREAD 128
 template <int K>
 __device__ void warp_topk(f32* vals, s32* idxs);
 
@@ -83,7 +86,8 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 
       parallel gid by [N_THREAD / 32] : group
         parallel tid by 32 : thread {
-          score = shared_scores.data.span_as(|shared_scores.data.span|).at(gid # tid);
+          flat_scores = shared_scores.span_as([|shared_scores.span|]);
+          score = flat_scores.at(gid # tid);
 
           local s32 [K] frag_idx{-1};
           local f32 [K] frag_val{-1.0f};
@@ -217,7 +221,7 @@ Treat these guards as documentation of hardware constraints.
 ```choreo
 #define PATH0
 
-__co__ foo() {
+__co__ auto foo() {
   #ifdef PATH0
     // path 0 code
   #else

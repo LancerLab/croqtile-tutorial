@@ -29,7 +29,7 @@ Another approach in Choreo to support dynamic shape is to use **Symbolic Dimensi
 
 ```choreo
 __co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
-  int tile_m = 32, tile_m = 8, tile_k = 16;
+  int tile_m = 32, tile_n = 8, tile_k = 16;
 
   s32 [M / tile_m, K / tile_k] tiled_lhs;
   s32 [K / tile_k, N / tile_n] tiled_rhs;
@@ -44,7 +44,7 @@ The reason for improved code safety of using *symbolic dimension* is that more c
 
 ```choreo
 __co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
-  int tile_m = 32, tile_m = 8, tile_k = 16;
+  int tile_m = 32, tile_n = 8, tile_k = 16;
 
   s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // 'mdspan' and 'ituple': rank must be same
   s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // 'tiled_rhs' can not have a zero dimension
@@ -96,7 +96,10 @@ To support dynamic shapes, Choreo compile has to be conservative at compile time
 A significant limitation of both *anonymous dimension* and *symbolic dimension* is that they can **only be applied to the *spanned data* in parameter lists**. Dimensions of buffers declared within Choreo functions cannot be made dynamic. For example, the following code will result in a compile-time error:
 
 ```choreo
-__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer
+__co__ void foo(s32 [M] input) {
+  s32 [M] derived;  // ok: the shape comes from the parameter
+  s32 [?] fresh;    // error: an internal buffer cannot introduce an anonymous dimension
+}
 ```
 
 ## Quick Summary

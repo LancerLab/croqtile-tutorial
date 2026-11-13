@@ -35,9 +35,10 @@ The prefixes `u` and `s` stand for "unsigned" and "signed", respectively, while 
 Note `s32` is different from `int`. Although they occupy the same amount of storage, in Choreo, `s32` can not be used alone to define programming entities. For example:
 
 ```choreo
-s32 a;  // error: the fundamental type can not be used for variable definition alone
+s32 a;    // a control integer, the same as 'int a'
+s32 [4] b; // a buffer of four elements
 ```
-This results in a compile-time failure. Consequently, `s32` cannot be used for program control like `int`, and type conversion between them is not possible.
+Both forms compile. The shape decides which one you get, not the type name.
 
 ## Storage Specifier
 In practical code, some buffer declarations must specify a **storage specifier**, like so:

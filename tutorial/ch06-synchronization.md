@@ -18,7 +18,7 @@ __co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
 
   parallel {px, py} by [8, 16] : block
     parallel {qx, qy} by [16, 16] : thread {
-
+    output.at(px#qx, py#qy) = 0;
     with tile_k in 16 {
       // Prologue: start loading tile 0
       lf0 = dma.copy.async lhs.chunkat(px, tile_k) => shared;
@@ -153,18 +153,18 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 **Producer path.** For each `iv_k`, `wait empty[stage]` acquires a free slot. The `dma.copy` lines fill `lhs_load_s` / `rhs_load_s` at that stage. Then `trigger full[stage]` hands the slot to the consumer.
 
-**Consumer bootstrap.** The loop `foreach {s} in [STAGES] { trigger empty[s]; }` runs **before** the K-loop so every stage starts with an `empty` credit. Without this, the producer blocks forever on its first `wait empty` — a deadlock.
+**Consumer bootstrap.** The loop `foreach {s} in [STAGES] { trigger empty[s]; }` runs **before** the K-loop so every stage starts with an `empty` event. Without this, the producer blocks forever on its first `wait empty` — a deadlock.
 
 **Consumer path.** Each `iv_k`: `wait full[stage]` blocks until the producer has filled that slot, then MMA over the tile, `mma.commit`, and `trigger empty[stage]` to release the slot for reuse.
 
-**`mma.commit`.** Hopper WGMMA overlaps instruction issue and accumulation. `mma.commit` is the fence that completes one K-slab's contribution to `mc` before that stage's shared buffer may be reused. Omitting it risks reading stale data — the MMA might still be consuming operands when the producer overwrites the buffer.
+**`mma.commit`.** `mma.commit` completes the tile's matrix operations before the stage's shared buffer may be reused. Omitting it risks reading stale data — the MMA might still be consuming operands when the producer overwrites the buffer.
 
-### Credit flow for one stage
+### Event flow for one stage
 
-The diagram matches the code: bootstrap grants empty credits; the producer waits on `empty`, fills, signals `full`; the consumer waits on `full`, computes, signals `empty`. When `iv_k` wraps modulo `STAGES`, the same physical stage re-enters the cycle.
+The diagram matches the code: the bootstrap triggers every `empty` event; the producer waits on `empty`, fills, triggers `full`; the consumer waits on `full`, computes, triggers `empty`. When `iv_k` wraps modulo `STAGES`, the same physical stage re-enters the cycle.
 
-![Event credit flow for one pipeline stage](../assets/images/ch06/fig2_event_credit_flow_dark.png#only-dark)
-![Event credit flow for one pipeline stage](../assets/images/ch06/fig2_event_credit_flow_light.png#only-light)
+![Event flow for one pipeline stage](../assets/images/ch06/fig2_event_credit_flow_dark.png#only-dark)
+![Event flow for one pipeline stage](../assets/images/ch06/fig2_event_credit_flow_light.png#only-light)
 
 ### Debugging tip
 

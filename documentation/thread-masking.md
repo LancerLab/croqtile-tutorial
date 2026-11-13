@@ -75,12 +75,12 @@ __co__  void foo() {
     inthreads.async (p > 2) {
       // divergent code for thread 3, 4, 5 (thread-mask: 111000)
     }
-    sync.shared; // sync point
+    sync.barrier : thread; // sync point
                  // all 'inthreads' paths must get executed
   }
 }
 ```
-In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each `inthreads` block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the `sync.shared` statement established a **synchronization point** for all threads. That makes sure code for both paths get executed after this *synchronization point*.
+In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each `inthreads` block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the `sync.barrier : thread` statement established a **synchronization point** for all threads. That makes sure code for both paths get executed after this *synchronization point*.
 
 Note that, only the outer `inthreads` can be declared as asynchronous. Programmers will get an compile-time error when using `inthreads.async` for any inner `inthreads` block.
 

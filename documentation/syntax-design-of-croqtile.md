@@ -37,7 +37,7 @@ Among the four type categories, *scalar* and *ituple* could be well accepted con
 As described, Scalar types in Choreo includes the *Integer Type* and *Boolean Type*. The *Integer Type* is similar to C++ type 'int' or 'int32_t'. It is an signed value which takes 32-bits, ranging from $-2^{31}$ to $2^{31}-1$. The below code illustrates its usage for defining the data and function declaration.
 ```
 int a;
-__co__ int foo(int b);
+__co__ int foo(int b) { return b; }
 ```
 Operations like integer arithmetics, shift and logical operation are all supported. And the syntax is identical to C++ builtin operations.
 In Choreo, we neither provide equivalence of unsigned scalar integers, nor equivalence of 8-bits, 16-bits, 64-bits scalar integers. This design is simply motivated by the fact: these types are not essential for program control purposes. And normally a 32-bits signed integer can fulfill such work.

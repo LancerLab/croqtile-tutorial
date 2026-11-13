@@ -725,7 +725,7 @@
    "after": "The producer waits on \\co@empty[stage]@ before writing either operand into that slot. Both copies in this example are synchronous, so triggering \\co@full[stage]@ after them means both operands are ready. Replacing the copies with asynchronous operations would require completing those operations before sending the same trigger."
   },
   {
-   "before": "\\textbf{Consumer bootstrap.} The loop \\texttt{foreach \\{s\\} in [STAGES] \\{ trigger empty[s]; \\}} runs \\textbf{before} the K-loop so every stage starts with an \\texttt{empty} credit. Without this, the producer blocks forever on its first \\texttt{wait empty} --- a deadlock.",
+   "before": "\\textbf{Consumer bootstrap.} The loop \\texttt{foreach \\{s\\} in [STAGES] \\{ trigger empty[s]; \\}} runs \\textbf{before} the K-loop so every stage starts with an \\texttt{empty} event. Without this, the producer blocks forever on its first \\texttt{wait empty} --- a deadlock.",
    "after": "The consumer first triggers every \\co@empty@ event. All events begin unset, so this bootstrap grants the producer permission to fill each slot once. No \\co@full@ event is triggered here because no input has been loaded yet."
   }
  ],
@@ -1141,10 +1141,6 @@
   {
    "before": "In this case, it defines device function template named \\texttt{matmul\\_kernel}, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function \\texttt{matmul\\textless{}16, 4, 72\\textgreater{}} for the call.",
    "after": "The call supplies three constant template arguments to \\co@matmul_kernel@. The target compiler instantiates the corresponding specialization, just as it would for an ordinary C++ template call."
-  },
-  {
-   "before": "So in Croqtile, calling a template function is similar to those in C++. However, \\textbf{the template argument passed must be able to be inferred as compile time constant value} by Croqtile compiler. Therefore, any runtime values can result in error.",
-   "after": "Template arguments must be evaluable as constants during Croqtile compilation. An input-dependent value cannot select a C++ specialization at runtime:"
   }
  ],
  "F26-S01": [

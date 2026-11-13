@@ -92,7 +92,7 @@ F08-S08	tutorial/ch06-synchronization.md	2.2	kept	`__co__ auto` return type
 F08-S09	tutorial/ch06-synchronization.md	3.8	kept	Why you cannot "just overlap" without events
 F08-S10	tutorial/ch06-synchronization.md	3.8.5	kept	The full 1P1C event pipeline
 F08-S11	tutorial/ch06-synchronization.md	3.8.5	kept	Walking through the kernel
-F08-S12	tutorial/ch06-synchronization.md	3.8.5	kept	Credit flow for one stage
+F08-S12	tutorial/ch06-synchronization.md	3.8.5	kept	Event flow for one stage
 F08-S13	tutorial/ch06-synchronization.md	1.5	kept	Debugging tip
 F08-S14	tutorial/ch06-synchronization.md	2.15	kept	New syntax
 F08-S15	tutorial/ch06-synchronization.md	3.8.10	kept	Summary

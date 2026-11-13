@@ -832,10 +832,6 @@ own document.
 
     lightweight synchronization tokens declared in shared memory:
 
-- **prose**:
-
-    the same pattern used in operating systems (semaphores), network flow control (TCP window), and hardware (warp barriers).
-
 ## F07-S08
 
 - **prose**:
@@ -899,12 +895,6 @@ own document.
 - **prose**:
 
     Warp specialization (QZ002QZ) puts them on QZ003QZ warpgroups with different program counters.
-
-## F08-S11
-
-- **prose**:
-
-    QZ003QZ Hopper WGMMA overlaps instruction issue and accumulation.
 
 ## F08-S14
 

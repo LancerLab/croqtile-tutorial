@@ -107,12 +107,12 @@ shared event empty;
 
 Events have two operations:
 
-- **`trigger name`** — signal that a condition is met (e.g., "data is ready")
+- **`trigger name`** — record that a condition is met (e.g., "data is ready")
 - **`wait name`** — block until the corresponding `trigger` fires
 
-The producer calls `trigger full` after writing a tile to signal "data ready." The consumer calls `wait full` before reading, blocking until the signal arrives. Symmetrically, the consumer triggers `empty` after finishing its read (the buffer can be reused), and the producer waits on `empty` before writing the next tile.
+The producer calls `trigger full` after writing a tile to record "data ready." The consumer calls `wait full` before reading, blocking until that trigger arrives. Symmetrically, the consumer triggers `empty` after finishing its read (the buffer can be reused), and the producer waits on `empty` before writing the next tile.
 
-This is a **credit-based bounded buffer** protocol — the same pattern used in operating systems (semaphores), network flow control (TCP window), and hardware (warp barriers). `full` is the "data available" credit; `empty` is the "buffer free" credit.
+This is a **bounded buffer** built from two events — `full` records that a slot holds data; `empty` records that it is free to fill.
 
 ### Event arrays for multi-stage pipelines
 
@@ -126,7 +126,7 @@ Each physical buffer slot gets its own `full`/`empty` pair. The ring index `stag
 
 ### Bootstrap protocol
 
-The consumer must **seed** the `empty` credits before the K-loop starts:
+The consumer must **trigger** every `empty` event before the K-loop starts:
 
 ```choreo
 foreach {s} in [STAGES] {
@@ -134,7 +134,7 @@ foreach {s} in [STAGES] {
 }
 ```
 
-Without this bootstrap, the producer's first `wait empty[0]` blocks forever — a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol requires initial credits.
+Without this bootstrap, the producer's first `wait empty[0]` blocks forever — a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol needs its events triggered before the first wait.
 
 [Chapter 6](ch06-synchronization.md) develops the full double-buffered and multi-stage pipeline kernels that put these primitives to work. The examples there compose `inthreads.async`, events, `swap`, and `mma.commit` into complete, runnable matmul pipelines.
 
@@ -285,7 +285,7 @@ parallel p by BLK_CNT: block {
 | `inthreads.async (condition)`    | Structured concurrent region — compile-time thread partitioning      |
 | `shared event name`              | Declare a synchronization token in shared memory                     |
 | `shared event name[N]`           | Declare N synchronization tokens                                     |
-| `trigger name`                   | Signal that a condition is met                                       |
+| `trigger name`                   | Record that a condition is met                                       |
 | `wait name`                      | Block until the corresponding `trigger` fires                        |
 | `tile_id = tile_iter # block_id` | Compose indices for tile striping                                    |
 | `int total_tiles = expr`         | Local integer variable                                               |

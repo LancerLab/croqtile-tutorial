@@ -51,7 +51,7 @@ The important pieces are:
 Minimal examples:
 
 ```choreo
-f = dma.copy input.chunkat(block) => shared;
+f = dma.copy input.chunkat(blk) => shared;
 g = dma.transp<1, 0> matrix => local;
 h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
 ```

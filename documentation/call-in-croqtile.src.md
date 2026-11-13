@@ -49,8 +49,8 @@ __device__ void foo(float *, int, unsigned, double, float) {}
 __co__ void foobar(f32 [M, 24] input, int N, float padding) {
   parallel p by 1 {
     shared f32 [14, 7] buffer;
-    call bar(input.data, M, buffer.span(0));
-    call foo(buffer.data, N, 3, 3.14, padding);
+    call bar(input, input.span(0), buffer.span(0));
+    call foo(buffer, N, 3, 3.14, padding);
   }
 }
 ```
@@ -71,28 +71,29 @@ __device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
 
 __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
-  parallel p by 6 {
-    shared s32 [output.span / #p] buffer;   // shape: [16, 4]
+  parallel {p, q} by [6, 6] : block {
+    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]
     lhs_load = dma.copy lhs.chunkat(p, _) => shared;
-    rhs_load = dma.copy rhs.chunkat(_, p) => shared;
+    rhs_load = dma.copy rhs.chunkat(_, q) => shared;
     call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);
+    dma.copy buffer => output.chunkat(p, q);
   }
   return output;
 }
 ```
 In this case, it defines device function template named `matmul_kernel`, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function `matmul<16, 4, 72>` for the call.
 
-So in Choreo, calling a template function is similar to those in C++. However, **the template argument passed must be able to be inferred as compile time constant value** by Choreo compiler. Therefore, any runtime values can result in error.
+Template arguments must be evaluable as constants during Choreo compilation. An input-dependent value cannot select a C++ specialization at runtime:
 
 ```choreo
 __co__ void foo(int M) {
   parallel p by 1 {
-    call bar<M>();  // error: 'M' is a runtime value
+    call bar<M>();  // warning: 'M' cannot be evaluated at compile time
   }
 }
 ```
 
-Choreo compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.
+The Choreo compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, the compiler reports a warning that the argument cannot be evaluated at compile time.
 
 !INCLUDE_IF_EXISTS "target/calls.md"
 

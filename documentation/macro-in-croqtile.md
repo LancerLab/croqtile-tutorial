@@ -9,7 +9,7 @@ Choreo preprocessor supports C/C++ **object-like macros** to connect both host c
 #define N 32
 #define K 64
 
-__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
+__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }
 
 void foo() {
   choreo::f32 a[M][K];
@@ -22,11 +22,11 @@ void foo() {
 ```
 In the code snippet, the inputs of choreo function `matmul` are not dynamically shaped. Instead, Choreo pre-processor substitutes `M`, `N`, `K` with values `256`, `32`, `64` ahead of Choreo compilation, which produces tileflow function with statically shaped inputs. In this way, programmers makes different code consistent and easy to manipulate.
 
-Note that, till now Choreo does only support macros with parameters. It means code like:
+Parameterized macros expand as well, so a derived tile size can be written as one:
 ```cpp
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 ```
-would not work.
+The argument is substituted before the shape is evaluated, so the result is the same as writing the value out.
 
 ## Comments
 Choreo support C-style comments, either `/*...*/` or `//...`, leveraging the capability choreo preprocessor has provided.
@@ -37,7 +37,7 @@ Choreo also support conditional compilation which C/C++ programs used a lot. Thi
 ```choreo
 #define PATH0
 // some host code
-__co__ foo() {
+__co__ auto foo() {
 #ifdef PATH0
 // some code related to PATH0
 #else

@@ -41,11 +41,11 @@ parallel p by 2 {
                                            // once unblocked, change 'e' to 'UNSET'
   inthreads.async (p == 0) { trigger e; }  // trigger-thread
                                            // convert 'e' to 'SET'
-  sync.shared;                             // sync point
+  sync.barrier : thread;                   // sync point
 }
 ```
 
-We have observed similar code in last section, except for that there are `wait` and `trigger` statements. In this code snippet, once the event `e` is triggered by the *trigger-thread*, the *wait-thread* is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by `sync.shared`, where thread `0` completes its `inthreads` block before thread `1`. From another perspective, the events here **chains the asynchronous `inthreads`**. This is useful in many scenarios.
+We have observed similar code in last section, except for that there are `wait` and `trigger` statements. In this code snippet, once the event `e` is triggered by the *trigger-thread*, the *wait-thread* is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by `sync.barrier : thread`, where thread `0` completes its `inthreads` block before thread `1`. From another perspective, the events here **chains the asynchronous `inthreads`**. This is useful in many scenarios.
 
 Note that, in Choreo semantics, **an event is always auto-reset by its `wait` statement**. That means when a `wait` statement is unblocked, the events that are waited are changed to *UNSET* state.
 

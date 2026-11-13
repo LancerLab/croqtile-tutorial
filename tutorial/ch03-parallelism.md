@@ -159,6 +159,8 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
 
   parallel {p, q} by [16, 64] {
+    foreach {m, n} in [128 / #p, 256 / #q]
+      output.at(p#m, q#n) = 0;
     foreach index = {m, n, k} in [128 / #p, 256 / #q, 256]
       output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n);
   }
@@ -197,6 +199,8 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
 
   parallel {px, py} by [8, 16] : block {
+    parallel {qx, qy} by [16, 16] : thread
+      output.at(px#qx, py#qy) = 0;
     foreach {tile_k} in [16] {
       lhs_load = dma.copy lhs.chunkat(px, tile_k) => shared;
       rhs_load = dma.copy rhs.chunkat(tile_k, py) => shared;
