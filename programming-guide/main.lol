@@ -215,8 +215,6 @@
 \contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{110}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}A templated device helper}{110}{lstlisting.3.66}%
 \contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{110}{lstlisting.3.67}%
-\contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{111}{lstlisting.3.68}%
-\contentsline {lstlisting}{\numberline {3.69}The block after factoring target-specific details}{111}{lstlisting.3.69}%
-\contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{112}{lstlisting.3.70}%
-\contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{115}{lstlisting.3.71}%
-\contentsline {lstlisting}{\numberline {3.72}Example Code}{116}{lstlisting.3.72}%
+\contentsline {lstlisting}{\numberline {3.68}device functions: target alongside Croqtile}{111}{lstlisting.3.68}%
+\contentsline {lstlisting}{\numberline {3.69}Example Code: Matrix Multiplication with Tiling}{114}{lstlisting.3.69}%
+\contentsline {lstlisting}{\numberline {3.70}Example Code}{116}{lstlisting.3.70}%

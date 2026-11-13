@@ -95,7 +95,6 @@ __co__ void foo(int M) {
 
 The Choreo compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, the compiler reports a warning that the argument cannot be evaluated at compile time.
 
-!INCLUDE_IF_EXISTS "target/calls.md"
 
 ### Quick Summary
 In this section, we learned the syntax to invoke device functions, including normal ones and those triggers function template instantiations. Programmers must code in cautious since no check is applied at transpilation time, which may result in more confusing error reporting since the check is applied at target compile time with generated functions.

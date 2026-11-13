@@ -246,7 +246,6 @@ content unit back to its source.
 | `F25-S06` | `documentation/input-output.md` | 2.3 | kept |
 | `F25-S07` | `documentation/input-output.md` | 2.3 | kept |
 | `F25-S08` | `documentation/input-output.md` | 3.9 | kept |
-| `F26-S01` | `documentation/target/calls.md` | 3.9 | kept |
 | `F27-S01` | `documentation/target/env_setting_up.md` | X | moved |
 | `F28-S01` | `documentation/basic-dma.md` | 2.9 | kept |
 | `F28-S02` | `documentation/basic-dma.md` | 3.6 | kept |

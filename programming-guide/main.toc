@@ -47,12 +47,12 @@
 \contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{106}{subsection.3.8.5}%
 \contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{108}{subsection.3.8.6}%
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{109}{section.3.9}%
-\contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{112}{subsection.3.9.1}%
-\contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{113}{subsection.3.9.2}%
-\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{113}{section.3.10}%
+\contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{111}{subsection.3.9.1}%
+\contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{112}{subsection.3.9.2}%
+\contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{112}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{114}{subsection.3.10.1}%
 \contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{116}{subsection.3.10.2}%
-\contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{117}{section.3.11}%
+\contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{116}{section.3.11}%
 \contentsline {chapter}{\numberline {A}Syntax Quick Reference}{118}{appendix.A}%
 \contentsline {section}{\numberline {A.1}Declarations and shapes}{118}{section.A.1}%
 \contentsline {section}{\numberline {A.2}Iteration}{118}{section.A.2}%

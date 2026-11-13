@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 16:24
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 16:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1913,39 +1913,43 @@ File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type bmp)
 (./build-zh/units/F10-S01.tex) (./build-zh/units/F10-S03.tex)
 (./build-zh/units/F23-S05.tex [116]) (./build-zh/units/F23-S06.tex)
 (./build-zh/units/F24-S05.tex) (./build-zh/units/F24-S06.tex [117])
-(./build-zh/units/F25-S08.tex) (./build-zh/units/F26-S01.tex [118])
-(./build-zh/units/F10-S04.tex [119]) (./build-zh/units/F10-S13.tex)
-(./build-zh/units/F09-S04.tex [120]
+(./build-zh/units/F25-S08.tex) (./build-zh/units/F10-S04.tex [118])
+(./build-zh/units/F10-S13.tex) (./build-zh/units/F09-S04.tex [119]
 File: figures/f09-fig8_expressiveness_light.png Graphic file (type bmp)
 <figures/f09-fig8_expressiveness_light.png>
-) (./build-zh/units/F13-S02.tex)
-(./build-zh/units/F13-S03.tex) (./build-zh/units/F13-S04.tex)
-(./build-zh/units/F13-S05.tex [121]) (./build-zh/units/F40-S01.tex)
-(./build-zh/units/F40-S02.tex) (./build-zh/units/F40-S03.tex [122])
-(./build-zh/units/F40-S04.tex [123]) (./build-zh/units/F40-S05.tex)
-(./build-zh/units/F40-S06.tex) (./build-zh/units/F11-S01.tex [124]))
-(./content-zh/appendix-a-quickref.tex [125]
+)
+(./build-zh/units/F13-S02.tex) [120] (./build-zh/units/F13-S03.tex)
+(./build-zh/units/F13-S04.tex) (./build-zh/units/F13-S05.tex)
+(./build-zh/units/F40-S01.tex) (./build-zh/units/F40-S02.tex)
+(./build-zh/units/F40-S03.tex [121]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [122])
+(./build-zh/units/F40-S04.tex) (./build-zh/units/F40-S05.tex)
+(./build-zh/units/F40-S06.tex [123]) (./build-zh/units/F11-S01.tex))
+(./content-zh/appendix-a-quickref.tex [124]
 Appendix A.
-[126
+[125
 
-]) (./content-zh/backmatter.tex [127] [128] (./main-zh.bbl))) [129
+]) (./content-zh/backmatter.tex [126] [127] [128
 
+] (./main-zh.bbl)))
+[129
 
 ]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 12.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 12.
-
-(./main-zh.aux)
+ (./main-zh.aux)
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 12.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 12.
 Package rerunfilecheck Info: File `main-zh.out' has not changed.
 (rerunfilecheck)             Checksum: 7B9CE8C5B14E9BED6AC43C458EF1B7CD;5399.
  ) 
 Here is how much of TeX's memory you used:
- 35756 strings out of 481819
- 790955 string characters out of 5936389
- 1285891 words of memory out of 5000000
- 51163 multiletter control sequences out of 15000+600000
+ 35751 strings out of 481819
+ 790865 string characters out of 5936389
+ 1318891 words of memory out of 5000000
+ 51161 multiletter control sequences out of 15000+600000
  539477 words of font info for 105 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,17n,107p,861b,1903s stack positions out of 5000i,500n,10000p,200000b,80000s

@@ -933,15 +933,6 @@ P: A Croqtile function follows the C++ calling convention and uses C++ name mang
 P: Some features are not supported yet:
 L: Croqtile function declaration without definition. This allows calling Croqtile function from another module. | Croqtile function with `inline`. This allows the Croqtile function to be used in headers.
 
-=== UID:F26-S01
-H: *Factor* Target Specific Details
-P: Targets such as *factor* require C linkage for device functions, expressed with `extern "C"`. Function templates cannot have C linkage, so Croqtile provides wrappers to support them:
-C: A cok block around device code
-P: Programmers can turn `bar` into a function template, like following:
-C: The block after factoring target-specific details
-P: Croqtile can generate a wrapper for the `bar<3>` specialization. The function template itself has C++ linkage; the wrapper provides the target-facing entry point.
-P: As the implementation differs from other targets, you may utilize `-kt` to enable such functionality for *croqtile-factor* compilation.
-
 === UID:F10-S04
 H: `__device__` functions: target alongside Croqtile
 P: A custom reduction, sorting network, or specialized math operation can be implemented as a device helper.

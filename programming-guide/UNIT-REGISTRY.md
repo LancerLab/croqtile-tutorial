@@ -395,7 +395,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F24-S03` | [### Basic Syntax of Call Statements] | P×4: general syntax intro; template args and arguments; no caller/callee checks; calls must be in parallel-by ; C×2: (choreo, ~3, "call func-name <optional-template-args> (arguments);"); (choreo, ~10, "__co__ void foo() {") | B | 2.13 | 拆分：移出硬件句，保留 DSL 单元 |
 | `F24-S04` | [### The Convention: Allowed Argument Types] | P×6: allowed types intro; int, float types, target variance; no float ops in tileflow; example intro; decayed pointer, shape dropped; choreo::f16/bf16 fallback ; L×1: (3, "*Spanned Data* type") ; C×1: (choreo, ~12, "__device__ void bar(float *p, int m, int n) {}") | B | 2.13 | 拆分：移出硬件句，保留 DSL 单元 |
 | `F24-S05` | [## Instantiate the Function Template for Call] | —（分组/占位标题，无直属正文） | C | 3.9 | — |
-| `F24-S06` | [### Trigger C++ Template Instantiation] | P×4: template call possible; instantiates matmul<16, 4, 72>; compile-time constant required; abort if inference fails ; C×2: (choreo, ~15, "template<int M, int N, int K>"); (choreo, ~7, "__co__ void foo(int M) {") ; A×1: !INCLUDE_IF_EXISTS "target/calls.md" | C | 3.9 | 拆分：移出硬件句，保留 DSL 单元 |
+| `F24-S06` | [### Trigger C++ Template Instantiation] | P×4: template call possible; instantiates matmul<16, 4, 72>; compile-time constant required; abort if inference fails ; C×2: (choreo, ~15, "template<int M, int N, int K>"); (choreo, ~7, "__co__ void foo(int M) {") | C | 3.9 | 拆分：移出硬件句，保留 DSL 单元 |
 | `F24-S07` | [### Quick Summary] | P×1: call syntax recap, caution | B | 2.13 | — |
 
 ### F25 `documentation/input-output.md`
@@ -410,12 +410,6 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F25-S06` | [### Return Type and Type Deduction] | P×3: output types, void allowed; auto return inference; auto infers f32 [7,16] ; C×1: (choreo, ~7, "__co__ auto foo() {") | B | 2.3 | — |
 | `F25-S07` | [### C++ Host: Shape Return] | P×4: semantic copy, buffer; spanned_data, no copy; owns buffer, RVO; .rank(), .shape() query ; C×2: (choreo, ~12, "__co__ auto foo() {"); (cpp, ~7, "template <typename T, size_t Rank>") | B | 2.3 | — |
 | `F25-S08` | [## More Questions] | P×3: function signature question; C++ calling convention, no extern C; unsupported features intro ; L×1: (2, "Choreo function declaration without definition") | C | 3.9 | — |
-
-### F26 `documentation/target/calls.md`
-
-| 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
-|---|---|---|---|---|---|
-| `F26-S01` | [### *Factor* Target Specific Details] | P×4: factor target C-linkage, wrapper tricks; turn bar into template; generated specialization, no extern C; -kt for choreo-factor ; C×2: (choreo, ~9, "__cok__ {"); (choreo, ~12, "__cok__ {") | C | 3.9 | 拆分：移出硬件句，保留 DSL 单元 |
 
 ### F27 `documentation/target/env_setting_up.md`
 
