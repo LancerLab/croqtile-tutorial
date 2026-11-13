@@ -1,0 +1,14 @@
+\subsection*{\texttt{span} 与 \texttt{span(i)}}
+
+成员 \co@tensor.span@ 返回完整形状，\co@tensor.span(i)@ 返回第 i 维的大小。矩阵乘法的输出行数来自左输入，列数来自右输入：
+
+\begin{lstlisting}[language=croqtile,caption={span 与 span(i)}]
+s32 [lhs.span(0), rhs.span(1)] output;
+\end{lstlisting}
+
+这个例子从两个不同操作数取得结果尺寸，使输出声明与输入保持关联。需要匹配已搬运分块形状的暂存缓冲区，也可以用同样的方法声明。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_span_light.png}
+\caption{对 [4, 8] 张量，.span 返回完整形状 [4, 8]；.span(0) 和 .span(1) 分别返回 4 和 8。}
+\end{figure}

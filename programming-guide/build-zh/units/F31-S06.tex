@@ -1,0 +1,12 @@
+\subsection*{有界变量}
+
+在 \co@parallel-by@ 块中，紧跟 \co@parallel@ 关键字定义的变量称为\textbf{有界变量}。具体来说：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 若变量是\emph{整数}，称为\textbf{有界整数}。
+\item 若变量是 \emph{ituple}，称为\textbf{有界 ituple}。
+\end{itemize}
+
+这个术语表明，变量不只有值，还有确定的界。例如在语句 \co@parallel p by 6@ 中，\co@p@ 是\emph{有界整数}，界为 \co@[0, 6)@，其中 \co@6@ 是不含在内的上界。
+
+并行索引的当前值标识执行实例，循环索引的当前值随 \co@foreach@ 迭代变化。两者的上界分别来自 \co@parallel-by@ 和 \co@with-in@ 声明。

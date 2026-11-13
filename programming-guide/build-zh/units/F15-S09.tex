@@ -1,0 +1,21 @@
+\subsection*{存储说明符}
+
+分块可以由协作线程共同使用，也可以由单个线程独占。元素类型和形状无法表达这种区别，需要由存储说明符补充。
+
+这些示例使用以下三种存储说明符：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@global@
+\item \co@shared@
+\item \co@local@
+\end{itemize}
+
+存储说明符写在元素类型之前：
+
+\begin{lstlisting}[language=croqtile,caption={存储说明符}]
+ndims : [20, 15];
+local f32 [10, 10] d0;
+shared f16 [ndims] d1;
+\end{lstlisting}
+
+应根据使用缓冲区的代码选择存储说明符。默认位置取决于执行上下文和目标平台；若搬运操作或协作组需要特定的存储位置，应显式声明。

@@ -1,0 +1,24 @@
+\subsection*{示例代码}
+
+\begin{lstlisting}[language=croqtile,caption={示例代码}]
+__co__ auto rgb2gray(f32 [N, 3, H, W] input) {
+  f32 [N, H, W] out;
+  parallel q by 6 {
+    with index={n, h, w} in [N, H, W]/{#q, 16, 512} {
+      foreach n, h, w {
+        // _ means no tiling
+        input_L1_A = dma.copy input.chunkat(q#n, _, h, w) => local;
+        dims : input_L1_A.span[(0), (2), (3)];
+        local f32 [dims] out_L1;
+        call rgb2gray_kernel_fp32_fp32(input_L1_A.data, out_L1, |out_L1|, 1);
+        dma.copy out_L1 => out.chunkat(q#n, h, w);
+      }
+    }
+  }
+  return out;
+}
+\end{lstlisting}
+
+输入形状为 \co@[N, 3, H, W]@，第二维包含三个颜色通道。\co@chunkat(q#n, _, h, w)@ 中的下划线保持这些通道完整，同时选择一幅图像中的空间区域。从装入形状中去掉通道维，就得到 \co@out_L1@ 的形状，辅助函数为每个空间位置写入一个灰度值。
+
+组合索引 \co@q # n@ 为六个并行实例分别分配一组连续图像。这种规则划分假定 N 能被 6 整除，H 能被 16 整除，W 能被 512 整除。满足这些条件时，每个输入分块包含一个 16 × 512 区域的全部三个通道，最后的复制将灰度结果写入对应输出分块。其他图像尺寸需要明确的边界处理方式。

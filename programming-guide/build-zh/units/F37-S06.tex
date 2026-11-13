@@ -1,0 +1,7 @@
+\subsection*{\texttt{local}：私有存储}
+
+\co@local@ 表示线程私有存储，适合不需要在线程间共享的小数组或临时数据：
+
+\begin{lstlisting}[language=croqtile,caption={私有存储声明}]
+local f16 [5] thread_local_data;
+\end{lstlisting}

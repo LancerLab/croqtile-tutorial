@@ -1,0 +1,29 @@
+\subsection*{期值、\texttt{.data} 与 \texttt{.span}}
+
+DMA 传输可以返回一个期值句柄：
+
+\begin{lstlisting}[language=croqtile,caption={由一次拷贝得到的期值}]
+f = dma.copy input => shared;
+\end{lstlisting}
+
+它提供两个成员：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@f.data@：传输的目的缓冲区。
+\item \co@f.span@：目的缓冲区的形状。
+\end{itemize}
+
+使用方式如下：
+
+\begin{lstlisting}[language=croqtile,caption={读取 data 与 span}]
+f = dma.copy input => shared;
+foreach idx in [f.span]
+  output.at(idx) = f.data.at(idx);
+\end{lstlisting}
+
+即使拷贝是同步的，给结果命名也有用途：后续代码既能通过 \co@.data@ 访问目的缓冲区，又能通过 \co@.span@ 确定遍历范围。这样不必再单独维护一份缓冲区名称和形状。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_future_data_light.png}
+\caption{复制结果通过 .data 提供目标张量，通过 .span 提供其形状；异步复制必须完成后才能读取。}
+\end{figure}

@@ -1,0 +1,24 @@
+\subsection*{语法速览}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+| \textbf{语法} & \textbf{含义} | \\
+\midrule
+| --- & --- | \\
+| \co@mc = mma.fill 0.0@ & 把累加器分块初始化为零 | \\
+| \co@mma.fill.f16 0.0f@ / \co@mma.fill.f32 0.0f@ & 显式指定精度的累加器 | \\
+| \co@mma.load.swiz<N>@ src & 按重排模式加载 | \\
+| \co@mma.row.row mc, ma, mb@ & C += A × B（均为行主序） | \\
+| \co@mma.row.col mc, ma, mb@ & C += A × B（A 行主序，B 列主序） | \\
+| \co@mma.row.row.sp mc, ma, mb, me@ & 带元数据操作数的稀疏 MMA | \\
+| \co@mma.row.row.scale mc, ma, mb, sc_a, sc_b@ & 融合的 MMA 与逐分块反量化 | \\
+| \co@mma.scale mc, sc_a, sc_b@ & 独立的 MMA 后置缩放 | \\
+| \co@mma.store.transp mc, dst@ & 转置后写出累加器 | \\
+| \co@cdiv(a, b)@ & 向上取整除法 | \\
+| \co@__co__ void fn(...)@ & 就地写出结果的核函数 | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+阅读修饰符时，应同时追踪数据路径。交错装入必须匹配复制产生的布局，稀疏操作需要同一操作数分块的元数据，缩放值也必须对应正在累加的分块。语句写得简短，并不意味着可以忽略这些关系。

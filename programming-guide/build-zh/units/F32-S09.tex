@@ -1,0 +1,23 @@
+\subsection*{有界变量的取值}
+
+有界变量同时携带范围和当前值。对于 \co@with-in@ 声明的索引，\co@foreach@ 按以下规则提供当前值：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{当前值}：在 \co@foreach@ 语句中，有界变量充当迭代变量，当前值由循环迭代决定；在 \co@foreach@ 语句之外，其当前值恒为零。
+\end{itemize}
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{上界值}：由 \co@with-in@ 或 \co@parallel-by@ 语句指定。
+\end{itemize}
+
+\co@foreach@ 结束后，\co@with-in@ 索引恢复为循环外的值，不会像 C++ 循环变量那样保留终止值。并行索引遵循另一条规则，其值标识当前并行实例。下面的例子讨论顺序执行的 \co@with-in@ 情形。
+
+\begin{lstlisting}[language=croqtile,caption={有界变量的取值}]
+with x in 6 {
+  // x's current value is 0
+  foreach x {
+    // x's current value is either 0, 1, 2, ..., 5
+  }
+  // x's current value is 0, NOT 6
+}
+\end{lstlisting}

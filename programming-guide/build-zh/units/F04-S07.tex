@@ -1,0 +1,17 @@
+\subsection*{\texttt{view(...).from(...)}：指定区域形状与元素偏移}
+
+\begin{lstlisting}[language=croqtile,caption={view(...).from(...)：显式分块范围与显式元素偏移}]
+lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)
+\end{lstlisting}
+
+形式 \co@view(...).from(...)@ 为窗口给出显式形状和按元素计量的起点。从 \co@(37, 50)@ 开始的 \co@[16, 16]@ 窗口保留这个起点，不会将其取整到最近的分块边界。
+
+起始位置以元素偏移给出，或访问区域不适合规则等分时，可以使用 \co@view(...).from(...)@。\co@view@ 确定窗口大小，\co@from@ 确定它从哪个元素开始；窗口位置因此不必落在分块网格的整数坐标上。
+
+三种写法分别适用于：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@chunkat(...)@：由有界索引确定等分方式和分块坐标。
+\item \co@subspan(...).at(...)@：显式给出分块形状与分块坐标。
+\item \co@view(...).from(...)@：显式给出区域形状与起始元素偏移。
+\end{itemize}

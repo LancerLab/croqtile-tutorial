@@ -1,0 +1,30 @@
+\subsection*{稠密 FP16 之外：四步还能表达什么}
+
+上面的例子对稠密 FP16 分块使用 \co@mma.row.row@。同样的四步模式可以扩展到基本形式覆盖不到的工作负载。
+
+稀疏收缩还需要一个\textbf{元数据操作数} \co@me@，用来标明哪些元素非零：
+
+\begin{lstlisting}[language=croqtile,caption={一次稀疏收缩}]
+mma.row.row.sp mc, ma, mb, me;
+\end{lstlisting}
+
+\co@.sp@ 后缀加上元数据操作数，其余仍是填充、加载、相乘、存储的顺序。任何布局组合都能用，比如 \co@mma.row.col.sp@。\co@me@ 和 A、B 一起，从单独的元数据张量里载入。
+
+对带分块缩放值的量化操作数，收缩还需要所选 A、B 分块对应的缩放值。\co@.scale@ 形式将缩放与矩阵操作一起表达：
+
+\begin{lstlisting}[language=croqtile,caption={一次带缩放的收缩}]
+mma.row.row.scale mc, ma, mb, sc_a, sc_b;
+\end{lstlisting}
+
+收缩之后，每个结果元素由 \co@sc_a@ 和 \co@sc_b@ 缩放——不再需要单独的反量化核函数。如果缩放来源和标准的融合路径不同，缩放也可以写成\textbf{独立语句}：
+
+\begin{lstlisting}[language=croqtile,caption={另一种收缩布局}]
+mma.row.row mc, ma, mb;
+mma.scale mc, sc_a, sc_b;
+\end{lstlisting}
+
+独立的 \co@mma.scale@ 出现在某些 MoE 与混合精度核函数中。
+
+\co@dma.copy.swiz<N>@ 和 \co@mma.load.swiz<N>@ 里的 \co@N@ 必须一致，不一致就会读出错误数据。输出方面，\co@mma.store.transp mc, dst@ 会把累加器的行和列互换后写出，适合下一阶段需要列主序数据的情形。
+
+所有变体汇总在下表中，方便查阅。

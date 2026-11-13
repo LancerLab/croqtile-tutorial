@@ -1,0 +1,68 @@
+%% Chinese edition: Chinese text rules on top of the shared eBook layout.
+\input{preamble/ebook}
+
+%% --- Chinese typesetting -------------------------------------------------
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+\setlength{\parindent}{2em}
+\setlength{\parskip}{2pt plus 1pt}
+\linespread{1.25}\selectfont
+
+%% Localized generated names.
+\renewcommand{\lstlistingname}{代码清单}
+\renewcommand{\lstlistlistingname}{代码清单列表}
+\renewcommand{\contentsname}{目录}
+\renewcommand{\listfigurename}{插图目录}
+\renewcommand{\bibname}{参考文献}
+\renewcommand{\chaptername}{第}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+
+%% titlesec builds the chapter mark itself; the generated chapters call this
+%% macro so the running head follows the chapter title.
+\providecommand{\guidechaptermark}[1]{\markboth{#1}{}}
+
+%% Chinese titles for the callout boxes and the chapter header.
+\renewtcolorbox{brief}[1][本章导读]{%
+  enhanced,breakable,%
+  colback=croqgraylight,colframe=croqgray,%
+  colbacktitle=croqgray,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+\renewtcolorbox{keypoint}[1][要点]{%
+  enhanced,breakable,%
+  colback=croqgreenlight,colframe=croqgreen,%
+  colbacktitle=croqgreen,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+\renewtcolorbox{pitfall}[1][常见陷阱]{%
+  enhanced,breakable,%
+  colback=croqredlight,colframe=croqred,%
+  colbacktitle=croqred,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+\renewtcolorbox{tryit}[1][动手试试]{%
+  enhanced,breakable,%
+  colback=croqamberlight,colframe=croqamber,%
+  colbacktitle=croqamber,coltitle=white,%
+  boxrule=0.4pt,arc=2pt,%
+  fonttitle=\bfseries\sffamily\small,%
+  left=7pt,right=7pt,top=6pt,bottom=6pt,%
+  toptitle=3pt,bottomtitle=3pt,title={#1}}
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\bfseries\color{croqink}}
+  {\large\color{croqgreen}第\hspace{0.25em}\thechapter\hspace{0.25em}章}
+  {8pt}{\Huge}
+
+%% The macro itself passes an English box title; override the whole macro.
+\renewcommand{\guidechapterintro}[1]{\begin{brief}[本章导读]#1\end{brief}}
+\renewcommand{\guidechapternext}[1]{\begin{brief}[下一步阅读]#1\end{brief}}
+
+%% Chinese date on the title page.
+\renewcommand{\guidereleasedate}{2026 年 11 月}

@@ -1,0 +1,9 @@
+\subsection*{运行时检查：\texttt{-rtc}}
+
+编译器通过 \co@-rtc@ 或 \co@--runtime-check@ 提供逐级增强的运行时检查：
+
+\begin{lstlisting}[language=croqtile,caption={设置运行时检查级别}]
+croq kernel.co -rtc=high -o kernel
+\end{lstlisting}
+
+检查级别包括 \co@none@、\co@entry@（默认）、\co@low@、\co@medium@、\co@high@ 和 \co@all@。每一级都包含前一级的检查。开发时使用 \co@high@ 或 \co@all@，正式运行时使用 \co@none@。

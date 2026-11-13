@@ -1,0 +1,10 @@
+\subsection*{为什么没有事件就无法「直接重叠」}
+
+\co@swap@ 模式之所以能够工作，是因为同一个线程组同时控制装载和计算——它清楚顺序。一旦拆成两组，就没法共享同一套 \co@swap@ 调度了，需要额外的通信机制。
+
+下图对比了严格的「先装载再计算」阶梯和双缓冲重叠：逻辑上的工作量一样，空闲时间却少了。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f08-fig1_pipeline_timeline_light.png}
+\caption{同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。}
+\end{figure}

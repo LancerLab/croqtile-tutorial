@@ -1,0 +1,9 @@
+\subsection*{\texttt{: block}——并行块}
+
+\begin{lstlisting}[language=croqtile,caption={: block——并行块}]
+parallel {px, py} by [8, 16] : block
+\end{lstlisting}
+
+这里声明 8 × 16 的网格，共 128 个块。每个块都应能独立完成分配给自己的输出分块；这个示例没有提供块间通信或同步协议。
+
+本例输出形状为 \co@[128, 256]@，每块处理 \co@[16, 16]@，因此网格大小为 128/16 × 256/16 = 8 × 16。

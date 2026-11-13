@@ -1,0 +1,12 @@
+\subsection*{范围的组与整数的组}
+
+在 Croqtile 中，\emph{mdspan} 可以表示各维度的形状。\emph{mdspan} 就是\textbf{多维跨度}，其中的元素是\emph{维度跨度}，隐含着一个取值范围。
+
+例如，\emph{mdspan} \co@[7, 14]@ 表示两个范围组成的一组：\co@[0, 7)@ 和 \co@[0, 14)@。所以 \emph{mdspan} 并不表示一组整数值。不过在某些场景里，把整数值组成一组确实有用：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 计算两个 mdspan 之差时需要多个整数；在高层的语义上，这个差可能反映调整形状维度时的填充差异。
+\item 对形状做分块时，各个分块因子是整数，而不是范围。
+\end{itemize}
+
+这些情形促使 Croqtile 提供一种把整数值组成一组的类型。

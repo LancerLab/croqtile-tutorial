@@ -1,0 +1,15 @@
+\subsection*{并行区域：\texttt{parallel-by} 块}
+
+\co@parallel-by@ 用同一段代码描述多个独立工作实例。每个实例通过不同的索引处理自己的数据。
+
+基本形式是在 \co@parallel ... by ...@ 后写出代码块：
+
+\begin{lstlisting}[language=croqtile,caption={并行区域：parallel-by 块}]
+parallel p by 6 {
+  // SPMD code
+}
+\end{lstlisting}
+
+本例包含 6 个实例，\co@p@ 分别取 \co@0@ 到 \co@5@。可以把它理解为 6 次彼此独立的迭代，执行先后顺序不固定。
+
+\co@p@ 的取值范围为 \co@[0, 6)@，因此称为有界整数。分块选择等操作会同时使用它的当前值和范围。

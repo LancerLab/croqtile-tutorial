@@ -1,0 +1,57 @@
+\BOOKMARK [0][]{chapter*.1}{前言}{}% 1
+\BOOKMARK [0][]{chapter*.2}{阅读指南}{}% 2
+\BOOKMARK [0][]{chapter.1}{1 入门}{}% 3
+\BOOKMARK [1][]{section.1.1}{1.1 什么是 Croqtile}{chapter.1}% 4
+\BOOKMARK [1][]{section.1.2}{1.2 环境准备：依赖要求、构建与验证}{chapter.1}% 5
+\BOOKMARK [1][]{section.1.3}{1.3 工具链：命令行与构建工具}{chapter.1}% 6
+\BOOKMARK [1][]{section.1.4}{1.4\040Inspecting\040and\040Debugging\040a\040Build}{chapter.1}% 7
+\BOOKMARK [0][]{chapter.2}{2 语言基础}{}% 8
+\BOOKMARK [1][]{section.2.1}{2.1 Croqtile 程序的两个部分}{chapter.2}% 9
+\BOOKMARK [1][]{section.2.2}{2.2 逐行阅读核函数}{chapter.2}% 10
+\BOOKMARK [1][]{section.2.3}{2.3 主机侧 API：输入与输出}{chapter.2}% 11
+\BOOKMARK [1][]{section.2.4}{2.4 形状与 mdspan}{chapter.2}% 12
+\BOOKMARK [1][]{section.2.5}{2.5 整数、整数元组\(ituple\)与有界值}{chapter.2}% 13
+\BOOKMARK [1][]{section.2.6}{2.6 带形状数据与存储说明符\(storage specifier\)}{chapter.2}% 14
+\BOOKMARK [1][]{section.2.7}{2.7 迭代：parallel-by、with-in 与 foreach}{chapter.2}% 15
+\BOOKMARK [1][]{section.2.8}{2.8 分块选择：chunkat、subspan 与 view/from}{chapter.2}% 16
+\BOOKMARK [1][]{section.2.9}{2.9 数据搬运：DMA 语句与期值\(future\)}{chapter.2}% 17
+\BOOKMARK [1][]{section.2.10}{2.10 协调：inthreads、事件与异步块}{chapter.2}% 18
+\BOOKMARK [1][]{section.2.11}{2.11 分支与提前返回}{chapter.2}% 19
+\BOOKMARK [1][]{section.2.12}{2.12 四步 MMA 语法}{chapter.2}% 20
+\BOOKMARK [1][]{section.2.13}{2.13 C++ 嵌入、调用、宏与预处理器}{chapter.2}% 21
+\BOOKMARK [1][]{section.2.14}{2.14 打印、断言与编译时检视}{chapter.2}% 22
+\BOOKMARK [1][]{section.2.15}{2.15 语法速查}{chapter.2}% 23
+\BOOKMARK [0][]{chapter.3}{3 编程指南}{}% 24
+\BOOKMARK [1][]{section.3.1}{3.1 程序结构与编译模型}{chapter.3}% 25
+\BOOKMARK [1][]{section.3.2}{3.2 语法设计与类型系统}{chapter.3}% 26
+\BOOKMARK [1][]{section.3.3}{3.3 符号形状、形状求值与值编号\(value numbering\)}{chapter.3}% 27
+\BOOKMARK [1][]{section.3.4}{3.4 并行性、空间说明符与加掩码\(masking\)}{chapter.3}% 28
+\BOOKMARK [2][]{subsection.3.4.1}{3.4.1\040Worked\040Example:\040Tiled\040Matrix\040Multiplication}{section.3.4}% 29
+\BOOKMARK [2][]{subsection.3.4.2}{3.4.2\040Tracing\040One\040Output\040Element}{section.3.4}% 30
+\BOOKMARK [1][]{section.3.5}{3.5 分块选择与数据表达式}{chapter.3}% 31
+\BOOKMARK [2][]{subsection.3.5.1}{3.5.1\040Arbitrary-Offset\040Windows:\040view\040and\040from}{section.3.5}% 32
+\BOOKMARK [2][]{subsection.3.5.2}{3.5.2\040Strided\040Tiles:\040subspan,\040step,\040and\040at}{section.3.5}% 33
+\BOOKMARK [2][]{subsection.3.5.3}{3.5.3\040Layout\040Reinterpretation\040with\040span_as}{section.3.5}% 34
+\BOOKMARK [2][]{subsection.3.5.4}{3.5.4\040Tile\040Selection:\040Summary\040and\040Syntax}{section.3.5}% 35
+\BOOKMARK [1][]{section.3.6}{3.6 数据搬运：操作、配置与异步模式}{chapter.3}% 36
+\BOOKMARK [2][]{subsection.3.6.1}{3.6.1\040Worked\040Example:\040DMA\040Matmul}{section.3.6}% 37
+\BOOKMARK [2][]{subsection.3.6.2}{3.6.2\040Multi-Buffering:\040dma.any,\040swap,\040and\040rotate}{section.3.6}% 38
+\BOOKMARK [1][]{section.3.7}{3.7 收缩与布局约定}{chapter.3}% 39
+\BOOKMARK [2][]{subsection.3.7.1}{3.7.1\040Worked\040Example:\040One\040Cooperative\040Group}{section.3.7}% 40
+\BOOKMARK [2][]{subsection.3.7.2}{3.7.2\040MMA\040Syntax\040Summary}{section.3.7}% 41
+\BOOKMARK [2][]{subsection.3.7.3}{3.7.3\040MMA\040Design\040Summary}{section.3.7}% 42
+\BOOKMARK [1][]{section.3.8}{3.8 协调、流水线与持久调度}{chapter.3}% 43
+\BOOKMARK [2][]{subsection.3.8.1}{3.8.1\040Canonical\040Pattern:\040One\040Producer\040and\040One\040Consumer}{section.3.8}% 44
+\BOOKMARK [2][]{subsection.3.8.2}{3.8.2\040Worked\040Example:\040A\0401P1C\040Kernel\040Skeleton}{section.3.8}% 45
+\BOOKMARK [2][]{subsection.3.8.3}{3.8.3\040Persistent\040Scheduling}{section.3.8}% 46
+\BOOKMARK [2][]{subsection.3.8.4}{3.8.4\040Host-Level\040Concurrency\040and\040Stream\040Binding}{section.3.8}% 47
+\BOOKMARK [2][]{subsection.3.8.5}{3.8.5\040Worked\040Example:\040A\040Full\040Event\040Pipeline}{section.3.8}% 48
+\BOOKMARK [2][]{subsection.3.8.6}{3.8.6\040Coordination\040Pattern\040Summary}{section.3.8}% 49
+\BOOKMARK [1][]{section.3.9}{3.9 C++ 互操作与预处理器}{chapter.3}% 50
+\BOOKMARK [2][]{subsection.3.9.1}{3.9.1\040Worked\040Example:\040Calling\040a\040Device\040Helper}{section.3.9}% 51
+\BOOKMARK [2][]{subsection.3.9.2}{3.9.2\040Interoperability\040Summary}{section.3.9}% 52
+\BOOKMARK [1][]{section.3.10}{3.10 Tileflow 模式与设计依据}{chapter.3}% 53
+\BOOKMARK [2][]{subsection.3.10.1}{3.10.1\040Worked\040Example:\040Tiled\040matmul}{section.3.10}% 54
+\BOOKMARK [2][]{subsection.3.10.2}{3.10.2\040Worked\040Example:\040rgb2gray}{section.3.10}% 55
+\BOOKMARK [1][]{section.3.11}{3.11 诊断与方法论}{chapter.3}% 56
+\BOOKMARK [0][]{section*.3}{参考文献}{}% 57

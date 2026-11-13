@@ -1,0 +1,14 @@
+\subsection*{调用 C++ 辅助函数}
+
+Croqtile 函数不是设备函数：在另一个函数里调用它不会产生设备调用，编译器会警告找不到同名的设备函数；调用 C++ 辅助函数才是常规用法。
+
+\begin{lstlisting}[language=croqtile,caption={用 call 调用 C++ 辅助函数}]
+void bar() {...}    // C++ kernel function
+__co__ void foo() {
+  parallel p by 6 {
+    call bar();     // Call the C++ function
+  }
+}
+\end{lstlisting}
+
+本例用 \co@call bar()@ 调用 C++ 辅助函数 \co@bar@。设备调用的作用域和参数约束见本节后面的说明。

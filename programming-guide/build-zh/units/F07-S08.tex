@@ -1,0 +1,45 @@
+\subsection*{1P1C 矩阵乘法骨架}
+
+这个骨架省略了基于事件的同步；3.8.5 节会补上完整的流水线协议。
+
+\begin{lstlisting}[language=croqtile,caption={一个 1P1C 矩阵乘法骨架}]
+#define WARP_M 64
+#define WARP_N 64
+#define TILE_K 128
+#define WARP_K 16
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
+  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
+    parallel p1 by 2 : thread {
+      inthreads.async (p1 == 0) {
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+          dma.copy rhs.chunkat(block_n, iv_k) => rhs_load_s;
+        }
+      }
+      inthreads.async (p1 == 1) {
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+            ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+            mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+            mma.row.row mc, ma, mb;
+          }
+        }
+        mma.store mc, output_s;
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+生产者循环遍历 \co@cdiv(K, TILE_K)@ 个输入切片，每次填充左右暂存缓冲区。对应收缩开始之前，消费者需要确认两个操作数都已就绪。
+
+消费者为输出分块初始化一个累加器，然后针对各 K 切片装入并相乘操作数片段，在最后一次贡献加入后写回输出。两个循环独立运行，仅仅迭代次数相同，并不能保证消费者读到预期切片。
+
+这段骨架省略了两个循环之间的交接。作为实际流水线使用之前，需要在装入后增加就绪信号，在消费后增加复用信号。第 3.8.5 节通过每槽位事件补齐这两项要求。

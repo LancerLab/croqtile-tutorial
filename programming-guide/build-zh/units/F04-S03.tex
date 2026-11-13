@@ -1,0 +1,30 @@
+\subsection*{示例：先搬运分块，再计算加法}
+
+\begin{lstlisting}[language=croqtile,caption={第一个示例：经由共享存储的分块加法}]
+__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
+  s32 [lhs.span] output;
+  parallel {tr, tc} by [4, 8] : block {
+    lhs_load = dma.copy lhs.chunkat(tr, tc) => shared;
+    rhs_load = dma.copy rhs.chunkat(tr, tc) => shared;
+    foreach {i, j} in lhs_load.span
+      output.at(tr # i, tc # j) =
+          lhs_load.data.at(i, j) + rhs_load.data.at(i, j);
+  }
+  return output;
+}
+\end{lstlisting}
+
+下面仍计算逐元素加法，先把输入分块搬入共享存储：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@chunkat(tr, tc)@ 选择输入分块。
+\item \co@dma.copy ... => shared@ 将分块搬入共享缓冲区。
+\item \co@tr # i@ 与 \co@tc # j@ 将块内坐标组合成输出坐标。
+\end{itemize}
+
+程序依次选择分块、搬入缓冲区，再对其中的元素计算。两个输入的同一分块分别由 \co@lhs_load@ 和 \co@rhs_load@ 引用；内部循环使用搬运后的形状遍历元素，最后把块内索引组合成原输出中的位置。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig2_tiled_add_light.png}
+\caption{输入形状为 [64, 128]，分块网格为 [4, 8]。分块 (1, 3) 先装入两个 [16, 16] 操作数，再逐元素相加。}
+\end{figure}

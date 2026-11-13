@@ -1,0 +1,31 @@
+\subsection*{转译与编译}
+
+Croqtile 的编译过程通常包含三个主要步骤：\textbf{预处理}、\textbf{转译}和\textbf{目标编译}。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f14-compile-workflow.drawio.png}
+\caption{Croqtile 的完整编译流程}
+\end{figure}
+
+如图所示，\emph{预处理}之后，Croqtile 立刻把 \emph{tileflow 程序} \emph{转译}（也就是\emph{源到源}编译）为目标代码，而用户提供的\emph{主机程序}和\emph{设备程序}保留原样。\emph{tileflow 程序}被\emph{转译}成主机源代码和设备源代码，这些统称 \emph{Croqtile 生成代码}。随后，编译器把用户代码和 \emph{Croqtile 生成}代码合并，执行\emph{目标编译}。这个过程可以产出多种结果，比如转译后的源代码、工作流脚本、目标模块、目标汇编和可执行文件。
+
+Croqtile 驱动完整的构建过程，其中的关键步骤是把 \emph{tileflow 程序}转译成 \emph{Croqtile 生成代码}。
+
+Croqtile 编译有一个显著特点：同时支持两种模型：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{单源编译模型}：目标编译器允许在同一源文件中编译设备程序和主机程序。
+\item \textbf{分离源编译模型}：主机代码和设备代码需要分别编译。
+\end{itemize}
+
+上面的代码天然支持\emph{单源编译模型}。但要支持\emph{分离源编译模型}，Croqtile 要求用 \co@__cok__@ 块把设备程序包起来，如下所示：
+
+\begin{lstlisting}[language=croqtile,caption={转译与编译}]
+__cok__ {
+  void device_function(...) { ... }
+} // end of __cok__
+__co__ void croqtile_function(...) { ... }
+void foo() { ... }
+\end{lstlisting}
+
+\co@__cok__@ 标记需要在调用目标编译器前从主机代码中分离的设备代码。当目标平台分别编译主机与设备代码时，需要使用这一包装。源码仍可维护在一个 \co@.co@ 文件中，由包装告诉构建过程在哪里拆分。

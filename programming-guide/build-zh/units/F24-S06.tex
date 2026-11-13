@@ -1,0 +1,33 @@
+\subsection*{触发 C++ 模板实例化}
+
+Croqtile 代码可以调用模板函数。例如：
+
+\begin{lstlisting}[language=croqtile,caption={一个模板化的设备辅助函数}]
+template<int M, int N, int K>
+__device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
+__co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+  parallel {p, q} by [6, 6] : block {
+    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]
+    lhs_load = dma.copy lhs.chunkat(p, _) => shared;
+    rhs_load = dma.copy rhs.chunkat(_, q) => shared;
+    call matmul_kernel<buffer.span(0), buffer.span(1), 72>(lhs_load.data, rhs_load.data, buffer);
+    dma.copy buffer => output.chunkat(p, q);
+  }
+  return output;
+}
+\end{lstlisting}
+
+调用向 \co@matmul_kernel@ 提供三个常量模板实参，目标编译器据此实例化对应特化，与普通 C++ 模板调用相同。
+
+所以，在 Croqtile 中调用模板函数与 C++ 类似。但\textbf{传入的模板实参必须能被 Croqtile 编译器推导为编译时常量}；带运行时值时，编译器会给出警告，指出该实参无法在编译时求值。
+
+\begin{lstlisting}[language=croqtile,caption={一次触发实例化的调用}]
+__co__ void foo(int M) {
+  parallel p by 1 {
+    call bar<M>();  // warning: 'M' cannot be evaluated at compile time
+  }
+}
+\end{lstlisting}
+
+Croqtile 编译器会尽可能在编译时推导取值。若模板实参无法推导，编译器会给出警告，指出该实参无法在编译时求值。

@@ -1,0 +1,9 @@
+\subsection*{\texttt{dma.pad\textless{}...\textgreater{}}}
+
+\begin{lstlisting}[language=croqtile,caption={dma.pad\textless{}...\textgreater{}}]
+f = dma.pad<{2, 1}, {3, 2}, {0, 0}, V>.async input => shared;
+wait f;
+dma.copy f.data => output;
+\end{lstlisting}
+
+\co@dma.pad@ 在搬运时填充目的区域。模板实参指定各维填充、内部间隔和填充值，适合需要显式边界值的情况。与普通拷贝相比，目的区域可能更大，后续计算应使用填充后得到的形状。

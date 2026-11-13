@@ -1,0 +1,17 @@
+\subsection*{小结}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+| \textbf{概念} & \textbf{语法} & \textbf{作用} | \\
+\midrule
+| --- & --- & --- | \\
+| 软件 DMA & \co@dma.copy@ / \co@dma.copy.swiz<N>@ & 线程协作的分块传输 | \\
+| 重排 & 拷贝上的 \co@.swiz<N>@ 与 \co@mma.load.swiz<N>@ & 无布局冲突的共享内存布局；对不同搬运路径效果相同 | \\
+| 任意窗口 & \co@view(M,N).from(r,c)@ & 不规整或运行时定位的切片 | \\
+| 带步长的分块 & \co@.subspan().step().at()@ & 非紧凑布局、相互重叠的模板 | \\
+| 不完整分块 & \co@.zfill@ & 把越界元素补零 | \\
+| 形状重新解释 & \co@span_as([dims])@ & 暂存缓冲区的零拷贝变形 | \\
+\bottomrule
+\end{tabularx}
+\end{table}

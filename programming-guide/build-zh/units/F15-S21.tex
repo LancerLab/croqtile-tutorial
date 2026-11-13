@@ -1,0 +1,20 @@
+\subsection*{Croqtile 与 C++ 函数之间的参数传递}
+
+C++ 指针需要与维度信息一起包装成带形状的数据，再传入 Croqtile 函数。相关工具由 \co@choreo.h@ 提供。
+
+\begin{lstlisting}[language=croqtile,caption={Croqtile 与 C 函数之间的参数传递}]
+#include "choreo.h"
+void bar(const float* data, unsigned size) {}
+__co__ void foo(f32 mdspan<2> d) {
+  parallel p by 6 {
+    call bar(d, |d|);     // Call the C++ function
+  }
+}
+void foobar(float* a) {
+  foo(croq::make_spanview<2>(a, {1, 2}));
+}
+\end{lstlisting}
+
+\co@make_spanview@ 创建输入视图，不复制底层数据。示例中，\co@foo@ 的参数 \co@d@ 使用 \co@f32 mdspan<2>@ 描述形状；调用 \co@bar@ 时，可以通过隐式转换传递底层数据，\co@|d|@ 则给出元素总数。
+
+标量值也可以在 C++ 与 Croqtile 之间传递；\co@ituple@ 仅用于 Croqtile 函数内部。

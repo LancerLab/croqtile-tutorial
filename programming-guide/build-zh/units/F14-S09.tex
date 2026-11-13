@@ -1,0 +1,5 @@
+\subsection*{小结}
+
+到这里可以看清：Croqtile 程序由三部分组成，其中 \emph{tileflow 程序}是核心，它在编译时被转译成目标源代码。调用链通常从主机到 tileflow 程序，再从 tileflow 程序到设备代码。
+
+Croqtile 不仅把 DMA 操作抽象成更高层的语义，还把迭代和分块结合起来，因此代码既简洁又有表现力。

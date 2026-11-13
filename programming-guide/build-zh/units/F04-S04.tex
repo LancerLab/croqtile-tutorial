@@ -1,0 +1,3 @@
+\subsection*{\texttt{chunkat}、\texttt{subspan} 与 \texttt{view().from()}：三种选取分块的方式}
+
+分块表达式需要回答两个问题：区域有多大，从哪里开始？使用 \co@chunkat@ 时，有界索引提供划分数量并选择一块；使用 \co@subspan(...).at(...)@ 时，分块形状显式给出，坐标按块计数；使用 \co@view(...).from(...)@ 时，形状和起始元素坐标都显式给出。窗口不落在规则分块边界上时，这种区别尤其重要。

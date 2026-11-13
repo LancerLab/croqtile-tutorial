@@ -1,0 +1,28 @@
+\subsection*{同步拷贝与异步拷贝}
+
+不加 \co@.async@ 时，拷贝完成后才执行后续语句：
+
+\begin{lstlisting}[language=croqtile,caption={同步拷贝}]
+f = dma.copy input => shared;
+dma.copy f.data => output;
+\end{lstlisting}
+
+加上 \co@.async@ 后，可以在传输期间继续执行其他工作：
+
+\begin{lstlisting}[language=croqtile,caption={异步拷贝}]
+f = dma.copy.async input => shared;
+wait f;
+dma.copy f.data => output;
+\end{lstlisting}
+
+异步拷贝使用相同的形式：
+
+\begin{lstlisting}[language=croqtile,caption={异步拷贝}]
+f = dma.copy.async input => shared;
+wait f;
+dma.copy f.data => output;
+\end{lstlisting}
+
+期值可以在异步搬运尚未结束时就标识目标缓冲区。能够引用 \co@f.data@，并不意味着元素已经就绪。应在首次读取这些元素的操作之前执行 \co@wait f@，并在搬运过程中保持源和目标有效。
+
+\co@.async@ 发起传输，\co@wait@ 确认完成；两者共同确定数据何时可以使用。

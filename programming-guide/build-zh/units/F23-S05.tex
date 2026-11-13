@@ -1,0 +1,9 @@
+\subsection*{与 C++ 预处理的区别}
+
+Croqtile 的预处理比 C++ 预处理早得多。Croqtile 编译流程如下图所示：
+
+\begin{lstlisting}[language=croqtile,caption={与 C 预处理的区别}]
+chore-preprocessing -> croqtile compilation -> c/c++ preprocessing -> c/c++ compilation
+\end{lstlisting}
+
+Croqtile 预处理的主要目标，是让主机和设备的宏作为一个整体生效，但这样的工作流有时会带来差异。从实现角度看，Croqtile 预处理器只对 tileflow 函数内部的代码做替换或条件编译，其余预处理留给 C++ 预处理器——这就把 Croqtile 预处理限制在了较小的范围内。

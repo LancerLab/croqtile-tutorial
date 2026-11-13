@@ -1,0 +1,9 @@
+\subsection*{\texttt{: thread}——块内线程}
+
+\begin{lstlisting}[language=croqtile,caption={: thread——块内线程}]
+parallel {qx, qy} by [16, 16] : thread
+\end{lstlisting}
+
+这一层在每个外层块内组织 16 × 16，共 256 个线程。
+
+分块内的逐元素工作可以在这一层展开。

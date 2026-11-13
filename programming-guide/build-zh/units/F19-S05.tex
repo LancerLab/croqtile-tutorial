@@ -1,0 +1,50 @@
+\subsection*{代码安全的提升}
+
+使用\emph{符号维度}能提升代码安全，是因为 Croqtile 编译器可以施加更全面的检查。例如，先看 \co@Matmul@ 函数的\emph{匿名维度}版本：
+
+\begin{lstlisting}[language=croqtile,caption={使用匿名维度的核函数}]
+__co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
+  int tile_m = 32, tile_n = 8, tile_k = 16;
+  s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // 'mdspan' and 'ituple': rank must be same
+  s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // 'tiled_rhs' can not have a zero dimension
+  // ...
+}
+\end{lstlisting}
+
+Croqtile 同时做编译时检查和运行时检查来保证安全：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{编译时检查}：Croqtile 校验秩是否一致。本例中 \co@lhs.span@ 的秩为 \co@2@，与 \co@tile_m@、\co@tile_k@ 的秩一致，所以没有问题。
+\item \textbf{运行时检查}：Croqtile 生成的代码在运行时校验维度。例如 \co@tiled_lhs@ 的声明里，形状不能出现 \co@0@ 维，否则会得到非法的零大小缓冲区。Croqtile 的\emph{转译}过程会生成如下\emph{目标主机代码}：
+\end{itemize}
+
+\begin{lstlisting}[language=croqtile,caption={转译后的函数签名}]
+void __croqtile_transpiled_Matmul(const croq::spanned_view<croq::s32, 2> & lhs,
+                                  const croq::spanned_view<croq::s32, 2> & rhs) {
+  croq::runtime_check(lhs.shape()[0] / 32 > 0,
+                        "the 0 dimension of 'lhs' may result in spanned data "
+                        "with a dimension value of 0.");
+  // ...
+}
+\end{lstlisting}
+
+条件不满足时，\co@croqtile_abort@ 函数会中止程序。这项前置检查帮助 Croqtile 及时发现问题。
+
+对于\emph{符号维度}版本，Croqtile 编译器会在\emph{目标主机代码}里生成额外的检查：
+
+\begin{lstlisting}[language=croqtile,caption={生成的形状检查}]
+void __croqtile_transpiled_Matmul(const croq::spanned_view<croq::s32, 2> & lhs,
+                                  const croq::spanned_view<croq::s32, 2> & rhs) {
+  // additional check happens only when using symbolic dimensions
+  croq::runtime_check(lhs.shape()[1] == rhs.shape()[0],
+                        "dimension 'K' is not consistent.");
+  croq::runtime_check(lhs.shape()[0] / 32 > 0,
+                        "the 0 dimension of 'lhs' may result in spanned data "
+                        "with a dimension value of 0.");
+  // ...
+}
+\end{lstlisting}
+
+除了\emph{匿名维度}版本已有的检查，\emph{符号维度}版本还会校验 \co@lhs@ 与 \co@rhs@ 之间维度是否一致，所以代码更安全。
+
+因此建议使用符号维度：不只是为了易用性，也是为了代码更安全。

@@ -1,0 +1,27 @@
+\subsection*{主机、Tileflow 与设备代码}
+
+普通 C++ 代码还可以包含设备辅助函数。因此，完整示例中常见三个区域：设备辅助函数、调用它的 \co@__co__@ 函数，以及主机侧的 \co@main()@。下面按这个顺序列出它们。
+
+\begin{lstlisting}[language=croqtile,caption={单份源文件中的三个区域}]
+__device__ void device_function(...) {
+  // High-performance device kernel implementation
+}
+// Tileflow program: orchestrating data movement
+__co__ void croqtile_function(...) {
+  // ... croqtile code ...
+  device_function(...);
+  // ...
+}
+// Host program: typically runs on CPU
+void main() {
+  // ... prepare data ...
+  croqtile_function(...);
+  // ...
+}
+\end{lstlisting}
+
+程序从主机侧开始执行。主机代码使用普通 C++，负责准备输入、调用 Croqtile 函数并处理结果。
+
+\co@__co__@ 函数构成 Tileflow 程序，负责组织并行工作和数据搬运。它将数据放到合适的缓冲区，安排设备端计算，并把结果交回调用方。
+
+\co@__device__@ 辅助函数执行设备端计算。Croqtile 编译器主要翻译 \co@__co__@ 区域，普通 C++ 的主机代码和设备代码交给后续工具链处理。\textless{}br\textgreater{}\textless{}br\textgreater{}\textbf{提示：} \co@__device__@ 主要用于在必要时复用特定硬件的函数，简化开发。对于 Croqtile 已提供较完善支持的硬件，通常直接使用语言提供的计算与数据搬运能力即可，无需通过设备辅助函数自行补充底层实现。

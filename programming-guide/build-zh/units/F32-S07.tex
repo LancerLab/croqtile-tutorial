@@ -1,0 +1,21 @@
+\subsection*{直接声明循环范围}
+
+\begin{lstlisting}[language=croqtile,caption={一个 foreach 循环}]
+foreach x in 128 { }
+foreach idx in [10, 20] { }
+foreach {y, z} in [8, 16] { }
+\end{lstlisting}
+
+如果一个索引只用于紧接着的循环，可以直接在 \co@foreach@ 后给出范围，省去单独的 \co@with-in@ 声明。两种写法的区别在于声明位置，循环范围与遍历顺序不变：
+
+\begin{lstlisting}[language=croqtile,caption={它展开成的 with-in 形式}]
+with x in 128 {
+  foreach x { }
+}
+with idx in [10, 20] {
+  foreach idx { }
+}
+with {y, z} in [8, 16] {
+  foreach y, z { }
+}
+\end{lstlisting}

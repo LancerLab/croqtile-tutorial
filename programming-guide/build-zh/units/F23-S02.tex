@@ -1,0 +1,27 @@
+\subsection*{对象式宏}
+
+参数化宏同样会展开，参数在形状求值前完成替换：
+
+\begin{lstlisting}[language=croqtile,caption={对象式宏}]
+#define M 256
+#define N 32
+#define K 64
+__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }
+void foo() {
+  croq::f32 a[M][K];
+  croq::f32 b[N][K];
+  // ...
+  auto res = matmul(croq::make_spanview<2>(a, {M, K}),
+                    croq::make_spanview<2>(b, {N, K}));
+}
+\end{lstlisting}
+
+本例的 \co@M@、\co@N@、\co@K@ 在解析前被替换为 \co@256@、\co@32@、\co@64@，因此对应的形状是静态确定的。主机代码也使用相同的宏值。
+
+带参数的函数式宏不受支持：
+
+\begin{lstlisting}[language=croqtile,caption={带参数的宏}]
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+\end{lstlisting}
+
+这个 \co@MAX@ 定义不能按函数式宏使用。

@@ -1,0 +1,16 @@
+\subsection*{同步与异步}
+
+异步复制是非阻塞的，搬运尚未完成时后续代码可以继续执行。同步复制则在语句执行结束前完成搬运。这些术语描述发起代码何时能够继续，并不表示可以安全读取未完成搬运的目标。
+
+下面同时使用异步和同步拷贝：
+
+\begin{lstlisting}[language=croqtile,caption={同步与异步}]
+f0 = dma.copy.async data0 => shared; // non-blocking
+f1 = dma.copy data1 => shared;       // blocking
+...
+wait f0;                             // synchronization
+\end{lstlisting}
+
+\co@f0@ 的拷贝在后台进行，程序继续执行；\co@f1@ 的拷贝是同步的，需要等它完成才能继续。等待 \co@f1@ 时，\co@f0@ 的传输可能仍在进行。
+
+\co@wait f0;@ 等待对应传输完成。应在读取结果之前完成等待，并安排好所有异步传输的使用顺序。

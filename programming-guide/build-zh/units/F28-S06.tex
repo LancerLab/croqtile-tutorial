@@ -1,0 +1,14 @@
+\subsection*{数据表达式}
+
+数据表达式可以引用已有缓冲区。目的也可以直接写存储位置，由编译器分配相应缓冲区：
+
+\begin{lstlisting}[language=croqtile,caption={数据表达式}]
+global f32 [32, 16] input;
+shared f32 [32, 16] output;
+dma.copy input => output;  // Copy to a user-declared buffer
+dma.copy input => shared;  // Same, but to a compiler-allocated buffer
+\end{lstlisting}
+
+第二条语句以 \co@shared@ 为目的，编译器按源形状分配缓冲区，效果与第一条显式声明的写法相同。
+
+源和目标位置也可以使用分块表达式。例如 \co@input.chunkat(p)@ 将复制限制在 \co@p@ 选中的区域，显式目标视图则限制写入位置。第 2.8 节说明这些视图怎样形成。

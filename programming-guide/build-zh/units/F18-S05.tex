@@ -1,0 +1,10 @@
+\subsection*{初始化}
+
+缓冲区可以在声明时初始化：
+
+\begin{lstlisting}[language=croqtile,caption={初始化}]
+local s32 [17, 6] b1 {0};       // elements are initialized to 0
+shared f32 [128, 16] b2 {3.14f}; // elements are initialized to 3.14f
+\end{lstlisting}
+
+变量名后的括号给出初始值。本例的初始化方式把所有元素设为同一个值，适合准备清零的输出或临时缓冲区。读取声明时，可以依次看存储说明符、元素类型、形状，再看名称后的初始化表达式。

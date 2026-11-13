@@ -1,0 +1,13 @@
+\subsection*{C++ 互操作：设备函数、内联代码与预处理器}
+
+核函数可能需要归约、排序过程，或 Croqtile 没有直接表达的指令。已有设备 C++ 可以提供这部分计算，Croqtile 继续安排输入、输出和并行范围。调用接口必须保留两侧代码各自的使用约定。
+
+Croqtile 的互操作方案由三部分组成：
+
+\begin{itemize}[leftmargin=1.6em]
+\item **\co@__device__@ 函数** —— 编译器保留原样。
+\item **\co@__cpp__@**
+\item \textbf{预处理器} —— \co@#define@、\co@#if@、\co@#ifdef@、\co@#error@ 用于编译时配置，作用与 C/C++ 代码库中的 \co@#define@ 相同。
+\end{itemize}
+
+前面几节介绍了分块、并行、MMA、流水线、事件等抽象。需要额外的设备函数或目标平台代码时，可以通过本节的 C++ 互操作机制补充。

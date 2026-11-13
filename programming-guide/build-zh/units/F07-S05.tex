@@ -1,0 +1,19 @@
+\subsection*{用事件做区域间通信}
+
+\co@inthreads.async@ 创建并发区域之后，这些区域需要一种通信方式。Croqtile 提供了\textbf{事件}。
+
+\begin{lstlisting}[language=croqtile,caption={用事件做区域间通信}]
+shared event full;
+shared event empty;
+\end{lstlisting}
+
+事件有两种操作：
+
+\begin{itemize}[leftmargin=1.6em]
+\item **\co@trigger name@** —— 发出条件已满足的信号（例如「数据已就绪」）
+\item **\co@wait name@** —— 阻塞直到相应的 \co@trigger@ 触发
+\end{itemize}
+
+生产者写完一个分块后调用 \co@trigger full@，发出「数据就绪」的信号；消费者读取之前调用 \co@wait full@，阻塞到信号到达。对称地，消费者读完（缓冲区可以复用了）就触发 \co@empty@，生产者在写下一个分块之前等待 \co@empty@。
+
+这是一种\textbf{通过许可交接的有界缓冲区}协议——\co@full@ 是「数据可用」许可，\co@empty@ 是「缓冲区空闲」许可。

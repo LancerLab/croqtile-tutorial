@@ -1,0 +1,27 @@
+\subsection*{化简}
+
+值编号过程每生成一个签名，都会尝试化简表达式。例如：
+
+\begin{lstlisting}[language=croqtile,caption={一个常量表达式}]
+   int a = 3 + 8;
+\end{lstlisting}
+
+对这个简单的整数表达式，值编号过程可能生成下面的签名和关联值编号：
+
+\begin{lstlisting}[language=croqtile,caption={未化简的图}]
+   VN #0:  const_3
+   VN #1:  const_8
+   VN #2:  +:#0:#1
+   Alias a -> #2
+\end{lstlisting}
+
+如果不做优化，这里会生成两个常量值 \#0 和 \#1，以及一个表示两者相加的新值编号 \#2，它的签名是 \co@+:#0:#1@。但常量相加可以在编译时求值，所以可以化简。下面的输出展示了优化后的值编号过程：
+
+\begin{lstlisting}[language=croqtile,caption={折叠后的图}]
+   VN #0:  const_3
+   VN #1:  const_8
+   VN #2:  const_11
+   Alias a -> #2
+\end{lstlisting}
+
+值编号 \#2 的签名现在表示一个常量，说明代数化简已经生效。

@@ -1,0 +1,41 @@
+\subsection*{调试 RTTI 与 \texttt{debugger}}
+
+当 \co@print@ 和 \co@println@ 不足以定位问题时，可以使用 Croqtile 提供的调试运行时类型信息，让 \co@debugger@ 能够查看 Croqtile 类型。
+
+编译时使用 \co@-g@ 启用调试符号：
+
+\begin{lstlisting}[language=croqtile,caption={生成带调试符号的程序}]
+croq kernel.co -g -o kernel_debug
+\end{lstlisting}
+
+生成代码中包含用于描述 Croqtile 类型的 RTTI 结构体：
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+| \textbf{Croqtile 类型} & \textbf{调试器中的类型} & \textbf{字段} | \\
+\midrule
+| --- & --- & --- | \\
+| 带形状张量（\co@s32 [M, N]@） & \co@croq::rtti::spanned<int, 2>@ & \co@.span.data[]@：各维大小；\co@.stride.data[]@：步长；\co@.data@：数据指针 | \\
+| 带范围的索引元组 & \co@croq::rtti::bounded_ituple<N>@ & \co@.data[]@：索引值；\co@.ub[]@：上界 | \\
+| 整数元组 & \co@croq::rtti::ituple<N>@ & \co@.data[]@：整数值 | \\
+| 多维形状 & \co@croq::rtti::mdspan<N>@ & \co@.data[]@：各维大小 | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{lstlisting}[language=croqtile,caption={在调试器中查看变量}]
+debugger -q ./kernel_debug
+(gdb) break my_kernel
+(gdb) run
+(gdb) ptype __dbg_lhs
+type = struct croq::rtti::spanned<int, 2>
+(gdb) print __dbg_lhs.span.data[0]
+$1 = 32
+(gdb) print __dbg_lhs.span.data[1]
+$2 = 64
+(gdb) print __dbg_lhs.data != 0
+$3 = true
+\end{lstlisting}
+
+变量名中的 \co@__dbg_@ 前缀由编译器生成，使 Croqtile 变量能够与生成的 C++ 中间变量一起出现在调试器中。

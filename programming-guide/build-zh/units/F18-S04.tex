@@ -1,0 +1,17 @@
+要明确缓冲区的存储位置，可以加上说明符：
+
+\begin{lstlisting}[language=croqtile,caption={存储说明符}]
+global f32 [32, 7, 2] a;
+shared u8 [512, 144] b;
+local u8 [72, 1024] c;
+\end{lstlisting}
+
+存储位置由编译模式和目标平台约定决定。在这里的主机与设备协同场景中，未标注的缓冲区使用主机存储；设备侧存储位置则显式指定。
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@global@：指设备的全局存储。
+\item \co@shared@：指设备块的共享存储。
+\item \co@local@：指线程私有存储。
+\end{itemize}
+
+不同平台的含义和声明约束可能不同，应结合当前编译环境使用。

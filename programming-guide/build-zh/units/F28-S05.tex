@@ -1,0 +1,21 @@
+\subsection*{操作类型}
+
+Croqtile 在软件层把这些功能映射成不同的 \textbf{DMA 操作类型}。支持的操作包括：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@dma.copy@：直接拷贝扁平内存。
+\item \co@dma.pad@：搬运带形状数据的同时做填充。
+\item \co@dma.transp@：搬运带形状数据的同时做转置。
+\end{itemize}
+
+填充、转置这些细节，作为 DMA 操作的参数来配置。例如：
+
+\begin{lstlisting}[language=croqtile,caption={操作类型}]
+global f32 [32, 16, 9] input;
+dma.transp<0, 2, 1> input => shared;  // Result shape [32, 9, 16]
+dma.pad<{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f> input => shared; // Result shape [33, 17, 14]
+\end{lstlisting}
+
+这里的 \textbf{DMA 配置}用 \co@<...>@ 括起，内容随操作不同而变化。以某个目标平台为例，具体的配置语法和限制如下：
+
+要注意，\co@dma.copy@ 之外的 DMA 类型，支持程度因平台而异。比如在某些平台上，它可能映射到专用搬运引擎，也可能是对多个线程加载指令的编排。

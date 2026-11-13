@@ -1,0 +1,25 @@
+\subsection*{设备程序：并行计算}
+
+设备辅助函数接收调用方选取并暂存的数据，用目标语言完成计算。下面的加法辅助函数展示这条边界：Croqtile 安排分块与搬运，辅助函数则使用传入的指针和元素数量。
+
+下面再次列出前面的设备辅助函数：
+
+\begin{lstlisting}[language=croqtile,caption={从 tileflow 调用的设备辅助函数}]
+__device__ void kernel(int * a, int * b, int * c, int n) {
+  for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
+}
+\end{lstlisting}
+
+对于只支持\emph{分离源编程模型}的目标平台，代码可能需要包在 \co@__cok__@ 块里。等价的写法如下：
+
+\begin{lstlisting}[language=croqtile,caption={分离源所需的 cok 包装}]
+__cok__ {
+  extern "C" void kernel(int * a, int * b, int * c, int n) {
+    for (int i = 0; i < n; ++i) c[i] = a[i] + b[i];
+  }
+} // end of __cok__
+\end{lstlisting}
+
+这里 \co@extern "C"@ 标注取代了目标平台使用的 \co@__device__@ 关键字，因为设备函数要求 C 链接。
+
+设备程序遵循单程序多数据范式。主机与设备之间、以及设备内部各存储层次之间的数据搬运，由 Tileflow 程序统一编排；设备函数则负责具体计算。

@@ -1,0 +1,47 @@
+\subsection*{事件基础}
+
+事件用于协调异步代码区域的执行顺序。例如，一个区域准备数据，另一个区域要在准备完成后才能读取。生产者触发事件，消费者等待事件，就把这项先后关系直接写进了程序。
+
+事件有 \emph{SET}（已触发）和 \emph{UNSET}（未触发）两种状态，声明时为 \emph{UNSET}：
+
+\begin{lstlisting}[language=croqtile,caption={声明一个共享事件}]
+shared event e;
+\end{lstlisting}
+
+\co@shared@ 事件在并行作用域中供协作实例使用。也可以声明 \co@global@ 或 \co@local@ 事件，具体可见范围与约束由目标平台决定。
+
+事件也可以声明为数组：
+
+\begin{lstlisting}[language=croqtile,caption={声明事件数组}]
+shared event e[4], e1;
+\end{lstlisting}
+
+逗号分隔的声明可以同时定义数组 \co@e@ 和单个事件 \co@e1@。
+
+\co@trigger@ 将事件置为 \emph{SET}：
+
+\begin{lstlisting}[language=croqtile,caption={触发事件数组}]
+shared event e[4], e1;
+trigger e, e1;
+\end{lstlisting}
+
+\co@trigger e, e1@ 触发数组 \co@e@ 的各个事件和单个事件 \co@e1@。
+
+\co@wait@ 等待事件触发。事件为 \emph{UNSET} 时，当前实例阻塞；变为 \emph{SET} 后，等待结束。
+
+下面用事件让一个异步区域等待另一个区域：
+
+\begin{lstlisting}[language=croqtile,caption={等待事件}]
+parallel p by 2 {
+  shared event e;                          // init 'e' to 'UNSET'
+  inthreads.async (p == 1) { wait e; }     // wait-thread
+                                           // once unblocked, change 'e' to 'UNSET'
+  inthreads.async (p == 0) { trigger e; }  // trigger-thread
+                                           // convert 'e' to 'SET'
+  sync.barrier : thread;                   // sync point
+}
+\end{lstlisting}
+
+索引 \co@1@ 的区域先等待 \co@e@，索引 \co@0@ 的区域触发它后，等待才能结束。两个区域随后到达 \co@sync.barrier@ 同步点。事件明确了触发操作必须先于等待结束的顺序。
+
+等待完成后，事件自动恢复为 \emph{UNSET}，可以用于下一次触发与等待。

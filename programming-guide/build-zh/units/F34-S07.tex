@@ -1,0 +1,22 @@
+\subsection*{让它异步}
+
+和 \co@parallel-by@ 语句类似，也可以让执行发散代码的线程与不执行发散代码的线程彼此异步。下面的例子展示如何在 SPMD 代码里做 MPMD 执行：
+
+\begin{lstlisting}[language=croqtile,caption={让它异步}]
+__co__  void foo() {
+  parallel p by 6 {
+    inthreads.async (p <= 2) {
+      // divergent code for thread 0, 1, 2 (thread-mask: 000111)
+    }
+    inthreads.async (p > 2) {
+      // divergent code for thread 3, 4, 5 (thread-mask: 111000)
+    }
+    sync.barrier : thread; // sync point
+                 // all 'inthreads' paths must get executed
+  }
+}
+\end{lstlisting}
+
+本例把并行线程平均分成两个子组，并且不在每个 \co@inthreads@ 块之后强制同步。这样两组的线程就能并行执行，模拟出 MPMD 的效果。不过 \co@sync.barrier@ 语句为所有线程建立了一个\textbf{同步点}，保证两条路径的代码都执行到该\emph{同步点}之后。
+
+只有外层 \co@inthreads@ 能声明为异步。对任何内层 \co@inthreads@ 块使用 \co@inthreads.async@，都会得到编译时错误。

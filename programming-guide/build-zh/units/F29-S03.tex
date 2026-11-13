@@ -1,0 +1,29 @@
+\subsection*{用 \texttt{chunkat} 表达式对数据分块}
+
+搬运可以使用整个缓冲区，但分块算法通常只需要当前实例负责的区域。把 \co@chunkat@ 放在源表达式中，就能直接描述这片区域：
+
+\begin{lstlisting}[language=croqtile,caption={用 chunkat 表达式对数据分块}]
+__co__ void foo(f32 [36] input) {
+  parallel p by 6 : block {
+    dma.copy input.chunkat(p) => shared;
+  }
+}
+\end{lstlisting}
+
+\co@.chunkat(...)@ 根据有界索引选取当前分块，可以理解为先按范围分块，再按当前索引选取。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f29-chunkat.png}
+\caption{chunkat 表达式各部分的语义}
+\end{figure}
+
+\co@input.chunkat(p)@ 对应 \co@input.chunk(#p).at(p)@，各部分的作用如下：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@input@：要分块的数据。
+\item \co@#p@：分块因子。本例为 \co@6@，将输入分成 6 块。
+\item \co@.chunk(#p)@：确定每块形状，本例为 \co@[6]@。
+\item \co@.at(p)@：选择当前块。例如 \co@p == 1@ 时选择元素 \co@[6, 12)@，\co@p == 5@ 时选择 \co@[30, 36)@。
+\end{itemize}
+
+\co@chunkat@ 把分块因子与分块索引放在同一表达式中，避免分别维护两组信息。

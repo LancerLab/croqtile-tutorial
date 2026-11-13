@@ -1,0 +1,44 @@
+用 \co@foreach@ 遍历已经定义的有界变量：
+
+\begin{lstlisting}[language=croqtile,caption={索引一个形状}]
+with index in [6] {
+  foreach index {
+    // Perform operations with each index
+  }
+}
+\end{lstlisting}
+
+本例迭代 6 次，索引从 \co@0@ 递增到 \co@5@。
+
+也可以遍历多维元组：
+
+\begin{lstlisting}[language=croqtile,caption={索引元组}]
+with index = {x, y} in [6, 17] {
+  foreach index { }
+}
+\end{lstlisting}
+
+对 \co@index@ 的遍历对应下面的嵌套循环：
+
+\begin{lstlisting}[language=croqtile,caption={生成的 C++ 循环}]
+for (int x = 0; x < 6; ++x)
+  for (int y = 0; y < 17; ++y) { }
+\end{lstlisting}
+
+元组中的索引从左到右，对应循环从外到内的顺序。
+
+\co@foreach@ 后列出多个有界变量时，采用相同的嵌套规则：
+
+\begin{lstlisting}[language=croqtile,caption={若干有界组}]
+with index = {x, y} in [6, 17], iv in [128] {
+  foreach iv, index { }
+}
+\end{lstlisting}
+
+下面的等价代码把 \co@iv@ 放在最外层，再依次遍历 \co@index@ 的两个维度。
+
+\begin{lstlisting}[language=croqtile,caption={生成的内层循环}]
+for (int iv = 0; iv < 128; ++iv)
+  for (int x = 0; x < 6; ++x)
+    for (int y = 0; y < 17; ++y) { }
+\end{lstlisting}

@@ -1,0 +1,60 @@
+\subsection*{Tileflow 程序：编排数据搬运}
+
+下面把迭代、分块选择和 DMA 放在同一个 Tileflow 程序中，观察数据从输入到输出的过程。
+
+完整代码如下：
+
+\begin{lstlisting}[language=croqtile,caption={tileflow 程序}]
+__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs, s32 [6, 17, 128] rhs) {
+  s32 [lhs.span] output; // Use same shape as lhs
+  parallel p by 6 {
+    with index in [17, 4] { // Tiling factors
+      foreach index {
+        lhs_load = dma.copy lhs.chunkat(p, index) => local;
+        rhs_load = dma.copy rhs.chunkat(p, index) => local;
+        local s32 [lhs_load.span] l1_out;
+        // Call kernel with loaded data
+        call kernel(lhs_load.data, rhs_load.data, l1_out, |lhs_load.span|);
+        // Store result back to output
+        dma.copy l1_out => output.chunkat(p, index);
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+\co@__co__@ 函数接收形状为 \co@[6, 17, 128]@ 的两个 \co@s32@ 输入，并声明同形状的输出。
+
+\co@parallel p by 6@ 声明 6 个独立实例，每个实例处理输入的一个外层区域。
+
+\co@with-in@ 将 \co@index@ 绑定到范围 \co@[17, 4]@。它是二维有界整数元组，供内部循环使用。
+
+\co@foreach index@ 对应下面的嵌套循环：
+
+\begin{lstlisting}[language=croqtile,caption={等价的 C++ 循环}]
+for (int x = 0; x < 17; x++)  // assume 'x' represents the 1st element of 'index'
+  for (int y = 0; y < 4; y++) { ... }  // and 'y' represents the 2nd element of 'index'
+\end{lstlisting}
+
+循环中的 \co@dma.copy@ 负责搬运当前分块：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@lhs_load@：传输结果句柄，用于引用目的缓冲区。
+\item \co@dma.copy@：拷贝数据，\co@=>@ 左边是源，右边是目的。
+\item \co@local@：让编译器分配线程私有的目的缓冲区。
+\item \co@lhs.chunkat(p, index)@：根据范围 \co@6@、\co@17@、\co@4@ 选取 \co@[1, 1, 32]@ 分块，具体位置由索引当前值决定。例如索引 \co@(1, 16, 2)@ 选中对应的分块。
+\end{itemize}
+
+分块方式如下图所示。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f14-chunkat_3d_light.png}
+\caption{形状 [6, 17, 128] 按范围 [6, 17, 4] 划分后，每块为 [1, 1, 32]。分块 (1, 16, 2) 从元素 (1, 16, 64) 开始。}
+\end{figure}
+
+\co@lhs@ 和 \co@rhs@ 的对应分块分别搬入设备的 \co@local@ 存储，供当前实例计算。
+
+\co@local s32 [lhs_load.span] l1_out;@ 声明同分块形状的输出缓冲区。\co@call kernel@ 在其中完成计算，随后 DMA 将结果搬回主机侧输出区域。
+
+每个实例迭代 17 × 4 次，每次处理一个 \co@[1, 1, 32]@ 分块。全部实例完成后，函数把输出交给主机调用方。

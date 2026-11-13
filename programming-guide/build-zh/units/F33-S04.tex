@@ -1,0 +1,22 @@
+\subsection*{隐式掩码}
+
+Croqtile 中有些代码结构自带隐式掩码，多层 \co@parallel-by@ 块就是典型。下面是一个例子：
+
+\begin{lstlisting}[language=croqtile,caption={隐式掩码}]
+__co__  void foo() {
+  parallel p by 6 {
+    // parallel-level-0:
+    //   code here is as if implicitly masked 'if (q == 0)'
+    parallel q by 2 {
+      // parallel-level-1:
+      //   code here is for all 'q' threads
+    }
+    // parallel-level-0:
+    //   code here is as if implicitly masked 'if (q == 0)'
+  }
+}
+\end{lstlisting}
+
+本例有两层并行。位于 \co@parallel p by 6@ 块内、却在 \co@parallel q by 2@ 块之外的代码，只属于\emph{并行层次 0}。然而在某些目标平台上，实际会启动 2 个并行线程，分别执行\emph{并行层次 0} 或\emph{并行层次 1} 里的代码。于是，只属于\emph{并行层次 0} 的那部分，就好像被一个 C++ 的 \co@if (q == 0)@ 块保护着。
+
+条件也可以用于保护整个 \co@foreach@ 循环，控制循环体是否执行。

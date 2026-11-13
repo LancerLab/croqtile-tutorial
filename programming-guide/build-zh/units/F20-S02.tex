@@ -1,0 +1,16 @@
+\subsection*{\textbf{a. 可读性与清晰度}}
+
+在形状定义里显式写出 \co@M@、\co@N@ 这样的符号维度，程序会\textbf{更易读}、也更好懂。读者不用看到 \co@?@ 或 \co@-1@ 再猜这个维度代表什么，而能立刻明白 \co@M@ 和 \co@N@ 是依赖运行时值的变量。这提升了\textbf{可维护性}，也减轻了阅读和修改代码的认知负担。
+
+例如，两个问号表示两个未知尺寸，并没有声明两者相等。重复使用同一个符号名，则能直接在函数签名中记录相等关系：
+
+\begin{lstlisting}[language=croqtile,caption={a. 可读性与清晰度}]
+// Using symbolic dimensions
+mdspan sp : [M, N];
+mdspan spn : sp [1, M / 2, N / 4];
+// Clear how the new shape is derived
+// Using `?` or `-1`
+mdspan sp : [? , ?];
+\end{lstlisting}
+
+维度相互独立时，匿名形式仍然有用。若维度之间的关系是操作要求的一部分，就应为它们命名。

@@ -1,0 +1,15 @@
+\subsection*{运行时条件：\texttt{if}}
+
+\co@if@ 根据运行时条件决定是否执行代码。它适合检查当前索引或运行值，再决定是否处理这份工作；没有进入分支的实例会继续执行分支后的语句：
+
+\begin{lstlisting}[language=croqtile,caption={用 if 做谓词执行}]
+if (tile_id < total_tiles) {
+  // body executes only when the condition is true
+}
+\end{lstlisting}
+
+条件为真的实例执行分支，条件为假的实例跳过。在按线程组执行的平台上，组内条件不一致可能让不同路径依次执行，增加执行成本。
+
+运行时边界检查、条件累加等判断使用 \co@if@，条件可以依赖当前分块坐标或输入值。若语句体含有需要协作组共同参与的操作，应让组内实例对条件作出一致判断。
+
+条件尽量在同一执行组内保持一致。本例所面向的线程束包含 32 个线程。

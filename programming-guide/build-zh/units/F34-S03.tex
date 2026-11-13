@@ -1,0 +1,10 @@
+\subsection*{SPMD 中的加掩码}
+
+在 SPMD 编程中，常常需要屏蔽掉一部分\emph{并行线程}。比如，程序员把数据切成分块，交给多个线程并行或迭代处理，但可能除不尽，留下余量。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f34-masking-datachunk-dispatch.png}
+\caption{13 个数据分块在 4 个并行线程上的分派}
+\end{figure}
+
+上图把 13 个数据分块分派给 4 个并行线程。要处理完全部分块需要 4 次迭代，但最后一次只有\emph{线程 0} 需要处理分块。前三次迭代的\textbf{线程掩码}都是 \co@1111@，只有最后一次是 \co@0001@（最低位对应线程 0）。线程掩码由若干布尔位组成，\co@1@ 表示\textbf{活跃}，\co@0@ 表示\textbf{非活跃}。所以本例中只把\emph{线程 0} 设为\emph{活跃}，避免在最后一次迭代中处理无效分块。

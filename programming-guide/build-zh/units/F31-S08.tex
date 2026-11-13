@@ -1,0 +1,23 @@
+\subsection*{异构性：从转译到程序启动}
+
+在某些目标平台上，\co@parallel-by@ 块不仅指定并行线程的数量，还划出了主机代码与设备代码的边界，这正是 Croqtile 管理异构性的方式。具体来说：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@parallel-by@ 块\textbf{之外}的代码被转译为\textbf{主机代码}。
+\item 块\textbf{之内}的代码被转译为\textbf{设备代码}，如下图所示：
+\end{itemize}
+
+\begin{lstlisting}[language=croqtile,caption={异构性：从转译到程序启动}]
+__co__ void foo(...) {
+  // Generate host code
+  // ...
+  parallel p by 6 {
+    // Generate device code
+    // ...
+  }
+  // Generate host code
+  // ...
+}
+\end{lstlisting}
+
+熟悉相关目标平台的读者会看出，这里正对应着 \co@parallel-by@ 语句处发生的程序启动。Croqtile 用统一的单程序多数据并行模型把这些细节抽象掉，让开发者专心写算法，不必操心底层异构性。

@@ -1,0 +1,13 @@
+\subsection*{\texttt{foreach} 块}
+
+有界整数或元组定义后，可以用 \co@foreach@ 遍历其范围。这里把范围声明与循环体分开：\co@with-in@ 说明可用的位置，\co@foreach@ 再按顺序逐个访问。循环体中的索引代表当前正在处理的位置：
+
+\begin{lstlisting}[language=croqtile,caption={foreach 块}]
+with x in [10] {
+  foreach x {
+    // do something with each x
+  }
+}
+\end{lstlisting}
+
+每次迭代在循环体内为有界变量提供当前值，上界则保持不变。选择数据时使用当前值，推导分块数量时使用上界。若改为声明并行索引，则是给每个独立实例分配一个值，而不是按顺序遍历这些值。

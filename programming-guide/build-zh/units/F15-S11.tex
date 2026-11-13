@@ -1,0 +1,21 @@
+\subsection*{\texttt{mdspan} 与 \texttt{i-tuple} 上的运算}
+
+\co@mdspan@ 可以与整数元组按维度运算。下面用一组分块因子计算新的形状。
+
+\begin{lstlisting}[language=croqtile,caption={mdspan 与 i-tuple 上的运算}]
+sp : [6, 8];
+tiling_factor = {3, 2};
+spn : sp / tiling_factor;   // spn is defined as [2, 4];
+\end{lstlisting}
+
+支持的运算包括：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@mdspan@ / \co@i-tuple@
+\item \co@mdspan@ + \co@i-tuple@
+\item \co@mdspan@ \% \co@i-tuple@
+\item \co@mdspan@ * \co@i-tuple@
+\item \co@mdspan@ - \co@i-tuple@
+\end{itemize}
+
+元组写法将逐维计算集中在一个表达式中，更容易看出形状之间的关系。

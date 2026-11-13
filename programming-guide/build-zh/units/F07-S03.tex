@@ -1,0 +1,38 @@
+\subsection*{用 \texttt{inthreads.async} 构造结构化并发区域}
+
+形式 \co@inthreads.async@ 将不同线程组分配到各自推进的区域，谓词标识负责该区域的组。生产者和消费者的职责固定，而进度取决于哪些缓冲区就绪，适合用这种方式表达。
+
+\begin{lstlisting}[language=croqtile,caption={用 inthreads.async 构造结构化并发区域}]
+parallel p1 by 2 : thread {
+  inthreads.async (p1 == 0) {
+  }
+  inthreads.async (p1 == 1) {
+  }
+}
+\end{lstlisting}
+
+与 \co@if@ 的区别是结构性的，不只是性能上的：
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+| & **\co@if@（谓词执行）** & **\co@inthreads.async@**（结构化并发） | \\
+\midrule
+| --- & --- & --- | \\
+| \textbf{判定时机} & 运行时——每个线程都求值条件 & 编译时——线程归属已固定 | \\
+| \textbf{指令流} & 一段程序；发散线程被屏蔽 & 每个区域各有一段程序 | \\
+| \textbf{编程语言类比} & 任意语言中的 \co@if@/\co@else@ & 结构化并发中的 \co@async@/\co@spawn@（Trio、Go 协程、Cilk） | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+区域由词法作用域限定，编译器可以从程序结构中识别参与者。代码不会在运行时创建数量不定的任务，每个区域都在已声明的并行范围内执行。
+
+不加 \co@.async@ 时，区域在继续后续代码之前与外围执行汇合。加上 \co@.async@ 后，其他区域可以独立推进，它们之间的数据交接需要显式同步协议。
+
+下图展示了实际效果——生产者的 DMA 和消费者的 MMA 在时间上重叠：
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig1_role_comparison_light.png}
+\caption{两种调度都包含四组装入与计算任务。并发的生产者和消费者在遵守依赖关系的前提下重叠执行。}
+\end{figure}

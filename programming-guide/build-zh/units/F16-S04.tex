@@ -1,0 +1,51 @@
+\subsection*{导出 \texttt{mdspan}}
+
+分块、填充和重塑都需要从已有形状推导新形状。例如，把每维大小除以分块因子，可以得到每块形状；给某维增加长度，则能描述填充后的区域。把这些关系写成形状表达式，修改原始尺寸时就不必逐处更新数字。
+
+可以对维度做算术运算，再组合成新的形状：
+
+\begin{lstlisting}[language=croqtile,caption={原始形状}]
+shape : [128, 64]; // initial shape
+new-shape0 : shape [(0) / 2, (1) / 4, 1];  // tile and reshape: [1, 64, 16]
+new-shape1 : shape [(1) + 2, (0) / 16];    // pad and reshape: [66, 8]
+\end{lstlisting}
+
+\co@new-shape0@ 将原形状的两个维度分别除以 \co@2@ 和 \co@4@，并增加一个长度为 \co@1@ 的维度。
+
+同一计算也可以展开写成：
+
+\begin{lstlisting}[language=croqtile,caption={导出的形状}]
+new-shape0: [shape(0) / 2, shape(1) / 4, 1];
+\end{lstlisting}
+
+展开后，\co@shape(0)@ 和 \co@shape(1)@ 分别取出原形状的两个维度。两种写法表达的是同一组计算。
+
+\co@new-shape1@ 将原形状的第二个维度加 \co@2@，把它放到新形状的第一维；新形状的第二维由原形状的第一维除以 \co@16@ 得到。
+
+也可以直接对整个形状做运算或拼接：
+
+\begin{lstlisting}[language=croqtile,caption={重新绑定形状}]
+shape : [32, 72]
+new-shape0 : shape;  // [32, 72]
+new-shape1 : shape + 1;  // [33, 73]
+new-shape2 : shape / 4;  // [8, 18]
+new-shape3 : [shape, 6]; // [32, 72, 6]
+\end{lstlisting}
+
+对整个形状进行算术运算时，运算逐维应用。例如 \co@[128, 64]@ 加 1 得到 \co@[129, 65]@，并不会增加一个维度。下面两种表达式写的是同一项计算：
+
+\co@new-shape1 : shape + 1;@
+
+可展开为：
+
+\co@new-shape1 : shape [(0) + 1, (1) + 1];@
+
+在初始化表达式中放入一个 \co@mdspan@，则会拼接它的各个维度。例如：
+
+\co@new-shape3 : [shape, 6];@
+
+可展开为：
+
+\co@new-shape3 : shape [(0), (1), 6];@
+
+这些简写能保留形状之间的关系，减少重复列出维度的代码。

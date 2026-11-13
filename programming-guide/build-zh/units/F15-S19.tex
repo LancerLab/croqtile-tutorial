@@ -1,0 +1,18 @@
+\subsection*{用有界索引选择分块}
+
+\co@chunkat@ 表达式从已有带形状数据中选择视图。每个有界参数提供两项信息：上界决定分块数量，当前值选择其中一块。选择视图本身不搬运元素，实际搬运由外层 DMA 语句执行。
+
+\begin{lstlisting}[language=croqtile,caption={有界整数元组／整数与 chunkat 运算}]
+global f32 [6, 10, 100] data;
+parallel p by 6 {
+  with index = {x, y} in [10, 10] {
+    // for every data move, the stride into 'data' is
+    //    stride = p*1000 + x * 100 + y * 10
+    //
+    // for each chunk, the dimensioned size for the movement is {1, 1, 10}
+    f = dma.copy data.chunkat(p, index) => local;
+  }
+}
+\end{lstlisting}
+
+本例输入形状为 \co@[6, 10, 100]@，索引范围把它划为 6 × 10 × 10 个分块。每块在最后一维包含 10 个连续元素，并由搬运语句送入局部存储。

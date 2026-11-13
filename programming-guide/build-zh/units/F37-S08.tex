@@ -1,0 +1,15 @@
+\subsection*{存储位置示例}
+
+下面把三种存储位置放在同一个示例中：
+
+\begin{lstlisting}[language=croqtile,caption={示例代码：使用存储说明符}]
+ndims : [20, 15];
+local f32 [10, 10] d0;
+shared f16 [ndims] d1;
+global f32 [100, 200] matrix;
+// Perform computations on these arrays, utilizing the appropriate storage space
+dma.copy d0 => d1;
+dma.copy d1 => matrix;
+\end{lstlisting}
+
+这些声明展示三种存储位置，复制语句示意它们之间的数据流向。要把这段示意写成实际搬运，需要选择形状兼容的源视图和目标视图，因为这里声明的完整数组大小不同。存储说明符只选择位置，并不会使不同形状的缓冲区可以相互替代。

@@ -1,0 +1,14 @@
+\subsection*{默认行为与用法}
+
+省略说明符时，存储位置由目标平台和所在执行上下文决定。入门代码这样写很方便，但仅凭一个没有说明符的名字，无法判断哪些线程能共享其内容。追踪数据流时，应把声明与包围它的并行区域一起阅读。
+
+\begin{lstlisting}[language=croqtile,caption={不带说明符的声明}]
+f32 [100, 100] d0;
+\end{lstlisting}
+
+选择 \co@shared@ 或 \co@local@ 时，将说明符写在元素类型之前：
+
+\begin{lstlisting}[language=croqtile,caption={显式选择 local 存储}]
+local f32 [10, 10] d0;     // Small data, local to the thread
+shared f16 [ndims] d1;     // Intermediate data, shared between threads in a block
+\end{lstlisting}

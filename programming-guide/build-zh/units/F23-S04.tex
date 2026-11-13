@@ -1,0 +1,25 @@
+\subsection*{条件编译}
+
+条件编译支持 \co@#if@、\co@#ifdef@、\co@#ifndef@、\co@#else@ 和 \co@#endif@ 等指令：
+
+\begin{lstlisting}[language=croqtile,caption={条件编译}]
+#define PATH0
+// some host code
+__co__ auto foo() {
+#ifdef PATH0
+// some code related to PATH0
+#else
+// other code
+#endif
+}
+// host control
+#ifdef PATH0
+// ...
+#else
+// ...
+#endif
+\end{lstlisting}
+
+同一个条件可以同时控制主机代码与 Croqtile 代码。
+
+这里使用 Croqtile 预处理器支持的指令即可；其支持范围不等同于完整的 C 预处理器。

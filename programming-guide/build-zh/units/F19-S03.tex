@@ -1,0 +1,19 @@
+\subsection*{带匿名维度的 \texttt{mdspan}}
+
+前面的形状使用固定数字。如果某个维度要由调用方在运行时提供，可以把对应位置写成 \co@?@，保留其他已知维度：
+
+\begin{lstlisting}[language=croqtile,caption={含未知维度的核函数}]
+__co__ auto foo(s32 [?, 1, 2] input) { ... }
+\end{lstlisting}
+
+\co@?@ 表示一个运行时提供的正整数维度：
+
+\begin{lstlisting}[language=croqtile,caption={由调用方提供该维度}]
+void bar(int * data, int dim0) {
+  foo(croq::make_spanview<3>(data, {dim0, 1, 2}));
+}
+\end{lstlisting}
+
+本例第一维的大小来自调用方，可以由配置或上层框架确定。
+
+如果只需使用某份输入的一维大小，匿名维度已经足够。但当两份输入的某个维度必须相等时，它没有为这项关系提供共同的名字。矩阵乘法恰好需要这样的约束：左操作数的列数必须等于右操作数的行数。

@@ -1,0 +1,34 @@
+\subsection*{定义有界变量}
+
+\co@with-in@ 可以定义有界整数或有界整数元组，不创建额外的执行实例：
+
+\begin{lstlisting}[language=croqtile,caption={一个有界变量}]
+with x in 128 {
+  // 'x' is a bounded integer
+}
+with y in [512] {
+  // 'y' is a bounded ituple
+}
+with index in [10, 10] {
+  // 'index' is a bounded ituple
+}
+\end{lstlisting}
+
+本例中，\co@x@ 的范围是 128；\co@y@ 是一维元组，范围为 \co@[512]@；\co@index@ 是二维元组，范围为 \co@[10, 10]@。元组的元素也可以分别命名。
+
+\begin{lstlisting}[language=croqtile,caption={一组有界变量}]
+with {x, y} in [10, 10] {
+  // x and y are explicitly named elements of the ituple
+}
+with index = {x, y} in [10, 10] {
+  // 'x', 'y', and 'index' can be used within the block
+}
+\end{lstlisting}
+
+多条声明可以用逗号合写：
+
+\begin{lstlisting}[language=croqtile,caption={由元组导出的变量}]
+with index = {x, y} in [10, 10], idx in [100, 10] { }
+\end{lstlisting}
+
+\co@index@ 与 \co@idx@ 只在随后的 \co@with-in@ 作用域内有效。

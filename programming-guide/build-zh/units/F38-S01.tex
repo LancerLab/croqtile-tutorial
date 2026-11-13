@@ -1,0 +1,58 @@
+\subsection*{用 Croqtile 做多缓冲优化}
+
+要激进地优化高性能计算核函数，一个有效的办法是让计算与 DMA（直接内存访问）数据搬运重叠。这种做法叫\textbf{多缓冲优化}，通常要求程序员管理多个缓冲区。
+
+在 Croqtile 中，这种做法需要两个关键原语：占位期值 \textbf{dma.any}，以及 \textbf{swap/rotate} 函数：
+
+\begin{lstlisting}[language=croqtile,caption={用 Croqtile 做多缓冲优化}]
+__co__ s32 [6, 17, 128] ele_add(s32 [6, 17, 128] lhs,
+                                s32 [6, 17, 128] rhs) {
+  s32[lhs.span] output;
+  parallel p by 6 {
+    with index = {x, y} in [17, 4] {
+      local s32 [rhs.span / {#p, #x, #y}] l_out;
+      foreach x { // first bunch
+        lfA = dma.copy.async lhs.chunkat(p, x, y) => local;
+        rfA = dma.copy.async rhs.chunkat(p, x, y) => local;
+        lfB = dma.any;  // dummy DMA used for multi-buffering
+        rfB = dma.any;
+        foreach y(1:) {
+          lfB = dma.copy.async lhs.chunkat(p, x, y) => local;
+          rfB = dma.copy.async rhs.chunkat(p, x, y) => local;
+          wait lfA, rfA;  // wait another bunch
+          call kernel(lfA.data, rfA.data, l_out, |lfB.span|);
+          dma.copy l_out => output.chunkat(p, x, y - 1);
+          swap(lfA, lfB); // exchange futures
+          swap(rfA, rfB);
+        }
+        lf = select(#y % 2, lfB, lfA);
+        rf = select(#y % 2, rfB, rfA);
+        wait lf, rf;  // handle the last bunch
+        call kernel(lf.data, rf.data, l_out, |lfB.span|);
+        dma.copy l_out => output.chunkat(p, x, y(-1));
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+这个加法核函数为每份输入维护两组局部缓冲区。A 句柄表示当前操作数，B 句柄接收下一次装入。当前结果计算并写回后，通过交换句柄推进两组角色。左右输入沿同一调度前进，使每次加法使用相互对应的分块。
+
+实现把数据搬运和计算分成三个阶段：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{前奏}（第 8--11 行）：先（预）装入第一块数据。本例中缓冲区 A 被预先装好。
+\item \textbf{主体}（第 12--20 行）：处理上一轮迭代或前奏预装的数据，同时预装下一轮要用的数据。
+\item \textbf{尾声}（第 21--25 行）：只处理最后一块数据。
+\end{itemize}
+
+占位期值 \co@lfB@ 和 \co@rfB@ 在内层循环前声明，因此收尾代码仍能引用它们。循环先用实际搬运结果替换占位值，再使用其数据。若只在循环内部声明这些名字，处理最后一块时它们就已超出作用域。
+
+第 18--19 行的 \textbf{swap} 语句交换期值，让第 15 行的 \textbf{wait} 语句能正常工作。注意，只有对应相同 DMA 操作的期值才能交换。另外，第 12 行 \emph{foreach} 的迭代范围也调过：\co@foreach y(1:)@ 表示对\emph{有界变量} \co@y@ 的循环从第二个取值开始，一直到上界。第 17 行的 \emph{chunkat} 表达式同样调过：\co@y - 1@ 取 \co@y@ 的当前值减 1，让主体阶段和前奏阶段正确衔接。这个调整是必要的：迭代次数要减 1，而预装载操作应该在计算「当前」数据块时装入「下一」块。也可以改用 \co@foreach y(:-1)@，再相应调整第 13--14 行预装载语句的 chunkat 表达式，效果一样。
+
+第 25 行的 \co@y(-1)@ 取出 \co@y@ 在界内的「最后一个取值」。
+
+第 21--22 行的 \textbf{select} 表达式处理\emph{有界变量} \co@y@ 上界为奇数和偶数两种情况，无论哪种都能取得最后一块数据对应的期值。
+
+如果想用两个以上的缓冲区，就要用 \textbf{rotate} 语句代替 \textbf{swap}。

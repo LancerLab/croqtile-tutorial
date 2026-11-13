@@ -1,0 +1,7 @@
+\subsection*{\texttt{subspan(...).at(...)}：指定分块形状与坐标}
+
+\begin{lstlisting}[language=croqtile,caption={subspan(...).at(...)：分块网格上显式指定分块范围}]
+lhs.subspan(64, 64).at(block_m, iv_k)
+\end{lstlisting}
+
+表达式 \co@subspan@ 显式给出分块尺寸，\co@.at(...)@ 给出分块坐标。对于 \co@[16, 16]@ 分块，坐标 \co@(2, 3)@ 的元素起点是 \co@(32, 48)@。分块大小由算法固定选择，而不是从并行实例数推导时，适合使用这种形式。

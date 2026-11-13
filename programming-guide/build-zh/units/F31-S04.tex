@@ -1,0 +1,24 @@
+\subsection*{多层并行}
+
+可以嵌套声明不同的并行层次：
+
+\begin{lstlisting}[language=croqtile,caption={嵌套的两级并行}]
+parallel p by 2 {
+  // parallel-level-0
+  parallel q by 12 {
+    // parallel-level-1
+  }
+}
+\end{lstlisting}
+
+本例的两层范围分别为 \co@2@ 和 \co@12@，共有 24 种索引组合。\co@p@ 属于外层，\co@q@ 属于内层，每个组合标识一份工作。
+
+层次划分也决定代码在哪个范围内执行，以及哪些工作需要协调。组织代码时，应让协作关系与并行层次相匹配。
+
+两层之间没有其他语句时，也可以合写为一条声明：
+
+\begin{lstlisting}[language=croqtile,caption={合写的两级并行}]
+parallel p by 2, q by 12 { ... }
+\end{lstlisting}
+
+逗号分隔的写法与前面的嵌套声明表达相同的两级并行。

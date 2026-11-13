@@ -1,0 +1,12 @@
+\subsection*{更多问题}
+
+和 C++ 函数一样，Croqtile 函数可以定义在源代码的任何位置。把模块和 Croqtile 函数定义链接起来时，需要确定它的\textbf{函数签名}。
+
+答案是：Croqtile 函数遵循 C++ 调用约定，也就是带 C++ 名字改编的标准 C++ 函数。Croqtile 函数\textbf{不能}使用 \co@extern "C"@，因为它的参数类型（带形状数据）是基于 C++ 模板的对象。
+
+还有一些特性尚未支持：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 只有声明、没有定义的 Croqtile 函数——有了它，才能从另一个模块调用 Croqtile 函数。
+\item 带 \co@inline@ 的 Croqtile 函数——有了它，Croqtile 函数才能放进头文件。
+\end{itemize}

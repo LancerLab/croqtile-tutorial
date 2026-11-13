@@ -1,0 +1,25 @@
+混合专家核函数中，不同专家经常处理不同数量的词元。每位专家数据的起点到运行时才确定，固定分块网格未必能描述所需切片。窗口可以先为切片确定自己的起点，再进行内部划分。
+
+表达式 \co@view(M, N).from(row, col)@ 描述从给定元素坐标开始的 M × N 矩形。选择区域不必落在分块网格边界上，但使用该视图的搬运仍需满足自身的对齐和形状要求：
+
+\begin{lstlisting}[language=croqtile,caption={常量偏移处的窗口}]
+patch = matrix.view(16, 16).from(37, 50);
+\end{lstlisting}
+
+该表达式选取从第 37 行、第 50 列开始的 \co@[16, 16]@ 切片。原点可以是任意运行时值。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
+\caption{图中用从 (2, 3) 开始的 [4, 4] 小窗口说明原理；正文代码从 (37, 50) 选取 [16, 16] 窗口时遵循相同规则。}
+\end{figure}
+
+\co@view@ / \co@from@ 的优势在于可组合性：选定窗口后，后面的所有操作——\co@subspan@、\co@chunkat@、\co@dma.copy@——都作用在这个窗口上，就像它是一个独立的张量。流水线保持不变，只是起始位置发生变化：
+
+\begin{lstlisting}[language=croqtile,caption={运行时偏移处的窗口}]
+expert_lhs = lhs.view(expert_M, K).from(expert_offset, 0);
+dma.copy expert_lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => shared;
+\end{lstlisting}
+
+在 MoE 栈里，每个专家的 token 批次都从动态行 \co@expert_offset@ 开始。\co@view@ / \co@from@ 只调整流水线入口的操作数；下面的 DMA、暂存和 MMA 循环，对每个专家都执行同一段代码。
+
+划分数量已能描述所需区域时，使用 \co@chunkat@。起点是显式元素偏移时，使用 \co@view@ 和 \co@from@，再在窗口内部进行规则划分。这样就能将外层不规则选择与内部重复工作分开。

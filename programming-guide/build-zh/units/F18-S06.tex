@@ -1,0 +1,18 @@
+\subsection*{声明参数与返回值}
+
+带形状数据可以作为函数参数或返回值：
+
+\begin{lstlisting}[language=croqtile,caption={显式的返回形状}]
+__co__ f16 [7, 8] foo(f32 [16, 17, 5] input) {...}
+\end{lstlisting}
+
+参数与返回值的声明类似数据声明，但这里不能附带存储说明符或初始化表达式，也不能对已有 \co@mdspan@ 直接做运算。
+
+参数的 \co@.span@ 返回它的形状，可以用来声明同形状的缓冲区：
+
+\begin{lstlisting}[language=croqtile,caption={推导出的返回形状}]
+__co__ auto foo(f32 [16, 17, 5] input) {
+  f32 [input.span / {4, 1, 5} ] buffer;  // declare a buffer with tiled shape
+  // ...
+}
+\end{lstlisting}

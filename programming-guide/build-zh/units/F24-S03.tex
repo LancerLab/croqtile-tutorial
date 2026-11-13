@@ -1,0 +1,24 @@
+\subsection*{调用语句的基本语法}
+
+\co@call@ 的基本形式如下：
+
+\begin{lstlisting}[language=croqtile,caption={调用语句的一般语法}]
+call func-name <optional-template-args> (arguments);
+\end{lstlisting}
+
+函数名后可以附带尖括号中的模板实参，普通参数写在圆括号中，并用逗号分隔。
+
+目标编译器检查被调函数是否存在，以及其签名是否接受生成的实参。Croqtile 不在转译时执行这些 C++ 检查。因此，调用错误可能指向生成源码，需要对照辅助函数声明与原始调用位置查看。
+
+\co@foo@ 中的调用位于并行区域内；\co@mou@ 中的调用处于主机执行区域，不能直接调用设备函数。
+
+\begin{lstlisting}[language=croqtile,caption={非法的调用点}]
+__co__ void foo() {
+  parallel p by 1 {
+    call bar();  // ok
+  }
+}
+__co__ void mou() {
+  call bar();  // error: not able to call device function from host
+}
+\end{lstlisting}

@@ -1,0 +1,14 @@
+\subsection*{上界运算}
+
+有界变量同时包含当前索引和范围。循环使用索引，分块与缓冲区声明则常常需要它的上界。
+
+在有界变量前加 \co@#@ 可以取出上界：
+
+\begin{lstlisting}[language=croqtile,caption={上界运算}]
+with size in [32] {
+  local u8 [#size, 16] a; // buffer shape: [32, 16]
+  local u8 [size, 16] b; // error in shape: [0, 16]
+}
+\end{lstlisting}
+
+\co@#size@ 给出范围 \co@[32, 16]@，可以用于声明缓冲区 \co@a@。\co@size@ 本身是当前索引，不能在这里替代范围。

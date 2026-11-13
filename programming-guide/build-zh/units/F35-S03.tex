@@ -1,0 +1,17 @@
+\subsection*{事件实例}
+
+在 Croqtile 中，事件与存储说明符关联，可以是 \co@global@、\co@shared@ 或 \co@local@；这个存储说明符决定了事件的实例。
+
+\begin{lstlisting}[language=croqtile,caption={事件实例}]
+__co__ void foo() {
+  global event ge;     // single instance in the tileflow program
+  parallel p by 2 {    // shared level
+    shared event se;   // two instances, 1 for each shared instance
+    parallel q by 6 {  // local level
+      local event le;  // 12 instances in total, 6 for each shared instance
+    }
+  }
+}
+\end{lstlisting}
+
+上面代码里的注释说明了事件实例。机制和带形状数据的声明相同，后者同样要求存储说明符。从实现角度看，事件可以做成指定存储层次里的布尔数据，因此也占用该层次的存储；但在概念上，事件属于某个特定层次，实例数就对应它的并行层次。

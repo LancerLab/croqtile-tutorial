@@ -1,0 +1,44 @@
+\subsection*{选择执行实例}
+
+\co@inthreads@ 从当前并行作用域中选择执行实例。
+
+下面只让索引不大于 2 的实例执行选定区域：
+
+\begin{lstlisting}[language=croqtile,caption={tileflow 程序的并行视角}]
+__co__  void foo() {
+  // sequential code
+  // start of the SPMD code region
+  parallel p by 6 {
+    // some uniform code for all threads
+    // ...
+    inthreads (p <= 2) {
+      // divergent code for thread 0, 1, 2 (thread-mask: 000111)
+    }
+    // threads are forced to be synchronized
+    // some uniform code for all threads
+    // ...
+  }
+  // end of the SPMD code region
+  // sequential code
+}
+\end{lstlisting}
+
+可以把程序中的执行范围分成以下几类：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 主机侧的顺序代码。
+\item \co@parallel-by@ 内由多个实例执行的代码。
+\item 并行实例共同执行的代码。
+\item \co@inthreads@ 中仅由选定实例执行的代码。
+\end{itemize}
+
+本例的 \co@p <= 2@ 选择索引为 \co@0@、\co@1@、\co@2@ 的实例；其余实例跳过该区域。普通 \co@inthreads@ 用于按顺序执行的过滤区域，异步形式则使用 \co@.async@。
+
+\co@inthreads@ 从已有并行区域中选择实例，使用位置和条件需要满足以下约束：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 只能放在 \co@parallel-by@ 创建的并行作用域中。
+\item 条件需要与并行索引有关。
+\end{itemize}
+
+编译器会检查条件表达式及其所在的并行作用域。

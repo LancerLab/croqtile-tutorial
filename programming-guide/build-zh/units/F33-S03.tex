@@ -1,0 +1,17 @@
+\subsection*{显式掩码／条件}
+
+线程掩码这个概念，从所有 SPMD 实例的整体视角描述执行状态。但在 SPMD 编程实践中，程序只有单线程视角，于是线程掩码表现为一个布尔表达式，通常是与线程标识符有关的比较结果。
+
+后面的示例里，Croqtile 以实验性质支持对整个 \co@foreach@ 块加显式掩码，也就是把循环代码整段屏蔽。例如：
+
+\begin{lstlisting}[language=croqtile,caption={显式掩码／条件}]
+__co__  void foo() {
+  parallel p by 6 {
+    with q in [2] {
+      foreach q if (p == 0) {
+        // this iteration only work for parallel thread 0
+      }
+    }
+  }
+}
+\end{lstlisting}

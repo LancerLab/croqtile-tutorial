@@ -1,0 +1,29 @@
+\subsection*{异步操作：DMA 语句}
+
+除了并行执行，Croqtile 只允许一种固定形式的异步操作：DMA 语句。
+
+概念上，DMA 语句与 SPMD 代码异步执行，行为很像 CPU 的异步线程，只是受 DMA 配置的约束（CPU 上的异步线程则可以执行一般程序代码）。
+
+一条基本的 DMA 语句把源分块搬到目的存储，并返回一个异步句柄。
+
+\begin{lstlisting}[language=croqtile,caption={一个异步 DMA 声明}]
+global f32 [10] g_data;
+local f32 [10] l_data;
+f = dma.copy.async g_data => l_data;
+// ... async operations
+wait f;         // explicit wait
+\end{lstlisting}
+
+注意对 \co@f@ 的赋值。它是异步 DMA 实体的句柄，在 Croqtile 中称为该 DMA 操作的「期值」。程序员可以显式写出同步语句 \co@wait@，暂停当前线程直到期值到达；不写的话，线程就和 DMA 操作并行地继续执行。
+
+显式声明临时缓冲区可能需要重复代码。Croqtile 提供了更简单的语法：
+
+\begin{lstlisting}[language=croqtile,caption={带存储的同一种声明}]
+global f32 [10] data;
+f = dma.copy data => local;
+... f.data;  // retrieve the 'local' data from the future
+\end{lstlisting}
+
+这里不必指定 DMA 把数据搬到哪个确切位置，只要说明目的内存类型。要取用已搬运的数据，调用期值的 \co@data@ 成员即可。另外，这个 dma 操作没有标 \co@.async@，所以对 \co@f@ 的 \co@wait@ 既不需要，也不能执行。
+
+简写形式将分配交给编译器，但数据依赖并未改变。仍需通过期值确认目标，等待异步搬运完成，并检查后续操作是否接受所得形状与存储位置。下面的高级模式允许多次搬运同时进行，同时保留这些要求。

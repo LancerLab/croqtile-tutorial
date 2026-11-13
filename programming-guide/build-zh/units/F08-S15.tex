@@ -1,0 +1,17 @@
+\subsection*{小结}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+| \textbf{模式} & \textbf{所用原语} & \textbf{何时使用} | \\
+\midrule
+| --- & --- & --- | \\
+| \co@swap@ 双缓冲 & \co@dma.any@、\co@swap@ & 单线程组交错执行装载与计算 | \\
+| 事件流水线 & \co@inthreads.async@、事件 & 生产者与消费者分别推进 | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+一个组同时控制搬运调度和计算时，可以通过句柄轮换组织缓冲。分离的生产者与消费者需要事件，因为任一侧都无法仅凭自身指令顺序判断另一侧进度。增加缓冲区可以为重叠执行提供空间，却无法修复缺失的依赖。
+
+更深的流水线则改用事件数组与 \co@inthreads.async@，底层数据搬运原语不变。

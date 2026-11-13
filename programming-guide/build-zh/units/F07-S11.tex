@@ -1,0 +1,13 @@
+\subsection*{\texttt{parallel.async}：主机层并发}
+
+上面这些都发生在核函数内部。有时需要在\textbf{主机层}实现并发：启动一个网格而不阻塞 CPU。
+
+\begin{lstlisting}[language=croqtile,caption={parallel.async：主机层并发}]
+parallel.async {px, py} by [grid_m, grid_n] : block {
+  // kernel body
+}
+\end{lstlisting}
+
+异步启动在提交核函数后将控制权返回主机，完成发生在之后。流绑定选择接收工作的流，没有显式绑定时使用默认流。
+
+这属于\textbf{主机编排}，与核函数内部的控制流互不相干。它既不能替代用于线程划分的 \co@inthreads.async@，也不能替代用于运行时谓词的 \co@if@——它决定的是一个网格相对于其他网格\emph{在何时、何处}运行。

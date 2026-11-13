@@ -1,0 +1,29 @@
+\subsection*{\emph{Factor} 目标的特定细节}
+
+在 \emph{factor} 这类目标上，设备函数必须遵循 C 链接，也就是函数要加 \co@extern "C"@。模板函数不能用于带 C 链接的函数，所以 Croqtile 用了一些包装技巧。例如：
+
+\begin{lstlisting}[language=croqtile,caption={包住设备代码的 cok 块}]
+__cok__ {
+extern "C" void bar(int v) {};  // v is a compile-time constant
+}
+__co__ void foo() {
+  parallel p by 1 { call bar(3); }
+}
+\end{lstlisting}
+
+程序员可以把 \co@bar@ 改成函数模板，如下所示：
+
+\begin{lstlisting}[language=croqtile,caption={抽取目标特定细节之后的块}]
+__cok__ {
+template <int v> void bar() {};
+// compiler generate a explicit function template specialization:
+// template<> void bar<3>() {};
+}
+__co__ void foo() {
+  parallel p by 1 { call bar<3>(); }
+}
+\end{lstlisting}
+
+正如注释所示，Croqtile 编译器可能生成函数模板 \co@bar<3>@ 的特化版本，这样函数模板也能用。但要注意，这个函数模板不再需要普通 \emph{factor} 设备函数所用的 \co@extern "C"@。
+
+由于实现方式与其他目标不同，可以用 \co@-kt@ 为 \emph{croqtile-factor} 编译启用该功能。

@@ -1,0 +1,18 @@
+\subsection*{小结}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+| \textbf{概念} & \textbf{原语} & \textbf{何时使用} | \\
+\midrule
+| --- & --- & --- | \\
+| 谓词执行 & \co@if@ & 数据相关的判断（边界、条件） | \\
+| 结构化并发 & \co@inthreads.async@ & 编译时划分线程（生产者／消费者、异构角色） | \\
+| 区域间通信 & \co@shared event@ / \co@wait@ / \co@trigger@ & 并发区域之间的协调 | \\
+| 主机并发 & \co@parallel.async@ / \co@stream s@ & 多核函数重叠、非阻塞启动 | \\
+| 持久调度 & \co@if@ + \co@foreach@ + \co@#@ & 固定网格规模、带填充守卫的分块条带化 | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+完整流水线为前面的骨架补上两项依赖：计算前输入必须就绪，复用槽位前操作数必须用完。修改流水线时，可以沿一个槽位追踪完整周期，再追踪下一次复用。与只看某一侧循环相比，这样更容易发现缺失信号和迭代次数不匹配。

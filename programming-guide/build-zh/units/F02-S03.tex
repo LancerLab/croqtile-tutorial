@@ -1,0 +1,21 @@
+克隆仓库并运行自动环境准备步骤：
+
+\begin{lstlisting}[language=croqtile,caption={克隆仓库并准备依赖}]
+git clone https://github.com/LancerLab/croqtile.git
+cd croqtile
+make setup-core
+\end{lstlisting}
+
+\co@make setup-core@ 会拉取 Git 子模块，并在需要时下载指定版本的 Flex、Bison、FileCheck 和 GoogleTest。环境准备完成后，构建编译器：
+
+\begin{lstlisting}[language=croqtile,caption={构建编译器}]
+make
+\end{lstlisting}
+
+接着运行测试套件，检查刚构建的编译器是否正常：
+
+\begin{lstlisting}[language=croqtile,caption={运行测试套件}]
+make test
+\end{lstlisting}
+
+所有测试通过后，就可以使用构建目录中的 \co@croq@ 可执行文件。将其所在目录加入 \co@PATH@，或者通过完整路径调用它。接下来，编译一个最小程序，验证整个安装流程。

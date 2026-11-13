@@ -1,0 +1,14 @@
+\subsection*{更进一步：符号维度}
+
+当多个参数需要引用同一个未知维度时，只写 \co@?@ 还不能直观表达它们的关系。符号维度给这些大小命名，让共享维度和形状约束出现在函数签名中：
+
+\begin{lstlisting}[language=croqtile,caption={更进一步：符号维度}]
+__co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
+  int tile_m = 32, tile_n = 8, tile_k = 16;
+  s32 [M / tile_m, K / tile_k] tiled_lhs;
+  s32 [K / tile_k, N / tile_n] tiled_rhs;
+  // ...
+}
+\end{lstlisting}
+
+本例用 \co@M@、\co@K@、\co@N@ 表达两个输入的形状。相同的名字明确了共享维度，便于阅读、维护和检查参数之间的关系。

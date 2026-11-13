@@ -1,0 +1,19 @@
+\subsection*{完整类型}
+
+缓冲区声明需要同时给出元素类型和形状。形状确定缓冲区包含多少个位置，基础类型确定每个位置存储什么。下面的例子为半精度数据复用命名形状，为单精度数据直接写出形状。
+
+\begin{lstlisting}[language=croqtile,caption={完整类型}]
+ndims : [20, 15];
+f32 [10, 10] d0;
+f16 [ndims] d1;
+\end{lstlisting}
+
+基本元素类型包括：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 无符号整数：\co@u8@ / \co@u16@ / \co@u32@
+\item 有符号整数：\co@s8@ / \co@s16@ / \co@s32@
+\item 浮点数：\co@f16@ / \co@bf16@ / \co@f32@
+\end{itemize}
+
+\co@s32@ 是带形状数据的元素类型；用于程序控制的 \co@int@ 是独立的标量类型，两者用途不同。

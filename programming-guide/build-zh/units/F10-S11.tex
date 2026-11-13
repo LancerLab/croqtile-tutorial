@@ -1,0 +1,14 @@
+\subsection*{条件编译的代码路径}
+
+\begin{lstlisting}[language=croqtile,caption={条件代码路径}]
+#define PATH0
+__co__ auto foo() {
+  #ifdef PATH0
+    // path 0 code
+  #else
+    // path 1 code
+  #endif
+}
+\end{lstlisting}
+
+预处理器根据条件保留相应的代码分支。宏也可以从命令行定义，例如 \co@croq kernel.co -DMATMUL_TILE_K=128@。

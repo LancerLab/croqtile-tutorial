@@ -1,0 +1,12 @@
+\subsection*{实验特性：\texttt{within} 的可选 \emph{Where-Binding}}
+
+还可以追加 \emph{where 子句}，在 \co@with-in@ 语句定义的多个有界变量之间施加 \textbf{Where-Binding} 约束，让不同的有界变量互为别名。例如：
+
+\begin{lstlisting}[language=croqtile,caption={实验特性：within 的可选 Where-Binding}]
+with {m, n} in [M, N], {n_p, k} in [N_P, K]
+where n_p <-> n {
+  // matmul implements with m, n, K. 'n_p' always refers to the same value as 'n'.
+}
+\end{lstlisting}
+
+语法上，\co@<->@ 运算在两个有界变量之间建立 \emph{where-binding}。在 \co@with-in@ 块里，任何对 \co@n_p@ 的引用都指向 \co@n@，反过来也一样。

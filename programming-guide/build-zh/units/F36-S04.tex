@@ -1,0 +1,11 @@
+\subsection*{规则}
+
+\begin{itemize}[leftmargin=1.6em]
+\item 流绑定只能用在\textbf{块级}并行（\co@: block@）上。
+\item \co@<...>@ 里的标识符必须是 \co@stream@ 类型的变量。
+\item 不做流绑定时，同步的 \co@parallel-by@ 使用设备范围的同步机制。
+\end{itemize}
+
+异步的 \co@parallel-by@ 则使用默认流。
+
+流为启动操作选择顺序上下文。如果第二个核函数读取第一个写入的数据，使用流不会让两者变得独立。使用不同流时，仍需明确表达依赖，并将缓冲区保留到队列中的使用者结束。异步启动返回主机，只说明执行已提交。

@@ -1,0 +1,55 @@
+前面的核函数里，网格随问题规模增长：大致每个输出分块对应一个块。矩阵一大，启动的块数就很多，而最后一批块常常让一部分 SM 闲着——这就是\textbf{尾部利用率不足}。
+
+\textbf{持久核函数}把启动规模固定下来（通常接近 SM 数量），让每个块迭代处理多个分块：
+
+\begin{lstlisting}[language=croqtile,caption={持久调度与 if 守卫}]
+#define WARP_M 64
+#define WARP_N 64
+#define TILE_K 128
+#define WARP_K 16
+#define NUM_GROUPS 4
+__co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
+  f16 [M, N] output;
+  int total_tiles = cdiv(M, WARP_M) * cdiv(N, WARP_N);
+  parallel block_id by NUM_GROUPS : block {
+    shared f16 [WARP_M, TILE_K] lhs_load_s;
+    shared f16 [WARP_N, TILE_K] rhs_load_s;
+    shared f16 [WARP_M, WARP_N] output_s;
+    foreach {tile_iter} in [cdiv(total_tiles, NUM_GROUPS)] {
+      tile_id = tile_iter # block_id;
+      if (tile_id < total_tiles) {
+        block_m = tile_id / cdiv(N, WARP_N);
+        block_n = tile_id % cdiv(N, WARP_N);
+        mc = mma.fill.f16 0.0f;
+        foreach {iv_k} in [cdiv(K, TILE_K)] {
+          dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+          dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) => rhs_load_s;
+          foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
+            parallel p by 1 : thread {
+              ma = mma.load lhs_load_s.chunkat(_, iv_warp);
+              mb = mma.load rhs_load_s.chunkat(_, iv_warp);
+              mma.row.row mc, ma, mb;
+            }
+          }
+        }
+        mma.store mc, output_s;
+        dma.copy output_s => output.subspan(WARP_M, WARP_N).at(block_m, block_n);
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+声明将工作块数量固定为 \co@NUM_GROUPS@。工作量变化时，调整的是循环迭代次数，而不是启动块数。
+
+表达式 \co@tile_iter # block_id@ 的值为 \co@tile_iter * NUM_GROUPS + block_id@，每次迭代为各工作块分配下一组连续分块。
+
+条件 \co@tile_id < total_tiles@ 排除最后一个有效分块之后的索引。属于该分块的工作都应放入判断之内，包括需要参与者一致确认分块是否存在的生产者—消费者协议。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig2_persistent_kernel_light.png}
+\caption{四个固定 block 用三轮迭代处理十个分块；最后两个补齐的分块编号由 if 条件跳过。}
+\end{figure}
+
+若有四个工作块和十个输出分块，组合索引在第一次迭代为 0–3，第二次为 4–7，第三次为 8–11。最后一次只有 8 和 9 通过条件判断。这样每个有效分块恰好被处理一次，但并不保证所有工作块始终忙碌，利用率仍取决于分块开销和剩余工作量。

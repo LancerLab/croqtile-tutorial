@@ -1,0 +1,9 @@
+\subsection*{\texttt{assert}：运行时不变式检查}
+
+\co@assert@ 在运行时检查条件，不满足时输出消息并中止。适合把程序必须满足的假设写在使用位置附近，让失败信息直接指向相应索引、数据或执行阶段：
+
+\begin{lstlisting}[language=croqtile,caption={assert：运行时不变式检查}]
+assert(stage < MATMUL_STAGES, "stage index out of bounds");
+\end{lstlisting}
+
+可以用断言检查索引范围、指针有效性或其他必须成立的条件，以便尽早发现错误。

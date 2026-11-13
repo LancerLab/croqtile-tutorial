@@ -1,0 +1,11 @@
+\subsection*{输入参数}
+
+Croqtile 函数的输入参数包括带形状数据，以及标量：整数、布尔值或浮点元素类型。
+
+参数可以具名，也可以省略名字：
+
+\begin{lstlisting}[language=croqtile,caption={输入参数}]
+__co__ void foo(f32 [7] a, int) {...}
+\end{lstlisting}
+
+本例的第二个参数没有名字，因此函数体无法引用它，但声明仍然合法。

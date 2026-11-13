@@ -1,0 +1,23 @@
+\subsection*{用有界索引描述循环}
+
+C++ 的循环由初值、条件和步进控制。Croqtile 的循环则围绕有界索引组织。
+
+\co@foreach@ 的基本形式如下：
+
+\begin{lstlisting}[language=croqtile,caption={一个 foreach 循环}]
+foreach index {
+  // loop body
+}
+\end{lstlisting}
+
+如果 \co@index@ 的上界为 \co@6@，它对应下面的 C++ 循环：
+
+\begin{lstlisting}[language=croqtile,caption={等价的 C++ 循环}]
+for (int index = 0; index < 6; ++index) {
+  // loop body
+}
+\end{lstlisting}
+
+有界索引把循环范围明确写在程序中，便于分块选择与数据搬运使用。
+
+\co@parallel-by@ 中的索引标识并行实例，不可修改；它可以作为 \co@foreach@ 的上界，但不能作为被遍历的变量。要声明循环索引，应使用 \co@with-in@。

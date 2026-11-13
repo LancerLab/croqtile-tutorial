@@ -1,0 +1,14 @@
+\subsection*{异步程序启动与流绑定}
+
+默认情况下，主机会等 \co@parallel-by@ 核函数完成后才继续。要异步启动核函数，就用 \co@parallel.async@。
+
+\begin{lstlisting}[language=croqtile,caption={异步程序启动与流绑定}]
+__co__ void foo(stream s, f32[M] a) {
+  parallel.async<s> p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host continues immediately (no synchronization)
+}
+\end{lstlisting}
+
+3.8.4 节对此有详细说明。

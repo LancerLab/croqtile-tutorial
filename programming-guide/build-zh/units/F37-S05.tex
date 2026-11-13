@@ -1,0 +1,7 @@
+\subsection*{\texttt{shared}：共享存储}
+
+\co@shared@ 缓冲区为块内线程提供共同的暂存区域。在分块矩阵乘法中，一个块可以装入一次操作数分块，再让多个线程读取。读取必须在装入完成后开始，下次装入也必须等到这些读取结束。
+
+\begin{lstlisting}[language=croqtile,caption={共享存储声明}]
+shared f32 [10, 10] tile_data;
+\end{lstlisting}

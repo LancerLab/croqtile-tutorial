@@ -1,0 +1,21 @@
+\subsection*{使用多个有界变量}
+
+多个有界变量可以一起指定分块：
+
+\begin{lstlisting}[language=croqtile,caption={使用多个有界变量}]
+__co__ void foo(f32 [36, 14, 8] input) {
+  parallel p by 6 : block {
+    with index in [7, 4] {
+      foreach index {
+        dma.copy input.chunkat(p, index) => shared;
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+本例将 \co@p@ 与二维元组 \co@index@ 组合起来。各维范围为 \co@6@、\co@7@、\co@4@，所以 \co@[36, 14, 8]@ 的输入被划为 \co@[6, 2, 2]@ 的小块。
+
+外层 6 个并行实例各处理一个 \co@[6, 14, 8]@ 区域，内部再迭代 7 × 4 次，每次把一个 \co@[6, 2, 2]@ 分块搬入 \co@shared@。
+
+同一组范围现在同时描述迭代空间与所选数据。划分改变时，编译器从这些范围推导新的分块尺寸。检查搬运时，可以先将输入形状除以上界，得到分块大小，再把分块坐标乘以相应尺寸，还原元素起点。

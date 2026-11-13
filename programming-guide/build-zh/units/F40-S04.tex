@@ -1,0 +1,13 @@
+\subsection*{用 \texttt{chunkat} 做内存分块}
+
+矩阵乘法示例里，\textbf{内存分块}是用 \co@chunkat@ 方法做的：它把输入矩阵 \co@lhs@（左操作数）和 \co@rhs@（右操作数）切成更小的块，方便并行处理。
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@lhs@ 与 \co@rhs@ 矩阵用 \co@chunkat@ 方法分块，分块由 \co@m_tile@、\co@k_tile@、\co@n_tile@ 定义，分别对应乘法涉及矩阵的不同维度。
+\item 两个矩阵的分块都用 \co@dma.copy.async@ 异步装入（\co@lhs_load@ 和 \co@rhs_load@）。这个操作把矩阵的一部分从源缓冲区搬进暂存缓冲区，是大型矩阵运算里改善数据局部性的常见优化。
+\end{itemize}
+
+\begin{itemize}[leftmargin=1.6em]
+\item 变量 \co@m_tile@、\co@k_tile@、\co@n_tile@ 是\textbf{有界变量}，定义在 \co@parallel-by@ 和 \co@with-in@ 构造的上下文中，这些构造确定了分块的迭代空间。
+\item 这些有界变量让分块能被并行计算，每个线程处理矩阵的不同切片，矩阵乘法因此能跨多个线程高效完成。
+\end{itemize}

@@ -1,0 +1,37 @@
+\subsection*{不完整分块、守卫与 \texttt{.zfill}}
+
+真实核函数常常以不完整的分块收尾。关键区别在于\textbf{源分块形状}和\textbf{目的分块形状}是否相同。
+
+例如：
+
+\begin{lstlisting}[language=croqtile,caption={不完整分块、守卫与 .zfill}]
+dma.copy.swiz<32>.zfill
+  lhs.view(ROWS_M, TILE_K).from(base_m, base_k)
+    => lhs_load_s;
+\end{lstlisting}
+
+这里 \co@lhs_load_s@ 的形状可能是 \co@[group_M, TILE_K]@，源视图的形状却是 \co@[ROWS_M, TILE_K]@；在最后一个分块上，\co@ROWS_M@ 可能小于 \co@group_M@。这是源区域与目的区域之间的形状差异，此时 \co@.zfill@ 的意思是：拷贝有效的源行，把目的分块剩下的行写零。
+
+这正是 \co@.zfill@ 的正确用法。
+
+形状相同时，情况是这样：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 源视图和目的分块形状相同时，编译器已经自动给运行时尾部加了守卫。
+\item 这时它会生成掩码，让越界元素既不被读，也不被写。
+\item 对把 \co@[100]@ 张量切成 \co@[64]@ 分块这类情况，这已经够了：最后一个分块只有 36 个有效元素。
+\end{itemize}
+
+\co@.zfill@ \textbf{不是}处理「任意不完整分块」的通用机制。它专门针对目的分块大于有效源区域、且目的端多出的部分必须填零的情形。
+
+\co@.zfill@ 为什么重要：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 消费者只读有效区域时，编译器的自动掩码通常就够了。
+\item 消费者要读整个目的分块时，尤其是 MMA 片元，无效区域里必须是已知值。
+\item \co@.zfill@ 把多出来的那块区域置零。
+\end{itemize}
+
+当有效源区域小于目的分块，且消费者会把目的端当作完整的稠密分块时，应使用 \co@.zfill@。这是带动态行数或带填充边缘分块的 GEMM 式流水线里的常见情形。
+
+源和目的形状本来就相同时再加 \co@.zfill@，编译器可能警告说这个 \co@.zfill@ 是多余的；反过来，形状不同时，编译器也可能警告需要 \co@.zfill@，免得未覆盖区域里出现未定义值。

@@ -1,0 +1,11 @@
+异步 DMA 允许程序在传输期间继续执行后续代码；使用传输结果前，需要等待完成。
+
+基本写法如下：
+
+\begin{lstlisting}[language=croqtile,caption={基本语法}]
+future = dma-op src-expr => dst-expr;
+\end{lstlisting}
+
+\co@=@ 左边的期值命名传输结果。同步传输也可以命名，以便引用目的数据；不需要引用时可以省略。
+
+\co@=@ 右边依次写搬运操作、源表达式和目的表达式。\co@=>@ 表示从源到目的的数据流向。

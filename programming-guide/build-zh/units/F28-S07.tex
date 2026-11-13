@@ -1,0 +1,33 @@
+\subsection*{期值与等待}
+
+期值命名传输结果。异步传输的期值还可以传给 \co@wait@，用来等待完成。
+
+\co@wait@ 可以同时等待多个异步期值；同步传输已经完成，不能再用其期值等待。
+
+\begin{lstlisting}[language=croqtile,caption={同步与异步期值的等待}]
+f0 = dma.copy.async input0 => shared;
+f1 = dma.copy.async input1 => shared;
+f2 = dma.copy input2 => shared;
+...
+wait f0, f1;  // Multiple wait
+wait f2;      // Error: cannot wait on a sync-dma
+\end{lstlisting}
+
+同步传输返回期值，是为了让后续代码取得目的缓冲区。主要成员如下：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@.span@ 取出 DMA 目的缓冲区的 \co@mdspan@。
+\item \co@.data@ 取出 DMA 目的缓冲区的引用（带形状数据）。
+\end{itemize}
+
+下面通过期值访问目的缓冲区：
+
+\begin{lstlisting}[language=croqtile,caption={通过期值访问数据与形状}]
+f0 = dma.copy.async input0 => shared;
+f1 = dma.copy input2 => shared;
+...
+local f32 [f0.span] buffer;
+call device_kernel(f1.data, |f1.span|);
+\end{lstlisting}
+
+\co@.span@ 返回目的形状，\co@.data@ 返回目的数据。示例中的元素计数运算还可以取得目的区域的总元素数。

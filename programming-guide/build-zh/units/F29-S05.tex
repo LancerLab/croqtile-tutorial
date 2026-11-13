@@ -1,0 +1,18 @@
+\subsection*{分块与流动}
+
+\co@chunkat@ 表达式既可以作 \emph{DMA 语句}的源，也可以作目标。只把它用在源上，通常是把输入或缓冲区切成更小的块，搬到离处理器更近的存储；只用在目标上，则通常是搬运缓冲区，拼出输出的一部分。下面的代码是一个例子：
+
+\begin{lstlisting}[language=croqtile,caption={分块与流动}]
+__co__ auto foo(f32 [36] input) {
+  f32 [36] output;
+  parallel p by 6 : block {
+    f0 = dma.copy input.chunkat(p) => shared;  // tile the source
+    dma.copy f0.data => output.chunkat(p);     // un-tile the destination
+  }
+  return output;
+}
+\end{lstlisting}
+
+本例把 \co@chunkat@ 用在目标，把 \co@shared@ 里的数据块搬出来，「反分块」地写进输出。注意元素类型必须一致，且源的任一维度都不能大于对应的目的维度；源比目的小是允许的。
+
+同时在源和目标两端使用 \co@chunkat@ 表达式，目前几乎没有任何目标平台支持。

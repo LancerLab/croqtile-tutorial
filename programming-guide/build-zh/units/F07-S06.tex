@@ -1,0 +1,9 @@
+\subsection*{多级流水线的事件数组}
+
+设想生产者装入分块，消费者使用分块计算。读取槽位前，消费者需要知道数据已经就绪；覆盖槽位前，生产者需要知道上一次读取已经结束。将这两个信号命名为 \co@full@ 和 \co@empty@。若流水线包含多个可复用槽位，每个槽位就各自配备一对事件：
+
+\begin{lstlisting}[language=croqtile,caption={多级流水线的事件数组}]
+shared event full[STAGES], empty[STAGES];
+\end{lstlisting}
+
+每个缓冲槽对应一组 \co@full@ 和 \co@empty@ 事件。\co@stage = iv_k % STAGES@ 将循环索引映射到固定数量的槽位：生产者等待空槽，写完后触发 \co@full@；消费者等待数据就绪，读完后再触发 \co@empty@。这样，同一个缓冲区可以在后续迭代中复用。

@@ -1,0 +1,14 @@
+\subsection*{组合使用调试工具}
+
+先根据现象选择检查方式。分块尺寸不对时，用 \co@println!@ 在运行前查看形状；形状正确而数值不对时，只打印一个分块，或在可疑操作附近添加断言。流水线停住时，检查事件和迭代次数；矩阵结果呈规律性错位时，检查布局。若问题已缩小到地址或生命周期，再使用调试器。把临时输出放在预处理条件中，便于在正常构建时去掉：
+
+\begin{lstlisting}[language=croqtile,caption={用条件编译控制调试输出}]
+#ifdef DEBUG_PRINT
+  println("tile_k=", iv_k, " accum=", mc);
+#endif
+\end{lstlisting}
+
+\begin{lstlisting}[language=croqtile,caption={调试构建与正式构建}]
+croq kernel.co -DDEBUG_PRINT -o kernel    # debug build
+croq kernel.co -o kernel                   # production build
+\end{lstlisting}

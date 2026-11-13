@@ -1,0 +1,13 @@
+\subsection*{初始化空槽事件}
+
+循环开始前，需要先触发空槽对应的 \co@empty@ 事件：
+
+\begin{lstlisting}[language=croqtile,caption={引导协议}]
+foreach {s} in [STAGES] {
+  trigger empty[s];
+}
+\end{lstlisting}
+
+事件初始为未触发状态。如果没有这一步，生产者第一次等待空槽时就无法继续。初始化表示这些槽位已经可以使用。
+
+完整的双缓冲和多阶段流水线示例见 3.8.5 节。先理解事件的触发与等待关系，再阅读这些组合用法。

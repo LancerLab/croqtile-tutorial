@@ -1,0 +1,14 @@
+\subsection*{\textbf{c. 表达力与灵活性}}
+
+符号维度描述数据形状的方式\textbf{更丰富}。\co@?@ 或 \co@-1@ 这类任意占位符只能表达基本的维度信息，符号维度却能用复杂的算术和关系来\textbf{约束}。比如，某个维度如何依赖另一个维度、如何缩放或分块，都可以直接写出来，自然得多。
+
+匿名维度仍然可以通过输入形状读取。当同一个值出现在多个表达式中时，符号名更方便：修改某项推导后，它与其他维度之间的关系仍然清晰可见。
+
+例如，用符号变量可以轻松表达维度之间的关系：
+
+\begin{lstlisting}[language=croqtile,caption={c. 表达力与灵活性}]
+mdspan sp : [M, N]; // Symbolic dimensions
+mdspan spn : sp [1, M / 2, N / 4]; // Derived shape based on symbolic expressions
+\end{lstlisting}
+
+这种写法把依赖关系放在形状声明处。每次调用仍需满足由此产生的尺寸和整除要求。

@@ -1,0 +1,8 @@
+\subsection*{单级的信用流}
+
+图和代码一一对应：引导阶段先授予 \co@empty@ 信用；生产者等待 \co@empty@、填入数据、发出 \co@full@ 信号；消费者等待 \co@full@、做计算、发出 \co@empty@ 信号。当 \co@iv_k@ 按 \co@STAGES@ 取模回绕时，同一个物理级又进入下一轮循环。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f08-fig2_event_credit_flow_light.png}
+\caption{empty 信用允许填充阶段，full 信用允许读取阶段；消费者在计完成计算成后才释放该阶段供再次使用。}
+\end{figure}

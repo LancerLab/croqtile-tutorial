@@ -1,0 +1,22 @@
+\subsection*{布局重新解释：\texttt{span\_as}}
+
+有些核函数把数据当作扁平的一维条带载入，却要把它作为二维矩阵交给 MMA。朴素的做法是把数据复制到一个改过形状的缓冲区；\co@span_as@ 则不拷贝，直接就地重新解释现有缓冲区的形状：
+
+\begin{lstlisting}[language=croqtile,caption={扁平条带被重新解释为矩阵}]
+flat_buffer.span_as([rows, cols])
+\end{lstlisting}
+
+元素个数保持不变，只有逻辑秩改变，不搬运任何数据。
+
+\begin{lstlisting}[language=croqtile,caption={使用重新解释结果的搬运语句}]
+strip_load = dma.copy data.chunkat(tile) => shared;
+tile_2d = strip_load.data.span_as([tile_m, tile_k]);
+ma = mma.load tile_2d.chunkat(_, iv_warp);
+\end{lstlisting}
+
+\co@rows * cols@ 的乘积必须等于底层区域的元素数量。重解释形状会保留线性元素顺序，因此不能转置矩阵，也不能去掉行间填充。尺寸为常量时，编译器能在执行前检查元素数量；尺寸来自输入时，实际调用也必须满足同一约束。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig7_span_as_light.png}
+\caption{16 个元素的缓冲区重解释为 [4, 4] 视图，线性顺序保持不变；图中将一维数据分成两行显示，便于阅读。}
+\end{figure}

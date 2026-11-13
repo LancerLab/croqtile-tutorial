@@ -1,0 +1,21 @@
+\subsection*{声明整数元组}
+
+\co@ituple@ 将多个整数组合成一个元组，也称 \co@i-tuple@。显式声明如下：
+
+\begin{lstlisting}[language=croqtile,caption={i-tuple 字面量}]
+ituple a = {1, 2, 3};
+b = {4, 5, 6};  // utilize the type inference
+\end{lstlisting}
+
+类型可以由初始化表达式推断。区分省略类型的 \co@ituple@ 和 \co@mdspan@ 时，注意以下两点：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@ituple@ 的初始化表达式跟在赋值号 \co@=@ 之后（和整数一样），\co@mdspan@ 则在 \co@:@ 之后初始化；
+\item \co@ituple@ 的初始化表达式用花括号括起，而不是 \co@mdspan@ 使用的 \co@[]@。
+\end{itemize}
+
+也可以显式指定秩，让编译器检查元素个数：
+
+\begin{lstlisting}[language=croqtile,caption={秩不一致}]
+ituple<3> a = {1, 2};  // error: inconsistent rank
+\end{lstlisting}

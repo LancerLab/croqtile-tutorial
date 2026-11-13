@@ -1,0 +1,36 @@
+\subsection*{多层次的加掩码}
+
+线程掩码可以施加在不同的并行层次上。下面这个例子演示了这一点：
+
+\begin{lstlisting}[language=croqtile,caption={多层次的加掩码}]
+__co__  void foo() {
+  parallel p by 3, q by 4 {
+    inthreads (p < 2 && q == 0) {
+      // divergent code for thread (0, 0), (1, 0)
+      // thread-mask: 011-0001
+    }
+    inthreads (q == 1) {
+      // divergent code for thread (0, 1), (1, 1), (2, 1)
+      // thread-mask: 111-0010
+    }
+  }
+}
+\end{lstlisting}
+
+这段代码用了两层并行：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 外层（\co@p@）：并行数为 3
+\item 内层（\co@q@）：并行数为 4
+\end{itemize}
+
+第一个 \co@inthreads@ 谓词（\co@p < 2 && q == 0@）把执行限制为：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 外层并行 ID：\co@0, 1@（不含 2）
+\item 内层并行 ID：仅 \co@0@
+\end{itemize}
+
+线程掩码 \co@011-0001@ 反映了这些约束，两个层次之间用连字符 \co@-@ 分隔。
+
+第二个谓词（\co@q == 1@）不限制外层（\co@p@），允许所有外层 ID（\co@0, 1, 2@），只把内层限制为 \co@q == 1@。

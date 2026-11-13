@@ -1,0 +1,18 @@
+\subsection*{\texttt{print!} 与 \texttt{println!}：编译时检视}
+
+\co@print!@ 和 \co@println!@ 在编译时输出信息，可用于查看形状、范围和类型。例如，修改分块因子后，可以先打印推导出的形状，确认尺寸关系成立，再运行程序检查数值结果：
+
+\begin{lstlisting}[language=croqtile,caption={编译时打印形状}]
+__co__ void check_shapes(f32 [3, 2] b) {
+  print!("shape of b: ");
+  println!("b.span = ", b.span);
+}
+\end{lstlisting}
+
+编译时得到如下输出：
+
+\begin{lstlisting}[language=croqtile,caption={打印出的形状}]
+shape of b: b.span = [3, 2]
+\end{lstlisting}
+
+相邻字符串字面量会拼接，例如 \co@"wor" "ld!"@ 等价于 \co@"world!"@。

@@ -1,0 +1,46 @@
+\subsection*{部分类型：\textbf{mdspan}}
+
+与多数类型系统不同，\emph{mdspan} 作为一种类型手段并不完整。称它为\emph{部分}，是因为 Croqtile 程序不能把数据定义成 \emph{mdspan} 类型，但 \emph{mdspan} 本身可以单独定义。这样设计基于一个观察：循环分块只关心多维数据的形状。因此，Croqtile 允许程序员独立于基础类型操作 \emph{mdspan}，从而简化形状计算。
+
+与此同时，Croqtile 编译器可以对 \emph{mdspan} 做类型检查，尽可能早地（在适用时早于执行）暴露代码错误。
+
+在 Croqtile 中，mdspan 用 \co@[@ 和 \co@]@ 括起来，其中的维度上界用 \co@,@ 分隔：
+
+\begin{lstlisting}[language=croqtile,caption={一个 mdspan 声明}]
+mdspan sp : [7, 8];           // defined a mdspan of 2-dimensions
+mdspan<4> mds : [a, 3, 4, 1]; // 'a' is an existing integer
+d : [c, 4, 28];               // 'd' is not explicit annotated. Type is deduced.
+\end{lstlisting}
+
+如上例所示，可以用 \emph{mdspan} 部分类型关键字显式定义 mdspan，也可以选用 \co@<@ \co@>@ 括起的秩。还可以不加类型标注定义 mdspan，比如上面 \co@d@ 的定义。（注意：\co@mds@ 和 \co@d@ 属于\textbf{依赖类型}，因为它们的类型取决于 \co@a@ 和 \co@b@ 的求值。程序员可以给 \co@a@、\co@b@ 提供运行时值，但这样一来就要付出一些运行时检查的代价。）
+
+对 C++ 程序员来说，可以把 mdspan 看成多维数组的特征描述，它描述的是多层范围。例如上例中的 \co@sp@ 定义了两层范围，分别是 0 到 6 和 0 到 7。
+
+定义好 mdspan 之后，可以用 \co@()@ 运算符取出整数维度值。
+
+\begin{lstlisting}[language=croqtile,caption={一个形状字面量}]
+sp : [7, 8];
+int b = sp(0) + sp(1);   // 'b' equals to 15 (7 + 8)
+\end{lstlisting}
+
+上例中，表达式 \co@sp(0)@ 求出 mdspan \co@sp@ 第一维的取值。维度值本质上是整数，可以直接参与整数算术。
+
+于是就可以像下面这样，从已有的 mdspan 派生出新的 mdspan：
+
+\begin{lstlisting}[language=croqtile,caption={改变一个维度后的形状}]
+sp : [6, 8];
+spn : [1, sp(0)/2, sp(1)/4]; // define a new mdspan from the existing one.
+\end{lstlisting}
+
+有了这个机制，在 Croqtile 代码里对多维跨度做分块更加方便。分块是高性能核函数中的常见操作，因此 Croqtile 提供了相应的语法糖：
+
+\begin{lstlisting}[language=croqtile,caption={同样的形状，另一种写法}]
+sp : [6, 8];
+spn : sp [1, (0)/2, (1)/4];  // spn is defined as [1, 3, 2]
+\end{lstlisting}
+
+这段代码和前面那段作用相同，但语法更简洁。这体现了 Croqtile 的一条设计理念：用简洁的代码表达常见操作。
+
+命名 \co@mdspan@ 必须在声明时初始化，之后不能修改。需要另一种形状时，应从已有形状派生新名字，使编译器能够保留并分析形状表达式之间的关系。
+
+除了这种\emph{逐维度}定义 mdspan 的方式，Croqtile 还支持其他定义方法；这些方法在 \emph{i-tuple} 的讨论中介绍。

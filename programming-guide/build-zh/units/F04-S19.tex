@@ -1,0 +1,12 @@
+\subsection*{\texttt{.swiz\textless{}N\textgreater{}}：面向消费者的共享内存布局}
+
+典型的 GEMM 暂存代码如下：
+
+\begin{lstlisting}[language=croqtile,caption={.swiz N：面向消费者的共享内存布局}]
+dma.copy.swiz<128> lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) => lhs_load_s;
+ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
+\end{lstlisting}
+
+装载侧和计算侧的重排必须一致。用 \co@.swiz<128>@ 暂存的分块，消费者通常也要用匹配的重排来加载。
+
+\co@.swiz<N>@ 的取值决定共享内存中分块元素的排列，必须与 \co@mma.load.swiz<N>@ 一致。

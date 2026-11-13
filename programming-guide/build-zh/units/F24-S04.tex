@@ -1,0 +1,31 @@
+\subsection*{设备调用的参数类型}
+
+设备调用可传递以下参数：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 带形状数据。
+\item 标量整数。
+\item 目标平台支持的标量浮点值。
+\end{itemize}
+
+控制整数可以使用 \co@int@、\co@s32@ 或 \co@u32@。可传递的浮点类型取决于目标平台，例如 \co@float@、\co@double@、\co@half@、\co@bfp16@ 或 \co@half8@。
+
+Tileflow 侧不进行这些浮点值的算术运算，而是把它们传给设备函数用于计算。
+
+下面将几类参数传给设备辅助函数：
+
+\begin{lstlisting}[language=croqtile,caption={向设备函数传递参数}]
+__device__ void bar(float *p, int m, int n) {}
+__device__ void foo(float *, int, unsigned, double, float) {}
+__co__ void foobar(f32 [M, 24] input, int N, float padding) {
+  parallel p by 1 {
+    shared f32 [14, 7] buffer;
+    call bar(input, input.span(0), buffer.span(0));
+    call foo(buffer, N, 3, 3.14, padding);
+  }
+}
+\end{lstlisting}
+
+带形状数据传到设备函数时，参数是指向元素的指针，不再携带完整形状。例如 \co@bar@ 的 \co@float *p@ 对应 \co@input.data@；需要的维度另以整数参数传递。设备函数的声明应与这些参数类型匹配。
+
+目标平台没有对应的原生类型时，可以使用 \co@croq::f16@、\co@croq::bf16@ 等类型。

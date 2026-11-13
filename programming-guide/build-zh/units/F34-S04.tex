@@ -1,0 +1,12 @@
+\subsection*{一致与发散}
+
+加掩码是实现层面的概念。从 SPMD 编程的视角看，处理数据分块的代码通常被称为\textbf{发散}的，因为并非所有线程实例都执行同一段代码。程序员应当意识到，自己的 SPMD 代码由两部分组成：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \textbf{一致代码}：\emph{所有线程}执行同一条代码路径。
+\item \textbf{发散代码}：只有\emph{被掩码选中的线程}执行\emph{发散}代码路径。
+\end{itemize}
+
+现实中的不同需求，需要 SPMD 代码里有\emph{发散}代码来处理。换一种范式看，在 SPMD 程序里使用\emph{发散}代码，甚至能模拟多程序多数据的行为：MPMD 里不同线程执行不同代码，所以\emph{发散}在概念上把 SPMD 扩展到了 MPMD 的范围。
+
+在 Croqtile 中，可以用 \co@inthreads@ 块来写发散代码。

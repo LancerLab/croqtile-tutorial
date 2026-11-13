@@ -1,0 +1,18 @@
+\subsection*{小结}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+| \textbf{语法} & \textbf{作用} & \textbf{运行于} | \\
+\midrule
+| --- & --- & --- | \\
+| \co@#define NAME value@ & 对象式宏；在 \co@__co__@ 与主机区域间共享 & 预处理器 | \\
+| \co@#if@ / \co@#ifdef@ / \co@#error@ & 条件编译与编译时断言 & 预处理器 | \\
+| \co@-DNAME=value@ & 从命令行定义宏，用于分块尺寸扫描 & 预处理器 | \\
+| \co@call helper(...)@ & 调用设备辅助函数 & 设备 | \\
+| \co@__cpp__("...")@ & 在当前位置插入目标 C++ & 取决于所在目标作用域 | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+3.11 节转向工作流程的另一面：核函数能编译、输出却不对时该怎么办——调试、详细模式，以及一步步缩小范围。3.10 节的两个完整程序，则把互操作机制放进了具体语境。

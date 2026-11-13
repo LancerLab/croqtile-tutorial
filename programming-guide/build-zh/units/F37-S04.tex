@@ -1,0 +1,7 @@
+\subsection*{\texttt{global}：全局存储}
+
+声明中的 \co@global@ 把缓冲区放入目标平台的全局存储，适合需要超出单个线程或协作块访问范围的数据。选择存储位置并不等于初始化内容，也不会自动把已有数据搬入其中：
+
+\begin{lstlisting}[language=croqtile,caption={全局存储声明}]
+global f32 [100, 200] matrix;
+\end{lstlisting}

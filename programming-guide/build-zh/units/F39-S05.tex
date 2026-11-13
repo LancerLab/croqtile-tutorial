@@ -1,0 +1,17 @@
+\subsection*{完全非阻塞 DMA 模式（Croqtile 中的链模式）}
+
+使用前一次搬运结果的传输，必须在前一次完成后才能开始。\co@after@ 子句记录这项依赖，而不要求发起操作的代码当场等待。下面的例子将暂存缓冲区的复制与此前操作连接起来：
+
+\begin{lstlisting}[language=croqtile,caption={完全非阻塞 DMA 模式（Croqtile 中的链模式）}]
+out_store = dma.copy.async l2_out => output.chunkat(m_tile, n_tile) after out_store_s;
+\end{lstlisting}
+
+这个例子里：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@out_store@ 是把数据从 \co@l2_out@ 搬到 \co@output.chunkat(m_tile, n_tile)@ 的异步 DMA 操作。
+\item \co@out_store_s@ 是另一项 DMA 操作或事件，必须在 \co@out_store@ 开始前完成。
+\item \co@after out_store_s@ 语法规定，\co@out_store@ 只能在 \co@out_store_s@ 完成后启动，从而保证主线程不被阻塞。
+\end{itemize}
+
+依赖尚未满足时，发起操作的代码可以继续执行，但目标并不会立即变得可读，源也不能因此提前复用。后续消费者仍需要等最终搬运完成。阅读搬运链时，应沿源到目标检查每次交接，包括最后回到普通计算的那一次。

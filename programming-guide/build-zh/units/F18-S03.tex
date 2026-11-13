@@ -1,0 +1,38 @@
+\subsection*{定义带形状数据}
+
+下面声明一个带形状的缓冲区：
+
+\begin{lstlisting}[language=croqtile,caption={带形状数据的声明}]
+f32 [32, 16] data;
+\end{lstlisting}
+
+它的形状为 \co@[32, 16]@，元素类型为 \co@f32@。形状也可以先单独命名：
+
+\begin{lstlisting}[language=croqtile,caption={独立的形状}]
+shape : [72, 14];
+s32 [shape] data0;              // using the named mdspan `shape`
+u32 [shape(0), shape(1)] data1; // same shape as the above
+u16 [shape + 6] data2;          // shaped as [78, 20]
+s16 [shape, 8] data3;           // shaped as [72, 14, 8]
+\end{lstlisting}
+
+\co@data0@ 使用名为 \co@shape@ 的形状，并以 32 位整数为元素。\co@[]@ 内还可以使用形状运算的结果。
+
+元素类型也称基础类型，常见类型如下：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 无符号整数：\co@u8@、\co@u16@、\co@u32@
+\item 有符号整数：\co@s8@、\co@s16@、\co@s32@
+\item 浮点数：\co@f16@、\co@bf16@、\co@f32@
+\end{itemize}
+
+\co@u@ 和 \co@s@ 分别表示无符号与有符号整数，数字表示位宽。\co@f16@ 是半精度浮点，\co@bf16@ 是脑浮点，常用于机器学习计算。
+
+\co@s32@ 用于声明数据元素，\co@int@ 用于程序控制。虽然位宽相同，它们的声明方式不同：
+
+\begin{lstlisting}[language=croqtile,caption={被拒绝的基础类型}]
+s32 a;    // a control integer, the same as 'int a'
+s32 [4] b; // a buffer of four elements
+\end{lstlisting}
+
+两种写法都能通过编译：带形状的声明得到缓冲区，不带形状的声明得到普通控制整数；区别在形状，不在类型名。

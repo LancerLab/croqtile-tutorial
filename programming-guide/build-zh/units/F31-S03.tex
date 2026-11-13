@@ -1,0 +1,25 @@
+\subsection*{具名与不具名的并行索引}
+
+下面用具名索引声明并行工作：
+
+\begin{lstlisting}[language=croqtile,caption={具名的并行索引}]
+parallel p by 6 {
+  // SPMD (Single Program, Multiple Data) code
+}
+\end{lstlisting}
+
+花括号中的代码由多个实例执行。本例的组成部分如下：
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@parallel@：声明独立的工作实例。
+\item \co@p@：标识当前实例的有界索引。
+\item \co@by 6@：声明 6 个实例，索引范围为 \co@0@ 到 \co@5@。
+\end{itemize}
+
+如果代码不需要引用实例索引，可以省略变量名：
+
+\begin{lstlisting}[language=croqtile,caption={不具名的并行索引}]
+parallel by 2 { ... }
+\end{lstlisting}
+
+这里仍有两个工作实例，但代码不能用省略的索引来区分数据位置。

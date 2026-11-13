@@ -1,0 +1,8 @@
+\subsection*{\texttt{dma.transp\textless{}...\textgreater{}}}
+
+\begin{lstlisting}[language=croqtile,caption={dma.transp\textless{}...\textgreater{}}]
+fa = dma.transp<1, 0, 2> a => local;
+dma.copy fa.data => o;
+\end{lstlisting}
+
+\co@dma.transp@ 在搬运时置换维度，目的缓冲区使用变换后的布局。它把维度变换与数据搬运写在同一条语句里；读取代码时，既要看源和目的，也要看尖括号中约定的维度顺序。

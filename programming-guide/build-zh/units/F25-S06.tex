@@ -1,0 +1,15 @@
+\subsection*{返回类型与类型推导}
+
+返回值和输入一样，可以是带形状数据、标量，或者不返回结果（\co@void@）。
+
+除了显式声明返回类型，也可以让编译器推断：
+
+\begin{lstlisting}[language=croqtile,caption={返回类型与类型推导}]
+__co__ auto foo() {
+  f32 [7, 16] result;
+  // ...
+  return result;
+}
+\end{lstlisting}
+
+这里，编译器根据 \co@result@ 将 \co@auto@ 推导为 \co@f32 [7, 16]@。当输出形状在函数体内推导时，这种写法可以避免修改推导式后还要同步修改返回声明。若固定返回形状是接口的一项要求，则适合显式声明类型。

@@ -1,0 +1,18 @@
+\subsection*{从 \texttt{parallel} 提前返回}
+
+\co@yield@ 让当前并行实例提前结束，生成对应的 \co@return;@。与跳过一个 \co@if@ 分支不同，它会省去该实例的所有后续工作，适合已经完成任务或无需继续处理的实例：
+
+\begin{lstlisting}[language=croqtile,caption={从 parallel 提前返回}]
+parallel p by BLK_CNT: block {
+  parallel q by THR_CNT : thread {
+    if (cond) yield;
+    ...
+  }
+}
+\end{lstlisting}
+
+\begin{keypoint}
+\co@yield@ 不会自动检查提前退出是否影响同步。使用前应确认其他实例仍能完成相应的等待与同步操作。
+\end{keypoint}
+
+检查提前退出时，要对照区域中尚未执行的同步操作。实例若在触发事件前离开，消费者可能一直等待；若跳过必须共同参与的操作，也可能阻塞其他实例。负责同一分块的实例做出一致的尾部判断时，最容易确认这些同步责任是否仍能完成。

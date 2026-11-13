@@ -1,0 +1,3 @@
+\subsection*{\texttt{with tile\_k in 16}}
+
+语句 \co@with tile_k in 16@ 为 \co@tile_k@ 绑定 0 到 15 的范围，上界为 \co@#tile_k = 16@，但它本身不会把语句体执行 16 次。遍历由后续的 \co@foreach tile_k@ 完成。将绑定与循环分开后，流水线就可以先在循环外选择第 0 块，再遍历其余分块。

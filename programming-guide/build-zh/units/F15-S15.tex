@@ -1,0 +1,35 @@
+\subsection*{\texttt{with-in} 块与 \texttt{where} 子句}
+
+\co@with-in@ 将一个索引元组与形状范围绑定：
+
+\begin{lstlisting}[language=croqtile,caption={索引 with-in 块}]
+with index in [10, 10] {
+  // index is ituple with 2 elements
+}
+\end{lstlisting}
+
+\co@index@ 包含两个元素，也可以分别给元素命名：
+
+\begin{lstlisting}[language=croqtile,caption={索引元组}]
+with {x, y} in [10, 10] {...}
+\end{lstlisting}
+
+元组本身和各个元素可以同时命名：
+
+\begin{lstlisting}[language=croqtile,caption={由元组导出的索引}]
+with index = {x, y} in [10, 10] {...}
+\end{lstlisting}
+
+这里的 \co@index@ 是有界整数元组。
+
+\co@with-in@ 只声明有界索引，不启动并行工作。需要遍历这些索引时，再使用 \co@foreach@。
+
+\co@where@ 可以声明索引之间的对应关系：
+
+\begin{lstlisting}[language=croqtile,caption={嵌套的有界组}]
+with {m, n} in [M, N], {n_p, k} in [N_P, K] where n_p <-> n {
+  // matmul implements with m,n,K. n_p is no long useful.
+}
+\end{lstlisting}
+
+\co@n <-> n_p@ 约定两个索引在迭代中对应同一取值，因此可以在需要该索引的位置使用相应名字。

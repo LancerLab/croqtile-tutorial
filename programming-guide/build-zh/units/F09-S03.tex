@@ -1,0 +1,25 @@
+\subsection*{重排与布局冲突}
+
+交错布局改变暂存分块的元素在共享存储中的排列。逻辑矩阵形状不变，但读取方必须使用匹配的地址映射。Croqtile 的拷贝操作都提供这一选择：
+
+\begin{lstlisting}[language=croqtile,caption={一次带重排的拷贝}]
+dma.copy.swiz<128> src => dst;       // software DMA with swizzle
+dma.copy.swiz<128> src => dst;
+\end{lstlisting}
+
+MMA 的读取路径必须使用相同的 \co@swiz<N>@，让地址与暂存的布局一致：
+
+\begin{lstlisting}[language=croqtile,caption={一次带重排的 mma 加载}]
+ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
+\end{lstlisting}
+
+重排是拷贝自身的性质，而不是某个引擎独有的特性：\co@dma.copy.swiz<N>@ 产生的共享内存布局与数据如何到达无关。
+
+模板参数选择目标支持的交错模式。示例使用编号模式，其中模式 0 表示恒等映射。有效模式及兼容的分块尺寸取决于目标平台，搬运与 MMA 装入应采用同一套已记录的约定。
+
+复制与 \co@mma.load.swiz<N>@ 必须对布局达成一致。用不兼容模式读取交错分块，会把相同字节解释为不同矩阵位置，导致数值错误。修改任一操作时，都应将两者匹配视为正确性要求。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig2_swizzle_light.png}
+\caption{八个 bank 的简化示意：同一 bank 的不同地址访问需要串行处理，重映射则分散访问。复制与 MMA 装入必须采用一致的 swizzle。}
+\end{figure}

@@ -1,0 +1,40 @@
+\subsection*{DMA 矩阵乘法：共享存储中的分块}
+
+\begin{lstlisting}[language=croqtile,caption={DMA 矩阵乘法：共享存储中的分块}]
+__co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
+  s32 [lhs.span(0), rhs.span(1)] output;
+  parallel {px, py} by [8, 16] : block {
+    parallel {qx, qy} by [16, 16] : thread
+      output.at(px#qx, py#qy) = 0;
+    foreach {tile_k} in [16] {
+      lhs_load = dma.copy lhs.chunkat(px, tile_k) => shared;
+      rhs_load = dma.copy rhs.chunkat(tile_k, py) => shared;
+      parallel {qx, qy} by [16, 16] : thread {
+        foreach k in [256 / #tile_k]
+          output.at(px#qx, py#qy) += lhs_load.data.at(qx, k) * rhs_load.data.at(k, qy);
+      }
+    }
+  }
+  return output;
+}
+\end{lstlisting}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig6_dma_matmul_light.png}
+\caption{每个 block 为当前 K 切片装入两个 [16, 16] 操作数分块，再由 256 个线程累加该 block 的 [16, 16] 输出分块。}
+\end{figure}
+
+标量版本一次索引一个元素；分块版本先把一个分块复制到共享存储，再在这块数据上计算：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 外层 \co@parallel@ 现在用 \co@: block@ 和花括号形式的索引 \co@{px, py}@。8 × 16 的块网格覆盖整个输出。
+\item 对 \co@tile_k@ 的 \co@foreach@ 分 16 步走完 K 维。每一步用 \co@dma.copy ... => shared@ 把 \co@lhs@ 和 \co@rhs@ 的一条条带复制到 \co@shared@ 存储。
+\item 内层 \co@parallel {qx, qy} by [16, 16] : thread@ 在每个块里创建 256 个线程，每个线程负责块内分块的一个输出元素。
+\item 算术从 \co@lhs_load.data@ 和 \co@rhs_load.data@ 读取，也就是共享内存里的副本，而不是全局的 \co@lhs@ 和 \co@rhs@。
+\end{itemize}
+
+合成索引分两层：\co@px#qx@ 把块索引 \co@px@ 和线程索引 \co@qx@ 合成为全局行，\co@py#qy@ 对列做同样的事。
+
+块网格 \co@[8, 16]@ 为每块分配 16 行、16 列输出。块内 \co@[16, 16]@ 个线程各负责一个输出元素。K 方向共有 16 个分块，每块含 16 个元素，共同覆盖大小为 256 的完整收缩维度。
+
+数据复用发生在块内：装入的左侧分块为多个输出列供数，右侧分块为多个输出行供数。K 循环遍历各切片一次，将贡献累加到同一组输出位置。与标量示意代码一样，输出在 K 循环之前清零。暂存改变了内层循环的读取位置，点积本身保持不变。

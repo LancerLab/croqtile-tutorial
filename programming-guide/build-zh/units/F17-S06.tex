@@ -1,0 +1,28 @@
+\subsection*{元组运算与形状计算}
+
+圆括号 \co@()@ 取出元组中的一个元素，下标从 \co@0@ 开始。也可以让整个元组参与计算，把几个坐标分量的变化写在同一表达式里：
+
+\begin{lstlisting}[language=croqtile,caption={赋一个新元组}]
+a = {3, 4};
+b = {a(0), 1, a(1)};  // '()' to retrieve the element value
+c = a {(0), (1), 2};  // syntax sugar
+d = {a, 5, 6};        // concatenate
+e = a + 1;            // addition is applied elementwise
+\end{lstlisting}
+
+\co@ituple@ 与整数、\co@mdspan@ 一样，必须初始化且不能重新赋值。
+
+元组常用于逐维修改形状：
+
+\begin{lstlisting}[language=croqtile,caption={用 i-tuple 索引 mdspan}]
+shape : [7, 18, 28];
+tiling_factors = {1, 2, 4};
+tiled_shape : shape / tiling_factors;
+padded_shape : shape + {2, 0, 2};
+\end{lstlisting}
+
+\co@shape / tiling_factors@ 按各维的分块因子计算 \co@tiled_shape@，\co@shape + {2, 0, 2}@ 则得到 \co@padded_shape@。按维度相加时，两者的秩必须一致。
+
+\begin{lstlisting}[language=croqtile,caption={非法的形状表达式}]
+shape : [7, 8, 9] + {1, 2}; // error: inconsistent rank
+\end{lstlisting}

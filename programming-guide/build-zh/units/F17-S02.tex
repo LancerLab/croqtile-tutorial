@@ -1,0 +1,42 @@
+\subsection*{用于程序控制的整数}
+
+Tileflow 程序使用整数来控制循环和索引。为此提供的控制类型是 32 位有符号整数 \co@int@。
+
+可以像 C++ 一样声明并初始化整数：
+
+\begin{lstlisting}[language=croqtile,caption={已初始化的整数}]
+int a = 1;
+\end{lstlisting}
+
+也可以省略类型，由初始化表达式推断：
+
+\begin{lstlisting}[language=croqtile,caption={对整数赋值}]
+a = 1;
+\end{lstlisting}
+
+一行中可以声明多个整数：
+
+\begin{lstlisting}[language=croqtile,caption={一次定义多个整数}]
+int a = 1, b = 2, c = 3;
+d = 4, e = 5;
+\end{lstlisting}
+
+\co@mdspan@ 不能直接作为函数参数；整数则可以在主机、Tileflow 程序和设备函数之间传递。
+
+\begin{lstlisting}[language=croqtile,caption={整数参数}]
+__co__ void foo(int a) {
+  parallel p by 1 {
+    call kernel(a, 3);
+  }
+}
+\end{lstlisting}
+
+整数必须在声明时初始化，之后不能重新赋值：
+
+\begin{lstlisting}[language=croqtile,caption={未初始化的声明}]
+int a;  // error: declaration without initialization
+int b = 1;
+b = 3;  // error: re-assignment
+\end{lstlisting}
+
+这里的整数是不可变值。因此，声明中的 \co@=@ 用于初始化，而不是修改已有变量。

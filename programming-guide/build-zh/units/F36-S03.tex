@@ -1,0 +1,12 @@
+\subsection*{不带 \texttt{.async} 的流绑定}
+
+流绑定同样适用于同步的 \co@parallel-by@。此时主机在指定的流上启动核函数，然后等待该流完成：
+
+\begin{lstlisting}[language=croqtile,caption={不带 .async 的流绑定}]
+__co__ void bar(stream _s, f32[M] a) {
+  parallel<_s> p by M : block {
+    a.at(p) = 1.0f;
+  }
+  // host synchronizes on stream _s before continuing
+}
+\end{lstlisting}

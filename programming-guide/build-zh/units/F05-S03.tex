@@ -1,0 +1,27 @@
+\subsection*{Croqtile 的两层并行模型}
+
+阅读并行代码时，先区分两个问题：哪些工作彼此独立，以及这些工作映射到哪里。
+
+\begin{itemize}[leftmargin=1.6em]
+\item \co@parallel@：声明彼此独立、可以并行执行的工作。
+\item 空间说明符，如 \co@: block@、\co@: thread@、\co@: group@：指定并行轴的执行位置。
+\end{itemize}
+
+\co@foreach@ 表示顺序迭代，适合累加、归约或有前后依赖的处理；\co@parallel@ 表示独立的工作实例。
+
+\begin{lstlisting}[language=croqtile,caption={Croqtile 的两层并行模型}]
+parallel {px, py} by [8, 16] : block
+  foreach {tile_k} in [16]               // sequential -- K-dimension loop
+    parallel {qx, qy} by [16, 16] : thread  // concurrent -- mapped to threads
+      foreach k in [16]                      // sequential -- inner accumulation
+        output += lhs * rhs;
+\end{lstlisting}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig2_logical_vs_physical_light.png}
+\caption{空间说明符将 parallel 轴映射到 block 和 thread；其中的 foreach 循环仍按顺序执行。}
+\end{figure}
+
+未写空间说明符时，由编译器选择默认映射；需要明确控制时，再标注 \co@: block@、\co@: thread@ 等说明符。
+
+\co@parallel@ 和 \co@foreach@ 都可以使用多维索引。确定外层与内层范围后，组合运算符 \co@#@ 将它们的坐标连接成完整张量中的位置。范围参与这项计算，因此修改迭代划分时，分块选择也会随之改变。

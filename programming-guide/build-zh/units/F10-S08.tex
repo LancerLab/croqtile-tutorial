@@ -1,0 +1,17 @@
+预处理在 Croqtile 解析之前进行。普通 C++ 和 \co@__co__@ 区域可以共用宏定义，便于统一维度与配置。
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+| 指令 & 作用 | \\
+\midrule
+| --- & --- | \\
+| \co@#define NAME value@ & 对象式宏：文本替换 | \\
+| \co@#if@ / \co@#elif@ / \co@#else@ / \co@#endif@ & 条件包含 | \\
+| \co@#ifdef@ / \co@#ifndef@ & 判断宏是否已定义的简写 | \\
+| \co@#error message@ & 带消息强制编译时失败 | \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+预处理器不支持函数式宏。需要带参数的计算时，可以在普通 C++ 中使用辅助函数。

@@ -1,0 +1,18 @@
+\subsection*{期值与循环简写}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+| \textbf{语法} & \textbf{含义} | \\
+\midrule
+| --- & --- | \\
+| \co@dma.copy.async src => dst@ & 非阻塞拷贝，立即返回 | \\
+| \co@dma.any@ & 占位期值，尚无传输在途 | \\
+| \co@swap(f0, f1)@ & 交换两个期值句柄，不拷贝数据 | \\
+| \co@rotate(f0, f1, f2)@ & 轮转三个期值句柄 | \\
+| \co@with tile_k in N ...@ & 绑定到范围为 N 的分块轴，作用域受限 | \\
+| \co@foreach tile_k(1:)@ & 从索引 1 开始迭代 | \\
+| \co@__co__ auto fn(...)@ & 由 \co@return@ 语句推导返回类型 | \\
+\bottomrule
+\end{tabularx}
+\end{table}

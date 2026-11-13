@@ -1,0 +1,12 @@
+\subsection*{标量类型}
+
+用于程序控制的标量包括整数和布尔值。\co@int@ 是 32 位有符号整数，范围为 -2³¹ 到 2³¹-1，可用于声明变量和函数参数。
+
+\begin{lstlisting}[language=croqtile,caption={标量类型}]
+int a;
+__co__ int foo(int b) { return b; }
+\end{lstlisting}
+
+整数支持 C++ 风格的算术、移位和逻辑运算。程序控制使用 \co@int@，不提供其他位宽或无符号的控制整数类型。
+
+\co@bool@ 的运算以及它与整数之间的转换，采用 C++ 的对应规则。

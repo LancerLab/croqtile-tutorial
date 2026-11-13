@@ -1,0 +1,30 @@
+\subsection*{死锁}
+
+默认情况下，事件是无锁的，用于不同异步块之间的高性能同步。这意味着多个线程同时更新事件时有风险，尤其是 \co@wait@。
+
+例如：
+
+\begin{lstlisting}[language=croqtile,caption={单实例死锁}]
+parallel p by 1 {
+  shared event e;
+  trigger e;   // one thread set e;
+  parallel q by 2 {
+    wait e;    // two threads can reset e;
+  }
+}
+\end{lstlisting}
+
+这段代码里，两个线程等待同一个事件 \co@e@。但 \co@wait@ 会复位事件 \co@e@，因此可能出现 \co@thread-0@ 在 \co@thread-1@ 发现 \co@e@ 已触发之前就把它复位的情况，结果 \co@thread-1@ 永远无法解除阻塞，形成死锁。
+
+\begin{lstlisting}[language=croqtile,caption={信用计数死锁}]
+qc = 2;
+parallel p by 1 {
+  shared event e[qc];
+  trigger e;   // one thread set e[0] and e[1];
+  parallel q by qc {
+    wait e[q]; // no dead lock
+  }
+}
+\end{lstlisting}
+
+这段代码使用事件数组，保证每个事件只由一个线程等待和复位。

@@ -1,0 +1,37 @@
+\subsection*{C++ 主机：带形状的数据实参}
+
+普通指针或数组只描述存储，Croqtile 的带形状数据还记录各维度大小。调用前，需要把数据地址与形状组合起来。
+
+可以使用 \co@choreo.h@ 中的包装工具。Croqtile 编译环境会自动包含这个头文件。
+
+\begin{lstlisting}[language=croqtile,caption={传入带形状的缓冲区}]
+__co__ void foo(f32 [7, 16] input, f32 [7, 16] output) {...}
+void entry(float * input, float* output) {
+  // foo(input, output); <-- result in error since missing shape
+  foo(croq::make_spanview<2>(input, {7, 16}),
+      croq::make_spanview<2>(output, {7, 16}));
+}
+\end{lstlisting}
+
+\co@croq::make_spanview@ 以秩(rank)作为模板实参，接收数据指针和维度列表，生成 \co@croq::spanned_view@。它保存指针与形状，不拥有底层缓冲区。简化定义如下。
+
+\begin{lstlisting}[language=croqtile,caption={主机侧缓冲区包装器}]
+template <typename T, size_t Rank>
+class spanned_view {
+  T* ptr;                 // typed pointer to the data
+  size_t dims[Rank];      // ranked dimensions
+};
+\end{lstlisting}
+
+维度也可以由运行时值提供：
+
+\begin{lstlisting}[language=croqtile,caption={由运行时维度构造的调用}]
+__co__ void foo(f32 [7, 16] input) {...}
+void entry(float * input, float* output, int M, int N) {
+  foo(croq::make_spanview<2>(input, {M, N}));
+}
+\end{lstlisting}
+
+本例的 \co@input@ 使用运行时形状。进入 Tileflow 程序时，系统检查它是否满足 \co@M == 7@ 和 \co@N == 16@；不满足时会终止执行，以免继续使用不成立的形状假设。
+
+输入的带形状数据引用原有缓冲区。把这个包装对象传入函数，不会复制整块输入数据。

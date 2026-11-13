@@ -1,0 +1,20 @@
+\subsection*{主机程序}
+
+主机侧提供数据存储和形状信息。加法示例先创建两份拥有存储的缓冲区，填入数据，再将视图传给核函数。主机保留输入的所有权，调用结束后还可以用原始数据检查结果。
+
+\begin{lstlisting}[language=croqtile,caption={创建带形状的输入}]
+auto lhs = croq::make_spandata<croq::s32>(4, 8);
+auto rhs = croq::make_spandata<croq::s32>(4, 8);
+lhs.fill_random(-10, 10);
+rhs.fill_random(-10, 10);
+\end{lstlisting}
+
+调用 \co@croq::make_spandata<T>(dims...)@ 分配由对象拥有的主机缓冲区。模板参数选择元素类型，实参给出各维大小。随后调用 \co@fill_random@，在指定范围内初始化元素。
+
+\begin{lstlisting}[language=croqtile,caption={调用核函数}]
+auto res = ele_add(lhs.view(), rhs.view());
+\end{lstlisting}
+
+主机侧的调用形式与普通 C++ 函数调用相同。\co@.view()@ 从 \co@spanned_data@ 创建不拥有缓冲区的 \co@spanned_view@，供核函数访问输入；返回的 \co@res@ 则拥有结果缓冲区。
+
+\co@main@ 最后逐个检查结果元素，验证核函数的计算是否正确。这个检查沿用相同的 \co@(i, j)@ 位置，把两个原始输入的和与返回结果比较，从主机侧完成一次完整的准备输入、调用与验证的过程。

@@ -1,0 +1,52 @@
+\subsection*{\texttt{\_\_device\_\_} 函数：与 Croqtile 一并面向目标平台}
+
+自定义归约、排序网络和特殊数学运算等计算，可以通过设备辅助函数实现。
+
+\co@__co__@ 函数可以用 \co@call@ 关键字调用 \co@__device__@ 函数：
+
+\begin{lstlisting}[language=croqtile,caption={device 函数：与 Croqtile 一并面向目标平台}]
+#define N_TOKENS 1024
+#define N_EXPERTS 8
+#define N_THREAD 128
+template <int K>
+__device__ void warp_topk(f32* vals, s32* idxs);
+template <typename T>
+__device__ __forceinline__ T SHFL_XOR(T var, int lane_mask, int width) {
+  return __shfl_xor_sync(uint32_t(-1), var, lane_mask, width);
+}
+__co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
+                     s32 [N_TOKENS, K]& topk_ids,
+                     f32 [N_TOKENS, K]& topk_scores,
+                     int N_BLOCK) {
+  parallel n by N_BLOCK : block {
+    foreach m in [ |scores.span| / N_THREAD / N_BLOCK ] {
+      shared_scores = dma.copy scores.chunkat(n#m, _) => shared;
+      parallel gid by [N_THREAD / 32] : group
+        parallel tid by 32 : thread {
+          flat_scores = shared_scores.span_as([|shared_scores.span|]);
+          score = flat_scores.at(gid # tid);
+          local s32 [K] frag_idx{-1};
+          local f32 [K] frag_val{-1.0f};
+          frag_idx.at(0) = tid;
+          frag_val.at(0) = score;
+          call warp_topk<8>(frag_val, frag_idx);
+          inthreads (tid == 0)
+            foreach k in K {
+              topk_ids.at(n#m, gid#k) = frag_idx.at(k);
+              topk_scores.at(n#m, gid#k) = frag_val.at(k);
+            }
+        }
+    }
+  }
+}
+\end{lstlisting}
+
+辅助函数接收指向元素存储的原始指针。因此，接口需要给出它所需的尺寸或布局约定，仅凭指针不会保留 Croqtile 形状。
+
+\co@SHFL_XOR@ 辅助函数是交给目标编译器的普通设备代码。计算中如何使用它属于辅助函数的实现，Croqtile 不会把其函数体翻译成分块操作。
+
+语句 \co@call group_topk<8>(...)@ 提供辅助函数的编译时配置和普通实参。Croqtile 将带形状数据实参转换为元素指针，由目标编译器验证生成的 C++ 调用。
+
+区域 \co@inthreads (tid == 0)@ 选择一个线程完成其中工作，结束后汇合。它没有 \co@.async@ 修饰符，因此不会引入独立推进的生产者或消费者。
+
+这种分工——Croqtile 管并行、分块和内存编排，设备函数管专门计算——在 MoE（专家混合）top-K、自定义归约和专用数学运算等生产核函数里很常见。

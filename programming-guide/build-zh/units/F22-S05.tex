@@ -1,0 +1,9 @@
+例如，需要检查生成的目标源码或预处理结果时，可以让流程在相应阶段停止：
+
+\begin{lstlisting}[language=croqtile,caption={查看中间输出与编译器帮助}]
+croq -t target -es ele_add.co -o ele_add.target.cpp
+croq -E ele_add.co
+croq --help
+\end{lstlisting}
+
+将 \co@target@ 替换为 \co@croq --help-target@ 列出的目标名称。可用的输出形式取决于所选工具链；需要查看实际编译命令时，使用 \co@-v@。更多诊断方法见 1.4 节。

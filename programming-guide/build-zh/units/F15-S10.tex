@@ -1,0 +1,10 @@
+\subsection*{整数元组类型}
+
+整数元组按顺序保存多个整数，常用于多维索引。把行、列等坐标放在同一个元组中，可以整体传递或参与逐维计算；需要某个分量时，再按位置取出。元素顺序因此也是索引含义的一部分。
+
+用花括号列出各个元素即可定义 \co@ituple@：
+
+\begin{lstlisting}[language=croqtile,caption={整数元组类型}]
+ituple index = {5, 4, 3, 2, 1};  // It defines a tuple of 5 elements
+index = {a, b};  // 'a' and 'b' are existing integers
+\end{lstlisting}

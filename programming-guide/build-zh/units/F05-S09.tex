@@ -1,0 +1,13 @@
+\subsection*{嵌套说明符}
+
+块级和线程级工作可以嵌套声明：
+
+\begin{lstlisting}[language=croqtile,caption={嵌套说明符}]
+parallel {px, py} by [8, 16] : block {
+  parallel {qx, qy} by [16, 16] : thread {
+    // 128 blocks x 256 threads = 32,768 threads total
+  }
+}
+\end{lstlisting}
+
+外层划分块网格，内层划分块内线程。\co@px, py@ 表示同一并行层次中的两个坐标轴。

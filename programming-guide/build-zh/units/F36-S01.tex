@@ -1,0 +1,18 @@
+\subsection*{同步与异步 \texttt{parallel-by}}
+
+和 \co@inthreads@ 类似，\co@parallel-by@ 也可以加上 \co@.async@ 变成异步：
+
+\begin{lstlisting}[language=croqtile,caption={一次异步启动}]
+parallel.async p by 6 : block {
+}
+\end{lstlisting}
+
+不加 \co@.async@ 时，主机会等核函数结束后才继续：
+
+\begin{lstlisting}[language=croqtile,caption={同步形式}]
+parallel p by 6 : block {
+}
+// host continues only after the kernel finishes
+\end{lstlisting}
+
+加上 \co@.async@ 之后，主机代码在启动核函数后立刻继续。要让计算和数据传输重叠，或者并发启动彼此独立的核函数，这一点很关键。

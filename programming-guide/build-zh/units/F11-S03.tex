@@ -1,0 +1,25 @@
+\subsection*{\texttt{print} 与 \texttt{println}：运行时设备输出}
+
+\begin{lstlisting}[language=croqtile,caption={一个运行时检视核函数}]
+__co__ void inspect(s32 [4, 8] data) {
+  foreach i in [data.span] {
+    println("element ", i, " = ", data.at(i));
+  }
+}
+\end{lstlisting}
+
+运行时打印接受字符串和表达式，参数用逗号分隔。它适合观察实际执行中的索引或数据，与编译时检视互相补充。多个并行实例的输出顺序不固定，因此读取日志时需要结合实例索引辨认来源。
+
+若只需检查一条执行路径，可以用索引条件限制打印：
+
+\begin{lstlisting}[language=croqtile,caption={并行块内的打印}]
+parallel {px, py} by [8, 16] : block
+  parallel {qx, qy} by [16, 16] : thread {
+    // ... compute ...
+    if (px == 0 && py == 0 && qx == 3 && qy == 5) {
+      println("partial sum = ", accum);
+    }
+  }
+\end{lstlisting}
+
+调试时可以用条件限制打印的实例，避免大量重复输出。

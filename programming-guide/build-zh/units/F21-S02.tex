@@ -1,0 +1,20 @@
+\subsection*{快速示例}
+
+值编号过程会给所有含有一组取值的实体分配值编号，mdspan 和 ituple 都在其中。例如：
+
+\begin{lstlisting}[language=croqtile,caption={一个形状表达式}]
+mdspan a : {1, b, c + 3}
+\end{lstlisting}
+
+值编号过程会产生下面这些取值：
+
+\begin{lstlisting}[language=croqtile,caption={对应的值编号图}]
+   VN #0:  const_1
+   VN #1:  b
+   VN #2:  c
+   VN #3:  const_3
+   VN #4:  +:#2:#3
+   VN #5:  #0,#1,#4
+\end{lstlisting}
+
+图中「VN \#」后面的数字，是某个表达式的值编号。它可能表示编译时已知的常量整数，也可能表示符号值（如变量 \co@a@、\co@b@），还可能表示其他值编号的组合。这里值编号 \#0 和 \#3 引用常量值，\#1 和 \#2 分别引用整型变量 \co@b@ 和 \co@c@。\#4 表示一个加法表达式的值，也就是 \#2 与 \#3 之和；把所有值编号解引用之后，它就是表达式 \co@c + 3@。最后，值编号 \#5 表示由 mdspan \co@a@ 以符号方式定义的一组取值。有了这样的定义，就可以翻译索引操作了：例如 \co@a(0)@ 得到值编号 \#0，也就是常量 1。

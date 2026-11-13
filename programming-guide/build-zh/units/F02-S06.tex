@@ -1,0 +1,11 @@
+\subsection*{开发与测试工具}
+
+上面的命令用于编译自己的 \co@.co@ 程序。测试示例算子或修改编译器时，还可以使用仓库提供的 Makefile 命令：
+
+\begin{lstlisting}[language=croqtile,caption={测试示例算子}]
+make help
+make sample-test
+make sample-test-operator OPERATOR=add
+\end{lstlisting}
+
+\co@make help@ 列出可用目标，\co@make sample-test@ 运行全部示例算子，\co@OPERATOR=add@ 则只测试加法。其他可选算子包括 \co@mul@、\co@relu@、\co@sigmoid@、\co@softmax@ 和 \co@tanh@。程序构建完成后，可以继续阅读 1.4 节，检查实际编译命令和程序的执行情况。

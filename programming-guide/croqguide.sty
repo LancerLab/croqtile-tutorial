@@ -5,9 +5,15 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{croqguide}[2026/11/06 v1.0 Croqtile Programming Guide shared style]
 
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[T1]{fontenc}
-\RequirePackage{lmodern}
+%% Engine-neutral font setup: pdfLaTeX keeps the T1 / Latin Modern stack,
+%% XeLaTeX leaves font selection to the document preamble (main-zh.tex
+%% configures xeCJK and the Fandol fonts).
+\RequirePackage{iftex}
+\ifPDFTeX
+  \RequirePackage[utf8]{inputenc}
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage{lmodern}
+\fi
 \RequirePackage[dvipsnames,svgnames,table]{xcolor}
 \RequirePackage{amssymb}
 \RequirePackage{graphicx}

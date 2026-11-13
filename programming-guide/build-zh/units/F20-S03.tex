@@ -1,0 +1,14 @@
+\subsection*{\textbf{b. 类型安全与编译时检查}}
+
+符号维度让编译器不必知道每个尺寸的数值，也能推导表达式。例如可以检查秩，并化简重复出现的 \co@M / 2@ 等关系。但这不会消除运行时验证：调用方提供的尺寸是否一致、是否满足所需约束，可能只有进入函数时才能确定。
+
+下面的表达式将派生形状与命名的输入维度关联起来。编译器可以使用这项关联，读者也能直接看到它，不必再通过独立的尺寸参数维护关系：
+
+\begin{lstlisting}[language=croqtile,caption={b. 类型安全与编译时检查}]
+mdspan sp : [M, N];
+// M and N are symbolic dimensions
+mdspan spn : sp [1, M / 2, N / 4];
+// Compiler ensures validity of shape expressions`
+\end{lstlisting}
+
+这保证了类型一致性，也减少了运行时出错的可能。

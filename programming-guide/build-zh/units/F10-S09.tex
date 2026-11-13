@@ -1,0 +1,13 @@
+\subsection*{集中定义分块参数}
+
+分块尺寸与阶段数可以集中定义为宏：
+
+\begin{lstlisting}[language=croqtile,caption={用宏表示分块参数}]
+#define MATMUL_WARP_M 64
+#define MATMUL_WARP_N 128
+#define MATMUL_TILE_K 64
+#define MATMUL_WARP_K 16
+#define MATMUL_STAGES 4
+\end{lstlisting}
+
+这些名字可以在 \co@parallel@、缓冲区声明、循环范围和主机侧检查中共同使用。

@@ -1,0 +1,11 @@
+\subsection*{用 \texttt{\#error} 做编译时断言}
+
+\begin{lstlisting}[language=croqtile,caption={用 \#error 做编译时断言}]
+#if MATMUL_SWIZ != (2 * MATMUL_TILE_K)
+#error "MATMUL_SWIZ must equal 2 * MATMUL_TILE_K for f16 kernel"
+#endif
+#if MATMUL_WARP_M != 64
+#endif
+\end{lstlisting}
+
+预处理器在解析 Croqtile 函数前求值这一条件。配置常量不兼容时，构建便会停止并显示给定消息。这适合检查配置宏之间的关系；若属性取决于运行时输入数据，则应使用运行时断言。

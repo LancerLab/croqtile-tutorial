@@ -1,0 +1,19 @@
+\subsection*{同一并行层次的多维坐标}
+
+同一并行层次可以用多个坐标轴描述；支持的轴数由目标平台决定：
+
+\begin{lstlisting}[language=croqtile,caption={子级并行性}]
+parallel {px, py, pz} by [1, 1, 2] {
+  // higher synchronization cost
+  // ...
+  parallel t_index = {qx, qy} by [3, 4] {
+    // lower synchronization cost
+    // ...
+  }
+  // ...
+}
+\end{lstlisting}
+
+本例外层使用 \co@px, py, pz@ 三个轴，内层使用 \co@qx, qy@ 两个轴。内层索引还可以整体命名为 \co@t_index@，各轴的范围由对应的形状给出。
+
+元组中第一个元素对应最低有效的并行轴。使用多维索引时，需要保持这一顺序与数据坐标的对应关系。

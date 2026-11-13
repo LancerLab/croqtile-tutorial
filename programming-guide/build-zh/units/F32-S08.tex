@@ -1,0 +1,34 @@
+\subsection*{由有界整数导出循环}
+
+需要跳过起始元素、提前结束或按步长迭代时，可以在有界整数后附加范围表达式：
+
+\begin{lstlisting}[language=croqtile,caption={一组有界变量}]
+with {x, y} in [6, 17] {
+  foreach x, y(1::) { }
+}
+\end{lstlisting}
+
+\co@y(1::)@ 对应下面的循环：
+
+\begin{lstlisting}[language=croqtile,caption={导出的 C++ 循环}]
+for (int x = 0; x < 6; ++x)
+  for (int y = 1; y < 17; ++y) { }
+\end{lstlisting}
+
+循环从 \co@1@ 开始。范围表达式的三个字段分别表示下偏移、上偏移和步长：
+
+\begin{lstlisting}[language=croqtile,caption={有界变量的语法}]
+  bounded-variable(lower-offset:upper-offset:stride)
+\end{lstlisting}
+
+它保留原有的索引范围，并调整实际遍历方式：
+
+\begin{itemize}[leftmargin=1.6em]
+\item 初值为索引下界加下偏移；有界整数的下界为 \co@0@。
+\item 结束位置为索引上界加上偏移，不包含该位置。
+\item 每次迭代按给定步长递增。
+\end{itemize}
+
+例如 \co@y(1:-1:2)@ 对应 \co@for (y = 0 + 1; y < 17 - 1; y += 2)@。省略字段时，下偏移和上偏移默认为 \co@0@，步长默认为 \co@1@。
+
+范围表达式适用于有界整数，不能直接用于有界整数元组。

@@ -1,0 +1,9 @@
+\subsection*{详细模式：\texttt{-v}}
+
+给编译命令加上 \co@-v@ 或 \co@--verbose@，可以查看编译器调用的外部命令，包括所用的预处理器、代码生成器，以及具体的 \co@c++@ 调用：
+
+\begin{lstlisting}[language=croqtile,caption={开启详细编译日志}]
+croq kernel.co -v -o kernel
+\end{lstlisting}
+
+如果怀疑编译器传给 \co@c++@ 的选项有误，或者需要查找生成文件的完整路径以便手动检查，这个选项会很有用。

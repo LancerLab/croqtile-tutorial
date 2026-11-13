@@ -1,0 +1,19 @@
+\subsection*{张量收缩：\texttt{mma} 语法}
+
+3.4 节的分块矩阵乘法是按 CPU 的方式计算内部收缩的：一个 \co@foreach k@ 循环，每次迭代把两个标量相乘，累加到同一个输出元素上。这种写法可以得到正确结果。
+
+真正的任务是\textbf{二维张量收缩}——C += A × B，其中 A、B、C 都是形状固定的小矩阵分块。它是每个 GEMM、每个以 im2col 矩阵乘表达的卷积、每个注意力头 QKT 的内层核函数。
+
+困难在于矩阵元素如何分布到参与协作的操作数片段中。布局声明必须与数据布局一致，例如把列主序分块当作行主序片段使用，就可能得到错误结果。下面的颜色只示意分布，不表示某条指令的精确映射。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig2_register_loading_light.png}
+\caption{操作数片段分布在协作的线程之间。颜色仅示意这种分布，不代表某条指令的精确寄存器映射。}
+\end{figure}
+
+Croqtile 用 \co@fill@、\co@load@、乘加和 \co@store@ 表达收缩，由编译器处理片段元素在所选协作范围内的分布。程序员仍需选择兼容的分块形状并声明操作数布局，这层抽象以这些选择正确为前提。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig3_mma_syntax_light.png}
+\caption{先初始化累加器，再装入两个操作数、执行累加，最后写回；沿 K 切片重复装入和累加步骤。}
+\end{figure}

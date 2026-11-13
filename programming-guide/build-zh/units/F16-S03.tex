@@ -1,0 +1,26 @@
+\subsection*{用 \texttt{mdspan} 定义形状}
+
+关键字 \co@mdspan@ 表示多维范围，用来描述形状各维的大小，本身不分配元素存储。例如 \co@[7, 8]@ 的秩为 2，描述 56 个位置；这些位置采用 \co@f32@ 还是 \co@s32@ 元素，则是另一项选择。
+
+显式声明的写法如下：
+
+\begin{lstlisting}[language=croqtile,caption={声明形状}]
+mdspan s0 : [7, 8]; // Defines a 2D shape with dimensions [7, 8]
+mdspan<1> s1 : [3]; // Defines a 1D shape with dimensions [3]
+\end{lstlisting}
+
+\co@:@ 引出初始化表达式，\co@[]@ 中依次列出各维度大小。\co@s0@ 的形状是 \co@[7, 8]@，\co@s1@ 的形状是 \co@[3]@。
+
+\co@mdspan@ 后的尖括号可以指定秩，也就是维度数量。它必须与初始化表达式一致，否则编译器会报错。
+
+\begin{lstlisting}[language=croqtile,caption={秩不匹配}]
+mdspan<3> s2 : [64, 32]; // error: the rank of mdspan is inconsistent
+\end{lstlisting}
+
+编译器也可以从初始化表达式推断类型，此时省略 \co@mdspan@：
+
+\begin{lstlisting}[language=croqtile,caption={省略 mdspan 关键字}]
+s3 : [7, 8, 9]
+\end{lstlisting}
+
+\co@s3@ 的秩为 3，形状为 \co@[7, 8, 9]@。\co@mdspan@ 必须在声明时初始化；省略类型只简化写法，不改变这项要求。

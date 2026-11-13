@@ -1,0 +1,17 @@
+\subsection*{嵌套层次之间的执行范围}
+
+嵌套并行层次之间的语句，不一定由内层的所有实例重复执行：
+
+\begin{lstlisting}[language=croqtile,caption={隐式掩码}]
+__co__  void foo() {
+  parallel p by 6 {
+    // implicit masking: 'inthreads (q == 0) { ... } '
+    parallel q by 2 {
+      // code here is for all threads
+    }
+    // implicit masking: 'inthreads (q == 0) { ... } '
+  }
+}
+\end{lstlisting}
+
+本例中，位于外层 \co@parallel p by 6@、内层 \co@parallel q by 2@ 之外的代码，每个外层实例只执行一份。可以理解为内层索引 \co@q == 0@ 的实例执行它；进入内层块后，才由该层的全部实例执行。

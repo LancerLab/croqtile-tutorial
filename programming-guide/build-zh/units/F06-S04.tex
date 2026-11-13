@@ -1,0 +1,48 @@
+\subsection*{一组一分块：最简单的 MMA 矩阵乘法}
+
+最小示例将一个输出分块分配给用 \co@: group@ 表示的协作组。函数接收左右操作数和调用方提供的输出缓冲区。沿着一个输出分块阅读代码：初始化累加器，遍历各 K 切片，将累加分块存入共享存储，最后复制到对应输出位置。
+
+\begin{lstlisting}[language=croqtile,caption={一组一分块：最简单的 MMA 矩阵乘法}]
+#define TILE_M 16
+#define TILE_N 16
+#define TILE_K 16
+#define WARP_M 16
+#define WARP_N 16
+#define WARP_K 16
+#define MMA_M 16
+#define MMA_N 16
+#define MMA_K 16
+__co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
+  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, TILE_N)] : block {
+    shared f16 [TILE_M, TILE_N] output_s;
+    parallel {warp_m, warp_n} by [cdiv(TILE_M, MMA_M), cdiv(TILE_N, MMA_N)] : group {
+      mc = mma.fill 0.0;
+      foreach {iv_k} in [cdiv(K, TILE_K)] {
+        lhs_load_s = dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) => shared;
+        rhs_load_s = dma.copy rhs.subspan(TILE_N, TILE_K).at(block_n, iv_k) => shared;
+        foreach iv_warp_k in [cdiv(TILE_K, MMA_K)] {
+          ma = mma.load lhs_load_s.chunkat(warp_m, iv_warp_k);
+          mb = mma.load rhs_load_s.chunkat(warp_n, iv_warp_k);
+          mma.row.row mc, ma, mb;
+        }
+      }
+      mma.store mc, output_s.subspan(MMA_M, MMA_N).at(warp_m, warp_n);
+    }
+    dma.copy output_s => output.subspan(TILE_M, TILE_N).at(block_m, block_n);
+  }
+}
+\end{lstlisting}
+
+函数返回 \co@void@，因为它直接写入参数 \co@output@。调用方提供该缓冲区，并在操作完成后读取结果。函数内部的 \co@output_s@ 是 \co@mma.store@ 与最终复制之间使用的暂存缓冲区。
+
+向上取整除法 \co@cdiv(M, TILE_M)@ 计算 M 方向分块数量，包括可能不足一整块的尾部。\co@(block_m, block_n)@ 标识当前块负责的输出分块。操作数选择复用这些输出坐标，并加入当前 K 切片坐标。
+
+当矩阵尺寸与分块尺寸都为 16 时，块网格为 1 × 1。更大的矩阵会产生更多输出分块。编译这段清单前，需要补充 \co@MMA_M@、\co@MMA_N@ 和 \co@MMA_K@ 的定义，并使它们与所选片段尺寸一致。
+
+3.5 节详细讨论 \co@subspan@ 和 \co@chunkat@ 的区别。
+
+\begin{keypoint}
+\co@subspan(h, w)@ 声明固定大小的矩形视图形状，\co@.at(i, j)@ 从父张量中选出想要的视图实例。换言之，\co@lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k)@ 的意思是「取位于 \co@(block_m, iv_k)@ 的 \co@[TILE_M, TILE_K]@ 分块」。需要显式分块形状时用 \co@subspan@；需要按已有维度的等分来切时用 \co@chunkat@。
+\end{keypoint}
+
+累加器跨越整个 K 循环。若在循环内初始化，就会丢弃此前的贡献；若在循环内写回，得到的只是部分结果。将初始化放在循环前、写回放在循环后，能清楚表示输出分块的累加过程。
