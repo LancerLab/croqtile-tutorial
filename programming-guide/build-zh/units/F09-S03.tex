@@ -3,7 +3,6 @@
 交错布局改变暂存分块的元素在共享存储中的排列。逻辑矩阵形状不变，但读取方必须使用匹配的地址映射。Croqtile 的拷贝操作都提供这一选择：
 
 \begin{lstlisting}[language=croqtile,caption={一次带重排的拷贝}]
-dma.copy.swiz<128> src => dst;       // software DMA with swizzle
 dma.copy.swiz<128> src => dst;
 \end{lstlisting}
 

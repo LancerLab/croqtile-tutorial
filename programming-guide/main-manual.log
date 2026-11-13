@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  13 NOV 2026 14:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  13 NOV 2026 14:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1562,11 +1562,11 @@ ine 22.
 ) (./build/units/F06-S03.tex) (./build/units/F04-S18.tex [94 <./figures/f06-fig
 3_mma_syntax_light.png (PNG copy)>]) (./build/units/F04-S19.tex)
 (./build/units/F09-S03.tex [95]
-<figures/f09-fig2_swizzle_light.png, id=2234, 2569.6pt x 1445.4pt>
+<figures/f09-fig2_swizzle_light.png, id=2233, 2569.6pt x 1445.4pt>
 File: figures/f09-fig2_swizzle_light.png Graphic file (type png)
 <use figures/f09-fig2_swizzle_light.png>
 Package pdftex.def Info: figures/f09-fig2_swizzle_light.png  used on input line
- 25.
+ 24.
 (pdftex.def)             Requested size: 415.37897pt x 233.65067pt.
 ) (./build/units/F06-S07.tex [96 <./figures/f09-fig2_swizzle_light.png (PNG cop
 y)>]) (./build/units/F06-S04.tex [97])
@@ -1576,7 +1576,7 @@ Underfull \hbox (badness 4805) in paragraph at lines 26--26
 []|\T1/lmtt/b/n/10 inthreads.async \T1/lmr/bx/n/10 (struc-tured
  []
 
-<figures/f07-fig1_role_comparison_light.png, id=2288, 2569.6pt x 1445.4pt>
+<figures/f07-fig1_role_comparison_light.png, id=2287, 2569.6pt x 1445.4pt>
 File: figures/f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures/f07-fig1_role_comparison_light.png>
 Package pdftex.def Info: figures/f07-fig1_role_comparison_light.png  used on in
@@ -1584,7 +1584,7 @@ put line 38.
 (pdftex.def)             Requested size: 415.37897pt x 233.65067pt.
 ) (./build/units/F07-S05.tex [100]) (./build/units/F08-S01.tex)
 (./build/units/F08-S09.tex
-<figures/f08-fig1_pipeline_timeline_light.png, id=2303, 2569.6pt x 1445.4pt>
+<figures/f08-fig1_pipeline_timeline_light.png, id=2302, 2569.6pt x 1445.4pt>
 File: figures/f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures/f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures/f08-fig1_pipeline_timeline_light.png  used on 
@@ -1595,7 +1595,7 @@ s/F34-S07.tex) (./build/units/F35-S03.tex [102 <./figures/f08-fig1_pipeline_tim
 eline_light.png (PNG copy)>])
 (./build/units/F35-S04.tex) [103] (./build/units/F07-S04.tex)
 (./build/units/F07-S08.tex [104]) (./build/units/F07-S09.tex [105]
-<figures/f07-fig2_persistent_kernel_light.png, id=2420, 2569.6pt x 1445.4pt>
+<figures/f07-fig2_persistent_kernel_light.png, id=2419, 2569.6pt x 1445.4pt>
 File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures/f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures/f07-fig2_persistent_kernel_light.png  used on 
@@ -1608,7 +1608,7 @@ input line 53.
 (./build/units/F36-S03.tex [108]) (./build/units/F36-S04.tex)
 (./build/units/F08-S10.tex [109]) (./build/units/F08-S11.tex)
 (./build/units/F08-S12.tex
-<figures/f08-fig2_event_credit_flow_light.png, id=2516, 2569.6pt x 1445.4pt>
+<figures/f08-fig2_event_credit_flow_light.png, id=2515, 2569.6pt x 1445.4pt>
 File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures/f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures/f08-fig2_event_credit_flow_light.png  used on 
@@ -1635,7 +1635,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 15--15
  []
 
 ) [115] (./build/units/F09-S04.tex
-<figures/f09-fig8_expressiveness_light.png, id=2640, 2569.6pt x 1445.4pt>
+<figures/f09-fig8_expressiveness_light.png, id=2639, 2569.6pt x 1445.4pt>
 File: figures/f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures/f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures/f09-fig8_expressiveness_light.png  used on inp
@@ -1666,8 +1666,8 @@ Package rerunfilecheck Info: File `main-manual.out' has not changed.
 (rerunfilecheck)             Checksum: 35629CCEEF0A2C979155AD6D831980D6;5274.
  ) 
 Here is how much of TeX's memory you used:
- 31416 strings out of 483197
- 615242 string characters out of 5964729
+ 31415 strings out of 483197
+ 615226 string characters out of 5964729
  1188416 words of memory out of 5000000
  43058 multiletter control sequences out of 15000+600000
  632346 words of font info for 177 fonts, out of 8000000 for 9000
@@ -1692,10 +1692,10 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main-manual.pdf (137 pages, 4277568 bytes).
+Output written on main-manual.pdf (137 pages, 4277423 bytes).
 PDF statistics:
- 3155 PDF objects out of 3580 (max. 8388607)
- 2917 compressed objects within 30 object streams
- 1673 named destinations out of 1728 (max. 500000)
+ 3154 PDF objects out of 3580 (max. 8388607)
+ 2916 compressed objects within 30 object streams
+ 1672 named destinations out of 1728 (max. 500000)
  30484 words of extra memory for PDF output out of 35830 (max. 10000000)
 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 14:27
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 14:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1869,9 +1869,9 @@ File: figures/f06-fig3_mma_syntax_light.png Graphic file (type bmp)
 (./build-zh/units/F09-S03.tex
 File: figures/f09-fig2_swizzle_light.png Graphic file (type bmp)
 <figures/f09-fig2_swizzle_light.png>
-) (./build-zh/units/F06-S07.tex [98]) [99]
-(./build-zh/units/F06-S04.tex [100]) (./build-zh/units/F06-S08.tex)
-(./build-zh/units/F06-S09.tex [101]) (./build-zh/units/F07-S01.tex)
+) (./build-zh/units/F06-S07.tex [98])
+(./build-zh/units/F06-S04.tex [99] [100]) (./build-zh/units/F06-S08.tex)
+(./build-zh/units/F06-S09.tex) [101] (./build-zh/units/F07-S01.tex)
 (./build-zh/units/F07-S03.tex [102]
 File: figures/f07-fig1_role_comparison_light.png Graphic file (type bmp)
 <figures/f07-fig1_role_comparison_light.png>
@@ -1941,7 +1941,7 @@ Package rerunfilecheck Info: File `main-zh.out' has not changed.
 Here is how much of TeX's memory you used:
  35737 strings out of 481819
  789943 string characters out of 5936389
- 1286637 words of memory out of 5000000
+ 1285637 words of memory out of 5000000
  51147 multiletter control sequences out of 15000+600000
  539461 words of font info for 103 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191

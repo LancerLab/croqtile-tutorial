@@ -3,7 +3,6 @@
 A swizzle changes how elements of a staged tile are arranged in shared storage. The logical matrix shape stays the same, but the reader must use the matching address mapping. Croqtile exposes this choice on the copy operation:
 
 \begin{lstlisting}[language=croqtile,caption={A swizzled copy}]
-dma.copy.swiz<128> src => dst;       // software DMA with swizzle
 dma.copy.swiz<128> src => dst;
 \end{lstlisting}
 

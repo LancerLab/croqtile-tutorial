@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  13 NOV 2026 14:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2026.11.8)  13 NOV 2026 14:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1555,7 +1555,7 @@ PNG copy)>] [92 <./figures/f06-fig3_mma_syntax_light.png (PNG copy)>])
 File: figures/f09-fig2_swizzle_light.png Graphic file (type png)
 <use figures/f09-fig2_swizzle_light.png>
 Package pdftex.def Info: figures/f09-fig2_swizzle_light.png  used on input line
- 25.
+ 24.
 (pdftex.def)             Requested size: 443.84462pt x 249.6626pt.
 )
 (./build/units/F06-S07.tex [93] [94 <./figures/f09-fig2_swizzle_light.png (PNG 
@@ -1566,41 +1566,39 @@ Underfull \hbox (badness 3058) in paragraph at lines 26--26
 []|\T1/lmr/m/n/10 (+20) One pro-gram; di-ver-gen-t thread-s
  []
 
-<figures/f07-fig1_role_comparison_light.png, id=2275, 2569.6pt x 1445.4pt>
+[97]
+<figures/f07-fig1_role_comparison_light.png, id=2285, 2569.6pt x 1445.4pt>
 File: figures/f07-fig1_role_comparison_light.png Graphic file (type png)
 <use figures/f07-fig1_role_comparison_light.png>
 Package pdftex.def Info: figures/f07-fig1_role_comparison_light.png  used on in
 put line 38.
 (pdftex.def)             Requested size: 443.84462pt x 249.6626pt.
-) (./build/units/F07-S05.tex [97] [98 <./figures/f07-fig1_role_comparison_light
-.png (PNG copy)>]) (./build/units/F08-S01.tex) (./build/units/F08-S09.tex
-<figures/f08-fig1_pipeline_timeline_light.png, id=2293, 2569.6pt x 1445.4pt>
+) (./build/units/F07-S05.tex) (./build/units/F08-S01.tex [98 <./figures/f07-fig
+1_role_comparison_light.png (PNG copy)>]) (./build/units/F08-S09.tex
+<figures/f08-fig1_pipeline_timeline_light.png, id=2294, 2569.6pt x 1445.4pt>
 File: figures/f08-fig1_pipeline_timeline_light.png Graphic file (type png)
 <use figures/f08-fig1_pipeline_timeline_light.png>
 Package pdftex.def Info: figures/f08-fig1_pipeline_timeline_light.png  used on 
 input line 10.
 (pdftex.def)             Requested size: 443.84462pt x 249.6626pt.
 )
-(./build/units/F34-S07.tex [99]) (./build/units/F35-S03.tex [100 <./figures/f08
--fig1_pipeline_timeline_light.png (PNG copy)>]) (./build/units/F35-S04.tex)
-(./build/units/F07-S04.tex [101]) (./build/units/F07-S08.tex [102])
-(./build/units/F07-S09.tex [103]
-<figures/f07-fig2_persistent_kernel_light.png, id=2428, 2569.6pt x 1445.4pt>
+(./build/units/F34-S07.tex [99 <./figures/f08-fig1_pipeline_timeline_light.png 
+(PNG copy)>]) (./build/units/F35-S03.tex) (./build/units/F35-S04.tex [100])
+(./build/units/F07-S04.tex) (./build/units/F07-S08.tex [101])
+(./build/units/F07-S09.tex [102]
+<figures/f07-fig2_persistent_kernel_light.png, id=2390, 2569.6pt x 1445.4pt>
 File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type png)
 <use figures/f07-fig2_persistent_kernel_light.png>
 Package pdftex.def Info: figures/f07-fig2_persistent_kernel_light.png  used on 
 input line 53.
 (pdftex.def)             Requested size: 443.84462pt x 249.6626pt.
 ) (./build/units/F07-S10.tex)
-(./build/units/F07-S11.tex [104 <./figures/f07-fig2_persistent_kernel_light.png
- (PNG copy)>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex) [105]
-(./build/units/F36-S02.tex) (./build/units/F36-S03.tex)
-(./build/units/F36-S04.tex) (./build/units/F08-S10.tex [106]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [107])
-(./build/units/F08-S11.tex) (./build/units/F08-S12.tex
-<figures/f08-fig2_event_credit_flow_light.png, id=2530, 2569.6pt x 1445.4pt>
+(./build/units/F07-S11.tex [103] [104 <./figures/f07-fig2_persistent_kernel_lig
+ht.png (PNG copy)>]) (./build/units/F31-S10.tex) (./build/units/F36-S01.tex)
+(./build/units/F36-S02.tex [105]) (./build/units/F36-S03.tex)
+(./build/units/F36-S04.tex) (./build/units/F08-S10.tex [106])
+(./build/units/F08-S11.tex [107]) (./build/units/F08-S12.tex
+<figures/f08-fig2_event_credit_flow_light.png, id=2529, 2569.6pt x 1445.4pt>
 File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type png)
 <use figures/f08-fig2_event_credit_flow_light.png>
 Package pdftex.def Info: figures/f08-fig2_event_credit_flow_light.png  used on 
@@ -1612,40 +1610,41 @@ Underfull \hbox (badness 2894) in paragraph at lines 15--15
 []|\T1/lmr/m/n/10 (+20) Compile-time thread par-ti-tion-ing
  []
 
-[108 <./figures/f08-fig2_event_credit_flow_light.png (PNG copy)>])
-(./build/units/F08-S15.tex
+) (./build/units/F08-S15.tex
 Underfull \hbox (badness 3323) in paragraph at lines 12--12
 []|\T1/lmr/m/n/10 (+20) Separate pro-duc-er and con-sumer
  []
 
-) (./build/units/F10-S01.tex) [109] (./build/units/F10-S03.tex)
+[108 <./figures/f08-fig2_event_credit_flow_light.png (PNG copy)>])
+(./build/units/F10-S01.tex) (./build/units/F10-S03.tex [109])
 (./build/units/F23-S05.tex) (./build/units/F23-S06.tex)
 (./build/units/F24-S05.tex) (./build/units/F24-S06.tex [110])
-(./build/units/F25-S08.tex) (./build/units/F26-S01.tex [111])
+(./build/units/F25-S08.tex) (./build/units/F26-S01.tex) [111]
 (./build/units/F10-S04.tex [112]) (./build/units/F10-S13.tex
 Underfull \hbox (badness 1478) in paragraph at lines 15--15
 []|\T1/lmr/m/n/10 (+20) Object-like macro; shared across
  []
 
 ) (./build/units/F09-S04.tex
-<figures/f09-fig8_expressiveness_light.png, id=2627, 2569.6pt x 1445.4pt>
+<figures/f09-fig8_expressiveness_light.png, id=2626, 2569.6pt x 1445.4pt>
 File: figures/f09-fig8_expressiveness_light.png Graphic file (type png)
 <use figures/f09-fig8_expressiveness_light.png>
 Package pdftex.def Info: figures/f09-fig8_expressiveness_light.png  used on inp
 ut line 10.
 (pdftex.def)             Requested size: 443.84462pt x 249.6626pt.
-) (./build/units/F13-S02.tex) [113]
-(./build/units/F13-S03.tex) (./build/units/F13-S04.tex)
-(./build/units/F13-S05.tex) (./build/units/F40-S01.tex) [114 <./figures/f09-fig
-8_expressiveness_light.png (PNG copy)>] (./build/units/F40-S02.tex)
-(./build/units/F40-S03.tex [115]) (./build/units/F40-S04.tex)
+) (./build/units/F13-S02.tex)
+(./build/units/F13-S03.tex) (./build/units/F13-S04.tex [113])
+(./build/units/F13-S05.tex) (./build/units/F40-S01.tex)
+(./build/units/F40-S02.tex) (./build/units/F40-S03.tex [114 <./figures/f09-fig8
+_expressiveness_light.png (PNG copy)>]) [115] (./build/units/F40-S04.tex)
 (./build/units/F40-S05.tex) (./build/units/F40-S06.tex [116])
-(./build/units/F11-S01.tex) [117]) (./content/appendix-a-quickref.tex [118]
+(./build/units/F11-S01.tex)) (./content/appendix-a-quickref.tex [117]
 Appendix A.
-[119
+[118
 
-]) (./content/backmatter.tex [120] (./main.bbl))) [121
+]) (./content/backmatter.tex [119] [120
 
+] (./main.bbl))) [121
 
 ]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 8.
@@ -1657,9 +1656,9 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 35629CCEEF0A2C979155AD6D831980D6;5274.
  ) 
 Here is how much of TeX's memory you used:
- 31401 strings out of 483197
- 614918 string characters out of 5964729
- 1148319 words of memory out of 5000000
+ 31400 strings out of 483197
+ 614902 string characters out of 5964729
+ 1194480 words of memory out of 5000000
  43057 multiletter control sequences out of 15000+600000
  631743 words of font info for 172 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1683,10 +1682,10 @@ pfb></home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
 </home/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></ho
 me/wsj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></home/w
 sj/.local/texlive/usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (133 pages, 4267636 bytes).
+Output written on main.pdf (133 pages, 4266909 bytes).
 PDF statistics:
- 3139 PDF objects out of 3580 (max. 8388607)
- 2905 compressed objects within 30 object streams
- 1669 named destinations out of 1728 (max. 500000)
+ 3137 PDF objects out of 3580 (max. 8388607)
+ 2903 compressed objects within 30 object streams
+ 1668 named destinations out of 1728 (max. 500000)
  30484 words of extra memory for PDF output out of 35830 (max. 10000000)
 

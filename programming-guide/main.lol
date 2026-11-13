@@ -197,10 +197,10 @@
 \contentsline {lstlisting}{\numberline {3.47}Another contraction layout}{94}{lstlisting.3.47}%
 \contentsline {lstlisting}{\numberline {3.48}One group, one tile: the simplest MMA matmul}{95}{lstlisting.3.48}%
 \contentsline {lstlisting}{\numberline {3.49}Structured concurrent regions with inthreads.async}{97}{lstlisting.3.49}%
-\contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{99}{lstlisting.3.50}%
+\contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{98}{lstlisting.3.50}%
 \contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{99}{lstlisting.3.51}%
 \contentsline {lstlisting}{\numberline {3.52}Event Instances}{100}{lstlisting.3.52}%
-\contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{101}{lstlisting.3.53}%
+\contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{100}{lstlisting.3.53}%
 \contentsline {lstlisting}{\numberline {3.54}A credit-count deadlock}{101}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{101}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{102}{lstlisting.3.56}%
@@ -214,9 +214,9 @@
 \contentsline {lstlisting}{\numberline {3.64}The full 1P1C event pipeline}{107}{lstlisting.3.64}%
 \contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{110}{lstlisting.3.65}%
 \contentsline {lstlisting}{\numberline {3.66}A templated device helper}{110}{lstlisting.3.66}%
-\contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{111}{lstlisting.3.67}%
+\contentsline {lstlisting}{\numberline {3.67}A call that instantiates it}{110}{lstlisting.3.67}%
 \contentsline {lstlisting}{\numberline {3.68}A cok block around device code}{111}{lstlisting.3.68}%
 \contentsline {lstlisting}{\numberline {3.69}The block after factoring target-specific details}{111}{lstlisting.3.69}%
 \contentsline {lstlisting}{\numberline {3.70}device functions: target alongside Croqtile}{112}{lstlisting.3.70}%
 \contentsline {lstlisting}{\numberline {3.71}Example Code: Matrix Multiplication with Tiling}{115}{lstlisting.3.71}%
-\contentsline {lstlisting}{\numberline {3.72}Example Code}{117}{lstlisting.3.72}%
+\contentsline {lstlisting}{\numberline {3.72}Example Code}{116}{lstlisting.3.72}%

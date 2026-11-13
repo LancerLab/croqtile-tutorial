@@ -1425,6 +1425,8 @@ UNIT_OVERRIDES = [
     # A parameterized macro does expand, including in a shape expression.
     ('F23-S02', re.escape('\\end{lstlisting}\n\nwould not work.'),
      '\\end{lstlisting}\n\nThe argument is substituted before the shape is evaluated, so the result is the same as writing the value out.'),
+    # Drop the duplicate line left by the tma.copy -> dma.copy rewrite.
+    ('F09-S03', re.escape('dma.copy.swiz<128> src => dst;       // software DMA with swizzle\ndma.copy.swiz<128> src => dst;'), 'dma.copy.swiz<128> src => dst;'),
     # Round 89: the epilogue always needs the buffer the swap left newest.
     ('F38-S01', re.escape('        lf = select(#y % 2, lfB, lfA);\n        rf = select(#y % 2, rfB, rfA);\n        wait lf, rf;  // handle the last bunch\n        call kernel(lf.data, rf.data, l_out, |lfB.span|);'), '        wait lfA, rfA;  // handle the last bunch\n        call kernel(lfA.data, rfA.data, l_out, |lfB.span|);'),
     ('F38-S01', re.escape('the \\textbf{epilogue}(line 21-25)'),

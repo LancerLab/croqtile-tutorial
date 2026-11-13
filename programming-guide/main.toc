@@ -41,22 +41,22 @@
 \contentsline {subsection}{\numberline {3.7.3}MMA Design Summary}{96}{subsection.3.7.3}%
 \contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{97}{section.3.8}%
 \contentsline {subsection}{\numberline {3.8.1}Canonical Pattern: One Producer and One Consumer}{101}{subsection.3.8.1}%
-\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{102}{subsection.3.8.2}%
-\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{103}{subsection.3.8.3}%
-\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{104}{subsection.3.8.4}%
-\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{107}{subsection.3.8.5}%
-\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{109}{subsection.3.8.6}%
+\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{101}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{102}{subsection.3.8.3}%
+\contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{105}{subsection.3.8.4}%
+\contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{106}{subsection.3.8.5}%
+\contentsline {subsection}{\numberline {3.8.6}Coordination Pattern Summary}{108}{subsection.3.8.6}%
 \contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{109}{section.3.9}%
 \contentsline {subsection}{\numberline {3.9.1}Worked Example: Calling a Device Helper}{112}{subsection.3.9.1}%
 \contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{113}{subsection.3.9.2}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{113}{section.3.10}%
-\contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{115}{subsection.3.10.1}%
+\contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{114}{subsection.3.10.1}%
 \contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{116}{subsection.3.10.2}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{117}{section.3.11}%
-\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{119}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Declarations and shapes}{119}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Iteration}{119}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Tile selection and movement}{119}{section.A.3}%
-\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{119}{section.A.4}%
-\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{120}{section.A.5}%
+\contentsline {chapter}{\numberline {A}Syntax Quick Reference}{118}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Declarations and shapes}{118}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Iteration}{118}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Tile selection and movement}{118}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Statement modifiers and contraction}{118}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Coordination, interop and diagnostics}{119}{section.A.5}%
 \contentsline {chapter}{References}{121}{section*.4}%

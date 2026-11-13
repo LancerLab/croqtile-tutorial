@@ -193,7 +193,7 @@
 \contentsline {lstlisting}{\numberline {3.43}A swizzled copy}{93}{lstlisting.3.43}%
 \contentsline {lstlisting}{\numberline {3.44}A swizzled mma load}{93}{lstlisting.3.44}%
 \contentsline {lstlisting}{\numberline {3.45}A sparse contraction}{94}{lstlisting.3.45}%
-\contentsline {lstlisting}{\numberline {3.46}A scaled contraction}{95}{lstlisting.3.46}%
+\contentsline {lstlisting}{\numberline {3.46}A scaled contraction}{94}{lstlisting.3.46}%
 \contentsline {lstlisting}{\numberline {3.47}Another contraction layout}{95}{lstlisting.3.47}%
 \contentsline {lstlisting}{\numberline {3.48}One group, one tile: the simplest MMA matmul}{95}{lstlisting.3.48}%
 \contentsline {lstlisting}{\numberline {3.49}Structured concurrent regions with inthreads.async}{98}{lstlisting.3.49}%
