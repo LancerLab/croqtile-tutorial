@@ -21,7 +21,6 @@ make test
 ```
 In the event of any issues, the test should halt and report errors.
 
-!INCLUDE_IF_EXISTS "target/env_setting_up.md"
 
 For development and testing purposes, the Makefile provides additional utilities:
 ```

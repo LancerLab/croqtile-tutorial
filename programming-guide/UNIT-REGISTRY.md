@@ -372,7 +372,7 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F22-S01` | [# Build Choreo From Source Code and Compile Choreo Program] | —（分组/占位标题，无直属正文） | A | 1.2 | — |
 | `F22-S02` | [## Build Choreo from Scratch] | —（分组/占位标题，无直属正文） | A | 1.2 | — |
 | `F22-S03` | [### Prerequisitions] | L×1: (2, "GCC >=8.1 or clang >=6, where c++17 is fully supported.") | A | 1.2 | — |
-| `F22-S04` | [### Environment] | P×9: make setup intro; fetches flex, bison, FileCheck, gtest; make build intro; unit tests intro; tests halt on errors; additional Makefile utilities; help description, sample-test intro; sample-test description; specific operator list ; C×6: (plain, ~3, "make setup"); (plain, ~3, "make"); (plain, ~3, "make test"); (plain, ~3, "make help"); (plain, ~3, "make sample-test"); (plain, ~3, "make sample-test-operator OPERATOR=add") ; A×1: !INCLUDE_IF_EXISTS "target/env_setting_up.md" | A | 1.3 | — |
+| `F22-S04` | [### Environment] | P×9: make setup intro; fetches flex, bison, FileCheck, gtest; make build intro; unit tests intro; tests halt on errors; additional Makefile utilities; help description, sample-test intro; sample-test description; specific operator list ; C×6: (plain, ~3, "make setup"); (plain, ~3, "make"); (plain, ~3, "make test"); (plain, ~3, "make help"); (plain, ~3, "make sample-test"); (plain, ~3, "make sample-test-operator OPERATOR=add") | A | 1.3 | — |
 | `F22-S05` | [## Compile Choreo-C++ Program] | P×12: transpilation to CUDA/Cute; end-to-end compiler; output forms intro; output forms, target limits; gcc-like usage; a.out, -o, -c, -S; -t, -es options; CUDA C++ output; -E preprocessor, #if/#ifdef; -gs work-script; --help options; help output intro ; L×1: (5, "Target source code") ; C×3: (plain, ~3, "croq your_program.co"); (bash, ~3, "croq -t cuda your_program.co -es -o cuda_source.co"); (bash, ~20, "// --help") | A | 1.3 | 拆分：移出硬件句，保留 DSL 单元 |
 
 ### F23 `documentation/macro-in-croqtile.md`
@@ -410,12 +410,6 @@ Ch3 Programming Guide — C：抽象、概念、类型、设计、高级用法
 | `F25-S06` | [### Return Type and Type Deduction] | P×3: output types, void allowed; auto return inference; auto infers f32 [7,16] ; C×1: (choreo, ~7, "__co__ auto foo() {") | B | 2.3 | — |
 | `F25-S07` | [### C++ Host: Shape Return] | P×4: semantic copy, buffer; spanned_data, no copy; owns buffer, RVO; .rank(), .shape() query ; C×2: (choreo, ~12, "__co__ auto foo() {"); (cpp, ~7, "template <typename T, size_t Rank>") | B | 2.3 | — |
 | `F25-S08` | [## More Questions] | P×3: function signature question; C++ calling convention, no extern C; unsupported features intro ; L×1: (2, "Choreo function declaration without definition") | C | 3.9 | — |
-
-### F27 `documentation/target/env_setting_up.md`
-
-| 单元 ID | 原小节 | 内容单元（原样登记） | 归类 | 目标位置 | 硬件处理 |
-|---|---|---|---|---|---|
-| `F27-S01` | (无标题，整篇) | P×6: real hardware GCU setup; GCU-2.x compiler/runtime; GCU-2.x hardware driver; GCU-3.x commands intro; conjunction "and"; GCU-3.x compiler, runtime, driver ; C×4: (plain, ~3, "make setup-gcu2"); (plain, ~3, "make gcu2-kmd"); (plain, ~3, "make setup-gcu3"); (plain, ~3, "make gcu3-kmd") | X | X | 整节移出 → 独立硬件文档；整篇 GCU 真机/驱动/运行时配置移出到独立硬件文档 |
 
 ### F28 `documentation/basic-dma.md`
 
