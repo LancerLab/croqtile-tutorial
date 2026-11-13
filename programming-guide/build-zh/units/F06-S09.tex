@@ -3,15 +3,14 @@
 \begin{table}[htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-| \textbf{主题} & \textbf{要点} | \\
+\textbf{主题} & \textbf{要点} \\
 \midrule
-| --- & --- | \\
-| 二维张量收缩 & 在分块状操作数上做 C += A × B —— 通用的内层核函数 | \\
-| 四步抽象 & \textbf{填充 → 加载 → 相乘 → 存储}；编译器为各目标平台处理片元布局 | \\
-| 扩大协作规模 & 语法保持不变 | \\
-| 布局约定 & \co@mma.row.row@、\co@mma.row.col@ 等 | \\
-| 稀疏与量化 & \co@.sp@ 增加元数据操作数；\co@.scale@ 融合逐分块反量化 | \\
-| 重排与流水线 & \co@mma.load.swiz<N>@ 匹配带重排的共享布局 | \\
+二维张量收缩 & 在分块状操作数上做 C += A × B —— 通用的内层核函数 \\
+四步抽象 & \textbf{填充 → 加载 → 相乘 → 存储}；编译器为各目标平台处理片元布局 \\
+扩大协作规模 & 语法保持不变 \\
+布局约定 & \co@mma.row.row@、\co@mma.row.col@ 等 \\
+稀疏与量化 & \co@.sp@ 增加元数据操作数；\co@.scale@ 融合逐分块反量化 \\
+重排与流水线 & \co@mma.load.swiz<N>@ 匹配带重排的共享布局 \\
 \bottomrule
 \end{tabularx}
 \end{table}

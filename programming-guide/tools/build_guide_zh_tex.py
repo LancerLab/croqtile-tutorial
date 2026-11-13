@@ -66,7 +66,7 @@ def texify(s):
         if len(part) > 1 and part.startswith('`') and part.endswith('`'):
             out.append(r'\co@' + part[1:-1] + r'@')
             continue
-        p = esc(part)
+        p = esc(part.replace('<br>', '\x00BR\x00')).replace('\x00BR\x00', '\\newline{}')
         p = re.sub(r'\*\*([^*]+)\*\*', r'\\textbf{\1}', p)
         p = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'\\emph{\1}', p)
         out.append(p)
@@ -80,7 +80,7 @@ def texify_heading(s):
         if len(part) > 1 and part.startswith('`') and part.endswith('`'):
             out.append(r'\texttt{' + esc(part[1:-1]) + '}')
             continue
-        p = esc(part)
+        p = esc(part.replace('<br>', '\x00BR\x00')).replace('\x00BR\x00', '\\newline{}')
         p = re.sub(r'\*\*([^*]+)\*\*', r'\\textbf{\1}', p)
         p = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'\\emph{\1}', p)
         out.append(p)
@@ -92,7 +92,14 @@ def texify_heading(s):
 # ---------------------------------------------------------------------------
 
 def emit_table(ztext):
-    rows = [[c.strip() for c in r.split(' | ')] for r in ztext.split(' <ROW> ')]
+    rows = []
+    for r in ztext.split(' <ROW> '):
+        cells = [c.strip() for c in r.split(' | ')]
+        if cells and cells[0].startswith('|'):
+            cells[0] = cells[0][1:].strip()
+        if cells and cells[-1].endswith('|'):
+            cells[-1] = cells[-1][:-1].strip()
+        rows.append(cells)
     rows = [r for r in rows if r and not all(re.fullmatch(r'-{3,}', c) for c in r)]
     ncol = max(len(r) for r in rows)
     spec = '@{}l' + 'X' * (ncol - 1) + '@{}'
@@ -240,6 +247,33 @@ def chapters():
         print('wrote content-zh/' + stem + '.tex')
 
 
+def appendix():
+    """The appendix is not built from units: its tables live in the APP block."""
+    zh = zh_structure()
+    out = ['\\chapter{' + texify_heading(block_text(zh['APP'], 'H')) + '}',
+           '\\label{app:quickref}', '']
+    first_h = True
+    for line in zh['APP']:
+        tag, _, text = line.partition(':')
+        text = text.strip()
+        if tag == 'H':
+            if first_h:
+                first_h = False
+                continue
+            out.append('\\section{' + texify_heading(text) + '}')
+        elif tag in ('P', 'I', 'N'):
+            out.append(texify(text))
+            out.append('')
+        elif tag == 'T':
+            out.append(emit_table(text))
+            out.append('')
+        else:
+            raise ValueError('appendix tag ' + tag)
+    (CONTENT_OUT / 'appendix-a-quickref.tex').write_text(
+        '\n'.join(out) + '\n', encoding='utf-8')
+    print('wrote content-zh/appendix-a-quickref.tex')
+
+
 def frontmatter():
     zh = zh_structure()
     lines = zh.get('FRONT', [])
@@ -284,6 +318,7 @@ def main():
     if args.mode == 'all':
         return all_units()
     chapters()
+    appendix()
     frontmatter()
     return 0
 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 12:21
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 12:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1608,25 +1608,19 @@ Package microtype Info: Character `\textquestiondown ' is missing
 File: figures/f03-compile_and_run_zh.png Graphic file (type bmp)
 <figures/f03-compile_and_run_zh.png>
 )
-(./build-zh/units/F02-S05.tex) (./build-zh/units/F22-S05.tex) [4]
-(./build-zh/units/F02-S06.tex) (./build-zh/units/F22-S04.tex)
+(./build-zh/units/F02-S05.tex) (./build-zh/units/F22-S05.tex)
+(./build-zh/units/F02-S06.tex [4]) (./build-zh/units/F22-S04.tex)
 (./build-zh/units/F11-S05.tex
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 1.
 ) (./build-zh/units/F11-S06.tex [5])
 (./build-zh/units/F11-S08.tex
-Underfull \hbox (badness 7832) in paragraph at lines 24--24
-[]|[][][][][][][][][][][][][][]\TU/FandolSong-Regular.otf(0)/m/n/10 ：|  各 维 大 小
-；| [][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 24--24
+Underfull \hbox (badness 10000) in paragraph at lines 23--23
 []|[][][][][][][][][][][][][][]
  []
 
-[6]) (./build-zh/units/F11-S09.tex) (./build-zh/units/F11-S07.tex)
-(./build-zh/units/F08-S13.tex) (./build-zh/units/F11-S10.tex [7]))
+) (./build-zh/units/F11-S09.tex [6]) (./build-zh/units/F11-S07.tex)
+(./build-zh/units/F08-S13.tex) (./build-zh/units/F11-S10.tex) [7])
 (./content-zh/ch02-language-basics.tex [8]
 第 2.
 (./build-zh/units/F03-S02.tex) (./build-zh/units/F14-S03.tex [9
@@ -1660,10 +1654,14 @@ Package microtype Info: Character `\textquestiondown ' is missing
 (microtype)             in font `\TU/FandolSong-Regular.otf(0)/b/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
 )
+Underfull \hbox (badness 10000) in paragraph at lines 27--15
+
+ []
+
 (./build-zh/units/F03-S04.tex [10]) (./build-zh/units/F08-S08.tex)
-(./build-zh/units/F03-S05.tex) (./build-zh/units/F05-S16.tex [11])
-(./build-zh/units/F15-S21.tex) (./build-zh/units/F25-S01.tex)
-(./build-zh/units/F25-S02.tex) (./build-zh/units/F25-S03.tex [12])
+(./build-zh/units/F03-S05.tex) [11] (./build-zh/units/F05-S16.tex)
+(./build-zh/units/F15-S21.tex [12]) (./build-zh/units/F25-S01.tex)
+(./build-zh/units/F25-S02.tex) (./build-zh/units/F25-S03.tex)
 (./build-zh/units/F25-S04.tex [13]) (./build-zh/units/F25-S05.tex)
 (./build-zh/units/F25-S06.tex) (./build-zh/units/F25-S07.tex [14])
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <14.4> not available
@@ -1751,12 +1749,8 @@ File: figures/f14-chunkat_3d_light.png Graphic file (type bmp)
 (./build-zh/units/F24-S07.tex) (./build-zh/units/F11-S02.tex [56])
 (./build-zh/units/F11-S03.tex) (./build-zh/units/F11-S04.tex)
 (./build-zh/units/F04-S25.tex [57]) (./build-zh/units/F05-S18.tex)
-(./build-zh/units/F07-S13.tex [58]) (./build-zh/units/F08-S14.tex)
-
-LaTeX Warning: Reference `app:quickref' on page 59 undefined on input line 307.
-
-
-) (./content-zh/ch03-programming-guide.tex [59]
+(./build-zh/units/F07-S13.tex) (./build-zh/units/F08-S14.tex [58]))
+(./content-zh/ch03-programming-guide.tex [59]
 第 3.
 (./build-zh/units/F14-S01.tex) (./build-zh/units/F14-S02.tex)
 (./build-zh/units/F14-S04.tex
@@ -1880,12 +1874,12 @@ File: figures/f09-fig2_swizzle_light.png Graphic file (type bmp)
 <figures/f09-fig2_swizzle_light.png>
 ) (./build-zh/units/F06-S07.tex [97])
 (./build-zh/units/F06-S04.tex [98]) [99] (./build-zh/units/F06-S08.tex)
-(./build-zh/units/F06-S09.tex) [100] (./build-zh/units/F07-S01.tex)
-(./build-zh/units/F07-S03.tex
+(./build-zh/units/F06-S09.tex) (./build-zh/units/F07-S01.tex [100])
+(./build-zh/units/F07-S03.tex [101]
 File: figures/f07-fig1_role_comparison_light.png Graphic file (type bmp)
 <figures/f07-fig1_role_comparison_light.png>
- [101]) (./build-zh/units/F07-S05.tex [102])
-(./build-zh/units/F08-S01.tex) (./build-zh/units/F08-S09.tex
+) (./build-zh/units/F07-S05.tex)
+(./build-zh/units/F08-S01.tex [102]) (./build-zh/units/F08-S09.tex
 File: figures/f08-fig1_pipeline_timeline_light.png Graphic file (type bmp)
 <figures/f08-fig1_pipeline_timeline_light.png>
 )
@@ -1896,7 +1890,7 @@ File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type bmp)
 <figures/f07-fig2_persistent_kernel_light.png>
 )
 (./build-zh/units/F07-S10.tex [108]
-Underfull \hbox (badness 10000) in paragraph at lines 14--14
+Underfull \hbox (badness 10000) in paragraph at lines 13--13
 []|[][][][][][]\TU/FandolSong-Regular.otf(0)/m/n/10 、| [][][][][][][][][][][][]
 [][]、|
  []
@@ -1908,9 +1902,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--14
 (./build-zh/units/F08-S12.tex
 File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type bmp)
 <figures/f08-fig2_event_credit_flow_light.png>
-) (./build-zh/units/F07-S14.tex) [113]
-(./build-zh/units/F08-S15.tex) (./build-zh/units/F10-S01.tex)
-(./build-zh/units/F10-S03.tex) [114] (./build-zh/units/F23-S05.tex)
+) (./build-zh/units/F07-S14.tex)
+(./build-zh/units/F08-S15.tex [113]) (./build-zh/units/F10-S01.tex)
+(./build-zh/units/F10-S03.tex) (./build-zh/units/F23-S05.tex [114])
 (./build-zh/units/F23-S06.tex) (./build-zh/units/F24-S05.tex)
 (./build-zh/units/F24-S06.tex [115]) (./build-zh/units/F25-S08.tex)
 (./build-zh/units/F26-S01.tex [116]) (./build-zh/units/F10-S04.tex [117])
@@ -1919,21 +1913,17 @@ File: figures/f09-fig8_expressiveness_light.png Graphic file (type bmp)
 <figures/f09-fig8_expressiveness_light.png>
 )
 (./build-zh/units/F13-S02.tex) (./build-zh/units/F13-S03.tex)
-(./build-zh/units/F13-S04.tex) [119] (./build-zh/units/F13-S05.tex)
+(./build-zh/units/F13-S04.tex) (./build-zh/units/F13-S05.tex [119])
 (./build-zh/units/F40-S01.tex) (./build-zh/units/F40-S02.tex)
-(./build-zh/units/F40-S03.tex [120]) (./build-zh/units/F40-S04.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
+(./build-zh/units/F40-S03.tex [120]) (./build-zh/units/F40-S04.tex [121])
+(./build-zh/units/F40-S05.tex) (./build-zh/units/F40-S06.tex)
+(./build-zh/units/F11-S01.tex [122])) (./content-zh/appendix-a-quickref.tex
+[123]
+Appendix A.
+[124
 
- [121])
-(./build-zh/units/F40-S05.tex) (./build-zh/units/F40-S06.tex [122])
-(./build-zh/units/F11-S01.tex)
+]) (./content-zh/backmatter.tex [125] [126] (./main-zh.bbl))) [127
 
-LaTeX Warning: Reference `app:quickref' on page 123 undefined on input line 449
-.
-
-) (./content-zh/backmatter.tex [123] [124
-
-] (./main-zh.bbl))) [125
 
 ]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 12.
@@ -1943,19 +1933,15 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 12.
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 12.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 12.
 Package rerunfilecheck Info: File `main-zh.out' has not changed.
-(rerunfilecheck)             Checksum: 6CBC5C62FB5D44522C32DD8CCD30EB61;4995.
-
-
-LaTeX Warning: There were undefined references.
-
+(rerunfilecheck)             Checksum: 7B9CE8C5B14E9BED6AC43C458EF1B7CD;5399.
  ) 
 Here is how much of TeX's memory you used:
- 35706 strings out of 481819
- 789105 string characters out of 5936389
- 1271785 words of memory out of 5000000
- 51119 multiletter control sequences out of 15000+600000
+ 35712 strings out of 481819
+ 789242 string characters out of 5936389
+ 1271747 words of memory out of 5000000
+ 51122 multiletter control sequences out of 15000+600000
  539461 words of font info for 103 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,17n,107p,861b,1901s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 72i,17n,107p,861b,1903s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on main-zh.pdf (129 pages).
+Output written on main-zh.pdf (131 pages).

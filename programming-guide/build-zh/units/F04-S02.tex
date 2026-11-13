@@ -11,13 +11,12 @@ future = engine.operation.modifiers source => destination;
 \begin{table}[htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-| 组成部分 & 含义 | \\
+组成部分 & 含义 \\
 \midrule
-| --- & --- | \\
-| \co@future@ & 可选的传输结果句柄。用 \co@future.data@ 访问已搬运分块，用 \co@future.span@ 查询其形状。 | \\
-| \co@operation@ & \co@copy@、\co@transp<...>@ 或 \co@pad<...>@。 | \\
-| \co@modifiers@ & 可选标志，如 \co@.async@、\co@.zfill@ 或 \co@.swiz<N>@。 | \\
-| \co@source => destination@ & 源区域与目的存储位置或区域。 | \\
+\co@future@ & 可选的传输结果句柄。用 \co@future.data@ 访问已搬运分块，用 \co@future.span@ 查询其形状。 \\
+\co@operation@ & \co@copy@、\co@transp<...>@ 或 \co@pad<...>@。 \\
+\co@modifiers@ & 可选标志，如 \co@.async@、\co@.zfill@ 或 \co@.swiz<N>@。 \\
+\co@source => destination@ & 源区域与目的存储位置或区域。 \\
 \bottomrule
 \end{tabularx}
 \end{table}
