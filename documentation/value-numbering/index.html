@@ -2553,7 +2553,7 @@ With such a definition, we may translate the indexing operations, e.g. "a(0)", r
 <p>Note the symbol must use its <em>scoped name</em> for signature generation, since identical names are allowed to be defined in different scope.</p>
 <h2 id="simplifications">Simplifications<a class="headerlink" href="#simplifications" title="Permanent link">&para;</a></h2>
 <p>Every time the value numbering process generates a signature, it tries to simplify the expression. For example,</p>
-<p><pre class="highlight"><code>   int a = 0 + 1;</code></pre>
+<p><pre class="highlight"><code>   int a = 3 + 8;</code></pre>
 Given the simple integer expression, the value numbering process could generates signatures and associated value number as illustrated:</p>
 <p><pre class="highlight"><code>   VN #0:  const_3
    VN #1:  const_8

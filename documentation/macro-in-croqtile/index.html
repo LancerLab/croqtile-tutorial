@@ -2633,7 +2633,7 @@
 #define N 32
 #define K 64
 
-__co__ auto matmul(f32 [M, N] lhs, f32 [N, K] rhs) { /*...*/ }
+__co__ auto matmul(f32 [M, K] lhs, f32 [N, K] rhs) { /*...*/ }
 
 void foo() {
   choreo::f32 a[M][K];
@@ -2644,16 +2644,16 @@ void foo() {
 }
 </code></pre>
 In the code snippet, the inputs of choreo function <code>matmul</code> are not dynamically shaped. Instead, Choreo pre-processor substitutes <code>M</code>, <code>N</code>, <code>K</code> with values <code>256</code>, <code>32</code>, <code>64</code> ahead of Choreo compilation, which produces tileflow function with statically shaped inputs. In this way, programmers makes different code consistent and easy to manipulate.</p>
-<p>Note that, till now Choreo does only support macros with parameters. It means code like:
+<p>Parameterized macros expand as well, so a derived tile size can be written as one:
 <pre class="highlight"><code class="language-cpp">#define MAX(a, b) (((a) &gt; (b)) ? (a) : (b))</code></pre>
-would not work.</p>
+The argument is substituted before the shape is evaluated, so the result is the same as writing the value out.</p>
 <h2 id="comments">Comments<a class="headerlink" href="#comments" title="Permanent link">&para;</a></h2>
 <p>Choreo support C-style comments, either <code>/*...*/</code> or <code>//...</code>, leveraging the capability choreo preprocessor has provided.</p>
 <h2 id="conditional-compilation">Conditional Compilation<a class="headerlink" href="#conditional-compilation" title="Permanent link">&para;</a></h2>
 <p>Choreo also support conditional compilation which C/C++ programs used a lot. This includes <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code>/<code>#else</code>/<code>#endif</code>. The below code snippet showcases the usage:</p>
 <p><pre class="highlight"><code class="language-choreo">#define PATH0
 // some host code
-__co__ foo() {
+__co__ auto foo() {
 #ifdef PATH0
 // some code related to PATH0
 #else

@@ -775,10 +775,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#credit-flow-for-one-stage" class="md-nav__link">
+  <a href="#event-flow-for-one-stage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Credit flow for one stage
+        Event flow for one stage
       
     </span>
   </a>
@@ -2693,10 +2693,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#credit-flow-for-one-stage" class="md-nav__link">
+  <a href="#event-flow-for-one-stage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Credit flow for one stage
+        Event flow for one stage
       
     </span>
   </a>
@@ -2821,7 +2821,7 @@
 
   parallel {px, py} by [8, 16] : block
     parallel {qx, qy} by [16, 16] : thread {
-
+    output.at(px#qx, py#qy) = 0;
     with tile_k in 16 {
       // Prologue: start loading tile 0
       lf0 = dma.copy.async lhs.chunkat(px, tile_k) =&gt; shared;
@@ -2927,13 +2927,13 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 <h3 id="walking-through-the-kernel">Walking through the kernel<a class="headerlink" href="#walking-through-the-kernel" title="Permanent link">&para;</a></h3>
 <p><strong>Ring index.</strong> <code>stage = iv_k % STAGES</code> maps the unbounded K iteration to a fixed number of physical buffer slots — double buffering generalized to N buffers.</p>
 <p><strong>Producer path.</strong> For each <code>iv_k</code>, <code>wait empty[stage]</code> acquires a free slot. The <code>dma.copy</code> lines fill <code>lhs_load_s</code> / <code>rhs_load_s</code> at that stage. Then <code>trigger full[stage]</code> hands the slot to the consumer.</p>
-<p><strong>Consumer bootstrap.</strong> The loop <code>foreach {s} in [STAGES] { trigger empty[s]; }</code> runs <strong>before</strong> the K-loop so every stage starts with an <code>empty</code> credit. Without this, the producer blocks forever on its first <code>wait empty</code> — a deadlock.</p>
+<p><strong>Consumer bootstrap.</strong> The loop <code>foreach {s} in [STAGES] { trigger empty[s]; }</code> runs <strong>before</strong> the K-loop so every stage starts with an <code>empty</code> event. Without this, the producer blocks forever on its first <code>wait empty</code> — a deadlock.</p>
 <p><strong>Consumer path.</strong> Each <code>iv_k</code>: <code>wait full[stage]</code> blocks until the producer has filled that slot, then MMA over the tile, <code>mma.commit</code>, and <code>trigger empty[stage]</code> to release the slot for reuse.</p>
-<p><strong><code>mma.commit</code>.</strong> Hopper WGMMA overlaps instruction issue and accumulation. <code>mma.commit</code> is the fence that completes one K-slab's contribution to <code>mc</code> before that stage's shared buffer may be reused. Omitting it risks reading stale data — the MMA might still be consuming operands when the producer overwrites the buffer.</p>
-<h3 id="credit-flow-for-one-stage">Credit flow for one stage<a class="headerlink" href="#credit-flow-for-one-stage" title="Permanent link">&para;</a></h3>
-<p>The diagram matches the code: bootstrap grants empty credits; the producer waits on <code>empty</code>, fills, signals <code>full</code>; the consumer waits on <code>full</code>, computes, signals <code>empty</code>. When <code>iv_k</code> wraps modulo <code>STAGES</code>, the same physical stage re-enters the cycle.</p>
-<p><img alt="Event credit flow for one pipeline stage" src="../../assets/images/ch06/fig2_event_credit_flow_dark.png#only-dark" />
-<img alt="Event credit flow for one pipeline stage" src="../../assets/images/ch06/fig2_event_credit_flow_light.png#only-light" /></p>
+<p><strong><code>mma.commit</code>.</strong> <code>mma.commit</code> completes the tile's matrix operations before the stage's shared buffer may be reused. Omitting it risks reading stale data — the MMA might still be consuming operands when the producer overwrites the buffer.</p>
+<h3 id="event-flow-for-one-stage">Event flow for one stage<a class="headerlink" href="#event-flow-for-one-stage" title="Permanent link">&para;</a></h3>
+<p>The diagram matches the code: the bootstrap triggers every <code>empty</code> event; the producer waits on <code>empty</code>, fills, triggers <code>full</code>; the consumer waits on <code>full</code>, computes, triggers <code>empty</code>. When <code>iv_k</code> wraps modulo <code>STAGES</code>, the same physical stage re-enters the cycle.</p>
+<p><img alt="Event flow for one pipeline stage" src="../../assets/images/ch06/fig2_event_credit_flow_dark.png#only-dark" />
+<img alt="Event flow for one pipeline stage" src="../../assets/images/ch06/fig2_event_credit_flow_light.png#only-light" /></p>
 <h3 id="debugging-tip">Debugging tip<a class="headerlink" href="#debugging-tip" title="Permanent link">&para;</a></h3>
 <p>If something looks wrong after editing a pipeline, verify <strong>event order and trip counts</strong> before chasing MMA layout bugs: producer and consumer must use the same <code>cdiv(K, TILE_K)</code> loop bound, and too few stages shifts pressure to <code>wait full</code> when the consumer outruns the producer.</p>
 <h2 id="new-syntax">New syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>

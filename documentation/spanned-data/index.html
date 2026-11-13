@@ -2692,8 +2692,9 @@ s16 [shape, 8] data3;           // shaped as [72, 14, 8]</code></pre>
 </ul>
 <p>The prefixes <code>u</code> and <code>s</code> stand for "unsigned" and "signed", respectively, while the number suffix indicates the bit width of the type. <code>f16</code> refers to the <em>IEEE-754</em> standard <em>half-float</em>, and <code>bf16</code> refers to the 16-bit <em>binary float</em>, commonly used in machine learning scenario.</p>
 <p>Note <code>s32</code> is different from <code>int</code>. Although they occupy the same amount of storage, in Choreo, <code>s32</code> can not be used alone to define programming entities. For example:</p>
-<p><pre class="highlight"><code class="language-choreo">s32 a;  // error: the fundamental type can not be used for variable definition alone</code></pre>
-This results in a compile-time failure. Consequently, <code>s32</code> cannot be used for program control like <code>int</code>, and type conversion between them is not possible.</p>
+<p><pre class="highlight"><code class="language-choreo">s32 a;    // a control integer, the same as 'int a'
+s32 [4] b; // a buffer of four elements</code></pre>
+Both forms compile. The shape decides which one you get, not the type name.</p>
 <h2 id="storage-specifier">Storage Specifier<a class="headerlink" href="#storage-specifier" title="Permanent link">&para;</a></h2>
 <p>In practical code, some buffer declarations must specify a <strong>storage specifier</strong>, like so:</p>
 <pre class="highlight"><code class="language-choreo">global f32 [32, 7, 2] a;

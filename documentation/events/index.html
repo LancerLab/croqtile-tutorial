@@ -2626,9 +2626,9 @@ trigger e, e1;</code></pre>
                                            // once unblocked, change 'e' to 'UNSET'
   inthreads.async (p == 0) { trigger e; }  // trigger-thread
                                            // convert 'e' to 'SET'
-  sync.shared;                             // sync point
+  sync.barrier : thread;                   // sync point
 }</code></pre>
-<p>We have observed similar code in last section, except for that there are <code>wait</code> and <code>trigger</code> statements. In this code snippet, once the event <code>e</code> is triggered by the <em>trigger-thread</em>, the <em>wait-thread</em> is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by <code>sync.shared</code>, where thread <code>0</code> completes its <code>inthreads</code> block before thread <code>1</code>. From another perspective, the events here <strong>chains the asynchronous <code>inthreads</code></strong>. This is useful in many scenarios.</p>
+<p>We have observed similar code in last section, except for that there are <code>wait</code> and <code>trigger</code> statements. In this code snippet, once the event <code>e</code> is triggered by the <em>trigger-thread</em>, the <em>wait-thread</em> is no longer blocking. As a consequent, the two asynchronous threads followed an order to reach the synchronization point defined by <code>sync.barrier : thread</code>, where thread <code>0</code> completes its <code>inthreads</code> block before thread <code>1</code>. From another perspective, the events here <strong>chains the asynchronous <code>inthreads</code></strong>. This is useful in many scenarios.</p>
 <p>Note that, in Choreo semantics, <strong>an event is always auto-reset by its <code>wait</code> statement</strong>. That means when a <code>wait</code> statement is unblocked, the events that are waited are changed to <em>UNSET</em> state.</p>
 <h2 id="event-instances">Event Instances<a class="headerlink" href="#event-instances" title="Permanent link">&para;</a></h2>
 <p>In Choreo, events are associated with the storage specifier, either <code>global</code>, <code>shared</code>, and <code>local</code>. Such storage specifier specifies the event instances.</p>

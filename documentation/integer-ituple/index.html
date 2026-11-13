@@ -2716,8 +2716,9 @@
 d = 4, e = 5;</code></pre>
 <p>In Choreo, the <em>mdspan</em>-typed shape can not be used as the function parameter. However, integers can be passed from the host to the Tileflow program, and from the Tileflow program to the device:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void foo(int a) {
-  // ...
-  call kernel(a, 3);
+  parallel p by 1 {
+    call kernel(a, 3);
+  }
 }</code></pre>
 <p>Unlike C/C++, Choreo does not allow the declaration of integers without initialization or the reassignment of an integer. For example:</p>
 <pre class="highlight"><code class="language-choreo">int a;  // error: declaration without initialization

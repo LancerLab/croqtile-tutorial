@@ -3127,7 +3127,7 @@
 </tbody>
 </table>
 <p>Minimal examples:</p>
-<pre class="highlight"><code class="language-choreo">f = dma.copy input.chunkat(block) =&gt; shared;
+<pre class="highlight"><code class="language-choreo">f = dma.copy input.chunkat(blk) =&gt; shared;
 g = dma.transp&lt;1, 0&gt; matrix =&gt; local;
 h = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; shared;</code></pre>
 <p>The key shift from Chapter 1 is that these statements move shaped regions, not individual elements.</p>

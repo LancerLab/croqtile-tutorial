@@ -2507,8 +2507,8 @@ __device__ void foo(float *, int, unsigned, double, float) {}
 __co__ void foobar(f32 [M, 24] input, int N, float padding) {
   parallel p by 1 {
     shared f32 [14, 7] buffer;
-    call bar(input.data, M, buffer.span(0));
-    call foo(buffer.data, N, 3, 3.14, padding);
+    call bar(input, input.span(0), buffer.span(0));
+    call foo(buffer, N, 3, 3.14, padding);
   }
 }</code></pre>
 <p>In this example, it passes different data types as arguments from Choreo function to the device functions, which matches the device parameters exactly. Note that in the device function, the <strong>corresponding parameter type of the <em>spanned data</em> argument is simply the pointer of its <em>element type</em></strong>, where the shape information is dropped. For example, the <code>foo</code>'s argument <code>p</code> is <code>float*</code>, which corresponds the <em>spanned data</em> argument <code>input.data</code>. In Choreo, we names the parameter as a <strong>decayed</strong> pointer of the <em>spanned data</em>. If using other form like <code>float p[]</code>, it will trigger failure in target compilation stage.</p>
@@ -2521,22 +2521,23 @@ __device__ void matmul_kernel(int *lhs, int* rhs, int* output) {}
 
 __co__ auto matmul(s32 [96, 72] lhs, s32 [72, 24] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
-  parallel p by 6 {
-    shared s32 [output.span / #p] buffer;   // shape: [16, 4]
+  parallel {p, q} by [6, 6] : block {
+    shared s32 [output.span / {#p, #q}] buffer;   // shape: [16, 4]
     lhs_load = dma.copy lhs.chunkat(p, _) =&gt; shared;
-    rhs_load = dma.copy rhs.chunkat(_, p) =&gt; shared;
+    rhs_load = dma.copy rhs.chunkat(_, q) =&gt; shared;
     call matmul_kernel&lt;buffer.span(0), buffer.span(1), 72&gt;(lhs_load.data, rhs_load.data, buffer);
+    dma.copy buffer =&gt; output.chunkat(p, q);
   }
   return output;
 }</code></pre>
 In this case, it defines device function template named <code>matmul_kernel</code>, which takes three template parameters. As the caller specified the template function arguments, it triggers the instantiation of the function template, which results in a template function <code>matmul&lt;16, 4, 72&gt;</code> for the call.</p>
-<p>So in Choreo, calling a template function is similar to those in C++. However, <strong>the template argument passed must be able to be inferred as compile time constant value</strong> by Choreo compiler. Therefore, any runtime values can result in error.</p>
+<p>Template arguments must be evaluable as constants during Choreo compilation. An input-dependent value cannot select a C++ specialization at runtime:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void foo(int M) {
   parallel p by 1 {
-    call bar&lt;M&gt;();  // error: 'M' is a runtime value
+    call bar&lt;M&gt;();  // warning: 'M' cannot be evaluated at compile time
   }
 }</code></pre>
-<p>Choreo compiler could inference values as much as possible at compile time. If the template argument can not be inferred, the compilation will abort and error will be emitted.</p>
+<p>The Choreo compiler attempts to evaluate template arguments at compile time. If it cannot determine a required constant, the compiler reports a warning that the argument cannot be evaluated at compile time.</p>
 <p>!INCLUDE_IF_EXISTS "target/calls.md"</p>
 <h3 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h3>
 <p>In this section, we learned the syntax to invoke device functions, including normal ones and those triggers function template instantiations. Programmers must code in cautious since no check is applied at transpilation time, which may result in more confusing error reporting since the check is applied at target compile time with generated functions.</p>

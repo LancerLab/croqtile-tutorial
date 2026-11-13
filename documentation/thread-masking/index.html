@@ -2800,11 +2800,11 @@
     inthreads.async (p &gt; 2) {
       // divergent code for thread 3, 4, 5 (thread-mask: 111000)
     }
-    sync.shared; // sync point
+    sync.barrier : thread; // sync point
                  // all 'inthreads' paths must get executed
   }
 }</code></pre>
-In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each <code>inthreads</code> block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the <code>sync.shared</code> statement established a <strong>synchronization point</strong> for all threads. That makes sure code for both paths get executed after this <em>synchronization point</em>.</p>
+In this example, it divides the parallel threads evenly into two sub-groups, without forcing synchronization after each <code>inthreads</code> block. In this way, threads in different groups are executed in parallel, mimicking a MPMD executing. However, the <code>sync.barrier : thread</code> statement established a <strong>synchronization point</strong> for all threads. That makes sure code for both paths get executed after this <em>synchronization point</em>.</p>
 <p>Note that, only the outer <code>inthreads</code> can be declared as asynchronous. Programmers will get an compile-time error when using <code>inthreads.async</code> for any inner <code>inthreads</code> block.</p>
 <h2 id="masking-for-multi-levels">Masking for Multi-Levels<a class="headerlink" href="#masking-for-multi-levels" title="Permanent link">&para;</a></h2>
 <p>Thread masking can be applied at different parallel levels. The following example demonstrates this:</p>

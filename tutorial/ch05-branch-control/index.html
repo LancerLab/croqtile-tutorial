@@ -2897,21 +2897,21 @@
 shared event empty;</code></pre>
 <p>Events have two operations:</p>
 <ul>
-<li><strong><code>trigger name</code></strong> — signal that a condition is met (e.g., "data is ready")</li>
+<li><strong><code>trigger name</code></strong> — record that a condition is met (e.g., "data is ready")</li>
 <li><strong><code>wait name</code></strong> — block until the corresponding <code>trigger</code> fires</li>
 </ul>
-<p>The producer calls <code>trigger full</code> after writing a tile to signal "data ready." The consumer calls <code>wait full</code> before reading, blocking until the signal arrives. Symmetrically, the consumer triggers <code>empty</code> after finishing its read (the buffer can be reused), and the producer waits on <code>empty</code> before writing the next tile.</p>
-<p>This is a <strong>credit-based bounded buffer</strong> protocol — the same pattern used in operating systems (semaphores), network flow control (TCP window), and hardware (warp barriers). <code>full</code> is the "data available" credit; <code>empty</code> is the "buffer free" credit.</p>
+<p>The producer calls <code>trigger full</code> after writing a tile to record "data ready." The consumer calls <code>wait full</code> before reading, blocking until that trigger arrives. Symmetrically, the consumer triggers <code>empty</code> after finishing its read (the buffer can be reused), and the producer waits on <code>empty</code> before writing the next tile.</p>
+<p>This is a <strong>bounded buffer</strong> built from two events — <code>full</code> records that a slot holds data; <code>empty</code> records that it is free to fill.</p>
 <h3 id="event-arrays-for-multi-stage-pipelines">Event arrays for multi-stage pipelines<a class="headerlink" href="#event-arrays-for-multi-stage-pipelines" title="Permanent link">&para;</a></h3>
 <p>For pipelines with multiple buffered stages, declare event arrays:</p>
 <pre class="highlight"><code class="language-choreo">shared event full[STAGES], empty[STAGES];</code></pre>
 <p>Each physical buffer slot gets its own <code>full</code>/<code>empty</code> pair. The ring index <code>stage = iv_k % STAGES</code> maps the unbounded K iteration to a fixed number of physical slots. With four stages, the producer can run several tiles ahead before blocking on <code>wait empty</code>.</p>
 <h3 id="bootstrap-protocol">Bootstrap protocol<a class="headerlink" href="#bootstrap-protocol" title="Permanent link">&para;</a></h3>
-<p>The consumer must <strong>seed</strong> the <code>empty</code> credits before the K-loop starts:</p>
+<p>The consumer must <strong>trigger</strong> every <code>empty</code> event before the K-loop starts:</p>
 <pre class="highlight"><code class="language-choreo">foreach {s} in [STAGES] {
   trigger empty[s];
 }</code></pre>
-<p>Without this bootstrap, the producer's first <code>wait empty[0]</code> blocks forever — a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol requires initial credits.</p>
+<p>Without this bootstrap, the producer's first <code>wait empty[0]</code> blocks forever — a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol needs its events triggered before the first wait.</p>
 <p><a href="../ch06-synchronization/">Chapter 6</a> develops the full double-buffered and multi-stage pipeline kernels that put these primitives to work. The examples there compose <code>inthreads.async</code>, events, <code>swap</code>, and <code>mma.commit</code> into complete, runnable matmul pipelines.</p>
 <h2 id="a-1p1c-matmul-skeleton">A 1P1C matmul skeleton<a class="headerlink" href="#a-1p1c-matmul-skeleton" title="Permanent link">&para;</a></h2>
 <p>Here is how the three primitives sit together inside a Hopper matmul. Event-based synchronization is omitted — <a href="../ch06-synchronization/">Chapter 6</a> adds the full pipeline protocol. Focus on the program structure:</p>
@@ -3072,7 +3072,7 @@ Everything above runs inside a kernel. Sometimes you need concurrency at the **h
 </tr>
 <tr>
 <td><code>trigger name</code></td>
-<td>Signal that a condition is met</td>
+<td>Record that a condition is met</td>
 </tr>
 <tr>
 <td><code>wait name</code></td>

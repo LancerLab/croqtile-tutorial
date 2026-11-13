@@ -2812,7 +2812,10 @@ int main() {   // ④
 <h2 id="__device__-functions-cuda-alongside-croqtile"><code>__device__</code> functions: CUDA alongside Croqtile<a class="headerlink" href="#__device__-functions-cuda-alongside-croqtile" title="Permanent link">&para;</a></h2>
 <p>When an algorithm needs a helper function that operates at the warp or thread level — a custom reduction, a sorting network, a special math function — writing it as a standard CUDA <code>__device__</code> function is often the natural choice. Croqtile does not need to manage these; they are plain CUDA.</p>
 <p>A <code>__co__</code> function can call a <code>__device__</code> function using the <code>call</code> keyword:</p>
-<pre class="highlight"><code class="language-choreo">template &lt;int K&gt;
+<pre class="highlight"><code class="language-choreo">#define N_TOKENS 1024
+#define N_EXPERTS 8
+#define N_THREAD 128
+template &lt;int K&gt;
 __device__ void warp_topk(f32* vals, s32* idxs);
 
 template &lt;typename T&gt;
@@ -2830,7 +2833,8 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 
       parallel gid by [N_THREAD / 32] : group
         parallel tid by 32 : thread {
-          score = shared_scores.data.span_as(|shared_scores.data.span|).at(gid # tid);
+          flat_scores = shared_scores.span_as([|shared_scores.span|]);
+          score = flat_scores.at(gid # tid);
 
           local s32 [K] frag_idx{-1};
           local f32 [K] frag_val{-1.0f};
@@ -2942,7 +2946,7 @@ inthreads.async (p1 == 0) {
 <h3 id="conditional-code-paths">Conditional code paths<a class="headerlink" href="#conditional-code-paths" title="Permanent link">&para;</a></h3>
 <pre class="highlight"><code class="language-choreo">#define PATH0
 
-__co__ foo() {
+__co__ auto foo() {
   #ifdef PATH0
     // path 0 code
   #else

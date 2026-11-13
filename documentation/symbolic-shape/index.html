@@ -2663,7 +2663,7 @@
 <h2 id="step-further-symbolic-dimension">Step Further: <strong>Symbolic Dimension</strong><a class="headerlink" href="#step-further-symbolic-dimension" title="Permanent link">&para;</a></h2>
 <p>Another approach in Choreo to support dynamic shape is to use <strong>Symbolic Dimension</strong>. <em>Symbolic dimension</em>s are named but as well unknown at compile-time. Here's an example:</p>
 <p><pre class="highlight"><code class="language-choreo">__co__ auto Matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
-  int tile_m = 32, tile_m = 8, tile_k = 16;
+  int tile_m = 32, tile_n = 8, tile_k = 16;
 
   s32 [M / tile_m, K / tile_k] tiled_lhs;
   s32 [K / tile_k, N / tile_n] tiled_rhs;
@@ -2674,7 +2674,7 @@ In the code, each dimension is given a symbolic name (<code>M, K, N</code> in th
 <h2 id="improved-code-safety">Improved Code Safety<a class="headerlink" href="#improved-code-safety" title="Permanent link">&para;</a></h2>
 <p>The reason for improved code safety of using <em>symbolic dimension</em> is that more comprehensive code checks can be applied by Choreo compiler. For example, consider an <em>anonymous dimension</em> version of the <code>Matmul</code> function:</p>
 <pre class="highlight"><code class="language-choreo">__co__ auto Matmul(s32 [?, ?] lhs, s32 [?, ?] rhs) {
-  int tile_m = 32, tile_m = 8, tile_k = 16;
+  int tile_m = 32, tile_n = 8, tile_k = 16;
 
   s32 [lhs.span / {tile_m, tile_k}] tiled_lhs;  // 'mdspan' and 'ituple': rank must be same
   s32 [rhs.span / {tile_k, tile_n}] tiled_rhs;  // 'tiled_rhs' can not have a zero dimension
@@ -2711,7 +2711,10 @@ In the code, each dimension is given a symbolic name (<code>M, K, N</code> in th
 <h2 id="cost-and-limitations">Cost and Limitations<a class="headerlink" href="#cost-and-limitations" title="Permanent link">&para;</a></h2>
 <p>To support dynamic shapes, Choreo compile has to be conservative at compile time. This limitation restricts certain compile-time checks and necessitates some checks to be performed at runtime instead. Although the implementation aims to minimize overhead by placing these checks in the host code, they <strong>remain more conservative compared to code with fixed-sized shapes</strong>. Programmers should be mindful of this situation and may need to add user-level assertions to enhance code safety when necessary.</p>
 <p>A significant limitation of both <em>anonymous dimension</em> and <em>symbolic dimension</em> is that they can <strong>only be applied to the <em>spanned data</em> in parameter lists</strong>. Dimensions of buffers declared within Choreo functions cannot be made dynamic. For example, the following code will result in a compile-time error:</p>
-<pre class="highlight"><code class="language-choreo">__co__ void foo() { f32 [M] d;} // compile-time error: can not applied to the spanned buffer</code></pre>
+<pre class="highlight"><code class="language-choreo">__co__ void foo(s32 [M] input) {
+  s32 [M] derived;  // ok: the shape comes from the parameter
+  s32 [?] fresh;    // error: an internal buffer cannot introduce an anonymous dimension
+}</code></pre>
 <h2 id="quick-summary">Quick Summary<a class="headerlink" href="#quick-summary" title="Permanent link">&para;</a></h2>
 <p>In this section, we discussed <em>anonymous dimension</em> and <em>symbolic dimension</em> in Choreo, which support dynamic shapes required in certain scenarios. Compared to <em>anonymous dimension</em>, using <em>symbolic dimension</em> enhance code safety through additional compile-time checks, making them the recommended choice for ease of use and improved safety.</p>
 

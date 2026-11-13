@@ -3025,7 +3025,7 @@ Note, a Choreo function is prefixed with the "_<em>co_</em>" keyword. All code i
 <h3 id="scalar-types">Scalar Types<a class="headerlink" href="#scalar-types" title="Permanent link">&para;</a></h3>
 <p>As described, Scalar types in Choreo includes the <em>Integer Type</em> and <em>Boolean Type</em>. The <em>Integer Type</em> is similar to C++ type 'int' or 'int32_t'. It is an signed value which takes 32-bits, ranging from $-2^{31}$ to $2^{31}-1$. The below code illustrates its usage for defining the data and function declaration.
 <pre class="highlight"><code>int a;
-__co__ int foo(int b);</code></pre>
+__co__ int foo(int b) { return b; }</code></pre>
 Operations like integer arithmetics, shift and logical operation are all supported. And the syntax is identical to C++ builtin operations.
 In Choreo, we neither provide equivalence of unsigned scalar integers, nor equivalence of 8-bits, 16-bits, 64-bits scalar integers. This design is simply motivated by the fact: these types are not essential for program control purposes. And normally a 32-bits signed integer can fulfill such work.</p>
 <p>The <em>Boolean Type</em> in Choreo is similar to C++ type 'bool'. The operations on top of Boolean, and conversion between Integers, are identical to these of C++.</p>

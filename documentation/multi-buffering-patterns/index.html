@@ -2475,10 +2475,8 @@
           swap(lfA, lfB); // exchange futures
           swap(rfA, rfB);
         }
-        lf = select(#y % 2, lfB, lfA);
-        rf = select(#y % 2, rfB, rfA);
-        wait lf, rf;  // handle the last bunch
-        call kernel(lf.data, rf.data, l_out, |lfB.span|);
+        wait lfA, rfA;  // handle the last bunch
+        call kernel(lfA.data, rfA.data, l_out, |lfB.span|);
         dma.copy l_out =&gt; output.chunkat(p, x, y(-1));
       }
     }
@@ -2490,12 +2488,12 @@
 <ul>
 <li>the <strong>prologue</strong>(line 8-11). It (pre-)load the first chunk of data. In this example, buffer A is pre-loaded with data.</li>
 <li>the <strong>body</strong>(line 12-20). It processes the data pre-loaded in last iteration or in prologue, and pre-load the data for next iteration.</li>
-<li>and the <strong>epilogue</strong>(line 21-25). It processes the last data chunk only.</li>
+<li>and the <strong>epilogue</strong> (lines 21-23). It processes the last data chunk only.</li>
 </ul>
 <p>In the code, futures 'lfB' and 'rfB' are declared as dummies. These dummy futures serve as placeholders and are replaced by DMA statements at lines 13-14. The reason for declaring dummy futures is that the futures ('lfB' and 'rfB') of the DMA invoked in the body stage are used in the epilogue stage (lines 21-22). However, from a lexical scope perspective, defining futures inside the foreach-block (lines 12-20) would not extend their lifetime to their last uses. Therefore, it is necessary to declare 'lfB' and 'rfB' early.</p>
 <p>The <strong>swap</strong> statements at lines 18-19 exchange futures to ensure the <strong>wait</strong> statement at line 15 functions correctly. Note that only futures with identical DMA operations can be swapped. Additionally, the iteration range of the <em>foreach</em> statement at line 12 is adjusted. <code>foreach y(1:)</code> means the loop over the <em>bounded variable</em> 'y' starts from the second value up to the upper bound. In line 17, the <em>chunkat</em> expression is also tuned. <code>y - 1</code> results in the current value of 'y' minus 1, setting up the body stage to work properly with the prologue stage. This adjustment is necessary because the iteration count must be reduced by 1, and the pre-load operation should fetch the 'next' chunk while computation is conducted on the 'current' chunk of data. Alternatively, you can use <code>foreach y(:-1)</code> and adjust the chunkat expression of the pre-load statements at lines 13-14 to achieve the same effect.</p>
-<p>In line 25, the expression <code>y(-1)</code> retrieves the 'last value' of 'y' within its bound.</p>
-<p>Note that the <strong>select</strong> expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk.</p>
+<p>In line 23, the expression <code>y(-1)</code> retrieves the 'last value' of 'y' within its bound.</p>
+<p>By the end of the loop the newest chunk is always held by <code>lfA</code> and <code>rfA</code>: each iteration loads the next chunk into <code>lfB</code> and <code>rfB</code> and then swaps, so the epilogue waits on <code>lfA</code>, <code>rfA</code> directly, whatever the tile count.</p>
 <p>If the programmer want to enable more than two buffers, <strong>rotate</strong> statements is required to replace <strong>swap</strong>.</p>
 
 
