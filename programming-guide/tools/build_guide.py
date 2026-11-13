@@ -340,8 +340,10 @@ CHAPTER_NEXT = {
           "Chapter~\\ref{ch:programming-guide} explains why the constructs are "
           "shaped this way and covers the advanced forms; "
           "Appendix~\\ref{app:quickref} is a compact lookup table."),
-    '3': ("Appendix~\\ref{app:quickref} collects the syntax in one place. For the "
-          "compiler design behind the language, see \\citep{croqtileCompiler}."),
+    # The appendix follows on the next page, so the closing pointer does not
+    # restate the page order; it points at the compiler itself.
+    '3': ("For the compiler design behind these constructs, see "
+          "\\citep{croqtileCompiler}."),
 }
 
 # Section-level lead-ins were removed: they repeated the section headings
@@ -2152,7 +2154,8 @@ def main():
                 # paragraph.  The blank line gives each its own paragraph.
                 buf.append('')
             buf.append('')
-        buf += ['\\guidechapternext{' + intro_tex(CHAPTER_NEXT[num]) + '}', '']
+        if num in CHAPTER_NEXT:
+            buf += ['\\guidechapternext{' + intro_tex(CHAPTER_NEXT[num]) + '}', '']
         open(os.path.join(PG, out_name), 'w', encoding='utf-8').write('\n'.join(buf) + '\n')
 
     # Engineering source map -------------------------------------------------

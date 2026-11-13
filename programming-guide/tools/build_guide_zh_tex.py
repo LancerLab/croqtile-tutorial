@@ -266,6 +266,7 @@ def chapters():
         src = (PG / 'content' / (stem + '.tex')).read_text(encoding='utf-8')
         title = block_text(zh.get('CHTITLE' + num, []), 'H')
         intro = block_text(zh.get('CH' + num, []), 'I')
+        next_text = block_text(zh.get('CH' + num, []), 'N')
         out = []
         sec_index = 0
         for line in src.split('\n'):
@@ -275,6 +276,14 @@ def chapters():
                 continue
             if line.startswith('\\guidechapterintro{') and intro:
                 out.append('\\guidechapterintro{' + texify_heading(intro) + '}')
+                continue
+            if line.startswith('\\guidechapternext{'):
+                if next_text:
+                    # The translations mark the bibliography entry with a
+                    # literal placeholder; emit the real citation.
+                    out.append('\\guidechapternext{' +
+                               texify(next_text).replace(
+                                   '[参考文献]', r'\citep{croqtileCompiler}') + '}')
                 continue
             if line.startswith('\\section{'):
                 sec_index += 1
