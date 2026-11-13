@@ -68,8 +68,8 @@
     "zh": "图~\\ref{fig:f08-fig1_pipeline_timeline} 把两种调度画在同一条时间轴上。"
   },
   "f08-fig2_event_credit_flow": {
-    "en": "Figure~\\ref{fig:f08-fig2_event_credit_flow} traces a credit through the pipeline.",
-    "zh": "图~\\ref{fig:f08-fig2_event_credit_flow} 跟踪了一个信用量在流水线中的流转。"
+    "en": "Figure~\\ref{fig:f08-fig2_event_credit_flow} traces both events through one stage.",
+    "zh": "图~\\ref{fig:f08-fig2_event_credit_flow} 跟踪了两个事件在单级流水中的流转。"
   },
   "f09-fig2_swizzle": {
     "en": "Figure~\\ref{fig:f09-fig2_swizzle} shows why the layout change matters.",

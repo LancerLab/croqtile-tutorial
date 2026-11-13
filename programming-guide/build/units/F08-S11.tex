@@ -2,10 +2,10 @@
 
 The stage index is \co@iv_k % STAGES@. With two slots, tiles 0 and 2 use slot 0, while tiles 1 and 3 use slot 1. These are different logical tiles sharing physical storage at different times; the event pair belongs to the slot, not to one permanent tile.
 
-The producer waits on \co@empty[stage]@ before writing either operand into that slot. Both copies in this example are synchronous, so triggering \co@full[stage]@ after them means both operands are ready. Replacing the copies with asynchronous operations would require completing those operations before sending the same signal.
+The producer waits on \co@empty[stage]@ before writing either operand into that slot. Both copies in this example are synchronous, so triggering \co@full[stage]@ after them means both operands are ready. Replacing the copies with asynchronous operations would require completing those operations before sending the same trigger.
 
 The consumer first triggers every \co@empty@ event. All events begin unset, so this bootstrap grants the producer permission to fill each slot once. No \co@full@ event is triggered here because no input has been loaded yet.
 
 \textbf{Consumer path.} Each \texttt{iv\_k}: \texttt{wait full[stage]} blocks until the producer has filled that slot, then MMA over the tile and \texttt{trigger empty[stage]} to release the slot for reuse.
 
-The consumer signals \co@empty[stage]@ only after the tile's matrix operations have completed; releasing a stage early lets the producer overwrite operands the MMA is still reading.
+The consumer triggers \co@empty[stage]@ only after the tile's matrix operations have completed; releasing a stage early lets the producer overwrite operands the MMA is still reading.

@@ -1,11 +1,11 @@
-\subsection*{Credit flow for one stage}
+\subsection*{Event flow for one stage}
 
-The diagram matches the code: bootstrap grants empty credits; the producer waits on \texttt{empty}, fills, signals \texttt{full}; the consumer waits on \texttt{full}, computes, signals \texttt{empty}. When \texttt{iv\_k} wraps modulo \texttt{STAGES}, the same physical stage re-enters the cycle.
+The diagram matches the code: the bootstrap triggers every \texttt{empty} event; the producer waits on \texttt{empty}, fills, triggers \texttt{full}; the consumer waits on \texttt{full}, computes, triggers \texttt{empty}. When \texttt{iv\_k} wraps modulo \texttt{STAGES}, the same physical stage re-enters the cycle.
 
-Figure~\ref{fig:f08-fig2_event_credit_flow} traces a credit through the pipeline.
+Figure~\ref{fig:f08-fig2_event_credit_flow} traces both events through one stage.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f08-fig2_event_credit_flow_light.png}
-\caption{An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.}
+\caption{empty[s] lets the producer fill slot s; full[s] lets the consumer read it. The consumer releases the stage only after computation completes.}
 \label{fig:f08-fig2_event_credit_flow}
 \end{figure}

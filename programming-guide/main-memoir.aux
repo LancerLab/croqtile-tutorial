@@ -359,7 +359,7 @@
 \newlabel{fig:f08-fig1_pipeline_timeline}{{\M@TitleReference {3.14}{The same four K tiles run sequentially or with two-buffer overlap. Timings are schematic and include pipeline startup and drain.}}{100}{The same four K tiles run sequentially or with two-buffer overlap. Timings are schematic and include pipeline startup and drain}{figure.3.14}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {3.52}Event Instances}{100}{lstlisting.3.52}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{101}{lstlisting.3.53}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.54}A credit-count deadlock}{101}{lstlisting.3.54}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.54}One trigger per waiter}{101}{lstlisting.3.54}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{Canonical Pattern: One Producer and One Consumer}{101}{section*.219}\protected@file@percent }
 \newlabel{sec:3-8-1}{{\M@TitleReference {3.8}{Canonical Pattern: One Producer and One Consumer}}{101}{Canonical Pattern: One Producer and One Consumer}{section*.219}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{101}{lstlisting.3.55}\protected@file@percent }
@@ -384,8 +384,8 @@
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {3.64}The full 1P1C event pipeline}{107}{lstlisting.3.64}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{Coordination Pattern Summary}{108}{section*.235}\protected@file@percent }
 \newlabel{sec:3-8-10}{{\M@TitleReference {3.8}{Coordination Pattern Summary}}{108}{Coordination Pattern Summary}{section*.235}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.}}{109}{figure.3.16}\protected@file@percent }
-\newlabel{fig:f08-fig2_event_credit_flow}{{\M@TitleReference {3.16}{An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.}}{109}{An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes}{figure.3.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces empty[s] lets the producer fill slot s; full[s] lets the consumer read it. The consumer releases the stage only after computation completes.}}{109}{figure.3.16}\protected@file@percent }
+\newlabel{fig:f08-fig2_event_credit_flow}{{\M@TitleReference {3.16}{empty[s] lets the producer fill slot s; full[s] lets the consumer read it. The consumer releases the stage only after computation completes.}}{109}{empty[s] lets the producer fill slot s; full[s] lets the consumer read it. The consumer releases the stage only after computation completes}{figure.3.16}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.9}C++ Interoperability and the Preprocessor}{109}{section.3.9}\protected@file@percent }
 \newlabel{sec:3-9}{{\M@TitleReference {3.9}{C++ Interoperability and the Preprocessor}}{109}{C++ Interoperability and the Preprocessor}{section.3.9}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {3.65}Differences from C++ Preprocessing}{110}{lstlisting.3.65}\protected@file@percent }

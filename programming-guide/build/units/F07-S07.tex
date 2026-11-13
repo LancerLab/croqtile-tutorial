@@ -1,6 +1,6 @@
 \subsection*{Bootstrap protocol}
 
-The consumer must \textbf{seed} the \texttt{empty} credits before the K-loop starts:
+The consumer must \textbf{trigger} every \texttt{empty} event before the K-loop starts:
 
 \begin{lstlisting}[language=croqtile,caption={Bootstrap protocol}]
 foreach {s} in [STAGES] {
@@ -8,6 +8,6 @@ foreach {s} in [STAGES] {
 }
 \end{lstlisting}
 
-Without this bootstrap, the producer's first \texttt{wait empty[0]} blocks forever --- a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol requires initial credits.
+Without this bootstrap, the producer's first \texttt{wait empty[0]} blocks forever --- a deadlock, not a mysterious MMA bug. This is a common pitfall: every bounded buffer protocol needs its events triggered before the first wait.
 
 Section~\ref{sec:3-8-5} develops the full double-buffered and multi-stage pipeline kernels that put these primitives to work. The examples there compose \texttt{inthreads.\allowbreak{}async}, events, \texttt{swap} into complete, runnable matmul pipelines.

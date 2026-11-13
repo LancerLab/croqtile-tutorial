@@ -2,6 +2,6 @@
 
 A buffer pipeline has two ordering requirements. A consumer must wait until the producer finishes filling its slot, and the producer must wait until the consumer finishes using that slot before overwriting it. A fast load does not remove the second requirement, and a fast consumer does not remove the first.
 
-The double-buffering pattern in Section 3.6.2 uses one group to issue transfers, wait for current inputs, and rotate handles. A producer-consumer pipeline assigns those roles to separate asynchronous regions. Events then carry the readiness and reuse signals that the single-group version expressed through its own instruction order.
+The double-buffering pattern in Section 3.6.2 uses one group to issue transfers, wait for current inputs, and rotate handles. A producer-consumer pipeline assigns those roles to separate asynchronous regions. Events then carry the readiness and reuse information that the single-group version expressed through its own instruction order.
 
 Both patterns solve the same underlying problem: \textbf{you cannot read a buffer while someone is writing to it}. They differ in how they structure the solution.

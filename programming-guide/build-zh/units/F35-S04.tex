@@ -16,7 +16,7 @@ parallel p by 1 {
 
 这段代码里，两个线程等待同一个事件 \co@e@。但 \co@wait@ 会复位事件 \co@e@，因此可能出现 \co@thread-0@ 在 \co@thread-1@ 发现 \co@e@ 已触发之前就把它复位的情况，结果 \co@thread-1@ 永远无法解除阻塞，形成死锁。
 
-\begin{lstlisting}[language=croqtile,caption={信用计数死锁}]
+\begin{lstlisting}[language=croqtile,caption={一个触发、两个等待者}]
 qc = 2;
 parallel p by 1 {
   shared event e[qc];

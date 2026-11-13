@@ -201,7 +201,7 @@
 \contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{102}{lstlisting.3.51}%
 \contentsline {lstlisting}{\numberline {3.52}Event Instances}{103}{lstlisting.3.52}%
 \contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{103}{lstlisting.3.53}%
-\contentsline {lstlisting}{\numberline {3.54}A credit-count deadlock}{103}{lstlisting.3.54}%
+\contentsline {lstlisting}{\numberline {3.54}One trigger per waiter}{103}{lstlisting.3.54}%
 \contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{104}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{104}{lstlisting.3.56}%
 \contentsline {lstlisting}{\numberline {3.57}Persistent scheduling and the if guard}{105}{lstlisting.3.57}%

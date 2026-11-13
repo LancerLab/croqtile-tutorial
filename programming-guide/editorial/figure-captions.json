@@ -68,8 +68,8 @@
     "zh": "同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。"
   },
   "f08-fig2_event_credit_flow_light.png": {
-    "en": "An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.",
-    "zh": "empty 信用允许填充阶段，full 信用允许读取阶段；消费者在计算完成后才释放该阶段供再次使用。"
+    "en": "empty[s] lets the producer fill slot s; full[s] lets the consumer read it. The consumer releases the stage only after computation completes.",
+    "zh": "`empty[s]` 允许生产者填充该槽位，`full[s]` 允许消费者读取；消费者在计算完成后才释放该阶段。"
   },
   "f09-fig3_tma_descriptor_light.png": {
     "en": "The descriptor supplies tensor layout information, the source expression supplies tile coordinates, and the transfer writes the shared destination.",

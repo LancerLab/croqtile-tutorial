@@ -1425,6 +1425,34 @@ UNIT_OVERRIDES = [
     # A parameterized macro does expand, including in a shape expression.
     ('F23-S02', re.escape('\\end{lstlisting}\n\nwould not work.'),
      '\\end{lstlisting}\n\nThe argument is substituted before the shape is evaluated, so the result is the same as writing the value out.'),
+    ('F07-S07', re.escape('every bounded buffer protocol requires initial credits.'), 'every bounded buffer protocol needs its events triggered before the first wait.'),
+    # Round 90: an event is the type; trigger and wait are its only operations.
+    ('F07-S05', re.escape('This is a \\textbf{credit-based bounded buffer} protocol --- \\texttt{full} is the "data available" credit; \\texttt{empty} is the "buffer free" credit.'),
+     'This is a \\textbf{bounded buffer} built from two events --- \\texttt{full} records that a slot holds data; \\texttt{empty} records that it is free to fill.'),
+    ('F07-S05', re.escape('\\item \\textbf{\\texttt{trigger name}} --- signal that a condition is met (e.g., "data is ready")'),
+     '\\item \\textbf{\\texttt{trigger name}} --- record that a condition is met (e.g., "data is ready")'),
+    ('F07-S05', re.escape('after writing a tile to signal "data ready."'),
+     'after writing a tile to record "data ready."'),
+    ('F07-S05', re.escape('blocking until the signal arrives.'),
+     'blocking until that trigger arrives.'),
+    ('F07-S06', re.escape('the consumer needs a signal that its data is ready; before overwriting it, the producer needs a signal that the previous read has finished. Call these signals'),
+     'the consumer needs to know its data is ready; before overwriting it, the producer needs to know the previous read has finished. Call these two events'),
+    ('F07-S07', re.escape('The consumer must \\textbf{seed} the \\texttt{empty} credits before the K-loop starts:'),
+     'The consumer must \\textbf{trigger} every \\texttt{empty} event before the K-loop starts:'),
+    ('F07-S13', re.escape('\\texttt{trigger name} & Signal that a condition is met \\\\'),
+     '\\texttt{trigger name} & Record that a condition is met \\\\'),
+    ('F08-S01', re.escape('Events then carry the readiness and reuse signals that'),
+     'Events then carry the readiness and reuse information that'),
+    ('F08-S11', re.escape('The consumer signals \\co@empty[stage]@'),
+     'The consumer triggers \\co@empty[stage]@'),
+    ('F08-S12', re.escape('\\subsection*{Credit flow for one stage}'),
+     '\\subsection*{Event flow for one stage}'),
+    ('F08-S12', re.escape('The diagram matches the code: bootstrap grants empty credits; the producer waits on \\texttt{empty}, fills, signals \\texttt{full}; the consumer waits on \\texttt{full}, computes, signals \\texttt{empty}.'),
+     'The diagram matches the code: the bootstrap triggers every \\texttt{empty} event; the producer waits on \\texttt{empty}, fills, triggers \\texttt{full}; the consumer waits on \\texttt{full}, computes, triggers \\texttt{empty}.'),
+    ('F08-S12', re.escape('\\caption{An empty credit permits filling a stage; a full credit permits reading it.'),
+     '\\caption{\\texttt{empty[s]} lets the producer fill slot s; \\texttt{full[s]} lets the consumer read it.'),
+    ('F35-S04', re.escape('caption={A credit-count deadlock}'),
+     'caption={One trigger per waiter}'),
     # Drop the duplicate line left by the tma.copy -> dma.copy rewrite.
     ('F09-S03', re.escape('dma.copy.swiz<128> src => dst;       // software DMA with swizzle\ndma.copy.swiz<128> src => dst;'), 'dma.copy.swiz<128> src => dst;'),
     # Round 89: the epilogue always needs the buffer the swap left newest.
@@ -1841,6 +1869,8 @@ def heading_for(title, uid, slot):
         return ''  # Its former prerequisites list is now continuous opening prose.
     if uid == 'F02-S05':
         return r'\subsection*{Compiler Options}'
+    if uid == 'F08-S12':
+        return r'\subsection*{Event flow for one stage}'
     plain = re.sub(r'`([^`]+)`', r'\1', title)
     plain = re.sub(r'\*+', '', plain).strip()
     low = plain.lower().rstrip('.:')

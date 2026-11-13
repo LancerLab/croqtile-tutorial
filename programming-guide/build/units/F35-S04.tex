@@ -16,7 +16,7 @@ parallel p by 1 {
 
 Both threads wait on the same event \texttt{e}. Because \texttt{wait} resets the event, \texttt{thread-0} may reset it before \texttt{thread-1} observes the trigger. In that case, \texttt{thread-1} remains blocked and the program deadlocks.
 
-\begin{lstlisting}[language=croqtile,caption={A credit-count deadlock}]
+\begin{lstlisting}[language=croqtile,caption={One trigger per waiter}]
 qc = 2;
 parallel p by 1 {
   shared event e[qc];

@@ -236,7 +236,7 @@
  "F07-S06": [
   {
    "before": "For pipelines with multiple buffered stages, declare event arrays:",
-   "after": "Consider a producer that loads tiles and a consumer that computes on them. Before reading a slot, the consumer needs a signal that its data is ready; before overwriting it, the producer needs a signal that the previous read has finished. Call these signals \\co@full@ and \\co@empty@. A pipeline with several reusable slots gives each slot its own pair of events:"
+   "after": "Consider a producer that loads tiles and a consumer that computes on them. Before reading a slot, the consumer needs to know its data is ready; before overwriting it, the producer needs to know the previous read has finished. Call these two events \\co@full@ and \\co@empty@. A pipeline with several reusable slots gives each slot its own pair of events:"
   }
  ],
  "F35-S01": [
@@ -660,7 +660,7 @@
   },
   {
    "before": "The first pattern --- \\textbf{double buffering with \\texttt{swap}} --- uses a single thread group that interleaves loading and computing within one program. No \\texttt{inthreads.\\allowbreak{}async}, no events: just two buffer handles and a rotation. The second pattern --- \\textbf{the full 1P1C event pipeline} --- splits loading and computing into separate concurrent programs with \\texttt{inthreads.\\allowbreak{}async} and coordinates them with event arrays.",
-   "after": "The double-buffering pattern in Section 3.6.2 uses one group to issue transfers, wait for current inputs, and rotate handles. A producer-consumer pipeline assigns those roles to separate asynchronous regions. Events then carry the readiness and reuse signals that the single-group version expressed through its own instruction order."
+   "after": "The double-buffering pattern in Section 3.6.2 uses one group to issue transfers, wait for current inputs, and rotate handles. A producer-consumer pipeline assigns those roles to separate asynchronous regions. Events then carry the readiness and reuse information that the single-group version expressed through its own instruction order."
   }
  ],
  "F07-S04": [
@@ -688,7 +688,7 @@
   },
   {
    "before": "\\textbf{Missing coordination} --- Both sides loop over K independently. The consumer assumes each K-slab is ready when it reads. Making that assumption correct requires events (Section~\\ref{sec:3-8-5}).\n",
-   "after": "The skeleton omits the handoff between these loops. Before use as a working pipeline, add a readiness signal after loading and a reuse signal after consumption. Section 3.8.5 supplies both with per-slot events."
+   "after": "The skeleton omits the handoff between these loops. Before use as a working pipeline, add a readiness handoff after loading and a reuse handoff after consumption. Section 3.8.5 supplies both with per-slot events."
   }
  ],
  "F07-S09": [
@@ -722,7 +722,7 @@
   },
   {
    "before": "\\textbf{Producer path.} For each \\texttt{iv\\_k}, \\texttt{wait empty[stage]} acquires a free slot. The \\texttt{dma.copy} lines fill \\texttt{lhs\\_load\\_s} / \\texttt{rhs\\_load\\_s} at that stage. Then \\texttt{trigger full[stage]} hands the slot to the consumer.",
-   "after": "The producer waits on \\co@empty[stage]@ before writing either operand into that slot. Both copies in this example are synchronous, so triggering \\co@full[stage]@ after them means both operands are ready. Replacing the copies with asynchronous operations would require completing those operations before sending the same signal."
+   "after": "The producer waits on \\co@empty[stage]@ before writing either operand into that slot. Both copies in this example are synchronous, so triggering \\co@full[stage]@ after them means both operands are ready. Replacing the copies with asynchronous operations would require completing those operations before sending the same trigger."
   },
   {
    "before": "\\textbf{Consumer bootstrap.} The loop \\texttt{foreach \\{s\\} in [STAGES] \\{ trigger empty[s]; \\}} runs \\textbf{before} the K-loop so every stage starts with an \\texttt{empty} credit. Without this, the producer blocks forever on its first \\texttt{wait empty} --- a deadlock.",
@@ -732,7 +732,7 @@
  "F07-S14": [
   {
    "before": "The 1P1C skeleton above is incomplete: without \\texttt{wait} / \\texttt{trigger}, the consumer can read before the producer has finished writing. Section~\\ref{sec:3-8-5} adds the buffering and event protocols that make the pipeline safe, and walks through the resulting kernel stage by stage.\n",
-   "after": "The completed pipeline adds two dependencies to the earlier skeleton: input readiness before computation, and completion of operand use before slot reuse. When adapting it, trace one slot through a full cycle and then through its next reuse. This exposes missing signals and mismatched iteration counts more clearly than looking at either loop alone."
+   "after": "The completed pipeline adds two dependencies to the earlier skeleton: input readiness before computation, and completion of operand use before slot reuse. When adapting it, trace one slot through a full cycle and then through its next reuse. This exposes missing handoffs and mismatched iteration counts more clearly than looking at either loop alone."
   }
  ],
  "F08-S15": [

@@ -10,10 +10,10 @@ shared event empty;
 Events have two operations:
 
 \begin{itemize}[leftmargin=1.6em]
-\item \textbf{\texttt{trigger name}} --- signal that a condition is met (e.g., "data is ready")
+\item \textbf{\texttt{trigger name}} --- record that a condition is met (e.g., "data is ready")
 \item \textbf{\texttt{wait name}} --- block until the corresponding \texttt{trigger} fires
 \end{itemize}
 
-The producer calls \texttt{trigger full} after writing a tile to signal "data ready." The consumer calls \texttt{wait full} before reading, blocking until the signal arrives. Symmetrically, the consumer triggers \texttt{empty} after finishing its read (the buffer can be reused), and the producer waits on \texttt{empty} before writing the next tile.
+The producer calls \texttt{trigger full} after writing a tile to record "data ready." The consumer calls \texttt{wait full} before reading, blocking until that trigger arrives. Symmetrically, the consumer triggers \texttt{empty} after finishing its read (the buffer can be reused), and the producer waits on \texttt{empty} before writing the next tile.
 
-This is a \textbf{credit-based bounded buffer} protocol --- \texttt{full} is the "data available" credit; \texttt{empty} is the "buffer free" credit.
+This is a \textbf{bounded buffer} built from two events --- \texttt{full} records that a slot holds data; \texttt{empty} records that it is free to fill.

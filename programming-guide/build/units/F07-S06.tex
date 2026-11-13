@@ -1,6 +1,6 @@
 \subsection*{Event arrays for multi-stage pipelines}
 
-Consider a producer that loads tiles and a consumer that computes on them. Before reading a slot, the consumer needs a signal that its data is ready; before overwriting it, the producer needs a signal that the previous read has finished. Call these signals \co@full@ and \co@empty@. A pipeline with several reusable slots gives each slot its own pair of events:
+Consider a producer that loads tiles and a consumer that computes on them. Before reading a slot, the consumer needs to know its data is ready; before overwriting it, the producer needs to know the previous read has finished. Call these two events \co@full@ and \co@empty@. A pipeline with several reusable slots gives each slot its own pair of events:
 
 \begin{lstlisting}[language=croqtile,caption={Event arrays for multi-stage pipelines}]
 shared event full[STAGES], empty[STAGES];

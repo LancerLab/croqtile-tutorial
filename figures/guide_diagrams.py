@@ -308,8 +308,8 @@ def register_layout(scene):
 
 
 def event_credit(scene):
-    heading(scene,'One pipeline stage: full / empty credits','Bootstrap: the consumer grants empty[stage], allowing the producer to fill the first tile.')
-    a=panel(scene,'Producer',['wait empty[stage]','Copy into shared stage','Signal full after copy completion'], -3.2,y=0.3,h=3.25)
+    heading(scene,'One pipeline stage: the full and empty events','Bootstrap: the consumer triggers every empty[stage] before the producer starts.')
+    a=panel(scene,'Producer',['wait empty[stage]','Copy into shared stage','trigger full after copy completion'], -3.2,y=0.3,h=3.25)
     b=panel(scene,'Consumer',['wait full[stage]','Compute; wait for completion','trigger empty[stage]'],3.2,y=0.3,h=3.25,accent='orange')
     connect(scene,a,b,'full','purple')
     scene.add(Arrow([3.2,-1.65,0],[-3.2,-1.65,0],buff=0,color=C['green'],stroke_width=2.5),
