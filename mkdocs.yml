@@ -2,6 +2,11 @@ site_name: Croqtile
 site_url: https://LancerLab.github.io/croqtile-tutorial/
 docs_dir: docs
 
+# Part IV is parked until the design-rationale articles are ready.
+exclude_docs: |
+  advanced/
+  zh/advanced/
+
 repo_name: LancerLab/croqtile-tutorial
 repo_url: https://github.com/LancerLab/croqtile-tutorial
 
@@ -143,5 +148,3 @@ nav:
       - Why Symbolic Shapes: documentation/why-symbolic-shapes.md
       - Symbolic Evaluation System: documentation/value-numbering.md
       - Dynamism Support: documentation/dynamic-design.md
-
-  - "Part IV — Design Rationales": advanced/index.md

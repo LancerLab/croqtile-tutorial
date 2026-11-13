@@ -15,7 +15,3 @@ Case-oriented performance engineering. Each section profiles a real kernel famil
 ### Part III — [Coding Reference](documentation/index.md)
 
 Exhaustive syntax and semantics reference. Every Croqtile construct — shapes, DMA, loops, parallelism, events, memory, macros, and more — is documented in detail.
-
-### Part IV — [Design Rationales](advanced/index.md)
-
-Deep-dive articles on Croqtile's design rationale, tradeoffs, and frontier challenges. *(Planned)*
