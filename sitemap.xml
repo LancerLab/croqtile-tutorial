@@ -8,13 +8,6 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/"/>
     </url>
     <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/advanced/</loc>
-        <lastmod>2026-11-13</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/advanced/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/advanced/"/>
-    </url>
-    <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/documentation/</loc>
         <lastmod>2026-11-13</lastmod>
         <changefreq>daily</changefreq>
@@ -377,13 +370,6 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/"/>
-    </url>
-    <url>
-        <loc>https://LancerLab.github.io/croqtile-tutorial/zh/advanced/</loc>
-        <lastmod>2026-11-13</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://LancerLab.github.io/croqtile-tutorial/zh/advanced/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://LancerLab.github.io/croqtile-tutorial/advanced/"/>
     </url>
     <url>
         <loc>https://LancerLab.github.io/croqtile-tutorial/zh/documentation/</loc>
