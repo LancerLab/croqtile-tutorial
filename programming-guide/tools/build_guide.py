@@ -1367,6 +1367,8 @@ UNIT_OVERRIDES = [
     ('F32-S02',
      re.escape('are immutable and cannot be used in \\texttt{foreach} statements. Instead, programmers should use the \\texttt{with-in} statement to define the \\emph{bounded variables} suitable for loops.'),
      'are immutable. They can bound a \\texttt{foreach} loop, but they cannot be the variable that \\texttt{foreach} iterates; declare that variable with \\texttt{with-in}.'),
+    # The value-number graphs use 3 and 8, so the source must too.
+    ('F21-S05', re.escape('   int a = 0 + 1;'), '   int a = 3 + 8;'),
     # `sync.<storage>` is deprecated; the barrier takes an explicit level.
     ('F34-S07', re.escape('    sync.shared; // sync point'), '    sync.barrier : thread; // sync point'),
     ('F35-S02', re.escape('  sync.shared;                             // sync point'),

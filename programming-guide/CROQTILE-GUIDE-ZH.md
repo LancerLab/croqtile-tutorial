@@ -3289,7 +3289,7 @@ mdspan a : {1, b, c + 3}
 值编号过程每生成一个签名，都会尝试化简表达式。例如：
 
 ```co
-   int a = 0 + 1;
+   int a = 3 + 8;
 ```
 
 <div class="listing-cap">清单 171：一个常量表达式</div>
