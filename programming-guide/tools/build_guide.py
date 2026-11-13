@@ -1378,6 +1378,13 @@ UNIT_OVERRIDES = [
     # A parameterized macro does expand, including in a shape expression.
     ('F23-S02', re.escape('\\end{lstlisting}\n\nwould not work.'),
      '\\end{lstlisting}\n\nThe argument is substituted before the shape is evaluated, so the result is the same as writing the value out.'),
+    # Round 89: the epilogue always needs the buffer the swap left newest.
+    ('F38-S01', re.escape('        lf = select(#y % 2, lfB, lfA);\n        rf = select(#y % 2, rfB, rfA);\n        wait lf, rf;  // handle the last bunch\n        call kernel(lf.data, rf.data, l_out, |lfB.span|);'), '        wait lfA, rfA;  // handle the last bunch\n        call kernel(lfA.data, rfA.data, l_out, |lfB.span|);'),
+    ('F38-S01', re.escape('the \\textbf{epilogue}(line 21-25)'),
+     'the \\textbf{epilogue} (lines 21-23)'),
+    ('F38-S01', re.escape('In line 25, the expression \\texttt{y(-1)}'),
+     'In line 23, the expression \\texttt{y(-1)}'),
+    ('F38-S01', re.escape("The \\textbf{select} expressions in line 21-22 handle both odd and even upper-bound cases for the bounded variable 'y'. In either case, it obtains the future of the last chunk."), 'By the end of the loop the newest chunk is always held by \\co@lfA@ and \\co@rfA@: each iteration loads the next chunk into \\co@lfB@ and \\co@rfB@ and then swaps, so the epilogue waits on \\co@lfA@, \\co@rfA@ directly, whatever the tile count.'),
     # Round 88: three claims the current compiler no longer supports.
     # F18-S03: an element type without a shape is an ordinary control integer.
     ('F18-S03', re.escape('caption={A rejected fundamental type}'), 'caption={Element type without a shape}'),
