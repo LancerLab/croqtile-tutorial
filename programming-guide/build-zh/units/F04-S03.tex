@@ -24,7 +24,10 @@ __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
 
 程序依次选择分块、搬入缓冲区，再对其中的元素计算。两个输入的同一分块分别由 \co@lhs_load@ 和 \co@rhs_load@ 引用；内部循环使用搬运后的形状遍历元素，最后把块内索引组合成原输出中的位置。
 
+图~\ref{fig:f04-fig2_tiled_add} 跟踪了一个分块走完这三步的过程。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig2_tiled_add_light.png}
 \caption{输入形状为 [64, 128]，分块网格为 [4, 8]。分块 (1, 3) 先装入两个 [16, 16] 操作数，再逐元素相加。}
+\label{fig:f04-fig2_tiled_add}
 \end{figure}

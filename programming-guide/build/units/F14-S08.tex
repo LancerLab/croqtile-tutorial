@@ -48,9 +48,12 @@ Within the \texttt{foreach} block, the \texttt{dma.copy} statement describes how
 
 The following figure shows how the bounds determine the chunk shape and the indices select a chunk.
 
+Figure~\ref{fig:f14-chunkat_3d} shows how the bounds determine the chunk shape.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f14-chunkat_3d_light.png}
 \caption{Dividing shape [6, 17, 128] by bounds [6, 17, 4] gives chunks of shape [1, 1, 32]. Chunk (1, 16, 2) starts at element (1, 16, 64).}
+\label{fig:f14-chunkat_3d}
 \end{figure}
 
 With the DMA statement, different chunks of data tiled from \texttt{lhs} are moved iteratively and in parallel from the host to the device's \texttt{local} storage. Similarly, the DMA statement manages \texttt{rhs} by moving it in small chunks to \texttt{local} storage for processing.

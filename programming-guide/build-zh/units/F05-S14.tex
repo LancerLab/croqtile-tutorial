@@ -19,9 +19,12 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 \end{lstlisting}
 
+图~\ref{fig:f05-fig6_dma_matmul} 展示了一个块的暂存与累加过程。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig6_dma_matmul_light.png}
 \caption{每个 block 为当前 K 切片装入两个 [16, 16] 操作数分块，再由 256 个线程累加该 block 的 [16, 16] 输出分块。}
+\label{fig:f05-fig6_dma_matmul}
 \end{figure}
 
 标量版本一次索引一个元素；分块版本先把一个分块复制到共享存储，再在这块数据上计算：

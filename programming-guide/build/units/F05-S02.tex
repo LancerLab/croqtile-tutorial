@@ -4,9 +4,12 @@ Before you touch any Croqtile syntax, let's talk about what "parallel" actually 
 
 Suppose you have eight independent tasks --- eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single CPU core, they execute one after another. On a 4-core CPU, maybe four run simultaneously.
 
+Figure~\ref{fig:f05-fig1_virtual_parallelism} shows the same work at three widths.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig1_virtual_parallelism_light.png}
 \caption{The same eight tasks take eight, two, or one time steps when one, four, or eight tasks can run at once.}
+\label{fig:f05-fig1_virtual_parallelism}
 \end{figure}
 
 Parallelism describes which tasks can be independent. The execution resources determine how many of those tasks can make progress at once.

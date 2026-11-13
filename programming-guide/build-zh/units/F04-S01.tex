@@ -12,7 +12,10 @@
 
 这一模型的核心语法和规则，决定了 DMA 代码能否正确、高效地转换为目标代码。
 
+图~\ref{fig:f04-fig1_element_vs_block} 对比了这两种做法。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig1_element_vs_block_light.png}
 \caption{标量索引逐个读取元素；显式分块搬运先选择分块，再将其复制到 shared 存储。}
+\label{fig:f04-fig1_element_vs_block}
 \end{figure}

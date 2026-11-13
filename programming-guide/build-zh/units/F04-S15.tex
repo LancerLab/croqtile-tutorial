@@ -6,7 +6,10 @@ foreach i in [128 / #tile]
 
 前缀 \co@#tile@ 返回 \co@tile@ 的范围。声明为 \co@parallel tile by 8@ 时，\co@#tile@ 就是 \co@8@。
 
+图~\ref{fig:f04-fig_extent} 展示了 \texttt{\#} 前缀的两种用法。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_extent_light.png}
 \caption{前缀 \#tile 返回轴的范围大小，此处为 8；中缀 tile \# i 将分块坐标与块内偏移组合。}
+\label{fig:f04-fig_extent}
 \end{figure}

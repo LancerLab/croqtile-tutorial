@@ -12,7 +12,10 @@ A tiled implementation instead selects a region, stages it in the storage used b
 
 This part of the guide introduces that model, shows the core syntax, and gives the rules you need to write DMA code that is both correct and likely to lower well.
 
+Figure~\ref{fig:f04-fig1_element_vs_block} contrasts the two approaches.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig1_element_vs_block_light.png}
 \caption{Scalar indexing reads individual elements; explicit tile movement stages a selected tile into shared storage.}
+\label{fig:f04-fig1_element_vs_block}
 \end{figure}

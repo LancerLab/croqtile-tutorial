@@ -8,7 +8,10 @@ s32 [lhs.span(0), rhs.span(1)] output;
 
 这个例子从两个不同操作数取得结果尺寸，使输出声明与输入保持关联。需要匹配已搬运分块形状的暂存缓冲区，也可以用同样的方法声明。
 
+图~\ref{fig:f04-fig_span} 标出了各 span 表达式分别返回什么。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_span_light.png}
 \caption{对 [4, 8] 张量，.span 返回完整形状 [4, 8]；.span(0) 和 .span(1) 分别返回 4 和 8。}
+\label{fig:f04-fig_span}
 \end{figure}

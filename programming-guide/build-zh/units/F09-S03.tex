@@ -19,7 +19,10 @@ ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 
 复制与 \co@mma.load.swiz<N>@ 必须对布局达成一致。用不兼容模式读取交错分块，会把相同字节解释为不同矩阵位置，导致数值错误。修改任一操作时，都应将两者匹配视为正确性要求。
 
+图~\ref{fig:f09-fig2_swizzle} 说明了对布局做这种改变为什么重要。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig2_swizzle_light.png}
 \caption{八个 bank 的简化示意：同一 bank 的不同地址访问需要串行处理，重映射则分散访问。复制与 MMA 装入必须采用一致的 swizzle。}
+\label{fig:f09-fig2_swizzle}
 \end{figure}

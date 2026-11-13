@@ -16,7 +16,10 @@ ma = mma.load tile_2d.chunkat(_, iv_warp);
 
 The product \co@rows * cols@ must equal the number of elements in the underlying region. A reshape preserves linear element order, so it cannot transpose a matrix or remove padding between rows. When the dimensions are constants, the compiler can check the element count before execution; dimensions derived from inputs must satisfy the same invariant for the actual call.
 
+Figure~\ref{fig:f09-fig7_span_as} shows the reinterpretation.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig7_span_as_light.png}
 \caption{The 16-element buffer becomes a [4, 4] view with the same linear order. The 1D strip is displayed on two lines for readability.}
+\label{fig:f09-fig7_span_as}
 \end{figure}

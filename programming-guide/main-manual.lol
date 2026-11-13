@@ -30,7 +30,7 @@
 \contentsline {lstlisting}{\numberline {2.15}Returning a shaped buffer}{13}{lstlisting.2.15}%
 \contentsline {lstlisting}{\numberline {2.16}The host-side result wrapper}{14}{lstlisting.2.16}%
 \contentsline {lstlisting}{\numberline {2.17}span and span(i)}{14}{lstlisting.2.17}%
-\contentsline {lstlisting}{\numberline {2.18}Declaring a shape}{15}{lstlisting.2.18}%
+\contentsline {lstlisting}{\numberline {2.18}Declaring a shape}{14}{lstlisting.2.18}%
 \contentsline {lstlisting}{\numberline {2.19}A rank mismatch}{15}{lstlisting.2.19}%
 \contentsline {lstlisting}{\numberline {2.20}Omitting the mdspan keyword}{15}{lstlisting.2.20}%
 \contentsline {lstlisting}{\numberline {2.21}The original shape}{15}{lstlisting.2.21}%
@@ -40,7 +40,7 @@
 \contentsline {lstlisting}{\numberline {2.25}The caller supplying that dimension}{16}{lstlisting.2.25}%
 \contentsline {lstlisting}{\numberline {2.26}Step Further: Symbolic Dimension}{17}{lstlisting.2.26}%
 \contentsline {lstlisting}{\numberline {2.27}Scalar Types (fragment)}{17}{lstlisting.2.27}%
-\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{17}{lstlisting.2.28}%
+\contentsline {lstlisting}{\numberline {2.28}I-Tuple Types}{18}{lstlisting.2.28}%
 \contentsline {lstlisting}{\numberline {2.29}Operations over mdspan and i-tuple}{18}{lstlisting.2.29}%
 \contentsline {lstlisting}{\numberline {2.30}An initialized integer}{18}{lstlisting.2.30}%
 \contentsline {lstlisting}{\numberline {2.31}Assignment to an integer}{18}{lstlisting.2.31}%
@@ -48,20 +48,20 @@
 \contentsline {lstlisting}{\numberline {2.33}An integer parameter}{19}{lstlisting.2.33}%
 \contentsline {lstlisting}{\numberline {2.34}A declaration without initialization}{19}{lstlisting.2.34}%
 \contentsline {lstlisting}{\numberline {2.35}An i-tuple literal}{19}{lstlisting.2.35}%
-\contentsline {lstlisting}{\numberline {2.36}An inconsistent rank}{19}{lstlisting.2.36}%
+\contentsline {lstlisting}{\numberline {2.36}An inconsistent rank}{20}{lstlisting.2.36}%
 \contentsline {lstlisting}{\numberline {2.37}Assigning a new tuple}{20}{lstlisting.2.37}%
 \contentsline {lstlisting}{\numberline {2.38}Indexing an mdspan with an i-tuple}{20}{lstlisting.2.38}%
 \contentsline {lstlisting}{\numberline {2.39}An invalid shape expression}{20}{lstlisting.2.39}%
-\contentsline {lstlisting}{\numberline {2.40}Complete Types}{20}{lstlisting.2.40}%
+\contentsline {lstlisting}{\numberline {2.40}Complete Types}{21}{lstlisting.2.40}%
 \contentsline {lstlisting}{\numberline {2.41}The Storage Qualifier}{21}{lstlisting.2.41}%
-\contentsline {lstlisting}{\numberline {2.42}A spanned-data declaration}{21}{lstlisting.2.42}%
+\contentsline {lstlisting}{\numberline {2.42}A spanned-data declaration}{22}{lstlisting.2.42}%
 \contentsline {lstlisting}{\numberline {2.43}A standalone shape}{22}{lstlisting.2.43}%
 \contentsline {lstlisting}{\numberline {2.44}Element type without a shape}{22}{lstlisting.2.44}%
 \contentsline {lstlisting}{\numberline {2.45}Storage Specifier}{22}{lstlisting.2.45}%
 \contentsline {lstlisting}{\numberline {2.46}Initialization}{23}{lstlisting.2.46}%
 \contentsline {lstlisting}{\numberline {2.47}An explicit return shape}{23}{lstlisting.2.47}%
 \contentsline {lstlisting}{\numberline {2.48}A deduced return shape}{23}{lstlisting.2.48}%
-\contentsline {lstlisting}{\numberline {2.49}1. global}{23}{lstlisting.2.49}%
+\contentsline {lstlisting}{\numberline {2.49}1. global}{24}{lstlisting.2.49}%
 \contentsline {lstlisting}{\numberline {2.50}2. shared}{24}{lstlisting.2.50}%
 \contentsline {lstlisting}{\numberline {2.51}3. local}{24}{lstlisting.2.51}%
 \contentsline {lstlisting}{\numberline {2.52}A declaration without a specifier}{24}{lstlisting.2.52}%
@@ -73,99 +73,99 @@
 \contentsline {lstlisting}{\numberline {2.58}Nesting Specifiers}{26}{lstlisting.2.58}%
 \contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{27}{lstlisting.2.59}%
 \contentsline {lstlisting}{\numberline {2.60}Indexing a with-in block}{27}{lstlisting.2.60}%
-\contentsline {lstlisting}{\numberline {2.61}A tuple of indices}{27}{lstlisting.2.61}%
-\contentsline {lstlisting}{\numberline {2.62}Indices derived from a tuple}{27}{lstlisting.2.62}%
+\contentsline {lstlisting}{\numberline {2.61}A tuple of indices}{28}{lstlisting.2.61}%
+\contentsline {lstlisting}{\numberline {2.62}Indices derived from a tuple}{28}{lstlisting.2.62}%
 \contentsline {lstlisting}{\numberline {2.63}Nested bounded groups}{28}{lstlisting.2.63}%
 \contentsline {lstlisting}{\numberline {2.64}The foreach Block}{28}{lstlisting.2.64}%
 \contentsline {lstlisting}{\numberline {2.65}A named parallel index}{28}{lstlisting.2.65}%
 \contentsline {lstlisting}{\numberline {2.66}An unnamed parallel index}{29}{lstlisting.2.66}%
 \contentsline {lstlisting}{\numberline {2.67}One parallel level}{29}{lstlisting.2.67}%
 \contentsline {lstlisting}{\numberline {2.68}Two parallel levels}{29}{lstlisting.2.68}%
-\contentsline {lstlisting}{\numberline {2.69}Sub-Level Parallelism}{29}{lstlisting.2.69}%
+\contentsline {lstlisting}{\numberline {2.69}Sub-Level Parallelism}{30}{lstlisting.2.69}%
 \contentsline {lstlisting}{\numberline {2.70}A foreach loop}{30}{lstlisting.2.70}%
 \contentsline {lstlisting}{\numberline {2.71}The equivalent C++ loop}{30}{lstlisting.2.71}%
-\contentsline {lstlisting}{\numberline {2.72}A bounded variable}{30}{lstlisting.2.72}%
+\contentsline {lstlisting}{\numberline {2.72}A bounded variable}{31}{lstlisting.2.72}%
 \contentsline {lstlisting}{\numberline {2.73}A tuple of bounded variables}{31}{lstlisting.2.73}%
 \contentsline {lstlisting}{\numberline {2.74}A variable derived from a tuple}{31}{lstlisting.2.74}%
 \contentsline {lstlisting}{\numberline {2.75}Indexing one shape}{31}{lstlisting.2.75}%
-\contentsline {lstlisting}{\numberline {2.76}A tuple of indices}{31}{lstlisting.2.76}%
-\contentsline {lstlisting}{\numberline {2.77}The generated C++ loop}{31}{lstlisting.2.77}%
+\contentsline {lstlisting}{\numberline {2.76}A tuple of indices}{32}{lstlisting.2.76}%
+\contentsline {lstlisting}{\numberline {2.77}The generated C++ loop}{32}{lstlisting.2.77}%
 \contentsline {lstlisting}{\numberline {2.78}Several bounded groups}{32}{lstlisting.2.78}%
 \contentsline {lstlisting}{\numberline {2.79}The generated inner loop}{32}{lstlisting.2.79}%
 \contentsline {lstlisting}{\numberline {2.80}A foreach loop}{32}{lstlisting.2.80}%
 \contentsline {lstlisting}{\numberline {2.81}The with-in form it expands to}{32}{lstlisting.2.81}%
-\contentsline {lstlisting}{\numberline {2.82}A tuple of bounded variables}{32}{lstlisting.2.82}%
+\contentsline {lstlisting}{\numberline {2.82}A tuple of bounded variables}{33}{lstlisting.2.82}%
 \contentsline {lstlisting}{\numberline {2.83}The derived C++ loop}{33}{lstlisting.2.83}%
 \contentsline {lstlisting}{\numberline {2.84}The bounded-variable syntax}{33}{lstlisting.2.84}%
-\contentsline {lstlisting}{\numberline {2.85}chunkat(...): equal partitioning}{33}{lstlisting.2.85}%
+\contentsline {lstlisting}{\numberline {2.85}chunkat(...): equal partitioning}{34}{lstlisting.2.85}%
 \contentsline {lstlisting}{\numberline {2.86}subspan(...).at(...): explicit tile extents on a tile grid}{34}{lstlisting.2.86}%
-\contentsline {lstlisting}{\numberline {2.87}view(...).from(...): explicit tile extents with explicit element offsets}{34}{lstlisting.2.87}%
+\contentsline {lstlisting}{\numberline {2.87}view(...).from(...): explicit tile extents with explicit element offsets}{35}{lstlisting.2.87}%
 \contentsline {lstlisting}{\numberline {2.88}Compose: outer inner}{35}{lstlisting.2.88}%
-\contentsline {lstlisting}{\numberline {2.89}Extent: name}{36}{lstlisting.2.89}%
-\contentsline {lstlisting}{\numberline {2.90}Bounded-ituple/integer and chunkat Operation}{36}{lstlisting.2.90}%
+\contentsline {lstlisting}{\numberline {2.89}Extent: name}{35}{lstlisting.2.89}%
+\contentsline {lstlisting}{\numberline {2.90}Bounded-ituple/integer and chunkat Operation}{37}{lstlisting.2.90}%
 \contentsline {lstlisting}{\numberline {2.91}Ubound Operation}{37}{lstlisting.2.91}%
 \contentsline {lstlisting}{\numberline {2.92}Use chunkat Expression to Tile Data}{37}{lstlisting.2.92}%
 \contentsline {lstlisting}{\numberline {2.93}Use Multiple Bounded Variables}{38}{lstlisting.2.93}%
 \contentsline {lstlisting}{\numberline {2.94}The general DMA form}{39}{lstlisting.2.94}%
 \contentsline {lstlisting}{\numberline {2.95}A concrete copy}{39}{lstlisting.2.95}%
-\contentsline {lstlisting}{\numberline {2.96}Tiled Addition Through Shared Storage}{39}{lstlisting.2.96}%
+\contentsline {lstlisting}{\numberline {2.96}Tiled Addition Through Shared Storage}{40}{lstlisting.2.96}%
 \contentsline {lstlisting}{\numberline {2.97}A future from a copy}{40}{lstlisting.2.97}%
-\contentsline {lstlisting}{\numberline {2.98}Reading data and span}{41}{lstlisting.2.98}%
+\contentsline {lstlisting}{\numberline {2.98}Reading data and span}{40}{lstlisting.2.98}%
 \contentsline {lstlisting}{\numberline {2.99}A synchronous copy}{41}{lstlisting.2.99}%
 \contentsline {lstlisting}{\numberline {2.100}An asynchronous copy}{41}{lstlisting.2.100}%
 \contentsline {lstlisting}{\numberline {2.101}An asynchronous copy}{41}{lstlisting.2.101}%
 \contentsline {lstlisting}{\numberline {2.102}dma.transp ...}{42}{lstlisting.2.102}%
 \contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{42}{lstlisting.2.103}%
-\contentsline {lstlisting}{\numberline {2.104}The tileflow program}{42}{lstlisting.2.104}%
+\contentsline {lstlisting}{\numberline {2.104}The tileflow program}{43}{lstlisting.2.104}%
 \contentsline {lstlisting}{\numberline {2.105}The equivalent C++ loop}{43}{lstlisting.2.105}%
-\contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{44}{lstlisting.2.106}%
+\contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{45}{lstlisting.2.106}%
 \contentsline {lstlisting}{\numberline {2.107}Synchronous and Asynchronous}{45}{lstlisting.2.107}%
 \contentsline {lstlisting}{\numberline {2.108}Data Expression}{45}{lstlisting.2.108}%
-\contentsline {lstlisting}{\numberline {2.109}Two asynchronous copies}{45}{lstlisting.2.109}%
+\contentsline {lstlisting}{\numberline {2.109}Two asynchronous copies}{46}{lstlisting.2.109}%
 \contentsline {lstlisting}{\numberline {2.110}Waiting on both futures}{46}{lstlisting.2.110}%
-\contentsline {lstlisting}{\numberline {2.111}Parallel Perspective of Tileflow Programs}{46}{lstlisting.2.111}%
-\contentsline {lstlisting}{\numberline {2.112}Implicit Masking}{47}{lstlisting.2.112}%
+\contentsline {lstlisting}{\numberline {2.111}Parallel Perspective of Tileflow Programs}{47}{lstlisting.2.111}%
+\contentsline {lstlisting}{\numberline {2.112}Implicit Masking}{48}{lstlisting.2.112}%
 \contentsline {lstlisting}{\numberline {2.113}Declaring a shared event}{48}{lstlisting.2.113}%
 \contentsline {lstlisting}{\numberline {2.114}Declaring an event array}{48}{lstlisting.2.114}%
 \contentsline {lstlisting}{\numberline {2.115}Triggering an event array}{48}{lstlisting.2.115}%
-\contentsline {lstlisting}{\numberline {2.116}Waiting on an event}{48}{lstlisting.2.116}%
+\contentsline {lstlisting}{\numberline {2.116}Waiting on an event}{49}{lstlisting.2.116}%
 \contentsline {lstlisting}{\numberline {2.117}Event arrays for multi-stage pipelines}{49}{lstlisting.2.117}%
 \contentsline {lstlisting}{\numberline {2.118}Bootstrap protocol}{49}{lstlisting.2.118}%
 \contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{50}{lstlisting.2.119}%
 \contentsline {lstlisting}{\numberline {2.120}Early return from parallel}{50}{lstlisting.2.120}%
-\contentsline {lstlisting}{\numberline {2.121}Tile geometry as macros}{51}{lstlisting.2.121}%
+\contentsline {lstlisting}{\numberline {2.121}Tile geometry as macros}{52}{lstlisting.2.121}%
 \contentsline {lstlisting}{\numberline {2.122}Compile-time assertions with error}{52}{lstlisting.2.122}%
 \contentsline {lstlisting}{\numberline {2.123}Conditional code paths}{52}{lstlisting.2.123}%
-\contentsline {lstlisting}{\numberline {2.124}Calling C++ Functions}{52}{lstlisting.2.124}%
+\contentsline {lstlisting}{\numberline {2.124}Calling C++ Functions}{53}{lstlisting.2.124}%
 \contentsline {lstlisting}{\numberline {2.125}An object-like macro}{53}{lstlisting.2.125}%
-\contentsline {lstlisting}{\numberline {2.126}A macro with parameters}{53}{lstlisting.2.126}%
-\contentsline {lstlisting}{\numberline {2.127}Conditional Compilation}{53}{lstlisting.2.127}%
+\contentsline {lstlisting}{\numberline {2.126}A macro with parameters}{54}{lstlisting.2.126}%
+\contentsline {lstlisting}{\numberline {2.127}Conditional Compilation}{54}{lstlisting.2.127}%
 \contentsline {lstlisting}{\numberline {2.128}The general call syntax}{54}{lstlisting.2.128}%
-\contentsline {lstlisting}{\numberline {2.129}An illegal call site}{54}{lstlisting.2.129}%
+\contentsline {lstlisting}{\numberline {2.129}An illegal call site}{55}{lstlisting.2.129}%
 \contentsline {lstlisting}{\numberline {2.130}The Convention: Allowed Argument Types}{55}{lstlisting.2.130}%
-\contentsline {lstlisting}{\numberline {2.131}A compile-time shape print}{55}{lstlisting.2.131}%
+\contentsline {lstlisting}{\numberline {2.131}A compile-time shape print}{56}{lstlisting.2.131}%
 \contentsline {lstlisting}{\numberline {2.132}The printed shape}{56}{lstlisting.2.132}%
 \contentsline {lstlisting}{\numberline {2.133}A runtime inspect kernel}{56}{lstlisting.2.133}%
 \contentsline {lstlisting}{\numberline {2.134}A print inside a parallel block}{56}{lstlisting.2.134}%
-\contentsline {lstlisting}{\numberline {2.135}assert: runtime invariant checks}{56}{lstlisting.2.135}%
+\contentsline {lstlisting}{\numberline {2.135}assert: runtime invariant checks}{57}{lstlisting.2.135}%
 \contentsline {lstlisting}{\numberline {3.1}Transpilation and Compilation}{60}{lstlisting.3.1}%
 \contentsline {lstlisting}{\numberline {3.2}A device helper called from tileflow}{60}{lstlisting.3.2}%
 \contentsline {lstlisting}{\numberline {3.3}The cok wrapper for separate sources}{61}{lstlisting.3.3}%
 \contentsline {lstlisting}{\numberline {3.4}Heterogeneity: Transpiling to program launch}{61}{lstlisting.3.4}%
-\contentsline {lstlisting}{\numberline {3.5}Embedding Croqtile within C++}{62}{lstlisting.3.5}%
+\contentsline {lstlisting}{\numberline {3.5}Embedding Croqtile within C++}{63}{lstlisting.3.5}%
 \contentsline {lstlisting}{\numberline {3.6}An mdspan declaration}{64}{lstlisting.3.6}%
 \contentsline {lstlisting}{\numberline {3.7}A shape literal}{64}{lstlisting.3.7}%
 \contentsline {lstlisting}{\numberline {3.8}A shape with one dimension changed}{64}{lstlisting.3.8}%
 \contentsline {lstlisting}{\numberline {3.9}The same shape again}{64}{lstlisting.3.9}%
-\contentsline {lstlisting}{\numberline {3.10}Values of Bounded Variables}{66}{lstlisting.3.10}%
+\contentsline {lstlisting}{\numberline {3.10}Values of Bounded Variables}{67}{lstlisting.3.10}%
 \contentsline {lstlisting}{\numberline {3.11}A kernel with anonymous dimensions}{68}{lstlisting.3.11}%
-\contentsline {lstlisting}{\numberline {3.12}The transpiled signature}{68}{lstlisting.3.12}%
+\contentsline {lstlisting}{\numberline {3.12}The transpiled signature}{69}{lstlisting.3.12}%
 \contentsline {lstlisting}{\numberline {3.13}The generated shape check}{69}{lstlisting.3.13}%
-\contentsline {lstlisting}{\numberline {3.14}Cost and Limitations}{69}{lstlisting.3.14}%
+\contentsline {lstlisting}{\numberline {3.14}Cost and Limitations}{70}{lstlisting.3.14}%
 \contentsline {lstlisting}{\numberline {3.15}a. Improved Readability and Clarity}{70}{lstlisting.3.15}%
 \contentsline {lstlisting}{\numberline {3.16}b. Type Safety and Compile-Time Checking}{70}{lstlisting.3.16}%
 \contentsline {lstlisting}{\numberline {3.17}c. Expressiveness and Flexibility}{71}{lstlisting.3.17}%
-\contentsline {lstlisting}{\numberline {3.18}A shape expression}{71}{lstlisting.3.18}%
+\contentsline {lstlisting}{\numberline {3.18}A shape expression}{72}{lstlisting.3.18}%
 \contentsline {lstlisting}{\numberline {3.19}Its value-number graph}{72}{lstlisting.3.19}%
 \contentsline {lstlisting}{\numberline {3.20}A constant expression}{73}{lstlisting.3.20}%
 \contentsline {lstlisting}{\numberline {3.21}The simplified graph}{73}{lstlisting.3.21}%
@@ -177,32 +177,32 @@
 \contentsline {lstlisting}{\numberline {3.27}Scalar Matmul (No DMA)}{79}{lstlisting.3.27}%
 \contentsline {lstlisting}{\numberline {3.28}Tile and Flow}{81}{lstlisting.3.28}%
 \contentsline {lstlisting}{\numberline {3.29}A window at a constant offset}{82}{lstlisting.3.29}%
-\contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{82}{lstlisting.3.30}%
+\contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{83}{lstlisting.3.30}%
 \contentsline {lstlisting}{\numberline {3.31}Strided tiles: .subspan, .step, and .at}{83}{lstlisting.3.31}%
 \contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{84}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}A movement statement using the reinterpretation}{84}{lstlisting.3.33}%
 \contentsline {lstlisting}{\numberline {3.34}An asynchronous DMA declaration}{86}{lstlisting.3.34}%
 \contentsline {lstlisting}{\numberline {3.35}The same declaration with storage}{87}{lstlisting.3.35}%
-\contentsline {lstlisting}{\numberline {3.36}Operation Type}{87}{lstlisting.3.36}%
+\contentsline {lstlisting}{\numberline {3.36}Operation Type}{88}{lstlisting.3.36}%
 \contentsline {lstlisting}{\numberline {3.37}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{88}{lstlisting.3.37}%
-\contentsline {lstlisting}{\numberline {3.38}DMA Matmul: Tiles in Shared Storage}{88}{lstlisting.3.38}%
+\contentsline {lstlisting}{\numberline {3.38}DMA Matmul: Tiles in Shared Storage}{89}{lstlisting.3.38}%
 \contentsline {lstlisting}{\numberline {3.39}Double buffering with swap}{90}{lstlisting.3.39}%
-\contentsline {lstlisting}{\numberline {3.40}Multi-Buffering Optimization with Croqtile}{91}{lstlisting.3.40}%
+\contentsline {lstlisting}{\numberline {3.40}Multi-Buffering Optimization with Croqtile}{92}{lstlisting.3.40}%
 \contentsline {lstlisting}{\numberline {3.41}Partial Tiles, Guarding, and .zfill}{94}{lstlisting.3.41}%
 \contentsline {lstlisting}{\numberline {3.42}.swiz N : Shared-Memory Layout for the Consumer}{95}{lstlisting.3.42}%
 \contentsline {lstlisting}{\numberline {3.43}A swizzled copy}{95}{lstlisting.3.43}%
-\contentsline {lstlisting}{\numberline {3.44}A swizzled mma load}{95}{lstlisting.3.44}%
-\contentsline {lstlisting}{\numberline {3.45}A sparse contraction}{95}{lstlisting.3.45}%
-\contentsline {lstlisting}{\numberline {3.46}A scaled contraction}{96}{lstlisting.3.46}%
-\contentsline {lstlisting}{\numberline {3.47}Another contraction layout}{96}{lstlisting.3.47}%
+\contentsline {lstlisting}{\numberline {3.44}A swizzled mma load}{96}{lstlisting.3.44}%
+\contentsline {lstlisting}{\numberline {3.45}A sparse contraction}{96}{lstlisting.3.45}%
+\contentsline {lstlisting}{\numberline {3.46}A scaled contraction}{97}{lstlisting.3.46}%
+\contentsline {lstlisting}{\numberline {3.47}Another contraction layout}{97}{lstlisting.3.47}%
 \contentsline {lstlisting}{\numberline {3.48}One group, one tile: the simplest MMA matmul}{97}{lstlisting.3.48}%
-\contentsline {lstlisting}{\numberline {3.49}Structured concurrent regions with inthreads.async}{99}{lstlisting.3.49}%
-\contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{101}{lstlisting.3.50}%
-\contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{101}{lstlisting.3.51}%
-\contentsline {lstlisting}{\numberline {3.52}Event Instances}{102}{lstlisting.3.52}%
+\contentsline {lstlisting}{\numberline {3.49}Structured concurrent regions with inthreads.async}{100}{lstlisting.3.49}%
+\contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{100}{lstlisting.3.50}%
+\contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{102}{lstlisting.3.51}%
+\contentsline {lstlisting}{\numberline {3.52}Event Instances}{103}{lstlisting.3.52}%
 \contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{103}{lstlisting.3.53}%
 \contentsline {lstlisting}{\numberline {3.54}A credit-count deadlock}{103}{lstlisting.3.54}%
-\contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{103}{lstlisting.3.55}%
+\contentsline {lstlisting}{\numberline {3.55}The canonical pattern: 1 producer 1 consumer}{104}{lstlisting.3.55}%
 \contentsline {lstlisting}{\numberline {3.56}A 1P1C matmul skeleton}{104}{lstlisting.3.56}%
 \contentsline {lstlisting}{\numberline {3.57}Persistent scheduling and the if guard}{105}{lstlisting.3.57}%
 \contentsline {lstlisting}{\numberline {3.58}parallel.async: host-level concurrency}{107}{lstlisting.3.58}%

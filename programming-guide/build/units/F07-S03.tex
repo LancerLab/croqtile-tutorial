@@ -32,7 +32,10 @@ Without \co@.async@, the region rejoins the surrounding execution before later c
 
 The figure below shows the effect. --- The producer's DMA and the consumer's MMA overlap in time:
 
+Figure~\ref{fig:f07-fig1_role_comparison} compares the two schedules.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig1_role_comparison_light.png}
 \caption{Four load/compute pairs are shown in both schedules. Concurrent producer and consumer regions overlap work while preserving dependencies.}
+\label{fig:f07-fig1_role_comparison}
 \end{figure}

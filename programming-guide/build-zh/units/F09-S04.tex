@@ -4,9 +4,12 @@
 
 Croqtile 用结构化搬运操作显式描述分块形状和布局。编译器据此生成传输代码，程序员也不必为每个元素反复编写地址计算与协作逻辑。
 
+图~\ref{fig:f09-fig8_expressiveness} 对比了「能写出来的范围」与「跑得快的范围」。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig8_expressiveness_light.png}
 \caption{结构化分块操作显式提供形状和布局，便于编译器生成高效代码；实际性能仍取决于分块选择与执行配置。}
+\label{fig:f09-fig8_expressiveness}
 \end{figure}
 
 这里的取舍是用明确的分块表达替代任意的逐元素搬运代码，从而便于高效生成目标代码。实际性能仍取决于分块尺寸、对齐方式、布局和同步安排，并不由语法单独保证。

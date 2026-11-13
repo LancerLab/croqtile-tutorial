@@ -17,9 +17,12 @@ parallel {px, py} by [8, 16] : block
         output += lhs * rhs;
 \end{lstlisting}
 
+Figure~\ref{fig:f05-fig2_logical_vs_physical} shows how the specifiers map the axes.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig2_logical_vs_physical_light.png}
 \caption{Space specifiers map parallel axes to blocks and threads; foreach loops remain sequential within that structure.}
+\label{fig:f05-fig2_logical_vs_physical}
 \end{figure}
 
 If you omit the space specifier, as in \texttt{parallel p by 8}, the compiler chooses a default mapping. The introductory examples use this form. Explicit specifiers let you control the mapping when performance requires it.

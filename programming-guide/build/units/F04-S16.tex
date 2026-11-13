@@ -8,7 +8,10 @@ s32 [lhs.span(0), rhs.span(1)] output;
 
 The example builds a result whose dimensions come from two different operands. Reusing those dimensions keeps the output declaration tied to its inputs. The same approach is useful for a staging buffer that must match the shape of a moved tile.
 
+Figure~\ref{fig:f04-fig_span} shows what each span expression returns.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_span_light.png}
 \caption{For a [4, 8] tensor, .span returns [4, 8], while .span(0) and .span(1) return 4 and 8.}
+\label{fig:f04-fig_span}
 \end{figure}

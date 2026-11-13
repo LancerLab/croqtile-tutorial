@@ -6,9 +6,12 @@ Adding \texttt{.step(sM, sK)} overrides the stride: tiles are spaced \texttt{sM}
 matrix.subspan(16, 16).step(32, 32).at(i, j);
 \end{lstlisting}
 
+Figure~\ref{fig:f09-fig5_subspan_step} contrasts packed and strided tiles.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig5_subspan_step_light.png}
 \caption{The small diagram contrasts packed [3, 3] tiles with step(5, 5). In the code, [16, 16] tiles with step(32, 32) leave 16-element gaps.}
+\label{fig:f09-fig5_subspan_step}
 \end{figure}
 
 Tile \texttt{(0,0)} starts at \texttt{(0,0)}, but tile \texttt{(1,0)} starts at row 32 (not row 16), leaving a 16-row gap. Omitting \texttt{.step} uses a step equal to the tile size --- the packed case.

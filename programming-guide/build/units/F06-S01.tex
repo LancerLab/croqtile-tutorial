@@ -6,14 +6,20 @@ The job is \textbf{2D tensor contraction} --- the operation C += A \(\times\) B 
 
 The difficulty is mapping matrix elements to the distributed operand fragments. Get the layout wrong --- say, load a column-major tile into a row-major fragment --- and the result is silently incorrect.
 
+Figure~\ref{fig:f06-fig2_register_loading} shows how an operand tile spreads across the cooperating lanes.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig2_register_loading_light.png}
 \caption{Operand fragments are distributed across cooperating lanes. The color pattern is schematic, not an exact instruction-level register map.}
+\label{fig:f06-fig2_register_loading}
 \end{figure}
 
 Croqtile exposes the contraction through \co@fill@, \co@load@, multiply-accumulate, and \co@store@. The compiler handles the distribution of fragment elements across the chosen cooperation scope. The programmer still chooses compatible tile shapes and states the operand layouts; the abstraction depends on those choices being correct.
 
+Figure~\ref{fig:f06-fig3_mma_syntax} shows the four steps and their repetition over K.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig3_mma_syntax_light.png}
 \caption{Initialize the accumulator, load both operands, accumulate, and store; repeat the load and accumulation steps over K slices.}
+\label{fig:f06-fig3_mma_syntax}
 \end{figure}

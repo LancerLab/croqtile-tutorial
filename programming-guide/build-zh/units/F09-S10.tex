@@ -16,7 +16,10 @@ ma = mma.load tile_2d.chunkat(_, iv_warp);
 
 \co@rows * cols@ 的乘积必须等于底层区域的元素数量。重解释形状会保留线性元素顺序，因此不能转置矩阵，也不能去掉行间填充。尺寸为常量时，编译器能在执行前检查元素数量；尺寸来自输入时，实际调用也必须满足同一约束。
 
+图~\ref{fig:f09-fig7_span_as} 展示了这次重新解释。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig7_span_as_light.png}
 \caption{16 个元素的缓冲区重解释为 [4, 4] 视图，线性顺序保持不变；图中将一维数据分成两行显示，便于阅读。}
+\label{fig:f09-fig7_span_as}
 \end{figure}

@@ -12,9 +12,12 @@ __co__ void foo(f32 [36] input) {
 
 \co@.chunkat(...)@ 根据有界索引选取当前分块，可以理解为先按范围分块，再按当前索引选取。
 
+图~\ref{fig:f29-chunkat} 展示了各个下标如何遍历缓冲区。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f29-chunkat.png}
 \caption{chunkat 表达式各部分的语义}
+\label{fig:f29-chunkat}
 \end{figure}
 
 \co@input.chunkat(p)@ 对应 \co@input.chunk(#p).at(p)@，各部分的作用如下：

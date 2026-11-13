@@ -4,9 +4,12 @@
 
 假设有八个彼此独立的任务——八个要相加的分块、八行要处理的数据，等。你可以一次把八个任务都描述出来，称之为「并行」。但这句话完全没说明有多少任务真的在同时运行：在单核 CPU 上，它们一个接一个执行；在 4 核 CPU 上，也许同时执行四个。
 
+图~\ref{fig:f05-fig1_virtual_parallelism} 把同样的工作量放在三种并行宽度下比较。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig1_virtual_parallelism_light.png}
 \caption{同样的八个任务，在每次执行一个、四个或八个任务的示意调度下，分别需要八个、两个或一个时间步。}
+\label{fig:f05-fig1_virtual_parallelism}
 \end{figure}
 
 并行性描述哪些任务可以独立执行，执行资源则决定同一时刻能推进多少任务。

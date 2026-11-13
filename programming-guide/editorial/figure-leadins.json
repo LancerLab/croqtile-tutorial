@@ -1,0 +1,116 @@
+{
+  "f03-compile_and_run": {
+    "en": "Figure~\\ref{fig:f03-compile_and_run} shows a successful build and the compiler's option list side by side.",
+    "zh": "图~\\ref{fig:f03-compile_and_run} 并列展示了构建成功时的输出和编译器的选项列表。"
+  },
+  "f04-fig1_element_vs_block": {
+    "en": "Figure~\\ref{fig:f04-fig1_element_vs_block} contrasts the two approaches.",
+    "zh": "图~\\ref{fig:f04-fig1_element_vs_block} 对比了这两种做法。"
+  },
+  "f04-fig2_tiled_add": {
+    "en": "Figure~\\ref{fig:f04-fig2_tiled_add} traces one tile through the three steps.",
+    "zh": "图~\\ref{fig:f04-fig2_tiled_add} 跟踪了一个分块走完这三步的过程。"
+  },
+  "f04-fig3_chunkat": {
+    "en": "Figure~\\ref{fig:f04-fig3_chunkat} shows which elements one tile covers.",
+    "zh": "图~\\ref{fig:f04-fig3_chunkat} 标出了一个分块覆盖的元素范围。"
+  },
+  "f04-fig_future_data": {
+    "en": "Figure~\\ref{fig:f04-fig_future_data} shows what a copy hands back.",
+    "zh": "图~\\ref{fig:f04-fig_future_data} 展示了拷贝返回的句柄暴露了哪些信息。"
+  },
+  "f04-fig_compose": {
+    "en": "Figure~\\ref{fig:f04-fig_compose} shows how a tile index and an in-tile index compose.",
+    "zh": "图~\\ref{fig:f04-fig_compose} 展示了分块坐标与块内坐标如何合成为全局坐标。"
+  },
+  "f04-fig_extent": {
+    "en": "Figure~\\ref{fig:f04-fig_extent} shows both uses of the \\texttt{\\#} prefix.",
+    "zh": "图~\\ref{fig:f04-fig_extent} 展示了 \\texttt{\\#} 前缀的两种用法。"
+  },
+  "f04-fig_span": {
+    "en": "Figure~\\ref{fig:f04-fig_span} shows what each span expression returns.",
+    "zh": "图~\\ref{fig:f04-fig_span} 标出了各 span 表达式分别返回什么。"
+  },
+  "f05-fig1_virtual_parallelism": {
+    "en": "Figure~\\ref{fig:f05-fig1_virtual_parallelism} shows the same work at three widths.",
+    "zh": "图~\\ref{fig:f05-fig1_virtual_parallelism} 把同样的工作量放在三种并行宽度下比较。"
+  },
+  "f05-fig2_logical_vs_physical": {
+    "en": "Figure~\\ref{fig:f05-fig2_logical_vs_physical} shows how the specifiers map the axes.",
+    "zh": "图~\\ref{fig:f05-fig2_logical_vs_physical} 展示了空间说明符如何把各个轴映射到执行资源。"
+  },
+  "f05-fig5_scalar_matmul": {
+    "en": "Figure~\\ref{fig:f05-fig5_scalar_matmul} shows the tile grid of the output.",
+    "zh": "图~\\ref{fig:f05-fig5_scalar_matmul} 画出了输出的分块网格。"
+  },
+  "f05-fig6_dma_matmul": {
+    "en": "Figure~\\ref{fig:f05-fig6_dma_matmul} shows one block's staging and accumulation.",
+    "zh": "图~\\ref{fig:f05-fig6_dma_matmul} 展示了一个块的暂存与累加过程。"
+  },
+  "f06-fig2_register_loading": {
+    "en": "Figure~\\ref{fig:f06-fig2_register_loading} shows how an operand tile spreads across the cooperating lanes.",
+    "zh": "图~\\ref{fig:f06-fig2_register_loading} 展示了操作数分块如何分布到协作的各个 lane 上。"
+  },
+  "f06-fig3_mma_syntax": {
+    "en": "Figure~\\ref{fig:f06-fig3_mma_syntax} shows the four steps and their repetition over K.",
+    "zh": "图~\\ref{fig:f06-fig3_mma_syntax} 展示了这四个步骤以及它们沿 K 维的重复。"
+  },
+  "f07-fig1_role_comparison": {
+    "en": "Figure~\\ref{fig:f07-fig1_role_comparison} compares the two schedules.",
+    "zh": "图~\\ref{fig:f07-fig1_role_comparison} 对比了这两种调度。"
+  },
+  "f07-fig2_persistent_kernel": {
+    "en": "Figure~\\ref{fig:f07-fig2_persistent_kernel} shows ten tiles over four fixed blocks.",
+    "zh": "图~\\ref{fig:f07-fig2_persistent_kernel} 展示了十个分块如何分给四个固定块。"
+  },
+  "f08-fig1_pipeline_timeline": {
+    "en": "Figure~\\ref{fig:f08-fig1_pipeline_timeline} puts both schedules on a timeline.",
+    "zh": "图~\\ref{fig:f08-fig1_pipeline_timeline} 把两种调度画在同一条时间轴上。"
+  },
+  "f08-fig2_event_credit_flow": {
+    "en": "Figure~\\ref{fig:f08-fig2_event_credit_flow} traces a credit through the pipeline.",
+    "zh": "图~\\ref{fig:f08-fig2_event_credit_flow} 跟踪了一个信用量在流水线中的流转。"
+  },
+  "f09-fig2_swizzle": {
+    "en": "Figure~\\ref{fig:f09-fig2_swizzle} shows why the layout change matters.",
+    "zh": "图~\\ref{fig:f09-fig2_swizzle} 说明了对布局做这种改变为什么重要。"
+  },
+  "f09-fig8_expressiveness": {
+    "en": "Figure~\\ref{fig:f09-fig8_expressiveness} contrasts the expressible range with the fast range.",
+    "zh": "图~\\ref{fig:f09-fig8_expressiveness} 对比了「能写出来的范围」与「跑得快的范围」。"
+  },
+  "f09-fig4_view_from": {
+    "en": "Figure~\\ref{fig:f09-fig4_view_from} shows the window at a non-tile origin.",
+    "zh": "图~\\ref{fig:f09-fig4_view_from} 展示了起点不在分块边界上的窗口。"
+  },
+  "f09-fig5_subspan_step": {
+    "en": "Figure~\\ref{fig:f09-fig5_subspan_step} contrasts packed and strided tiles.",
+    "zh": "图~\\ref{fig:f09-fig5_subspan_step} 对比了紧凑排布与带步长的分块。"
+  },
+  "f09-fig7_span_as": {
+    "en": "Figure~\\ref{fig:f09-fig7_span_as} shows the reinterpretation.",
+    "zh": "图~\\ref{fig:f09-fig7_span_as} 展示了这次重新解释。"
+  },
+  "f14-compile-workflow": {
+    "en": "Figure~\\ref{fig:f14-compile-workflow} shows the three steps.",
+    "zh": "图~\\ref{fig:f14-compile-workflow} 展示了这三个阶段。",
+    "caption_en": "The three steps: preprocessing, transpilation, and target compilation.",
+    "caption_zh": "三个阶段：预处理、转译与目标编译。"
+  },
+  "f14-chunkat_3d": {
+    "en": "Figure~\\ref{fig:f14-chunkat_3d} shows how the bounds determine the chunk shape.",
+    "zh": "图~\\ref{fig:f14-chunkat_3d} 展示了分块上界如何决定块的形状。"
+  },
+  "f29-chunkat": {
+    "en": "Figure~\\ref{fig:f29-chunkat} shows how the indices walk the buffer.",
+    "zh": "图~\\ref{fig:f29-chunkat} 展示了各个下标如何遍历缓冲区。",
+    "caption_en": "\\co@chunkat@ divides a buffer into the tiles the parallel instances consume.",
+    "caption_zh": "`chunkat` 把缓冲区切分成并行实例各自消费的分块。"
+  },
+  "f34-masking-datachunk-dispatch": {
+    "en": "Figure~\\ref{fig:f34-masking-datachunk-dispatch} shows the remainder in the last iteration.",
+    "zh": "图~\\ref{fig:f34-masking-datachunk-dispatch} 展示了最后一轮迭代剩下的那块数据。",
+    "caption_en": "Thirteen chunks over four instances: three full iterations and a remainder.",
+    "caption_zh": "13 个数据块分给 4 个实例：三轮满载，最后一轮只剩一个。"
+  }
+}

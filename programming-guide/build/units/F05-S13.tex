@@ -15,9 +15,12 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 \end{lstlisting}
 
+Figure~\ref{fig:f05-fig5_scalar_matmul} shows the tile grid of the output.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig5_scalar_matmul_light.png}
 \caption{The [128, 256] output has a [16, 64] tile grid. Each tile has shape [8, 4]; only the first few tiles are drawn.}
+\label{fig:f05-fig5_scalar_matmul}
 \end{figure}
 
 The tile dimensions follow from the parallel bounds:

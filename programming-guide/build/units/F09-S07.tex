@@ -8,9 +8,12 @@ patch = matrix.view(16, 16).from(37, 50);
 
 The expression selects a \texttt{[16, 16]} slice starting at row 37, column 50. The origin can be any runtime value.
 
+Figure~\ref{fig:f09-fig4_view_from} shows the window at a non-tile origin.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
 \caption{The small example uses a [4, 4] window from (2, 3); the same rule selects the [16, 16] window from (37, 50) in the code.}
+\label{fig:f09-fig4_view_from}
 \end{figure}
 
 The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{dma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:

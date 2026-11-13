@@ -4,7 +4,10 @@ The \texttt{swap} pattern uses one thread group to control both loading and comp
 
 The picture below contrasts a strict load-then-compute staircase with double-buffered overlap: same logical work, less idle time.
 
+Figure~\ref{fig:f08-fig1_pipeline_timeline} puts both schedules on a timeline.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f08-fig1_pipeline_timeline_light.png}
 \caption{The same four K tiles run sequentially or with two-buffer overlap. Timings are schematic and include pipeline startup and drain.}
+\label{fig:f08-fig1_pipeline_timeline}
 \end{figure}

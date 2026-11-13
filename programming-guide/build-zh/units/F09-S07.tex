@@ -8,9 +8,12 @@ patch = matrix.view(16, 16).from(37, 50);
 
 该表达式选取从第 37 行、第 50 列开始的 \co@[16, 16]@ 切片。原点可以是任意运行时值。
 
+图~\ref{fig:f09-fig4_view_from} 展示了起点不在分块边界上的窗口。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig4_view_from_light.png}
 \caption{图中用从 (2, 3) 开始的 [4, 4] 小窗口说明原理；正文代码从 (37, 50) 选取 [16, 16] 窗口时遵循相同规则。}
+\label{fig:f09-fig4_view_from}
 \end{figure}
 
 \co@view@ / \co@from@ 的优势在于可组合性：选定窗口后，后面的所有操作——\co@subspan@、\co@chunkat@、\co@dma.copy@——都作用在这个窗口上，就像它是一个独立的张量。流水线保持不变，只是起始位置发生变化：

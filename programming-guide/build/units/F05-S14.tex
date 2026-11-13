@@ -19,9 +19,12 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 \end{lstlisting}
 
+Figure~\ref{fig:f05-fig6_dma_matmul} shows one block's staging and accumulation.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig6_dma_matmul_light.png}
 \caption{Each block stages [16, 16] operand tiles for one K slice; 256 threads accumulate the block’s [16, 16] output tile.}
+\label{fig:f05-fig6_dma_matmul}
 \end{figure}
 
 The scalar version indexed one element at a time. The tiled version first copies a tile into shared storage, then computes on that tile:

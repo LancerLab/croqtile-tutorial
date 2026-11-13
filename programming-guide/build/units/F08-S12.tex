@@ -2,7 +2,10 @@
 
 The diagram matches the code: bootstrap grants empty credits; the producer waits on \texttt{empty}, fills, signals \texttt{full}; the consumer waits on \texttt{full}, computes, signals \texttt{empty}. When \texttt{iv\_k} wraps modulo \texttt{STAGES}, the same physical stage re-enters the cycle.
 
+Figure~\ref{fig:f08-fig2_event_credit_flow} traces a credit through the pipeline.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f08-fig2_event_credit_flow_light.png}
 \caption{An empty credit permits filling a stage; a full credit permits reading it. The consumer releases the stage only after computation completes.}
+\label{fig:f08-fig2_event_credit_flow}
 \end{figure}

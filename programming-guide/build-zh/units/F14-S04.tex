@@ -2,9 +2,12 @@
 
 Croqtile 的编译过程通常包含三个主要步骤：\textbf{预处理}、\textbf{转译}和\textbf{目标编译}。
 
+图~\ref{fig:f14-compile-workflow} 展示了这三个阶段。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f14-compile-workflow.drawio.png}
 \caption{Croqtile 的完整编译流程}
+\label{fig:f14-compile-workflow}
 \end{figure}
 
 如图所示，\emph{预处理}之后，Croqtile 立刻把 \emph{tileflow 程序} \emph{转译}（也就是\emph{源到源}编译）为目标代码，而用户提供的\emph{主机程序}和\emph{设备程序}保留原样。\emph{tileflow 程序}被\emph{转译}成主机源代码和设备源代码，这些统称 \emph{Croqtile 生成代码}。随后，编译器把用户代码和 \emph{Croqtile 生成}代码合并，执行\emph{目标编译}。这个过程可以产出多种结果，比如转译后的源代码、工作流脚本、目标模块、目标汇编和可执行文件。

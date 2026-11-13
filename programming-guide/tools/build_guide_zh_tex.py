@@ -33,12 +33,17 @@ def _load_builder():
 
 B = _load_builder()
 
+FIGURE_LEADINS = {}
 FIGURE_REPLACEMENTS = {}
 _ch1 = PG / 'translation/zh/chapter1-editorial.json'
 if _ch1.is_file():
     import json as _json
     FIGURE_REPLACEMENTS = _json.loads(
         _ch1.read_text(encoding='utf-8')).get('figure_replacements', {})
+_leadins = PG / 'editorial/figure-leadins.json'
+if _leadins.is_file():
+    import json as _json2
+    FIGURE_LEADINS = _json2.loads(_leadins.read_text(encoding='utf-8'))
 OUT = PG / 'build-zh' / 'units'
 CONTENT_OUT = PG / 'content-zh'
 
@@ -120,12 +125,26 @@ def figure_path(uid, index, path):
     return rep['path'] if rep else path
 
 
+def figure_info(path):
+    base = path.rsplit('/', 1)[-1]
+    for ext in ('.png', '.jpg', '.pdf'):
+        if base.endswith(ext):
+            base = base[:-len(ext)]
+    if base.endswith('.drawio'):
+        base = base[:-len('.drawio')]
+    for suffix in ('_light', '_dark'):
+        if base.endswith(suffix):
+            base = base[:-len(suffix)]
+    return base, FIGURE_LEADINS.get(base, {})
+
+
 def emit_figure(payload, caption, path=None):
     path = path or payload['path']
     return ('\\begin{figure}[htbp]\\centering\n'
             '\\includegraphics[width=\\linewidth,height=0.56\\textheight,'
             'keepaspectratio]{' + path + '}\n'
             '\\caption{' + texify(caption) + '}\n'
+            '\\label{fig:' + figure_info(path)[0] + '}\n'
             '\\end{figure}')
 
 
@@ -157,7 +176,11 @@ def emit_unit(uid, tokens, zlines):
             out.append(emit_code(payload, ztext))
         elif tag == 'F':
             fig_no += 1
-            out.append(emit_figure(payload, ztext, figure_path(uid, fig_no, payload['path'])))
+            path = figure_path(uid, fig_no, payload['path'])
+            stem, info = figure_info(path)
+            if info.get('zh'):
+                out.append(info['zh'])
+            out.append(emit_figure(payload, ztext, path))
         elif tag == 'T':
             out.append(emit_table(ztext))
         elif tag == 'L':
@@ -176,7 +199,11 @@ def emit_unit(uid, tokens, zlines):
 
 def write_unit(uid, zh):
     src = PG / 'build/units' / (uid + '.tex')
-    tokens = B.split_tokens(src.read_text(encoding='utf-8'))
+    raw = src.read_text(encoding='utf-8')
+    # The English lead-in paragraph is replaced by the Chinese one below, so it
+    # must not count as a translation token.
+    raw = re.sub(r'(?m)^Figure~\\ref\{fig:[^}]*\}[^\n]*\n\n', '', raw)
+    tokens = B.split_tokens(raw)
     key = 'UID:' + uid
     if key not in zh:
         raise KeyError('missing translation for ' + uid)

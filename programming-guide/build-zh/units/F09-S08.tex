@@ -6,9 +6,12 @@
 matrix.subspan(16, 16).step(32, 32).at(i, j);
 \end{lstlisting}
 
+图~\ref{fig:f09-fig5_subspan_step} 对比了紧凑排布与带步长的分块。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig5_subspan_step_light.png}
 \caption{小图比较紧密排列的 [3, 3] 分块与 step(5, 5) 的间隔排列。正文的 [16, 16] 分块采用 step(32, 32)，留下 16 个元素的间隔。}
+\label{fig:f09-fig5_subspan_step}
 \end{figure}
 
 分块 \co@(0,0)@ 从 \co@(0,0)@ 开始，而分块 \co@(1,0)@ 从第 32 行开始（不是第 16 行），留出 16 行的间隔。省略 \co@.step@ 时，步长等于分块尺寸，也就是紧凑排列的情形。

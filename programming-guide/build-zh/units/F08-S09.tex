@@ -4,7 +4,10 @@
 
 下图对比了严格的「先装载再计算」阶梯和双缓冲重叠：逻辑上的工作量一样，空闲时间却少了。
 
+图~\ref{fig:f08-fig1_pipeline_timeline} 把两种调度画在同一条时间轴上。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f08-fig1_pipeline_timeline_light.png}
 \caption{同样的四个 K 分块可以顺序执行，也可以通过双缓冲重叠执行。图中时间仅为示意，并包含流水线启动与收尾。}
+\label{fig:f08-fig1_pipeline_timeline}
 \end{figure}

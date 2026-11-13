@@ -23,7 +23,10 @@ foreach idx in [f.span]
 
 即使拷贝是同步的，给结果命名也有用途：后续代码既能通过 \co@.data@ 访问目的缓冲区，又能通过 \co@.span@ 确定遍历范围。这样不必再单独维护一份缓冲区名称和形状。
 
+图~\ref{fig:f04-fig_future_data} 展示了拷贝返回的句柄暴露了哪些信息。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_future_data_light.png}
 \caption{复制结果通过 .data 提供目标张量，通过 .span 提供其形状；异步复制必须完成后才能读取。}
+\label{fig:f04-fig_future_data}
 \end{figure}

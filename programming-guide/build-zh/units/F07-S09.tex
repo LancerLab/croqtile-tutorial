@@ -47,9 +47,12 @@ __co__ auto matmul(global f16 [M, K] lhs, global f16 [N, K] rhs) {
 
 条件 \co@tile_id < total_tiles@ 排除最后一个有效分块之后的索引。属于该分块的工作都应放入判断之内，包括需要参与者一致确认分块是否存在的生产者—消费者协议。
 
+图~\ref{fig:f07-fig2_persistent_kernel} 展示了十个分块如何分给四个固定块。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig2_persistent_kernel_light.png}
 \caption{四个固定 block 用三轮迭代处理十个分块；最后两个补齐的分块编号由 if 条件跳过。}
+\label{fig:f07-fig2_persistent_kernel}
 \end{figure}
 
 若有四个工作块和十个输出分块，组合索引在第一次迭代为 0–3，第二次为 4–7，第三次为 8–11。最后一次只有 8 和 9 通过条件判断。这样每个有效分块恰好被处理一次，但并不保证所有工作块始终忙碌，利用率仍取决于分块开销和剩余工作量。

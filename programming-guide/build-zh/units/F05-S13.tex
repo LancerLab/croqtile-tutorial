@@ -15,9 +15,12 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 \end{lstlisting}
 
+图~\ref{fig:f05-fig5_scalar_matmul} 画出了输出的分块网格。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f05-fig5_scalar_matmul_light.png}
 \caption{[128, 256] 输出按 [16, 64] 网格划分，每块形状为 [8, 4]；图中只画出开头的一部分分块。}
+\label{fig:f05-fig5_scalar_matmul}
 \end{figure}
 
 可以从输出形状开始，逐步核对并行划分、块内范围与全局坐标。

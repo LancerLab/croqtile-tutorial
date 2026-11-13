@@ -8,7 +8,10 @@ lhs.chunkat(tr, tc)
 
 已有并行或循环索引明确了分块方式时，可以用 \co@chunkat@ 选取当前分块。本例中，\co@lhs@ 的形状为 \co@[64, 128]@，\co@tr@、\co@tc@ 的范围分别为 \co@4@、\co@8@，所以每块为 \co@[16, 16]@。索引当前值再决定选中哪一块。
 
+图~\ref{fig:f04-fig3_chunkat} 标出了一个分块覆盖的元素范围。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig3_chunkat_light.png}
 \caption{对按 [4, 8] 网格划分的 [64, 128] 张量，chunkat(1, 3) 选中第 16–31 行、第 48–63 列。}
+\label{fig:f04-fig3_chunkat}
 \end{figure}

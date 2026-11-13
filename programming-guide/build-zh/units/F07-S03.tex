@@ -31,7 +31,10 @@ parallel p1 by 2 : thread {
 
 下图展示了实际效果——生产者的 DMA 和消费者的 MMA 在时间上重叠：
 
+图~\ref{fig:f07-fig1_role_comparison} 对比了这两种调度。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f07-fig1_role_comparison_light.png}
 \caption{两种调度都包含四组装入与计算任务。并发的生产者和消费者在遵守依赖关系的前提下重叠执行。}
+\label{fig:f07-fig1_role_comparison}
 \end{figure}

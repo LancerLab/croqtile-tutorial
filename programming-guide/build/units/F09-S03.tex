@@ -19,7 +19,10 @@ Swizzle is a property of the copy, not of a particular engine: \texttt{dma.\allo
 
 \textbf{Matching rule.} The \texttt{\textless{}N\textgreater{}} on the copy must match \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}}. If you load with plain \texttt{mma.load} from \texttt{swiz\textless{}128\textgreater{}} data, addresses disagree and you read garbage. The compiler does not enforce the pairing --- it is a correctness invariant you maintain. (As introduced in Section~\ref{sec:3-7}, \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} is part of the MMA load family.)
 
+Figure~\ref{fig:f09-fig2_swizzle} shows why the layout change matters.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f09-fig2_swizzle_light.png}
 \caption{Eight-bank schematic: different addresses in one bank serialize, while remapping spreads accesses. Copy and MMA load must use matching swizzle.}
+\label{fig:f09-fig2_swizzle}
 \end{figure}

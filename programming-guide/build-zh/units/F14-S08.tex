@@ -48,9 +48,12 @@ for (int x = 0; x < 17; x++)  // assume 'x' represents the 1st element of 'index
 
 分块方式如下图所示。
 
+图~\ref{fig:f14-chunkat_3d} 展示了分块上界如何决定块的形状。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f14-chunkat_3d_light.png}
 \caption{形状 [6, 17, 128] 按范围 [6, 17, 4] 划分后，每块为 [1, 1, 32]。分块 (1, 16, 2) 从元素 (1, 16, 64) 开始。}
+\label{fig:f14-chunkat_3d}
 \end{figure}
 
 \co@lhs@ 和 \co@rhs@ 的对应分块分别搬入设备的 \co@local@ 存储，供当前实例计算。

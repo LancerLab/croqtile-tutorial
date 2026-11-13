@@ -8,7 +8,10 @@ output.at(tr # i, tc # j)
 
 对于外层分块索引 \co@tr@ 和块内索引 \co@i@，\co@tr # i@ 的值为 \co@tr * #i + i@。每块有 16 行时，第 2 块的块内第 5 行对应全局第 37 行。组合后的上界是两个上界的乘积。内层上界决定步幅，因此操作数顺序不能交换。
 
+图~\ref{fig:f04-fig_compose} 展示了分块坐标与块内坐标如何合成为全局坐标。
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_compose_light.png}
 \caption{每块含 16 个元素时，tile = 2 与块内偏移 i = 3 组合得到全局位置 2 × 16 + 3 = 35。}
+\label{fig:f04-fig_compose}
 \end{figure}

@@ -23,7 +23,10 @@ foreach idx in [f.span]
 
 Even synchronous copies are worth naming when you want to pass the moved tile to later code.
 
+Figure~\ref{fig:f04-fig_future_data} shows what a copy hands back.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_future_data_light.png}
 \caption{The copy result exposes the destination tensor through .data and its shape through .span; asynchronous reads require completion first.}
+\label{fig:f04-fig_future_data}
 \end{figure}

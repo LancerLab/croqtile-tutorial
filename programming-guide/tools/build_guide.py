@@ -387,6 +387,53 @@ def strip_gpu_backend(text):
     return text
 
 
+def _figure_stem(path):
+    base = path.rsplit('/', 1)[-1]
+    for ext in ('.png', '.jpg', '.pdf'):
+        if base.endswith(ext):
+            base = base[:-len(ext)]
+    if base.endswith('.drawio'):
+        base = base[:-len('.drawio')]
+    for suffix in ('_light', '_dark'):
+        if base.endswith(suffix):
+            base = base[:-len(suffix)]
+    return base
+
+
+def _figure_leadins(text):
+    """Give every figure a label, a caption and one reference in the prose."""
+    import json as _json
+    path = os.path.join(PG, 'editorial', 'figure-leadins.json')
+    if not os.path.isfile(path):
+        return text
+    data = _json.load(open(path, encoding='utf-8'))
+
+    def repl(m):
+        block = m.group(0)
+        img = re.search(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]*)\}', block)
+        if not img:
+            return block
+        stem = _figure_stem(img.group(1))
+        info = data.get(stem)
+        if not info:
+            return block
+        if '\\caption{' not in block and info.get('caption_en'):
+            block = block.replace('\\end{figure}',
+                                  '\\caption{' + info['caption_en'] + '}\n\\end{figure}')
+        if '\\label{fig:' not in block:
+            if '\\caption{' in block:
+                block = re.sub(r'(\\caption\{[^}]*\})', r'\1\n\\label{fig:' + stem + '}', block, count=1)
+            else:
+                block = block.replace('\\end{figure}', '\\label{fig:' + stem + '}\n\\end{figure}')
+        lead = info.get('en')
+        if lead and ('\\ref{fig:' + stem + '}') not in text_before[0]:
+            return lead + '\n\n' + block
+        return block
+
+    text_before = [text]
+    return re.sub(r'\\begin\{figure\}.*?\\end\{figure\}', repl, text, flags=re.S)
+
+
 def _rename_runtime(text):
     """Spell the runtime the way it is actually shipped.
 
@@ -2153,6 +2200,9 @@ def main():
             text = (heading_tex + '\n\n' if heading_tex else '') + frag
             text = polish_prose(text, uid)
             text = strip_gpu_backend(text)
+            # Figures get their label and in-text reference after the prose is
+            # final, so no copy edit has to match the inserted text.
+            text = _figure_leadins(text)
             frag_path = os.path.join(UNITS_DIR, uid + '.tex')
             open(frag_path, 'w', encoding='utf-8').write(text + '\n')
             slot_units[slot].append(uid)

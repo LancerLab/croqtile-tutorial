@@ -6,7 +6,10 @@ foreach i in [128 / #tile]
 
 The notation \texttt{\#tile} means the extent of the \texttt{tile} axis: how many tiles exist along that dimension. If \texttt{parallel tile by 8}, then \texttt{\#tile} is \texttt{8}.
 
+Figure~\ref{fig:f04-fig_extent} shows both uses of the \texttt{\#} prefix.
+
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f04-fig_extent_light.png}
 \caption{Prefix \#tile gives the axis extent, 8; infix tile \# i composes a tile coordinate and an in-tile offset.}
+\label{fig:f04-fig_extent}
 \end{figure}
