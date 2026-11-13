@@ -64,14 +64,18 @@ def esc(s):
     return s
 
 
-def _texify_plain(s, bold=False):
+def _texify_plain(s, bold=False, table=False):
     out = []
     for part in re.split(r'(`[^`]*`)', s):
         if len(part) > 1 and part.startswith('`') and part.endswith('`'):
             inner = part[1:-1]
             # Inside bold, lstinline keeps its own font weight; a plain
             # \texttt inherits the bold and matches the English edition.
-            out.append(r'\texttt{' + esc(inner) + '}' if bold else r'\co@' + inner + r'@')
+            # tabularx measures a cell by running it twice, and \lstinline is
+            # not re-entrant: `#` in a cell came out doubled. Table cells use
+            # \texttt for the same reason the English edition does.
+            out.append(r'\texttt{' + esc(inner) + '}'
+                       if (bold or table) else r'\co@' + inner + r'@')
             continue
         p = esc(part.replace('<br>', '\x00BR\x00')).replace('\x00BR\x00', '\\newline{}')
         p = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'\\emph{\1}', p)
@@ -79,7 +83,7 @@ def _texify_plain(s, bold=False):
     return ''.join(out)
 
 
-def texify(s):
+def texify(s, table=False):
     """Markdown marks in the translation -> LaTeX.
 
     Bold is resolved before inline code is split out, because the source bolds
@@ -87,10 +91,11 @@ def texify(s):
     """
     out, pos = [], 0
     for m in re.finditer(r'\*\*(.+?)\*\*', s):
-        out.append(_texify_plain(s[pos:m.start()]))
-        out.append(r'\textbf{' + _texify_plain(m.group(1), bold=True) + '}')
+        out.append(_texify_plain(s[pos:m.start()], table=table))
+        out.append(r'\textbf{' + _texify_plain(m.group(1), bold=True,
+                                               table=table) + '}')
         pos = m.end()
-    out.append(_texify_plain(s[pos:]))
+    out.append(_texify_plain(s[pos:], table=table))
     return ''.join(out)
 
 
@@ -127,10 +132,10 @@ def emit_table(ztext):
     head, body = rows[0], rows[1:]
     lines = ['\\begin{table}[htbp]\\centering\\small',
              '\\begin{tabularx}{\\linewidth}{' + spec + '}', '\\toprule',
-             ' & '.join(texify(c) for c in head) + r' \\', '\\midrule']
+             ' & '.join(texify(c, table=True) for c in head) + r' \\', '\\midrule']
     for r in body:
         r = r + [''] * (ncol - len(r))
-        lines.append(' & '.join(texify(c) for c in r) + r' \\')
+        lines.append(' & '.join(texify(c, table=True) for c in r) + r' \\')
     lines += ['\\bottomrule', '\\end{tabularx}', '\\end{table}']
     return '\n'.join(lines)
 

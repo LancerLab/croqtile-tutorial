@@ -5,11 +5,11 @@
 \toprule
 \textbf{概念} & \textbf{原语} & \textbf{何时使用} \\
 \midrule
-谓词执行 & \co@if@ & 数据相关的判断（边界、条件） \\
-结构化并发 & \co@inthreads.async@ & 编译时划分线程（生产者／消费者、异构角色） \\
-区域间通信 & \co@shared event@ / \co@wait@ / \co@trigger@ & 并发区域之间的协调 \\
-主机并发 & \co@parallel.async@ / \co@stream s@ & 多核函数重叠、非阻塞启动 \\
-持久调度 & \co@if@ + \co@foreach@ + \co@#@ & 固定网格规模、带填充守卫的分块条带化 \\
+谓词执行 & \texttt{if} & 数据相关的判断（边界、条件） \\
+结构化并发 & \texttt{inthreads.async} & 编译时划分线程（生产者／消费者、异构角色） \\
+区域间通信 & \texttt{shared event} / \texttt{wait} / \texttt{trigger} & 并发区域之间的协调 \\
+主机并发 & \texttt{parallel.async} / \texttt{stream s} & 多核函数重叠、非阻塞启动 \\
+持久调度 & \texttt{if} + \texttt{foreach} + \texttt{\#} & 固定网格规模、带填充守卫的分块条带化 \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -5,12 +5,12 @@
 \toprule
 \textbf{工具} & \textbf{作用阶段} & \textbf{开销或行为} \\
 \midrule
-\co@print!@ / \co@println!@ & 编译时 & 不增加运行时开销 \\
-\co@assert(expr, "msg")@ & 运行时 & 开销较低，条件不满足时终止执行 \\
-\co@print@ / \co@println@ & 运行时 & 打印可能串行执行，应限制输出范围 \\
-\co@-rtc=high@ & 运行时 & 增加边界等检查 \\
-\co@-v@ / \co@--verbose@ & 编译过程 & 显示外部命令，不增加程序运行时开销 \\
-\co@-g@、调试器与 RTTI & 调试过程 & 提供符号和类型信息，性能取决于构建配置 \\
+\texttt{print!} / \texttt{println!} & 编译时 & 不增加运行时开销 \\
+\texttt{assert(expr, "msg")} & 运行时 & 开销较低，条件不满足时终止执行 \\
+\texttt{print} / \texttt{println} & 运行时 & 打印可能串行执行，应限制输出范围 \\
+\texttt{-rtc=high} & 运行时 & 增加边界等检查 \\
+\texttt{-v} / \texttt{--verbose} & 编译过程 & 显示外部命令，不增加程序运行时开销 \\
+\texttt{-g}、调试器与 RTTI & 调试过程 & 提供符号和类型信息，性能取决于构建配置 \\
 \bottomrule
 \end{tabularx}
 \end{table}

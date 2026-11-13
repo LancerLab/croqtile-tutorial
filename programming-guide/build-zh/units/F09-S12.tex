@@ -6,12 +6,12 @@
 \textbf{语法} & \textbf{含义} \\
 \midrule
  &  \\
-\co@dma.copy.swiz<N>@ src =\textgreater{} dst & 采用以字节计的重排宽度 \co@N@ 的拷贝 \\
-\co@mma.load.swiz<N>@ src & 与重排 \co@N@ 一致的 MMA 操作数加载 \\
-\co@.view(M, N).from(r, c)@ & 任意偏移处的 \co@M x N@ 窗口 \\
-\co@.subspan(M, K).step(sM, sK).at(i, j)@ & 带步长的分块选择 \\
-\co@.zfill@ & 把拷贝源中的越界元素补零 \\
-\co@span_as(dims)@ & 把线性存储重新解释为带形状的张量 \\
+\texttt{dma.copy.swiz\textless{}N\textgreater{}} src =\textgreater{} dst & 采用以字节计的重排宽度 \texttt{N} 的拷贝 \\
+\texttt{mma.load.swiz\textless{}N\textgreater{}} src & 与重排 \texttt{N} 一致的 MMA 操作数加载 \\
+\texttt{.view(M, N).from(r, c)} & 任意偏移处的 \texttt{M x N} 窗口 \\
+\texttt{.subspan(M, K).step(sM, sK).at(i, j)} & 带步长的分块选择 \\
+\texttt{.zfill} & 把拷贝源中的越界元素补零 \\
+\texttt{span\_as(dims)} & 把线性存储重新解释为带形状的张量 \\
 \bottomrule
 \end{tabularx}
 \end{table}

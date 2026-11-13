@@ -7,19 +7,19 @@
 \toprule
 语法 & 含义 \\
 \midrule
-\co@dma.copy.async ...@ & 启动非阻塞 DMA 传输。 \\
-\co@wait f@ & 等待 \co@f@ 对应的传输完成。 \\
-\co@future.data@ & 访问已搬运分块。 \\
-\co@future.span@ & 访问已搬运分块的形状。 \\
-\co@dma.transp<...>@ & 搬运过程中置换维度。 \\
-\co@dma.pad<...>@ & 搬运过程中填充，并显式给出填充值。 \\
-\co@.zfill@ & 把不完整分块中的越界位置补零。 \\
-\co@.swiz<N>@ & 选择共享内存重排布局。 \\
-\co@chunkat(...)@ & 从规则分块中选出一个等分块。 \\
-\co@subspan(...).at(...)@ & 按显式分块范围与分块坐标选取分块。 \\
-\co@view(...).from(...)@ & 按显式范围与显式元素偏移选取分块。 \\
-\co@tile # i@ & 把分块坐标与块内坐标合成为全局坐标。 \\
-\co@#tile@ & 求 \co@tile@ 轴的范围。 \\
+\texttt{dma.copy.async ...} & 启动非阻塞 DMA 传输。 \\
+\texttt{wait f} & 等待 \texttt{f} 对应的传输完成。 \\
+\texttt{future.data} & 访问已搬运分块。 \\
+\texttt{future.span} & 访问已搬运分块的形状。 \\
+\texttt{dma.transp\textless{}...\textgreater{}} & 搬运过程中置换维度。 \\
+\texttt{dma.pad\textless{}...\textgreater{}} & 搬运过程中填充，并显式给出填充值。 \\
+\texttt{.zfill} & 把不完整分块中的越界位置补零。 \\
+\texttt{.swiz\textless{}N\textgreater{}} & 选择共享内存重排布局。 \\
+\texttt{chunkat(...)} & 从规则分块中选出一个等分块。 \\
+\texttt{subspan(...).at(...)} & 按显式分块范围与分块坐标选取分块。 \\
+\texttt{view(...).from(...)} & 按显式范围与显式元素偏移选取分块。 \\
+\texttt{tile \# i} & 把分块坐标与块内坐标合成为全局坐标。 \\
+\texttt{\#tile} & 求 \texttt{tile} 轴的范围。 \\
 \bottomrule
 \end{tabularx}
 \end{table}

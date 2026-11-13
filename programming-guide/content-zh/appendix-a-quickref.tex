@@ -9,13 +9,13 @@
 \toprule
 构造 & 含义 \\
 \midrule
-\co@__co__ T [shape] f(T [shape] a)@ & 带形状参数的 Croqtile 函数。 \\
-\co@__co__ void@ / \co@__co__ auto@ & 就地结果 / 推导返回类型。 \\
-\co@T [a.span] b;@ & 复制形状的缓冲区。 \\
-\co@a.span@ / \co@a.span(i)@ & 整体形状 / 单个维度。 \\
-\co@x : [7, 8]@ & 具名 \co@mdspan@ 声明。 \\
-\co@a = {1, 2, 3}@ & \co@ituple@ 声明。 \\
-\co@tensor.at(i, j)@ & 位置访问。 \\
+\texttt{\_\_co\_\_ T [shape] f(T [shape] a)} & 带形状参数的 Croqtile 函数。 \\
+\texttt{\_\_co\_\_ void} / \texttt{\_\_co\_\_ auto} & 就地结果 / 推导返回类型。 \\
+\texttt{T [a.span] b;} & 复制形状的缓冲区。 \\
+\texttt{a.span} / \texttt{a.span(i)} & 整体形状 / 单个维度。 \\
+\texttt{x : [7, 8]} & 具名 \texttt{mdspan} 声明。 \\
+\texttt{a = {1, 2, 3}} & \texttt{ituple} 声明。 \\
+\texttt{tensor.at(i, j)} & 位置访问。 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -26,12 +26,12 @@
 \toprule
 构造 & 含义 \\
 \midrule
-\co@parallel p by N@ / \co@parallel p, q by [M, N]@ & 相互独立的实例。 \\
-\co@: block@ / \co@: thread@ / \co@: group@ & 并行轴上的标注。 \\
-\co@foreach idx in [N]@ / \co@foreach t(1:)@ & 有序迭代 / 切片迭代。 \\
-\co@with idx in [a, b]@ & 有作用域的索引绑定。 \\
-\co@p # m@ / \co@#p@ & 组合索引 / 轴范围。 \\
-\co@cdiv(a, b)@ & 向上取整除法。 \\
+\texttt{parallel p by N} / \texttt{parallel p, q by [M, N]} & 相互独立的实例。 \\
+\texttt{: block} / \texttt{: thread} / \texttt{: group} & 并行轴上的标注。 \\
+\texttt{foreach idx in [N]} / \texttt{foreach t(1:)} & 有序迭代 / 切片迭代。 \\
+\texttt{with idx in [a, b]} & 有作用域的索引绑定。 \\
+\texttt{p \# m} / \texttt{\#p} & 组合索引 / 轴范围。 \\
+\texttt{cdiv(a, b)} & 向上取整除法。 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -42,15 +42,15 @@
 \toprule
 构造 & 含义 \\
 \midrule
-\co@f = dma.copy src => shared@ & 分块搬运语句。 &  \\
-\textless{}ROW\textgreater{} & \co@a.chunkat(t)@ & 规则划分中的一个分块。 \\
-\co@a.subspan(M, K).at(i, j)@ & 显式范围与分块坐标。 &  \\
-\co@a.subspan(M, K).step(sM, sK).at(i, j)@ & 跨步分块选择。 &  \\
-\co@a.view(M, N).from(r, c)@ & 带显式元素偏移的窗口。 &  \\
-\co@a.span_as([dims])@ & 不搬运数据的形状重解释。 &  \\
-\co@f.data@ / \co@f.span@ / \co@dma.any@ & 已搬运分块 / 其形状 / 占位句柄。 &  \\
-\co@.async@ / \co@wait f@ / \co@swap@ / \co@rotate@ & 异步传输与句柄轮转。 &  \\
-\co@global@ / \co@shared@ / \co@local@ & 存储说明符。 &  \\
+\texttt{f = dma.copy src =\textgreater{} shared} & 分块搬运语句。 &  \\
+\textless{}ROW\textgreater{} & \texttt{a.chunkat(t)} & 规则划分中的一个分块。 \\
+\texttt{a.subspan(M, K).at(i, j)} & 显式范围与分块坐标。 &  \\
+\texttt{a.subspan(M, K).step(sM, sK).at(i, j)} & 跨步分块选择。 &  \\
+\texttt{a.view(M, N).from(r, c)} & 带显式元素偏移的窗口。 &  \\
+\texttt{a.span\_as([dims])} & 不搬运数据的形状重解释。 &  \\
+\texttt{f.data} / \texttt{f.span} / \texttt{dma.any} & 已搬运分块 / 其形状 / 占位句柄。 &  \\
+\texttt{.async} / \texttt{wait f} / \texttt{swap} / \texttt{rotate} & 异步传输与句柄轮转。 &  \\
+\texttt{global} / \texttt{shared} / \texttt{local} & 存储说明符。 &  \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -61,13 +61,13 @@
 \toprule
 构造 & 含义 \\
 \midrule
-\co@dma.transp<...>@ / \co@dma.pad<...>@ & 搬运时变换。 \\
-\co@.zfill@ / \co@.swiz<N>@ & 填充与布局修饰符。 \\
-\co@mc = mma.fill 0.0@ & 累加器清零。 \\
-\co@ma = mma.load src.chunkat(...)@ & 装入操作数。 \\
-\co@mma.row.row mc, ma, mb@ & 带布局约定的收缩。 \\
-\co@mma.store mc, dst@ & 写回累加器。 \\
-\co@.sp@ / \co@.scale@ / \co@mma.scale@ & 收缩变体与阶段栅栏。 \\
+\texttt{dma.transp\textless{}...\textgreater{}} / \texttt{dma.pad\textless{}...\textgreater{}} & 搬运时变换。 \\
+\texttt{.zfill} / \texttt{.swiz\textless{}N\textgreater{}} & 填充与布局修饰符。 \\
+\texttt{mc = mma.fill 0.0} & 累加器清零。 \\
+\texttt{ma = mma.load src.chunkat(...)} & 装入操作数。 \\
+\texttt{mma.row.row mc, ma, mb} & 带布局约定的收缩。 \\
+\texttt{mma.store mc, dst} & 写回累加器。 \\
+\texttt{.sp} / \texttt{.scale} / \texttt{mma.scale} & 收缩变体与阶段栅栏。 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -78,15 +78,15 @@
 \toprule
 构造 & 含义 \\
 \midrule
-\co@if (expr) ... @ & 运行时谓词。 \\
-\co@inthreads.async (cond)@ / \co@inthreads (cond)@ & 并发区域 / 顺序过滤。 \\
-\co@shared event e[N]@ / \co@trigger e@ / \co@wait e@ & 同步令牌。 \\
-\co@parallel.async ...@ / \co@stream s@ / \co@yield@ & 主机调度与提前返回。 \\
-\co@__device__ fn()@ / \co@call fn(args)@ & 互操作的 C++ 函数及其调用。 \\
-\co@__cpp__("...")@ / \co@__cpp__(R"(...)")@ & 注入的源文本。 \\
-\co@#define@ / \co@#if@ / \co@#ifdef@ / \co@#error@ / \co@-D@ & 预处理器。 \\
-\co@print!@ / \co@println!@ / \co@print@ / \co@println@ & 编译时输出与运行时输出。 \\
-\co@assert@ / \co@croq_assert@ & 设备侧与主机侧断言。 \\
+\texttt{if (expr) ... } & 运行时谓词。 \\
+\texttt{inthreads.async (cond)} / \texttt{inthreads (cond)} & 并发区域 / 顺序过滤。 \\
+\texttt{shared event e[N]} / \texttt{trigger e} / \texttt{wait e} & 同步令牌。 \\
+\texttt{parallel.async ...} / \texttt{stream s} / \texttt{yield} & 主机调度与提前返回。 \\
+\texttt{\_\_device\_\_ fn()} / \texttt{call fn(args)} & 互操作的 C++ 函数及其调用。 \\
+\texttt{\_\_cpp\_\_("...")} / \texttt{\_\_cpp\_\_(R"(...)")} & 注入的源文本。 \\
+\texttt{\#define} / \texttt{\#if} / \texttt{\#ifdef} / \texttt{\#error} / \texttt{-D} & 预处理器。 \\
+\texttt{print!} / \texttt{println!} / \texttt{print} / \texttt{println} & 编译时输出与运行时输出。 \\
+\texttt{assert} / \texttt{croq\_assert} & 设备侧与主机侧断言。 \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -15,10 +15,10 @@ croq kernel.co -g -o kernel_debug
 \toprule
 \textbf{Croqtile 类型} & \textbf{调试器中的类型} & \textbf{字段} \\
 \midrule
-带形状张量（\co@s32 [M, N]@） & \co@croq::rtti::spanned<int, 2>@ & \co@.span.data[]@：各维大小；\co@.stride.data[]@：步长；\co@.data@：数据指针 \\
-带范围的索引元组 & \co@croq::rtti::bounded_ituple<N>@ & \co@.data[]@：索引值；\co@.ub[]@：上界 \\
-整数元组 & \co@croq::rtti::ituple<N>@ & \co@.data[]@：整数值 \\
-多维形状 & \co@croq::rtti::mdspan<N>@ & \co@.data[]@：各维大小 \\
+带形状张量（\texttt{s32 [M, N]}） & \texttt{croq::rtti::spanned\textless{}int, 2\textgreater{}} & \texttt{.span.data[]}：各维大小；\texttt{.stride.data[]}：步长；\texttt{.data}：数据指针 \\
+带范围的索引元组 & \texttt{croq::rtti::bounded\_ituple\textless{}N\textgreater{}} & \texttt{.data[]}：索引值；\texttt{.ub[]}：上界 \\
+整数元组 & \texttt{croq::rtti::ituple\textless{}N\textgreater{}} & \texttt{.data[]}：整数值 \\
+多维形状 & \texttt{croq::rtti::mdspan\textless{}N\textgreater{}} & \texttt{.data[]}：各维大小 \\
 \bottomrule
 \end{tabularx}
 \end{table}

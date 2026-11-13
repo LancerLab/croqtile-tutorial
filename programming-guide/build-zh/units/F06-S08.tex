@@ -5,17 +5,17 @@
 \toprule
 \textbf{语法} & \textbf{含义} \\
 \midrule
-\co@mc = mma.fill 0.0@ & 把累加器分块初始化为零 \\
-\co@mma.fill.f16 0.0f@ / \co@mma.fill.f32 0.0f@ & 显式指定精度的累加器 \\
-\co@mma.load.swiz<N>@ src & 按重排模式加载 \\
-\co@mma.row.row mc, ma, mb@ & C += A × B（均为行主序） \\
-\co@mma.row.col mc, ma, mb@ & C += A × B（A 行主序，B 列主序） \\
-\co@mma.row.row.sp mc, ma, mb, me@ & 带元数据操作数的稀疏 MMA \\
-\co@mma.row.row.scale mc, ma, mb, sc_a, sc_b@ & 融合的 MMA 与逐分块反量化 \\
-\co@mma.scale mc, sc_a, sc_b@ & 独立的 MMA 后置缩放 \\
-\co@mma.store.transp mc, dst@ & 转置后写出累加器 \\
-\co@cdiv(a, b)@ & 向上取整除法 \\
-\co@__co__ void fn(...)@ & 就地写出结果的核函数 \\
+\texttt{mc = mma.fill 0.0} & 把累加器分块初始化为零 \\
+\texttt{mma.fill.f16 0.0f} / \texttt{mma.fill.f32 0.0f} & 显式指定精度的累加器 \\
+\texttt{mma.load.swiz\textless{}N\textgreater{}} src & 按重排模式加载 \\
+\texttt{mma.row.row mc, ma, mb} & C += A × B（均为行主序） \\
+\texttt{mma.row.col mc, ma, mb} & C += A × B（A 行主序，B 列主序） \\
+\texttt{mma.row.row.sp mc, ma, mb, me} & 带元数据操作数的稀疏 MMA \\
+\texttt{mma.row.row.scale mc, ma, mb, sc\_a, sc\_b} & 融合的 MMA 与逐分块反量化 \\
+\texttt{mma.scale mc, sc\_a, sc\_b} & 独立的 MMA 后置缩放 \\
+\texttt{mma.store.transp mc, dst} & 转置后写出累加器 \\
+\texttt{cdiv(a, b)} & 向上取整除法 \\
+\texttt{\_\_co\_\_ void fn(...)} & 就地写出结果的核函数 \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -20,7 +20,7 @@ parallel p1 by 2 : thread {
 \midrule
 \textbf{判定时机} & 运行时——每个线程都求值条件 & 编译时——线程归属已固定 \\
 \textbf{指令流} & 一段程序；发散线程被屏蔽 & 每个区域各有一段程序 \\
-\textbf{编程语言类比} & 任意语言中的 \co@if@/\co@else@ & 结构化并发中的 \co@async@/\co@spawn@（Trio、Go 协程、Cilk） \\
+\textbf{编程语言类比} & 任意语言中的 \texttt{if}/\texttt{else} & 结构化并发中的 \texttt{async}/\texttt{spawn}（Trio、Go 协程、Cilk） \\
 \bottomrule
 \end{tabularx}
 \end{table}

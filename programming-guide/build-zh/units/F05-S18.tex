@@ -5,13 +5,13 @@
 \toprule
 \textbf{语法} & \textbf{含义} \\
 \midrule
-\co@parallel p by N@ & N 个独立实例，索引为 0 至 N-1 \\
-\co@parallel px, py by [M, N]@ & 同一并行层次中的两个坐标轴 \\
-\co@parallel p by A, q by B@ & 逗号分隔的多个并行层次 \newline{}（\co@p@ 与 \co@q@ 对应不同并行层次） \\
-\co@parallel q by N : thread@ & 映射到线程块内的线程 \\
-\co@foreach index = m, n, k in [a, b, c]@ & 在 \co@foreach@ 中对具名元组解构 \\
-\co@lhs.span(0)@ & 取出张量形状的一个维度 \\
-\co@p # m@ & 把外部分块索引 \co@p@ 与内部偏移 \co@m@ 合成为全局坐标 \\
+\texttt{parallel p by N} & N 个独立实例，索引为 0 至 N-1 \\
+\texttt{parallel px, py by [M, N]} & 同一并行层次中的两个坐标轴 \\
+\texttt{parallel p by A, q by B} & 逗号分隔的多个并行层次 \newline{}（\texttt{p} 与 \texttt{q} 对应不同并行层次） \\
+\texttt{parallel q by N : thread} & 映射到线程块内的线程 \\
+\texttt{foreach index = m, n, k in [a, b, c]} & 在 \texttt{foreach} 中对具名元组解构 \\
+\texttt{lhs.span(0)} & 取出张量形状的一个维度 \\
+\texttt{p \# m} & 把外部分块索引 \texttt{p} 与内部偏移 \texttt{m} 合成为全局坐标 \\
 \bottomrule
 \end{tabularx}
 \end{table}

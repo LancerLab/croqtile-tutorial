@@ -5,8 +5,8 @@
 \toprule
 \textbf{模式} & \textbf{所用原语} & \textbf{何时使用} \\
 \midrule
-\co@swap@ 双缓冲 & \co@dma.any@、\co@swap@ & 单线程组交错执行装载与计算 \\
-事件流水线 & \co@inthreads.async@、事件 & 生产者与消费者分别推进 \\
+\texttt{swap} 双缓冲 & \texttt{dma.any}、\texttt{swap} & 单线程组交错执行装载与计算 \\
+事件流水线 & \texttt{inthreads.async}、事件 & 生产者与消费者分别推进 \\
 \bottomrule
 \end{tabularx}
 \end{table}

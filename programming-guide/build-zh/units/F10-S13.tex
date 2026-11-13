@@ -5,11 +5,11 @@
 \toprule
 \textbf{语法} & \textbf{作用} & \textbf{运行于} \\
 \midrule
-\co@#define NAME value@ & 对象式宏；在 \co@__co__@ 与主机区域间共享 & 预处理器 \\
-\co@#if@ / \co@#ifdef@ / \co@#error@ & 条件编译与编译时断言 & 预处理器 \\
-\co@-DNAME=value@ & 从命令行定义宏，用于分块尺寸扫描 & 预处理器 \\
-\co@call helper(...)@ & 调用设备辅助函数 & 设备 \\
-\co@__cpp__("...")@ & 在当前位置插入目标 C++ & 取决于所在目标作用域 \\
+\texttt{\#define NAME value} & 对象式宏；在 \texttt{\_\_co\_\_} 与主机区域间共享 & 预处理器 \\
+\texttt{\#if} / \texttt{\#ifdef} / \texttt{\#error} & 条件编译与编译时断言 & 预处理器 \\
+\texttt{-DNAME=value} & 从命令行定义宏，用于分块尺寸扫描 & 预处理器 \\
+\texttt{call helper(...)} & 调用设备辅助函数 & 设备 \\
+\texttt{\_\_cpp\_\_("...")} & 在当前位置插入目标 C++ & 取决于所在目标作用域 \\
 \bottomrule
 \end{tabularx}
 \end{table}

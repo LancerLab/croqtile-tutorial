@@ -5,14 +5,14 @@
 \toprule
 \textbf{语法} & \textbf{含义} \\
 \midrule
-\co@if (expr) ...@ & 按运行时条件选择执行 \\
-\co@inthreads.async (condition)@ & 结构化并发区域：编译时划分线程 \\
-\co@shared event name[N]@ & 声明 N 个同步令牌 \\
-\co@trigger name@ & 发出条件已满足的信号 \\
-\co@wait name@ & 阻塞直到相应的 \co@trigger@ 触发 \\
-\co@tile_id = tile_iter # block_id@ & 组合分块索引 \\
-\co@int total_tiles = expr@ & 初始化一个控制整数 \\
-\co@yield@ & 从 \co@parallel@ 块提前返回 \\
+\texttt{if (expr) ...} & 按运行时条件选择执行 \\
+\texttt{inthreads.async (condition)} & 结构化并发区域：编译时划分线程 \\
+\texttt{shared event name[N]} & 声明 N 个同步令牌 \\
+\texttt{trigger name} & 发出条件已满足的信号 \\
+\texttt{wait name} & 阻塞直到相应的 \texttt{trigger} 触发 \\
+\texttt{tile\_id = tile\_iter \# block\_id} & 组合分块索引 \\
+\texttt{int total\_tiles = expr} & 初始化一个控制整数 \\
+\texttt{yield} & 从 \texttt{parallel} 块提前返回 \\
 \bottomrule
 \end{tabularx}
 \end{table}
