@@ -3083,12 +3083,12 @@ Choreo follows C++ to involve 'if-else' blocks to handle branches inside program
 
 <p>Choreo 在并行化、循环等方面与 C++ 有显著差异。</p>
 <h3 id="parallel-by">并行区域：<code>parallel-by</code> 块<a class="headerlink" href="#parallel-by" title="Permanent link">&para;</a></h3>
-<p>在 CPU 等系统上，可通过异步线程实现并行执行。而在 Choreo 中，采用单指令多数据（SPMD）模型作为并行化手段，类似部分 OpenMP parallel 指令及 OpenCL/CUDA 等并行语言。</p>
+<p>在 CPU 等系统上，可通过异步线程实现并行执行。而在 Choreo 中，采用单指令多数据（SPMD）模型作为并行化手段，类似部分 OpenMP parallel 指令及其他 SPMD 语言。</p>
 <p>但构造并行区域的语法不同：采用 C 风格花括号，将并行执行的代码置于 <code>parallel-by</code> 块内。</p>
 <pre class="highlight"><code>parallel p by 6 {
   // SPMD code
 }</code></pre>
-<p>上例展示如何用 Choreo 关键字 <code>parallel</code> 与 <code>by</code> 创建并行区域：假定有 6 个执行线程，各线程执行相同的 SPMD 代码，但 <code>p</code> 取值不同。若熟悉 CUDA 编程，可将 <code>p</code> 类比为 <code>thread index</code>；若更熟悉顺序 C/C++，也可将 <code>p</code> 视为迭代 6 次的循环变量（但各次迭代的执行次序任意）。</p>
+<p>上例展示如何用 Choreo 关键字 <code>parallel</code> 与 <code>by</code> 创建并行区域：假定有 6 个执行线程，各线程执行相同的 SPMD 代码，但 <code>p</code> 取值不同。可将 <code>p</code> 读作执行实例的编号；若更熟悉顺序 C/C++，也可将 <code>p</code> 视为迭代 6 次的循环变量（但各次迭代的执行次序任意）。</p>
 <p>除并行外，<code>parallel-by</code> 还有一层含义：语句中的 <code>p</code> 为与上界 $[0, 6)$ 关联的整数，称为 <strong>bounded integer</strong>，而非普通整数。在 <code>chunkat</code> 等特殊运算中（后文说明），需要 <em>bounded-integer</em> 才能正确工作，因为上界对其计算必不可少。</p>
 <h3 id="with-in-where"><code>with-in</code> 块与 <code>where</code> 子句<a class="headerlink" href="#with-in-where" title="Permanent link">&para;</a></h3>
 <p>与 <code>parallel-by</code> 类似，<code>with-in</code> 也可将 <em>i-tuple</em> 绑定到 <em>mdspan</em>。下例说明：

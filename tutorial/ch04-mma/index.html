@@ -625,32 +625,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#one-warp-one-tile-the-simplest-mma-matmul" class="md-nav__link">
+  <a href="#one-group-one-tile-the-simplest-mma-matmul" class="md-nav__link">
     <span class="md-ellipsis">
       
-        One warp, one tile: the simplest MMA matmul
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#widening-the-scope-warpgroups-and-wgmma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Widening the scope: warpgroups and WGMMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tiling-further-two-warpgroups-sharing-operands" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tiling further: two warpgroups sharing operands
+        One group, one tile: the simplest MMA matmul
       
     </span>
   </a>
@@ -2500,32 +2478,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#one-warp-one-tile-the-simplest-mma-matmul" class="md-nav__link">
+  <a href="#one-group-one-tile-the-simplest-mma-matmul" class="md-nav__link">
     <span class="md-ellipsis">
       
-        One warp, one tile: the simplest MMA matmul
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#widening-the-scope-warpgroups-and-wgmma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Widening the scope: warpgroups and WGMMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tiling-further-two-warpgroups-sharing-operands" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tiling further: two warpgroups sharing operands
+        One group, one tile: the simplest MMA matmul
       
     </span>
   </a>
@@ -2639,33 +2595,33 @@
 
 
 <h1 id="tensor-contraction-the-mma-syntax">Tensor Contraction: the <code>mma</code> Syntax<a class="headerlink" href="#tensor-contraction-the-mma-syntax" title="Permanent link">&para;</a></h1>
-<p>Chapter 3's tiled matmul computes the inner contraction the way a CPU would: a <code>foreach k</code> loop where each iteration multiplies two scalars and accumulates into one output element. That works. It is also the slowest way to use a modern accelerator, because it ignores the hardware unit designed specifically for this job.</p>
-<p>The job is <strong>2D tensor contraction</strong> — the operation C += A × B where A, B, and C are small, fixed-shape matrix tiles. It is the inner kernel of every GEMM, every convolution expressed as an im2col matmul, every attention head's QK^T. The operation is so central that hardware vendors build dedicated units to execute it in one macro-instruction: NVIDIA calls them <strong>tensor cores</strong>, Google calls them <strong>MXUs</strong>, Intel has <strong>AMX tiles</strong>, and custom DSAs have their own variants. The tile sizes differ (16×16×16 for FP16 on NVIDIA, 128×128 systolic on TPU, 16×64 on AMX), but the mathematical shape is the same everywhere: take a tile of A, a tile of B, multiply, accumulate into C.</p>
-<p><img alt="2D tensor contraction: A[M,K] × B[K,N] → C[M,N], with different hardware implementations" src="../../assets/images/ch04/fig1_tensor_contraction_dark.png#only-dark" />
-<img alt="2D tensor contraction: A[M,K] × B[K,N] → C[M,N], with different hardware implementations" src="../../assets/images/ch04/fig1_tensor_contraction_light.png#only-light" /></p>
-<p><em>The same mathematical operation — C += A × B on tile-shaped operands — maps to different hardware implementations on different accelerators.</em></p>
-<p>What makes this hard for programmers is not the math but the <strong>register layout</strong>. On a GPU tensor core, the tile is not stored contiguously in one thread's registers. It is <strong>fragmented</strong>: 32 threads in a warp each own scattered pieces of the tile, and the exact scatter pattern depends on the datatype, the architecture generation, and whether the operand is A, B, or C. Writing raw CUDA means declaring <code>wmma::fragment</code> objects, calling <code>load_matrix_sync</code> to distribute a shared-memory tile across lanes with the correct pattern, issuing <code>mma_sync</code>, and then calling <code>store_matrix_sync</code> to reassemble the output. Get the layout wrong — say, load a column-major tile into a row-major fragment — and the result is silently incorrect.</p>
-<p><img alt="GPU tensor core register layout: threads own scattered fragments of the tile" src="../../assets/images/ch04/fig2_register_loading_dark.png#only-dark" />
-<img alt="GPU tensor core register layout: threads own scattered fragments of the tile" src="../../assets/images/ch04/fig2_register_loading_light.png#only-light" /></p>
-<p><em>Simplified view of how 32 threads in a warp own scattered register fragments of an MMA tile. The exact pattern is architecture-specific and deliberately opaque.</em></p>
-<p>Croqtile's design sidesteps this complexity entirely. Instead of exposing architecture-specific fragment types, it provides <strong>four abstract operations</strong> that work on opaque register tiles: <strong>fill</strong>, <strong>load</strong>, <strong>multiply</strong>, and <strong>store</strong>. These operations describe the same 2D contraction workflow regardless of which hardware backend runs them. The compiler handles fragment layouts, lane mappings, and instruction selection for the target architecture — you describe <em>what</em> contraction to perform, not <em>how</em> registers are scattered.</p>
+<p>Chapter 3's tiled matmul computes the inner contraction the way a CPU would: a <code>foreach k</code> loop where each iteration multiplies two scalars and accumulates into one output element. That works. It is also the slowest way to use a modern accelerator, because it ignores the unit designed specifically for this job.</p>
+<p>The job is <strong>2D tensor contraction</strong> — the operation C += A × B where A, B, and C are small, fixed-shape matrix tiles. It is the inner kernel of every GEMM, every convolution expressed as an im2col matmul, every attention head's QK^T. The operation is central enough that accelerators execute it as one macro-instruction: take a tile of A, a tile of B, multiply, accumulate into C. The tile sizes differ between implementations, but the mathematical shape is the same everywhere.</p>
+<p><img alt="2D tensor contraction: A[M,K] times B[K,N] into C[M,N]" src="../../assets/images/ch04/fig1_tensor_contraction_dark.png#only-dark" />
+<img alt="2D tensor contraction: A[M,K] times B[K,N] into C[M,N]" src="../../assets/images/ch04/fig1_tensor_contraction_light.png#only-light" /></p>
+<p><em>The same mathematical operation — C += A × B on tile-shaped operands — maps onto different implementations.</em></p>
+<p>What makes this hard for programmers is not the math but the <strong>operand layout</strong>. The tile is not stored contiguously in one thread's storage; it is <strong>fragmented</strong> across the cooperating lanes, and the exact scatter pattern depends on the datatype and on whether the operand is A, B, or C. Get the layout wrong — say, load a column-major tile into a row-major fragment — and the result is silently incorrect.</p>
+<p><img alt="Operand fragment layout: lanes own scattered fragments of the tile" src="../../assets/images/ch04/fig2_register_loading_dark.png#only-dark" />
+<img alt="Operand fragment layout: lanes own scattered fragments of the tile" src="../../assets/images/ch04/fig2_register_loading_light.png#only-light" /></p>
+<p><em>Simplified view of how the cooperating lanes own scattered fragments of an MMA tile. The exact pattern is implementation-specific and deliberately opaque.</em></p>
+<p>Croqtile's design sidesteps this complexity entirely. Instead of exposing implementation-specific fragment types, it provides <strong>four abstract operations</strong> that work on opaque tiles: <strong>fill</strong>, <strong>load</strong>, <strong>multiply</strong>, and <strong>store</strong>. These operations describe the same 2D contraction workflow regardless of which backend runs them. The compiler handles fragment layouts, lane mappings, and instruction selection — you describe <em>what</em> contraction to perform, not <em>how</em> the operands are scattered.</p>
 <p><img alt="Croqtile's four-step MMA syntax: fill, load, multiply, store" src="../../assets/images/ch04/fig3_mma_syntax_dark.png#only-dark" />
 <img alt="Croqtile's four-step MMA syntax: fill, load, multiply, store" src="../../assets/images/ch04/fig3_mma_syntax_light.png#only-light" /></p>
-<p><em>The four-step MMA syntax is an abstract interface — not hardwired to GPU tensor cores. Any DSA that supports 2D tile contraction can map to these operations.</em></p>
+<p><em>The four-step MMA syntax is an abstract interface — not hardwired to any one contraction unit. Any backend that supports 2D tile contraction can map to these operations.</em></p>
 <h2 id="the-four-step-mma-syntax">The four-step MMA syntax<a class="headerlink" href="#the-four-step-mma-syntax" title="Permanent link">&para;</a></h2>
 <p>Every tensor-contraction kernel follows the same rhythm:</p>
 <ol>
 <li><strong><code>mma.fill 0.0</code></strong> — allocate an accumulator tile <code>mc</code> in registers and zero it.</li>
-<li><strong><code>mma.load</code></strong> — bring operand tiles from shared memory into opaque MMA registers <code>ma</code> and <code>mb</code>.</li>
+<li><strong><code>mma.load</code></strong> — bring operand tiles from shared storage into opaque MMA tiles <code>ma</code> and <code>mb</code>.</li>
 <li><strong><code>mma.row.row mc, ma, mb</code></strong> — issue the contraction: <strong>C += A × B</strong> into <code>mc</code>.</li>
-<li><strong><code>mma.store mc, dst</code></strong> — write <code>mc</code> from registers into shared memory.</li>
+<li><strong><code>mma.store mc, dst</code></strong> — write <code>mc</code> out into shared storage.</li>
 </ol>
 <p>You loop steps 2–3 over K (loading the next K-slice each iteration, accumulating into the same <code>mc</code>), then run step 4 once to flush the completed output tile. The names <code>mc</code>, <code>ma</code>, and <code>mb</code> are opaque register tiles — you do not declare per-lane layouts; the compiler derives them from the target and your layout choice (<code>row.row</code> here).</p>
-<p>The <code>.row.row</code> suffix is a <strong>layout contract</strong> — it tells the hardware how to interpret the bits in <code>ma</code> and <code>mb</code>. Both operands are row-major. If B is stored column-major in shared memory, you write <code>mma.row.col mc, ma, mb</code> instead. The full set of layout combinations is <code>row.row</code>, <code>row.col</code>, <code>col.row</code>, and <code>col.col</code>; in practice, <code>row.row</code> and <code>row.col</code> cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint — the hardware interprets register bits differently for each layout.</p>
+<p>The <code>.row.row</code> suffix is a <strong>layout contract</strong> — it states how the elements of <code>ma</code> and <code>mb</code> are arranged. Both operands are row-major. If B is stored column-major in shared storage, you write <code>mma.row.col mc, ma, mb</code> instead. The full set of layout combinations is <code>row.row</code>, <code>row.col</code>, <code>col.row</code>, and <code>col.col</code>; in practice, <code>row.row</code> and <code>row.col</code> cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint — each layout is interpreted differently.</p>
 <h2 id="scaling-the-cooperation-scope">Scaling the cooperation scope<a class="headerlink" href="#scaling-the-cooperation-scope" title="Permanent link">&para;</a></h2>
-<p>The four-step syntax stays the same regardless of how many threads cooperate on a single contraction. What changes is the <strong>cooperation scope</strong> — one warp, one warpgroup, two warpgroups — and that progression is the story of this section.</p>
-<h3 id="one-warp-one-tile-the-simplest-mma-matmul">One warp, one tile: the simplest MMA matmul<a class="headerlink" href="#one-warp-one-tile-the-simplest-mma-matmul" title="Permanent link">&para;</a></h3>
-<p>On Ampere (SM86), tensor-core MMA is scoped to a <strong>single warp</strong> (32 threads). In Croqtile, that corresponds to <code>: group</code>.</p>
+<p>The four-step syntax stays the same regardless of how many instances cooperate on a single contraction. What changes is the <strong>cooperation scope</strong> — how many lanes form one cooperating group — and that is what this section varies.</p>
+<h3 id="one-group-one-tile-the-simplest-mma-matmul">One group, one tile: the simplest MMA matmul<a class="headerlink" href="#one-group-one-tile-the-simplest-mma-matmul" title="Permanent link">&para;</a></h3>
+<p>The smallest example assigns one output tile to a cooperative group, written <code>: group</code>. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position. The <code>: group</code> level names a fixed cooperating group; a target that has no such level rejects it, so read this listing against a target that provides one.</p>
 <pre class="highlight"><code class="language-choreo">#define TILE_M 16
 #define TILE_N 16
 #define TILE_K 16
@@ -2700,137 +2656,20 @@ __co__ void matmul_wmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16
     dma.copy output_s =&gt; output.subspan(TILE_M, TILE_N).at(block_m, block_n);
   }
 }</code></pre>
-<p><strong><code>__co__ void</code> and in-place output.</strong> The kernel returns nothing; results go through <code>output</code>, matching the usual GPU pattern of writing through a global pointer.</p>
+<p><strong><code>__co__ void</code> and in-place output.</strong> The kernel returns nothing; results go through <code>output</code>, matching the usual pattern of writing back in place.</p>
 <p><strong>Block grid.</strong> <code>cdiv(M, TILE_M)</code> is ceiling division — how many tiles along M, including partial tiles. <code>block_m</code> and <code>block_n</code> pick which output tile this block owns.</p>
-<p><strong>Warp grid and <code>mma.fill</code>.</strong> <code>parallel {warp_m, warp_n} ... : group</code> maps MMA tiles to warps. With all dimensions 16, extents are 1×1 — one warp covers the whole block tile. Wider block tiles would add warps, each with its own <code>mc</code>.</p>
-<p><strong>K loop and DMA.</strong> Each <code>iv_k</code> stage pulls A and B strips into shared memory via <code>dma.copy</code> with <code>subspan(...).at(...)</code>. Chapter 7 goes deeper on <code>subspan</code> versus <code>chunkat</code>.</p>
+<p><strong>Group grid and <code>mma.fill</code>.</strong> <code>parallel {warp_m, warp_n} ... : group</code> maps MMA tiles to cooperating groups. With all dimensions 16, extents are 1×1 — one group covers the whole block tile. Wider block tiles would add groups, each with its own <code>mc</code>.</p>
+<p><strong>K loop and DMA.</strong> Each <code>iv_k</code> stage pulls A and B strips into shared storage via <code>dma.copy</code> with <code>subspan(...).at(...)</code>. Chapter 7 goes deeper on <code>subspan</code> versus <code>chunkat</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Quick <code>subspan</code> syntax reminder</p>
 <p><code>subspan(h, w)</code> declares a fixed-size rectangular view shape, and <code>.at(i, j)</code> selects which view instance you want from the parent tensor. In other words, <code>lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k)</code> means "take the <code>[TILE_M, TILE_K]</code> tile at <code>(block_m, iv_k)</code>." Use <code>subspan</code> when you want an explicit tile shape; use <code>chunkat</code> when you want to slice by equal chunks of an existing dimension.</p>
 </div>
-<p><strong>Operand loads.</strong> <code>mma.load</code> moves the warp's tile from shared memory into <code>ma</code> / <code>mb</code>. <code>chunkat(warp_m, iv_warp_k)</code> selects the M×K slice for this warp and inner-K step.</p>
-<p><strong>Store and epilogue.</strong> After K completes, <code>mma.store</code> writes <code>mc</code> into the warp's sub-rectangle of <code>output_s</code>, then <code>dma.copy</code> sends the full block tile to global memory.</p>
-<p>This kernel is simple because the cooperation scope is narrow: 32 threads, one warp, one MMA tile at a time. The four-step syntax reads linearly and the tile geometry is obvious. But what happens when the hardware offers a wider cooperation window?</p>
-<h3 id="widening-the-scope-warpgroups-and-wgmma">Widening the scope: warpgroups and WGMMA<a class="headerlink" href="#widening-the-scope-warpgroups-and-wgmma" title="Permanent link">&para;</a></h3>
-<p>Hopper (SM90) adds <strong>Warpgroup Matrix Multiply-Accumulate (WGMMA)</strong>: the same C += A × B contraction, but issued cooperatively by <strong>four warps</strong> (128 threads). The hardware instruction is wider, the tiles are bigger, and throughput improves — but the four-step syntax does not change. The only thing that changes in Croqtile is the space specifier: <code>: group-4</code> instead of <code>: group</code>.</p>
-<p><img alt="Ampere vs Hopper MMA cooperation scope" src="../../assets/images/ch04/fig4_sm86_vs_sm90_dark.png#only-dark" />
-<img alt="Ampere vs Hopper MMA cooperation scope" src="../../assets/images/ch04/fig4_sm86_vs_sm90_light.png#only-light" /></p>
-<p><em>SM86: one warp per MMA. SM90: four warps (<code>: group-4</code>) cooperate on WGMMA.</em></p>
-<pre class="highlight"><code class="language-choreo">#define TILE_M 128
-#define TILE_N 128
-#define TILE_K 128
-#define WARP_M 64
-#define WARP_N 64
-#define WARP_K 16
-
-__co__ void matmul_wgmma(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, WARP_M), cdiv(N, WARP_N)] : block {
-    shared f16 [WARP_M, TILE_K] lhs_load_s;
-    shared f16 [WARP_N, TILE_K] rhs_load_s;
-
-    mc = mma.fill.f16 0.0f;
-
-    foreach {iv_k} in [cdiv(K, TILE_K)] {
-      dma.copy lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-      dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
-
-      foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-        parallel p by 1 : group-4 {
-          ma = mma.load lhs_load_s.chunkat(_, iv_warp);
-          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-          mma.row.row mc, ma, mb;
-        }
-      }
-    }
-
-    shared f16 [WARP_M, WARP_N] output_s;
-    mma.store mc, output_s;
-    dma.copy output_s =&gt; output.subspan(WARP_M, WARP_N).at(block_m, block_n);
-  }
-}</code></pre>
-<p>Read it side by side with the SM86 kernel. Fill, load, multiply, store — the rhythm is identical. The differences are mechanical:</p>
-<p><strong><code>mma.fill.f16 0.0f</code>.</strong> Hopper often spells accumulator precision explicitly — <code>.f16</code>, <code>.f32</code>, etc. FP16 operands with FP32 accumulation is a common pattern for long K dimensions, avoiding numerical overflow in partial sums. The <code>0.0f</code> means the initial value is of type <code>f32</code> (there is no literal <code>f16</code> in the Croqtile). Casting will be performed to <code>f16</code> in the fill operation. If <code>.f16</code> is not specified, the initial value will be inferred from the type of the <code>ma</code> and <code>mb</code> operands.</p>
-<p><strong><code>parallel p by 1 : group-4</code>.</strong> One warpgroup (four warps) executes the inner loads and MMA. The mnemonic <code>mma.row.row</code> matches Ampere, but the hardware issue is wider.</p>
-<p><strong><code>chunkat(_, iv_warp)</code>.</strong> <code>_</code> means "do not tile that dimension" — keep the full M (or N) extent already resident in shared memory; only K is subdivided per MMA slice.</p>
-<p>That is the whole point of the abstraction: the same four operations, the same layout contract, the same <code>chunkat</code> / <code>subspan</code> expressions. The compiler maps them to different hardware instructions depending on whether the target is SM86 or SM90. You think about <em>what</em> contraction to perform; the cooperation width is a deployment detail.</p>
-<h3 id="tiling-further-two-warpgroups-sharing-operands">Tiling further: two warpgroups sharing operands<a class="headerlink" href="#tiling-further-two-warpgroups-sharing-operands" title="Permanent link">&para;</a></h3>
-<p>Chapter 3 introduced <code>parallel p1 by 2 : group-4</code> — two warpgroups in one block. With MMA, both groups can share the same B tile while loading different rows of A. This is how large block tiles get split into multiple MMA tiles without duplicating the B operand in shared memory:</p>
-<pre class="highlight"><code class="language-choreo">#define TILE_M 128
-#define TILE_N 128
-#define TILE_K 128
-#define WARP_M 64
-#define WARP_N 64
-#define WARP_K 16
-
-__co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
-  parallel {block_m, block_n} by [cdiv(M, TILE_M), cdiv(N, WARP_N)] : block {
-    shared f16 [TILE_M, TILE_K] lhs_load_s;
-    shared f16 [WARP_N, TILE_K] rhs_load_s;
-    shared f16 [TILE_M, WARP_N] output_s;
-
-    mc = mma.fill.f32 0.0f;
-
-    foreach {iv_k} in [cdiv(K, TILE_K)] {
-      dma.copy lhs.subspan(TILE_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-      dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
-
-      parallel p1 by 2 : group-4 {
-        foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-          ma = mma.load lhs_load_s.subspan(WARP_M, TILE_K).at(p1, 0).chunkat(_, iv_warp);
-          mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-          mma.row.row mc, ma, mb;
-        }
-      }
-    }
-
-    parallel p1 by 2 : group-4 
-      mma.store mc, output_s.subspan(WARP_M, WARP_N).at(p1, 0);
-
-    dma.copy output_s =&gt; output.subspan(TILE_M, WARP_N).at(block_m, block_n);
-  }
-}</code></pre>
-<p><strong>Splitting M with <code>p1</code>.</strong> With <code>TILE_M = 128</code> and <code>WARP_M = 64</code>, the block spans 128 rows; <code>p1</code> selects the upper or lower 64-row strip. <code>lhs_load_s.subspan(WARP_M, ...).at(p1, 0)</code> gives each warpgroup its A rows; both use the same <code>rhs_load_s</code>.</p>
-<p><strong>Mirrored store.</strong> <code>mma.store</code> targets <code>output_s.subspan(WARP_M, WARP_N).at(p1, 0)</code> so each warpgroup writes its half of the staging buffer, then one <code>dma.copy</code> emits the combined tile.</p>
-<p>The pattern scales: three warpgroups, four warpgroups, or any count that divides your block tile. The four-step syntax stays invariant; only the parallel decomposition of the tile changes.</p>
-<table>
-<thead>
-<tr>
-<th>Aspect</th>
-<th>One warp(<code>group</code>)</th>
-<th>One warpgroup(<code>group-4</code>)</th>
-<th>Two warpgroups</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Tile split</td>
-<td>One MMA tile per warp</td>
-<td>One MMA tile per warpgroup</td>
-<td>Block tile split across warpgroups</td>
-</tr>
-<tr>
-<td>Operand sharing</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>B tile shared, A rows split by <code>p1</code></td>
-</tr>
-<tr>
-<td>Threads</td>
-<td>32</td>
-<td>128</td>
-<td>256</td>
-</tr>
-<tr>
-<td>Accumulator</td>
-<td><code>mma.fill 0.0</code></td>
-<td><code>mma.fill.f16 0.0f</code></td>
-<td><code>mma.fill.f32 0.0f</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Operand loads.</strong> <code>mma.load</code> moves the group's tile from shared storage into <code>ma</code> / <code>mb</code>. <code>chunkat(warp_m, iv_warp_k)</code> selects the M×K slice for this group and inner-K step.</p>
+<p><strong>Store and epilogue.</strong> After K completes, <code>mma.store</code> writes <code>mc</code> into the group's sub-rectangle of <code>output_s</code>, then <code>dma.copy</code> sends the full block tile to global storage.</p>
+<p>This kernel is simple because the cooperation scope is narrow: one group, one MMA tile at a time. The four-step syntax reads linearly and the tile geometry is obvious. A wider cooperation scope changes the count of groups, not the operations.</p>
 <h2 id="beyond-dense-fp16-what-else-the-four-steps-express">Beyond dense FP16: what else the four steps express<a class="headerlink" href="#beyond-dense-fp16-what-else-the-four-steps-express" title="Permanent link">&para;</a></h2>
 <p>The examples above use <code>mma.row.row</code> on dense FP16 tiles. The same four-step pattern extends to workloads the basic form cannot reach.</p>
-<p><strong>Structured sparsity.</strong> When half the elements of A follow a 2:4 zero pattern (Ampere and later), the hardware can skip the zero products and roughly double throughput — but it needs a <strong>metadata operand</strong> <code>me</code> that encodes which elements are nonzero:</p>
+<p><strong>Structured sparsity.</strong> When half the elements of A follow a fixed sparse zero pattern, the backend can skip the zero products — but it needs a <strong>metadata operand</strong> <code>me</code> that encodes which elements are nonzero:</p>
 <pre class="highlight"><code class="language-choreo">mma.row.row.sp mc, ma, mb, me;</code></pre>
 <p>The <code>.sp</code> suffix adds the metadata operand; everything else is the same fill-load-multiply-store rhythm. Any layout combination works: <code>mma.row.col.sp</code>, etc. You load <code>me</code> from a separate metadata tensor alongside A and B.</p>
 <p><strong>Quantized operands with per-tile scaling.</strong> FP8 operands (<code>f8_e4m3</code>, <code>f8_e5m2</code>) need per-tile dequantization so the accumulator stays numerically accurate. Croqtile fuses the scaling into the contraction:</p>
@@ -2839,8 +2678,8 @@ __co__ void matmul_wgmma_2group(global f16 [M, K] lhs, global f16 [N, K] rhs, gl
 <pre class="highlight"><code class="language-choreo">mma.row.row mc, ma, mb;
 mma.scale mc, sc_a, sc_b;</code></pre>
 <p>The standalone <code>mma.scale</code> appears in some MoE and mixed-precision kernels.</p>
-<p><strong>Swizzled loads and transposed stores.</strong> When shared memory uses a swizzle pattern to avoid bank conflicts (<a href="../ch07-advanced-movement/">Chapter 7</a>), the MMA load must use the matching swizzle mode: <code>mma.load.swiz&lt;N&gt;</code>. The <code>&lt;N&gt;</code> must agree between <code>tma.copy.swiz&lt;N&gt;</code> and <code>mma.load.swiz&lt;N&gt;</code> — a mismatch reads garbage. For output, <code>mma.store.transp mc, dst</code> writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.</p>
-<p><strong>Pipeline synchronization.</strong> In pipelined kernels where producer and consumer warpgroups overlap (<a href="../ch06-synchronization/">Chapter 6</a>), <code>mma.commit</code> marks the boundary between "done reading this K-slab's operands" and "safe to reuse the shared-memory buffer." It is mandatory glue in event-driven pipelines.</p>
+<p><strong>Swizzled loads and transposed stores.</strong> When a staging buffer uses a swizzle pattern (<a href="../ch07-advanced-movement/">Chapter 7</a>), the MMA load must use the matching swizzle mode: <code>mma.load.swiz&lt;N&gt;</code>. The <code>&lt;N&gt;</code> must agree between <code>dma.copy.swiz&lt;N&gt;</code> and <code>mma.load.swiz&lt;N&gt;</code> — a mismatch reads garbage. For output, <code>mma.store.transp mc, dst</code> writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.</p>
+<p><strong>Pipeline synchronization.</strong> In pipelined kernels where a producer and a consumer region overlap (<a href="../ch06-synchronization/">Chapter 6</a>), <code>mma.commit</code> marks the boundary between "done reading this K-slab's operands" and "safe to reuse the staged buffer." It is mandatory glue in event-driven pipelines.</p>
 <p>These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the hardware. The table below collects every variant for reference.</p>
 <h2 id="new-syntax">New syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>
 <table>
@@ -2865,7 +2704,7 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 </tr>
 <tr>
 <td><code>mma.load.swiz&lt;N&gt; src</code></td>
-<td>Load with swizzle mode (see <a href="../ch07-advanced-movement/">Ch 7</a>)</td>
+<td>Load with swizzle mode (see Chapter 7)</td>
 </tr>
 <tr>
 <td><code>mma.row.row mc, ma, mb</code></td>
@@ -2889,15 +2728,11 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 </tr>
 <tr>
 <td><code>mma.store mc, dst</code></td>
-<td>Write accumulator to shared memory</td>
+<td>Write accumulator to shared storage</td>
 </tr>
 <tr>
 <td><code>mma.store.transp mc, dst</code></td>
 <td>Write accumulator transposed</td>
-</tr>
-<tr>
-<td><code>mma.commit</code></td>
-<td>Pipeline stage fence for WGMMA (see <a href="../ch06-synchronization/">Ch 6</a>)</td>
 </tr>
 <tr>
 <td><code>cdiv(a, b)</code></td>
@@ -2923,8 +2758,8 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 <td>C += A × B on tile-shaped operands — the universal inner kernel</td>
 </tr>
 <tr>
-<td>Hardware diversity</td>
-<td>GPU tensor cores, TPU MXU, Intel AMX, custom DSAs all implement this; tile sizes and register layouts differ</td>
+<td>Backend diversity</td>
+<td>Different backends implement the contraction differently; tile sizes and operand layouts differ</td>
 </tr>
 <tr>
 <td>Four-step abstraction</td>
@@ -2932,11 +2767,11 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 </tr>
 <tr>
 <td>Scaling cooperation</td>
-<td><code>: group</code> (one warp) → <code>: group-4</code> (one warpgroup) → multiple warpgroups — syntax stays invariant</td>
+<td>More cooperating groups per tile — the four operations stay invariant</td>
 </tr>
 <tr>
 <td>Layout contract</td>
-<td><code>mma.row.row</code>, <code>mma.row.col</code>, etc. — must match data in shared memory</td>
+<td><code>mma.row.row</code>, <code>mma.row.col</code>, etc. — must match the staged data</td>
 </tr>
 <tr>
 <td>Sparse and quantized</td>
@@ -2948,7 +2783,7 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 </tr>
 </tbody>
 </table>
-<p>The contraction is fast, but loads and compute still take turns — while tensor cores multiply, the memory system idles. The <a href="../ch05-branch-control/">next chapter</a> introduces <strong>role specialization</strong> so different thread groups can play different roles: one group loading data while another computes, overlapping memory and math in time.</p>
+<p>The contraction is fast, but loads and compute still take turns — while the contraction unit works, the memory path idles. The <a href="../ch05-branch-control/">next chapter</a> introduces <strong>role specialization</strong> so different regions can play different roles: one group loading data while another computes, overlapping memory and math in time.</p>
 
 
 

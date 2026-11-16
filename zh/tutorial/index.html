@@ -2426,7 +2426,7 @@
 
 
 <h1 id="_1">鳄霸教程<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>欢迎来到鳄霸教程。本指南将引导你从零开始，使用鳄霸编写高性能 GPU 内核，并逐步深入到生产级模式。</p>
+<p>欢迎来到鳄霸教程。本指南将引导你从零开始，使用 Croqtile 编写高性能内核，并逐步深入到生产级模式。</p>
 <p>每章通过推进一个贯穿的示例，引入少量新概念。学完全部章节后，你将接触到鳄霸的所有主要语言构造，并在具体的、可运行的程序中理解它们。详细的语法设计和语言参考请参阅<a href="../documentation/">编程参考</a>。</p>
 <h2 id="_2">章节目录<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <ol>
@@ -2435,16 +2435,16 @@
 <li><a href="ch02-data-movement/">数据搬运：从逐元素到数据块</a></li>
 <li><a href="ch03-parallelism/">并行性：将工作映射到硬件</a></li>
 <li><a href="ch04-mma/">张量核心：<code>mma</code> 操作</a></li>
-<li><a href="ch05-branch-control/">分支与控制：Warp 角色与持久内核</a></li>
+<li><a href="ch05-branch-control/">分支与控制：角色与持久内核</a></li>
 <li><a href="ch06-synchronization/">同步：流水线、事件与双缓冲</a></li>
-<li><a href="ch07-advanced-movement/">高级数据搬运：TMA、Swizzle 与不规则访问</a></li>
+<li><a href="ch07-advanced-movement/">高级数据搬运：Swizzle 与不规则访问</a></li>
 <li><a href="ch08-cpp-interop/">C++ 互操作：内联代码与预处理器</a></li>
 <li><a href="ch09-debug-verbose/">调试与诊断：打印、RTTI 与 GDB</a></li>
 </ol>
 <h2 id="_3">前置要求<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <ul>
 <li>基本的 C++ 知识（函数、指针、数组）</li>
-<li>熟悉 GPU 编程概念（线程、线程块、共享内存）</li>
+<li>熟悉并行编程概念（线程、块、暂存缓冲区）</li>
 <li>可用的鳄霸编译器（参见<a href="ch00-installation/">第 0 章</a>）</li>
 </ul>
 

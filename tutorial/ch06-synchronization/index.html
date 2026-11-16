@@ -2831,7 +2831,7 @@
 <p><strong>Steady state.</strong> For each subsequent tile: start loads into <code>lf1</code>/<code>rf1</code>, compute on <code>lf0</code>/<code>rf0</code> from the previous iteration, then <code>swap</code> so names track the active buffers. New copies land in <code>lf1</code>/<code>rf1</code> <strong>before</strong> the compute reads <code>lf0</code>/<code>rf0</code>, so you never read a buffer being overwritten.</p>
 <p><strong>Epilogue.</strong> After the last swap, <code>lf0</code>/<code>rf0</code> hold the final tile; one more compute pass drains them.</p>
 <h3 id="swap-names-not-bytes"><code>swap</code>: names, not bytes<a class="headerlink" href="#swap-names-not-bytes" title="Permanent link">&para;</a></h3>
-<p><code>swap(lf0, lf1)</code> exchanges <strong>future handles</strong> — the Croqtile-level names that refer to buffers. Shared-memory contents stay where the hardware placed them; only the names rotate. In CUDA, the same idiom is often a <code>^ 1</code> buffer index or a boolean phase variable. For triple buffering, <code>rotate(f0, f1, f2)</code> cycles three handles in one step.</p>
+<p><code>swap(lf0, lf1)</code> exchanges <strong>future handles</strong> — the Croqtile-level names that refer to buffers. The staged contents stay where the hardware placed them; only the names rotate. In a language with explicit buffer arrays, the same idiom is often a <code>^ 1</code> buffer index or a boolean phase variable. For triple buffering, <code>rotate(f0, f1, f2)</code> cycles three handles in one step.</p>
 <h3 id="with-tile_k-in-16"><code>with tile_k in 16</code><a class="headerlink" href="#with-tile_k-in-16" title="Permanent link">&para;</a></h3>
 <p>Opens a scoped region and binds <code>tile_k</code> as a tile axis with extent 16. Inside the block, <code>tile_k</code> is the chunk index for <code>chunkat</code> along K, and <code>#tile_k</code> is 16.</p>
 <h3 id="dmaany-placeholder-futures"><code>dma.any</code>: placeholder futures<a class="headerlink" href="#dmaany-placeholder-futures" title="Permanent link">&para;</a></h3>
@@ -2842,7 +2842,7 @@
 <p><code>__co__ auto matmul(...)</code> lets the compiler infer the return type from <code>return output</code>.</p>
 <p><em>This example uses <code>s32</code> with scalar accumulation — a simplified style to isolate the <code>swap</code> mechanism. The same pattern applies to FP16/MMA kernels from Chapter 4.</em></p>
 <h2 id="why-you-cannot-just-overlap-without-events">Why you cannot "just overlap" without events<a class="headerlink" href="#why-you-cannot-just-overlap-without-events" title="Permanent link">&para;</a></h2>
-<p>The <code>swap</code> pattern works because one thread group controls both loading and computing — it knows the order. Warp specialization (<a href="../ch05-branch-control/">Chapter 5</a>) puts them on <strong>different</strong> warpgroups with different program counters. They cannot share a <code>swap</code> schedule; they need a signaling mechanism.</p>
+<p>The <code>swap</code> pattern works because one thread group controls both loading and computing — it knows the order. Role specialization (<a href="../ch05-branch-control/">Chapter 5</a>) puts them in <strong>different</strong> regions with different program counters. They cannot share a <code>swap</code> schedule; they need a signaling mechanism.</p>
 <p>The picture below contrasts a strict load-then-compute staircase with double-buffered overlap: same logical work, less idle time.</p>
 <p><img alt="Sequential vs double-buffered K-tile timelines (schematic)" src="../../assets/images/ch06/fig1_pipeline_timeline_dark.png#only-dark" />
 <img alt="Sequential vs double-buffered K-tile timelines (schematic)" src="../../assets/images/ch06/fig1_pipeline_timeline_light.png#only-light" /></p>
@@ -2863,7 +2863,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [WARP_N, TILE_K] rhs_load_s[STAGES];
     shared f16 [WARP_M, WARP_N] output_s;
 
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, TILE_K)] {
           stage = iv_k % STAGES;
@@ -2944,7 +2944,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 </tr>
 <tr>
 <td><code>mma.commit</code></td>
-<td>Fence between pipeline stages for WGMMA</td>
+<td>Fence between pipeline stages</td>
 </tr>
 <tr>
 <td><code>__co__ auto fn(...)</code></td>
@@ -2970,12 +2970,12 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 <tr>
 <td>1P1C event pipeline</td>
 <td><code>inthreads.async</code>, <code>shared event[]</code>, <code>wait</code>, <code>trigger</code>, <code>mma.commit</code></td>
-<td>Separate producer/consumer warpgroups with multi-stage pipeline</td>
+<td>Separate producer/consumer groups with multi-stage pipeline</td>
 </tr>
 </tbody>
 </table>
-<p>Both patterns achieve the same goal — overlapping memory and compute — but at different levels of complexity. Start with <code>swap</code> for simpler kernels; graduate to events when you need warp specialization.</p>
-<p>The <a href="../ch07-advanced-movement/">next chapter</a> moves on to hardware-accelerated <strong>TMA</strong>, <strong>swizzled</strong> shared layouts, and <strong><code>view</code> / <code>from</code></strong> for irregular access — the same synchronization patterns from this chapter, with richer data movement primitives underneath.</p>
+<p>Both patterns achieve the same goal — overlapping memory and compute — but at different levels of complexity. Start with <code>swap</code> for simpler kernels; graduate to events when you need role specialization.</p>
+<p>The <a href="../ch07-advanced-movement/">next chapter</a> moves on to <strong>swizzled</strong> shared layouts and <strong><code>view</code> / <code>from</code></strong> for irregular access — the same synchronization patterns from this chapter, with richer data movement under them.</p>
 
 
 

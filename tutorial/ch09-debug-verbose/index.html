@@ -808,10 +808,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-rtti-and-cuda-gdb" class="md-nav__link">
+  <a href="#debug-rtti-and-the-debugger" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debug RTTI and cuda-gdb
+        Debug RTTI and the debugger
       
     </span>
   </a>
@@ -2548,10 +2548,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-rtti-and-cuda-gdb" class="md-nav__link">
+  <a href="#debug-rtti-and-the-debugger" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debug RTTI and cuda-gdb
+        Debug RTTI and the debugger
       
     </span>
   </a>
@@ -2649,9 +2649,9 @@
 
 
 <h1 id="debug-and-verbose-printing-assertions-and-gdb">Debug and Verbose: Printing, Assertions, and GDB<a class="headerlink" href="#debug-and-verbose-printing-assertions-and-gdb" title="Permanent link">&para;</a></h1>
-<p>GPU kernels are <strong>opaque systems</strong>. Thousands of threads execute concurrently, shared memory is invisible from the host, and when results are wrong, there is no stack trace pointing to the bad line. This opacity is not unique to GPUs — any system where the programmer cannot directly observe intermediate state faces the same challenge: distributed systems (where is the lost message?), embedded firmware (which interrupt handler corrupted the register?), optimizing compilers (which pass broke the semantics?).</p>
+<p>Kernels are <strong>opaque systems</strong>. Thousands of threads execute concurrently, shared storage is invisible from the host, and when results are wrong, there is no stack trace pointing to the bad line. This opacity is not unique to parallel kernels — any system where the programmer cannot directly observe intermediate state faces the same challenge: distributed systems (where is the lost message?), embedded firmware (which interrupt handler corrupted the register?), optimizing compilers (which pass broke the semantics?).</p>
 <p>The universal debugging discipline is the same everywhere: <strong>systematically narrow the search space</strong>, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list.</p>
-<p>Croqtile provides tools at each level: <strong>compile-time shape printing</strong> (<code>print!</code>, <code>println!</code>) to verify tile dimensions without launching a kernel, <strong>runtime assertions</strong> (<code>assert</code>) for invariant checks, <strong>guarded device <code>println</code></strong> for runtime inspection of specific threads, <strong>debug RTTI</strong> for <code>cuda-gdb</code>, and a <strong>verbose mode</strong> (<code>-v</code>) to see what the compiler is actually doing under the hood.</p>
+<p>Croqtile provides tools at each level: <strong>compile-time shape printing</strong> (<code>print!</code>, <code>println!</code>) to verify tile dimensions without launching a kernel, <strong>runtime assertions</strong> (<code>assert</code>) for invariant checks, <strong>guarded device <code>println</code></strong> for runtime inspection of specific threads, <strong>debug RTTI</strong> for an interactive debugger, and a <strong>verbose mode</strong> (<code>-v</code>) to see what the compiler is actually doing under the hood.</p>
 <h2 id="print-and-println-compile-time-inspection"><code>print!</code> and <code>println!</code>: compile-time inspection<a class="headerlink" href="#print-and-println-compile-time-inspection" title="Permanent link">&para;</a></h2>
 <p>The bang variants (<code>print!</code>, <code>println!</code>) run at <strong>compile time</strong>, not at runtime. They print to the compiler's output and are useful for inspecting shapes, extents, and type information without launching a kernel:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void check_shapes(f32 [3, 2] b) {
@@ -2660,15 +2660,15 @@
 }</code></pre>
 <p>When you compile this file, the compiler emits:</p>
 <pre class="highlight"><code>shape of b: b.span = [3, 2]</code></pre>
-<p>No GPU needed. String literals are concatenated (<code>"wor" "ld!"</code> becomes <code>"world!"</code>). Use <code>print!</code> / <code>println!</code> to verify that <code>chunkat</code> and <code>subspan</code> produce the tile sizes you expect before you spend time on a full kernel launch.</p>
+<p>No device needed. String literals are concatenated (<code>"wor" "ld!"</code> becomes <code>"world!"</code>). Use <code>print!</code> / <code>println!</code> to verify that <code>chunkat</code> and <code>subspan</code> produce the tile sizes you expect before you spend time on a full kernel launch.</p>
 <h2 id="print-and-println-runtime-device-output"><code>print</code> and <code>println</code>: runtime device output<a class="headerlink" href="#print-and-println-runtime-device-output" title="Permanent link">&para;</a></h2>
-<p>Without the bang, <code>print</code> and <code>println</code> emit device-side <code>printf</code> calls in the generated CUDA:</p>
+<p>Without the bang, <code>print</code> and <code>println</code> emit device-side <code>printf</code> calls in the generated source:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void inspect(s32 [4, 8] data) {
   foreach i in [data.span] {
     println("element ", i, " = ", data.at(i));
   }
 }</code></pre>
-<p>Each call takes a comma-separated mix of string literals and expressions. The output order across threads is <strong>nondeterministic</strong> — GPU <code>printf</code> buffers are flushed asynchronously.</p>
+<p>Each call takes a comma-separated mix of string literals and expressions. The output order across threads is <strong>nondeterministic</strong> — device <code>printf</code> buffers are flushed asynchronously.</p>
 <p><strong>Guarding output.</strong> For a specific check, guard the print with a condition:</p>
 <pre class="highlight"><code class="language-choreo">parallel {px, py} by [8, 16] : block
   parallel {qx, qy} by [16, 16] : thread {
@@ -2683,18 +2683,18 @@
 <pre class="highlight"><code class="language-choreo">assert(stage &lt; MATMUL_STAGES, "stage index out of bounds");</code></pre>
 <p>On the device, this compiles to a <code>printf</code> of the message followed by an abort. Use assertions to catch index-out-of-range, null pointer, and other "this should never happen" conditions early.</p>
 <h2 id="verbose-mode-v">Verbose mode: <code>-v</code><a class="headerlink" href="#verbose-mode-v" title="Permanent link">&para;</a></h2>
-<p>Pass <code>-v</code> (or <code>--verbose</code>) to the compiler to see the external commands it invokes — which preprocessor, which code generator, which <code>nvcc</code> invocation:</p>
+<p>Pass <code>-v</code> (or <code>--verbose</code>) to the compiler to see the external commands it invokes — which preprocessor, which code generator, which target-compiler invocation:</p>
 <pre class="highlight"><code class="language-bash">croq kernel.co -v -o kernel</code></pre>
-<p>This is useful when you suspect the compiler is passing wrong flags to <code>nvcc</code> or when you need to see the exact generated file paths for manual inspection.</p>
+<p>This is useful when you suspect the compiler is passing wrong flags to the target compiler or when you need to see the exact generated file paths for manual inspection.</p>
 <h2 id="runtime-checks-rtc">Runtime checks: <code>-rtc</code><a class="headerlink" href="#runtime-checks-rtc" title="Permanent link">&para;</a></h2>
 <p>The compiler supports graduated runtime checking with <code>-rtc</code> (or <code>--runtime-check</code>):</p>
 <pre class="highlight"><code class="language-bash">croq kernel.co -rtc=high -o kernel</code></pre>
 <p>Levels: <code>none</code>, <code>entry</code> (default), <code>low</code>, <code>medium</code>, <code>high</code>, <code>all</code>. Each level is a superset of the previous. Use <code>high</code> or <code>all</code> during development, <code>none</code> for production.</p>
 <h2 id="debugging-mma-heavy-kernels">Debugging MMA-heavy kernels<a class="headerlink" href="#debugging-mma-heavy-kernels" title="Permanent link">&para;</a></h2>
-<p>When the wrong answer comes from a tensor-core path, suspect <strong>layout first</strong> — row versus column major, and whether the RHS is <code>[N, K]</code> versus <code>[K, N]</code> in memory. Then check <strong>indexing</strong> (which <code>block_m</code>, <code>block_n</code>, and K slice you attached with <code>.at</code> / <code>chunkat</code>). Then check <strong>async ordering</strong> if you introduced asynchronous copies or split producer and consumer warps.</p>
-<p>A common mistake is mislabeling <code>mma.row.row</code> when the staged data is actually column-major, or using <code>chunkat</code> indices that do not align with the MMA tile geometry. If you use swizzled loads (<code>tma.copy.swiz</code> / <code>mma.load.swiz</code>), a mismatch shows up as a regular pattern in the error (e.g., every sixteenth element correct, the rest shifted).</p>
-<h2 id="debug-rtti-and-cuda-gdb">Debug RTTI and <code>cuda-gdb</code><a class="headerlink" href="#debug-rtti-and-cuda-gdb" title="Permanent link">&para;</a></h2>
-<p>When <code>print</code> / <code>println</code> is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to <code>cuda-gdb</code>.</p>
+<p>When the wrong answer comes from an <code>mma</code> path, suspect <strong>layout first</strong> — row versus column major, and whether the RHS is <code>[N, K]</code> versus <code>[K, N]</code> in memory. Then check <strong>indexing</strong> (which <code>block_m</code>, <code>block_n</code>, and K slice you attached with <code>.at</code> / <code>chunkat</code>). Then check <strong>async ordering</strong> if you introduced asynchronous copies or split producer and consumer regions.</p>
+<p>A common mistake is mislabeling <code>mma.row.row</code> when the staged data is actually column-major, or using <code>chunkat</code> indices that do not align with the MMA tile geometry. If you use swizzled loads (<code>dma.copy.swiz</code> / <code>mma.load.swiz</code>), a mismatch shows up as a regular pattern in the error (e.g., every sixteenth element correct, the rest shifted).</p>
+<h2 id="debug-rtti-and-the-debugger">Debug RTTI and the debugger<a class="headerlink" href="#debug-rtti-and-the-debugger" title="Permanent link">&para;</a></h2>
+<p>When <code>print</code> / <code>println</code> is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to an interactive debugger.</p>
 <p>Compile with <code>-g</code> to enable debug symbols:</p>
 <pre class="highlight"><code class="language-bash">croq kernel.co -g -o kernel_debug</code></pre>
 <p>The generated code includes RTTI structs for Croqtile types:</p>
@@ -2730,7 +2730,7 @@
 </tbody>
 </table>
 <p><strong>Example session:</strong></p>
-<pre class="highlight"><code class="language-bash">cuda-gdb -q ./kernel_debug
+<pre class="highlight"><code class="language-bash">gdb -q ./kernel_debug
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs
@@ -2745,7 +2745,7 @@ $3 = true</code></pre>
 <h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
 <p><img alt="Debugging workflow: shapes -&gt; one tile -&gt; sync -&gt; layout -&gt; GDB" src="../../assets/images/ch09/fig1_debug_workflow_dark.png#only-dark" />
 <img alt="Debugging workflow: shapes -&gt; one tile -&gt; sync -&gt; layout -&gt; GDB" src="../../assets/images/ch09/fig1_debug_workflow_light.png#only-light" /></p>
-<p>Work from cheap to expensive: <code>println!</code> (compile-time shapes) → guarded <code>println</code> on one tile (runtime values) → event/stage prints (synchronization) → pattern analysis (layout) → <code>cuda-gdb</code> (pointer bugs). Guard runtime prints behind <code>#ifdef</code> so they vanish in production:</p>
+<p>Work from cheap to expensive: <code>println!</code> (compile-time shapes) → guarded <code>println</code> on one tile (runtime values) → event/stage prints (synchronization) → pattern analysis (layout) → an interactive debugger (pointer bugs). Guard runtime prints behind <code>#ifdef</code> so they vanish in production:</p>
 <pre class="highlight"><code class="language-choreo">#ifdef DEBUG_PRINT
   println("tile_k=", iv_k, " accum=", mc);
 #endif</code></pre>
@@ -2787,7 +2787,7 @@ croq kernel.co -o kernel                   # production build</code></pre>
 <td>Free — shows subprocess invocations</td>
 </tr>
 <tr>
-<td><code>-g</code> + <code>cuda-gdb</code> + RTTI</td>
+<td><code>-g</code> + debugger + RTTI</td>
 <td>Runtime</td>
 <td>High — debug symbols, no optimization</td>
 </tr>
@@ -2798,10 +2798,10 @@ croq kernel.co -o kernel                   # production build</code></pre>
 <li>simple element-wise addition in Croqtile (Chapter 1)</li>
 <li>data movement (Chapter 2)</li>
 <li>parallelism (Chapter 3)</li>
-<li>tensor cores (Chapter 4)</li>
+<li><code>mma</code> contraction (Chapter 4)</li>
 <li>control flow (Chapter 5)</li>
 <li>pipelining (Chapter 6)</li>
-<li>TMA (Chapter 7)</li>
+<li>swizzle and irregular access (Chapter 7)</li>
 <li>C++ interop (Chapter 8)</li>
 <li>debugging (Chapter 9)</li>
 </ul>

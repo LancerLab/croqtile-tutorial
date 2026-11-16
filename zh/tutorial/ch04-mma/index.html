@@ -625,32 +625,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#warp-tile-mma" class="md-nav__link">
+  <a href="#mma_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        一 warp、一 tile：最简单的 MMA 矩阵乘
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#warpgroup-wgmma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        扩展范围：warpgroup 与 WGMMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#warpgroup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        进一步分块：两 warpgroup 共享操作数
+        一组一分块：最简单的 MMA 矩阵乘
       
     </span>
   </a>
@@ -2500,32 +2478,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#warp-tile-mma" class="md-nav__link">
+  <a href="#mma_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        一 warp、一 tile：最简单的 MMA 矩阵乘
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#warpgroup-wgmma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        扩展范围：warpgroup 与 WGMMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#warpgroup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        进一步分块：两 warpgroup 共享操作数
+        一组一分块：最简单的 MMA 矩阵乘
       
     </span>
   </a>
@@ -2640,18 +2596,18 @@
 
 <h1 id="mma">张量缩并：<code>mma</code> 语法<a class="headerlink" href="#mma" title="Permanent link">&para;</a></h1>
 <p>第 3 章的分块矩阵乘法以内缩并的方式模拟 CPU：通过 <code>foreach k</code> 循环，每次迭代将两个标量相乘并累加到某一输出元素。这种做法可行，却也是使用现代加速器最慢的方式，因为它忽略了专为此类任务设计的硬件单元。</p>
-<p>该任务即<strong>二维张量缩并</strong>——运算 C += A × B，其中 A、B、C 均为形状固定的小型矩阵 tile。它是所有 GEMM、所有以 im2col 矩阵乘表示的卷积、以及每个注意力头中 QK^T 的内核。该运算如此核心，硬件厂商会构建专用单元以单条宏指令执行：NVIDIA 称之为 <strong>tensor core</strong>，Google 称之为 <strong>MXU</strong>，Intel 提供 <strong>AMX tile</strong>，定制 DSA 亦有各自变体。tile 尺寸各异（NVIDIA 上 FP16 为 16×16×16，TPU 上为 128×128 脉动阵列，AMX 上为 16×64），但数学形态各处相同：取 A 的一块、B 的一块，相乘，累加到 C。</p>
-<p><img alt="2D tensor contraction: A[M,K] × B[K,N] → C[M,N], with different hardware implementations" src="../../../assets/images/ch04/fig1_tensor_contraction_dark.png#only-dark" />
-<img alt="2D tensor contraction: A[M,K] × B[K,N] → C[M,N], with different hardware implementations" src="../../../assets/images/ch04/fig1_tensor_contraction_light.png#only-light" /></p>
-<p><em>同一数学运算——在 tile 形操作数上执行 C += A × B——在不同加速器上映射为不同的硬件实现。</em></p>
-<p>对程序员而言，困难不在于数学而在于<strong>寄存器布局</strong>。在 GPU tensor core 上，tile 并非连续存放在单一线程的寄存器中，而是<strong>碎片化</strong>的：warp 内 32 条线程各自持有 tile 的分散片段，具体散布模式取决于数据类型、架构代际，以及操作数为 A、B 抑或 C。编写原始 CUDA 意味着声明 <code>wmma::fragment</code> 对象，调用 <code>load_matrix_sync</code> 以正确模式将共享内存中的 tile 分布到各 lane，发出 <code>mma_sync</code>，再调用 <code>store_matrix_sync</code> 重组输出。布局一旦出错——例如将列主 tile 载入行主 fragment——结果会在无声中错误。</p>
-<p><img alt="GPU tensor core register layout: threads own scattered fragments of the tile" src="../../../assets/images/ch04/fig2_register_loading_dark.png#only-dark" />
-<img alt="GPU tensor core register layout: threads own scattered fragments of the tile" src="../../../assets/images/ch04/fig2_register_loading_light.png#only-light" /></p>
-<p><em>warp 中 32 条线程如何持有 MMA tile 分散寄存器片段的简化示意。具体模式因架构而异且有意不透明。</em></p>
-<p>鳄霸（Croqtile）的设计完全绕开上述复杂性。它不暴露架构相关的 fragment 类型，而是提供作用于不透明寄存器 tile 的<strong>四种抽象运算</strong>：<strong>fill</strong>、<strong>load</strong>、<strong>multiply</strong>、<strong>store</strong>。无论由何种硬件后端执行，这些运算都描述同一套二维缩并工作流。编译器为目标架构处理 fragment 布局、lane 映射与指令选择——你描述的是<em>做何种</em>缩并，而非<em>寄存器如何</em>散布。</p>
+<p>该任务即<strong>二维张量收缩</strong>——运算 C += A × B，其中 A、B、C 均为形状固定的小型矩阵分块。它是所有 GEMM、所有以 im2col 矩阵乘表示的卷积、以及每个注意力头中 QK^T 的内层核函数。这类运算足够核心，因此加速器把它作为一条宏指令执行：取一分块 A、一分块 B，相乘，累加到 C。各实现的分块尺寸不同，但数学形态相同。</p>
+<p><img alt="2D tensor contraction: A[M,K] times B[K,N] into C[M,N]" src="../../../assets/images/ch04/fig1_tensor_contraction_dark.png#only-dark" />
+<img alt="2D tensor contraction: A[M,K] times B[K,N] into C[M,N]" src="../../../assets/images/ch04/fig1_tensor_contraction_light.png#only-light" /></p>
+<p><em>同一数学运算——在分块形操作数上执行 C += A × B——映射到不同的实现。</em></p>
+<p>对程序员而言，困难不在于数学而在于<strong>操作数布局</strong>。分块并非连续存放在某个线程的存储中，而是<strong>碎片化</strong>分布到协作的各个 lane 上，具体散布方式取决于数据类型，以及操作数是 A、B 还是 C。布局一旦弄错——例如把列主序分块当作行主序片段装载——结果会静默出错。</p>
+<p><img alt="Operand fragment layout: lanes own scattered fragments of the tile" src="../../../assets/images/ch04/fig2_register_loading_dark.png#only-dark" />
+<img alt="Operand fragment layout: lanes own scattered fragments of the tile" src="../../../assets/images/ch04/fig2_register_loading_light.png#only-light" /></p>
+<p><em>协作 lanes 如何持有 MMA 分块分散片段的简化示意。具体模式因实现而异且有意不透明。</em></p>
+<p>Croqtile 的设计完全绕开上述复杂性。它不暴露实现相关的 fragment 类型，而是提供作用于不透明分块的<strong>四种抽象运算</strong>：<strong>fill</strong>、<strong>load</strong>、<strong>multiply</strong>、<strong>store</strong>。无论哪个后端执行，这些运算都描述同一套二维收缩流程。编译器负责片段布局、lane 映射与指令选择——你描述的是<em>要做什么</em>收缩，而不是<em>操作数如何</em>散布。</p>
 <p><img alt="Croqtile's four-step MMA syntax: fill, load, multiply, store" src="../../../assets/images/ch04/fig3_mma_syntax_dark.png#only-dark" />
 <img alt="Croqtile's four-step MMA syntax: fill, load, multiply, store" src="../../../assets/images/ch04/fig3_mma_syntax_light.png#only-light" /></p>
-<p><em>四步 MMA 语法是抽象接口——并非硬绑定于 GPU tensor core。任何支持二维 tile 缩并的 DSA 均可映射到这些运算。</em></p>
+<p><em>四步 MMA 语法是抽象接口——并不绑定于任何单一收缩单元。任何支持二维分块收缩的后端都可以映射到这些运算。</em></p>
 <h2 id="mma_1">四步 MMA 语法<a class="headerlink" href="#mma_1" title="Permanent link">&para;</a></h2>
 <p>每个张量缩并内核遵循同一节奏：</p>
 <ol>
@@ -2663,9 +2619,9 @@
 <p>对 K 循环执行第 2–3 步（每次迭代载入下一 K 切片，向同一 <code>mc</code> 累加），然后执行一次第 4 步以刷出完成的输出 tile。名称 <code>mc</code>、<code>ma</code>、<code>mb</code> 均为不透明寄存器 tile——无需逐 lane 声明布局；编译器依据目标与布局选择（此处为 <code>row.row</code>）推导之。</p>
 <p><code>.row.row</code> 后缀为<strong>布局契约</strong>——它告知硬件如何解释 <code>ma</code> 与 <code>mb</code> 中的比特。两操作数均为行主序。若 B 在共享内存中为列主存储，则应写 <code>mma.row.col mc, ma, mb</code>。完整布局组合为 <code>row.row</code>、<code>row.col</code>、<code>col.row</code>、<code>col.col</code>；实践中 <code>row.row</code> 与 <code>row.col</code> 覆盖多数内核。选错变体属于正确性错误，而非性能提示——硬件对不同布局解释寄存器比特的方式不同。</p>
 <h2 id="_1">扩展协作范围<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>无论多少线程协作完成单次缩并，四步语法保持不变。变化的是<strong>协作范围</strong>——一个 warp、一个 warpgroup、两个 warpgroup——本节的叙述即围绕这一递进展开。</p>
-<h3 id="warp-tile-mma">一 warp、一 tile：最简单的 MMA 矩阵乘<a class="headerlink" href="#warp-tile-mma" title="Permanent link">&para;</a></h3>
-<p>在 Ampere（SM86）上，tensor-core MMA 的作用域为<strong>单个 warp</strong>（32 条线程）。在鳄霸中对应 <code>: group</code>。以下为一完整 FP16 矩阵乘内核，其中各 <code>MATMUL_*</code> 常数均为 16，故一个 block tile 即等于一个 MMA tile：</p>
+<p>无论多少个实例协作完成单次收缩，四步语法都保持不变。变化的是<strong>协作范围</strong>——多少个 lane 组成一个协作组——本节正是围绕这一点展开。</p>
+<h3 id="mma_2">一组一分块：最简单的 MMA 矩阵乘<a class="headerlink" href="#mma_2" title="Permanent link">&para;</a></h3>
+<p>在某些后端上，收缩的作用域是一个固定的小组。在 Croqtile 中对应 <code>: group</code>。以下为一完整 FP16 矩阵乘内核，其中各 <code>MATMUL_*</code> 常数均为 16，故一个 block tile 即等于一个 MMA tile：</p>
 <pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_TILE_N)] : block {
     shared f16 [MATMUL_TILE_M, MATMUL_TILE_N] output_s;
@@ -2690,115 +2646,16 @@
     dma.copy output_s =&gt; output.subspan(MATMUL_TILE_M, MATMUL_TILE_N).at(block_m, block_n);
   }
 }</code></pre>
-<p><strong><code>__co__ void</code> 与原地输出。</strong> 内核无返回值；结果经 <code>output</code> 写出，与常见 GPU 经全局指针原地写入的模式一致。</p>
+<p><strong><code>__co__ void</code> 与原地输出。</strong> 内核无返回值；结果经 <code>output</code> 写出，与通过指针原地写入的常见做法一致。</p>
 <p><strong>Block 网格。</strong> <code>cdiv(M, MATMUL_TILE_M)</code> 为向上取整除法——沿 M 方向含不完整 tile 在内的 tile 数目。<code>block_m</code> 与 <code>block_n</code> 选定本 block 负责的输出 tile。</p>
-<p><strong>Warp 网格与 <code>mma.fill</code>。</strong> <code>parallel {warp_m, warp_n} ... : group</code> 将 MMA tile 映射到各 warp。当各维均为 16 时，范围为 1×1——单 warp 覆盖整个 block tile。更宽的 block tile 会增加 warp 数，各自持有独立的 <code>mc</code>。</p>
+<p><strong>组网格与 <code>mma.fill</code>。</strong> <code>parallel {warp_m, warp_n} ... : group</code> 把 MMA 分块映射到协作组。各维都为 16 时，extent 为 1×1——一个组覆盖整个块分块。更宽的块分块会增加组，每组有自己的 <code>mc</code>。</p>
 <p><strong>K 循环与 DMA。</strong> 每个 <code>iv_k</code> 阶段通过 <code>dma.copy</code> 与 <code>subspan(...).at(...)</code> 将 A、B 条带拉入共享内存。第 7 章进一步讨论 <code>subspan</code> 与 <code>chunkat</code> 的对比。</p>
-<p><strong>操作数载入。</strong> <code>mma.load</code> 将该 warp 的 tile 从共享内存移入 <code>ma</code> / <code>mb</code>。<code>chunkat(warp_m, iv_warp_k)</code> 选取本 warp 及内层 K 步对应的 M×K 切片。</p>
-<p><strong>存储与收尾。</strong> K 循环结束后，<code>mma.store</code> 将 <code>mc</code> 写入 <code>output_s</code> 中该 warp 的子矩形，随后 <code>dma.copy</code> 将整个 block tile 送至全局内存。</p>
-<p>该内核简单，因协作范围狭窄：32 条线程、一个 warp、每次一个 MMA tile。四步语法线性可读，tile 几何亦清晰。若硬件提供更宽的协作窗口，情形又如何？</p>
-<h3 id="warpgroup-wgmma">扩展范围：warpgroup 与 WGMMA<a class="headerlink" href="#warpgroup-wgmma" title="Permanent link">&para;</a></h3>
-<p>Hopper（SM90）引入 <strong>Warpgroup Matrix Multiply-Accumulate（WGMMA）</strong>：仍为同一 C += A × B 缩并，但由<strong>四个 warp</strong>（128 条线程）协同发出。硬件指令更宽，tile 更大，吞吐提升——而四步语法不变。鳄霸中唯一变化是空间说明符：<code>: group-4</code> 取代 <code>: group</code>。</p>
-<p><img alt="Ampere vs Hopper MMA cooperation scope" src="../../../assets/images/ch04/fig4_sm86_vs_sm90_dark.png#only-dark" />
-<img alt="Ampere vs Hopper MMA cooperation scope" src="../../../assets/images/ch04/fig4_sm86_vs_sm90_light.png#only-light" /></p>
-<p><em>SM86：每个 MMA 一个 warp。SM90：四个 warp（<code>: group-4</code>）协作执行 WGMMA。</em></p>
-<pre class="highlight"><code class="language-choreo">parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
-  shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
-  shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-
-  mc = mma.fill.f16 0.0f;
-
-  foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-    dma.copy lhs.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-    dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
-
-    foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-      parallel p by 1 : group-4 {
-        ma = mma.load lhs_load_s.chunkat(_, iv_warp);
-        mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-        mma.row.row mc, ma, mb;
-      }
-    }
-  }
-
-  shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
-  mma.store mc, output_s;
-  dma.copy output_s =&gt; output.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(block_m, block_n);
-}</code></pre>
-<p>与 SM86 内核对照阅读。fill、load、multiply、store——节奏完全一致。差异在于机械细节：</p>
-<p><strong><code>mma.fill.f16 0.0f</code>。</strong> Hopper 常显式写出累加器精度——<code>.f16</code>、<code>.f32</code> 等。FP16 操作数配合 FP32 累加是长 K 维情形的常见模式，可避免部分和数值溢出。SM86 常用更短的 <code>mma.fill 0.0</code> 并依赖推断。</p>
-<p><strong><code>parallel p by 1 : group-4</code>。</strong> 一个 warpgroup（四个 warp）执行内层载入与 MMA。助记符 <code>mma.row.row</code> 与 Ampere 一致，但硬件发射更宽。</p>
-<p><strong><code>chunkat(_, iv_warp)</code>。</strong> <code>_</code> 表示“不对该维做分块”——共享内存中已驻留完整 M（或 N）范围；仅按 MMA 切片对 K 细分。</p>
-<p>此即抽象之要义：同一四种运算、同一布局契约、同一 <code>chunkat</code> / <code>subspan</code> 表达式。编译器据目标为 SM86 或 SM90 映射到不同硬件指令。你思考的是<em>做何种</em>缩并；协作宽度属于部署细节。</p>
-<h3 id="warpgroup">进一步分块：两 warpgroup 共享操作数<a class="headerlink" href="#warpgroup" title="Permanent link">&para;</a></h3>
-<p>第 3 章已介绍 <code>parallel p1 by 2 : group-4</code>——即一个 block 内两个 warpgroup。配合 MMA 时，两组可共享同一 B tile，同时载入 A 的不同行。由此大块 tile 可拆为多个 MMA tile，而无需在共享内存中重复 B 操作数：</p>
-<pre class="highlight"><code class="language-choreo">parallel {block_m, block_n} by [cdiv(M, MATMUL_TILE_M), cdiv(N, MATMUL_WARP_N)] : block {
-  shared f16 [MATMUL_TILE_M, MATMUL_TILE_K] lhs_load_s;
-  shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
-  shared f16 [MATMUL_TILE_M, MATMUL_WARP_N] output_s;
-
-  mc = mma.fill.f32 0.0f;
-
-  foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-    dma.copy lhs.subspan(MATMUL_TILE_M, MATMUL_TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
-    dma.copy rhs.chunkat(block_n, iv_k) =&gt; rhs_load_s;
-
-    parallel p1 by 2 : group-4 {
-      foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-        ma = mma.load lhs_load_s.subspan(MATMUL_WARP_M, MATMUL_TILE_K).at(p1, 0).chunkat(_, iv_warp);
-        mb = mma.load rhs_load_s.chunkat(_, iv_warp);
-        mma.row.row mc, ma, mb;
-      }
-    }
-  }
-
-  parallel p1 by 2 : group-4 {
-    mma.store mc, output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0);
-  }
-  dma.copy output_s =&gt; output.subspan(MATMUL_TILE_M, MATMUL_WARP_N).at(block_m, block_n);
-}</code></pre>
-<p><strong>以 <code>p1</code> 划分 M。</strong> 当 <code>MATMUL_TILE_M = 128</code> 且 <code>MATMUL_WARP_M = 64</code> 时，block 跨 128 行；<code>p1</code> 选取上或下 64 行条带。<code>lhs_load_s.subspan(MATMUL_WARP_M, ...).at(p1, 0)</code> 为各 warpgroup 提供其 A 行；二者共用同一 <code>rhs_load_s</code>。</p>
-<p><strong>镜像式存储。</strong> <code>mma.store</code> 目标为 <code>output_s.subspan(MATMUL_WARP_M, MATMUL_WARP_N).at(p1, 0)</code>，使各 warpgroup 写入其半幅暂存缓冲，随后一次 <code>dma.copy</code> 发出合并后的 tile。</p>
-<p>该模式可扩展：三个 warpgroup、四个 warpgroup，或任意能整除 block tile 的数目。四步语法保持不变；仅 tile 的并行分解变化。</p>
-<table>
-<thead>
-<tr>
-<th>方面</th>
-<th>单 warp（<code>: group</code>）</th>
-<th>单 warpgroup（<code>: group-4</code>）</th>
-<th>双 warpgroup</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>线程数</td>
-<td>32</td>
-<td>128</td>
-<td>256</td>
-</tr>
-<tr>
-<td>累加器</td>
-<td><code>mma.fill 0.0</code></td>
-<td><code>mma.fill.f16 0.0f</code></td>
-<td><code>mma.fill.f32 0.0f</code></td>
-</tr>
-<tr>
-<td>Tile 划分</td>
-<td>每 warp 一个 MMA tile</td>
-<td>每 warpgroup 一个 MMA tile</td>
-<td>Block tile 跨 warpgroup 划分</td>
-</tr>
-<tr>
-<td>操作数共享</td>
-<td>不适用</td>
-<td>不适用</td>
-<td>共享 B tile，A 行由 <code>p1</code> 划分</td>
-</tr>
-</tbody>
-</table>
+<p><strong>操作数装载。</strong> <code>mma.load</code> 把该组的分块从共享存储移入 <code>ma</code> / <code>mb</code>。<code>chunkat(warp_m, iv_warp_k)</code> 为本组和当前内层 K 步选出 M×K 切片。</p>
+<p><strong>写回与收尾。</strong> K 走完后，<code>mma.store</code> 把 <code>mc</code> 写入 <code>output_s</code> 中属于该组的子矩形，再由 <code>dma.copy</code> 把整个块分块送往全局存储。</p>
+<p>这个核函数简单，是因为协作范围窄：一个组，一次一个 MMA 分块。四步语法读起来是线性的，分块几何也一目了然。更宽的协作范围改变的是组的数量，而不是这些操作。</p>
 <h2 id="fp16">超越稠密 FP16：四步还能表达什么<a class="headerlink" href="#fp16" title="Permanent link">&para;</a></h2>
 <p>上文示例在稠密 FP16 tile 上使用 <code>mma.row.row</code>。同一四步模式可延伸至基本形式无法覆盖的工作负载。</p>
-<p><strong>结构化稀疏性。</strong> 当 A 中半数元素服从 2:4 零模式（Ampere 及以后）时，硬件可跳过零乘积并大致将吞吐翻倍——但需要<strong>元数据操作数</strong> <code>me</code> 编码哪些元素非零：</p>
+<p><strong>结构化稀疏。</strong> 当 A 中一半元素遵循固定的稀疏零模式时，后端可以跳过零乘积——但它需要一个<strong>元数据操作数</strong> <code>me</code> 来标明哪些元素非零：</p>
 <pre class="highlight"><code class="language-choreo">mma.row.row.sp mc, ma, mb, me;</code></pre>
 <p><code>.sp</code> 后缀增加元数据操作数；其余仍为同一 fill-load-multiply-store 节奏。任意布局组合均可：<code>mma.row.col.sp</code> 等。需将 <code>me</code> 与 A、B 一并自独立元数据张量载入。</p>
 <p><strong>带每 tile 缩放的量化操作数。</strong> FP8 操作数（<code>f8_e4m3</code>、<code>f8_e5m2</code>）需要每 tile 反量化以使累加器保持数值准确。鳄霸将缩放融合进缩并：</p>
@@ -2807,8 +2664,8 @@
 <pre class="highlight"><code class="language-choreo">mma.row.row mc, ma, mb;
 mma.scale mc, sc_a, sc_b;</code></pre>
 <p>独立 <code>mma.scale</code> 见于部分 MoE 与混精度内核。</p>
-<p><strong>打乱载入与转置存储。</strong> 当共享内存采用 swizzle 模式以避免 bank 冲突（<a href="../ch07-advanced-movement/">第 7 章</a>）时，MMA 载入须使用匹配的 swizzle 模式：<code>mma.load.swiz&lt;N&gt;</code>。<code>&lt;N&gt;</code> 须在 <code>tma.copy.swiz&lt;N&gt;</code> 与 <code>mma.load.swiz&lt;N&gt;</code> 之间一致——不一致则读出垃圾数据。对输出，<code>mma.store.transp mc, dst</code> 以行列互换方式写入累加器，适用于下一阶段期望列主数据的情形。</p>
-<p><strong>流水线同步。</strong> 在生产者与消费者 warpgroup 重叠的流水线内核中（<a href="../ch06-synchronization/">第 6 章</a>），<code>mma.commit</code> 标示“已完成读取本 K 条带操作数”与“可安全复用共享内存缓冲”之间的边界。在事件驱动流水线中为必需胶合。</p>
+<p><strong>打乱载入与转置存储。</strong> 当共享内存采用 swizzle 模式以避免 bank 冲突（<a href="../ch07-advanced-movement/">第 7 章</a>）时，MMA 载入须使用匹配的 swizzle 模式：<code>mma.load.swiz&lt;N&gt;</code>。<code>&lt;N&gt;</code> 须在 <code>dma.copy.swiz&lt;N&gt;</code> 与 <code>mma.load.swiz&lt;N&gt;</code> 之间一致——不一致则读出垃圾数据。对输出，<code>mma.store.transp mc, dst</code> 以行列互换方式写入累加器，适用于下一阶段期望列主数据的情形。</p>
+<p><strong>流水线同步。</strong> 在生产者和消费者区域重叠的流水线核函数中（<a href="../ch06-synchronization/">第 6 章</a>），<code>mma.commit</code> 标记「本 K 切片的操作数已读完」与「可以安全复用暂存缓冲区」之间的边界。它是事件驱动流水线中不可省略的粘合。</p>
 <p>上述扩展均遵循同一设计原则：四步骨架固定，变体后缀向硬件传达特定契约。下表汇总各变体以备查阅。</p>
 <h2 id="_2">新语法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <table>
@@ -2865,7 +2722,7 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 </tr>
 <tr>
 <td><code>mma.commit</code></td>
-<td>WGMMA 的流水线阶段栅栏（见<a href="../ch06-synchronization/">第 6 章</a>）</td>
+<td>流水线阶段栅栏（见<a href="../ch06-synchronization/">第 6 章</a>）</td>
 </tr>
 <tr>
 <td><code>cdiv(a, b)</code></td>
@@ -2891,8 +2748,8 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 <td>在 tile 形操作数上 C += A × B——通用的内层内核</td>
 </tr>
 <tr>
-<td>硬件多样性</td>
-<td>GPU tensor core、TPU MXU、Intel AMX、定制 DSA 均实现该运算；tile 尺寸与寄存器布局各异</td>
+<td>后端多样性</td>
+<td>不同后端以不同方式实现该收缩；tile 尺寸与操作数布局各异</td>
 </tr>
 <tr>
 <td>四步抽象</td>
@@ -2900,7 +2757,7 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 </tr>
 <tr>
 <td>协作规模扩展</td>
-<td><code>: group</code>（单 warp）→ <code>: group-4</code>（单 warpgroup）→ 多 warpgroup——语法不变</td>
+<td>每个分块使用更多协作组——四个运算保持不变</td>
 </tr>
 <tr>
 <td>布局契约</td>

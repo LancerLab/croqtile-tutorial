@@ -2627,7 +2627,7 @@ trigger e, e1;</code></pre>
   }
 }</code></pre>
 <p>In this code, two threads wait a single event <code>e</code>. However, since <code>wait</code> resets the event <code>e</code>, it is possible that <code>thread-0</code> resets the event before <code>thread-1</code> find the <code>e</code> has been triggered. As a result, <code>thread-1</code> is never unblocked and deadlocking happens.</p>
-<p>Though such deadlocks are less possible for GPU-like SIMT hardware, where both threads execute in lock-step, it is not safe code for highly asynchronous executing like threading in CPUs. Since Choreo supports multiple levels of asynchronous execution, including different hardware/software, a more robust way is to assign each thread an event for <code>wait</code> statements.</p>
+<p>Though such deadlocks are less likely where concurrent regions execute in lock-step, it is not safe code for highly asynchronous executing like threading in CPUs. Since Choreo supports multiple levels of asynchronous execution, including different hardware/software, a more robust way is to assign each thread an event for <code>wait</code> statements.</p>
 <pre class="highlight"><code>qc = 2;
 parallel p by 1 {
   shared event e[qc];

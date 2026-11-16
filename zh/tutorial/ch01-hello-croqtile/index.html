@@ -2587,7 +2587,7 @@
 <h2 id="_1">鳄霸程序的两个部分<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>每个鳄霸程序恰好由两个部分组成：</p>
 <ol>
-<li><strong>鳄霸函数</strong>（<code>__co__</code>）——内核逻辑，以 <code>__co__</code> 前缀标记。它描述在带形状的张量上的计算。编译器将其转译为可在 GPU 上运行的代码。</li>
+<li><strong>鳄霸函数</strong>（<code>__co__</code>）——内核逻辑，以 <code>__co__</code> 前缀标记。它描述在带形状的张量上的计算。编译器把它转译为可在设备上运行的代码。</li>
 <li><strong>宿主程序</strong>——标准 C++，负责准备数据、调用鳄霸函数并检查结果。</li>
 </ol>
 <p>两个部分都位于同一个 <code>.co</code> 文件中。编译器通过 <code>__co__</code> 前缀来区分它们。</p>
@@ -2634,7 +2634,7 @@ int main() {
 <pre class="highlight"><code class="language-choreo">parallel {i, j} by [4, 8]
   output.at(i, j) = lhs.at(i, j) + rhs.at(i, j);</code></pre>
 <p><code>parallel {i, j} by [4, 8]</code> 创建 4 × 8 = 32 个并行实例，每个元素位置一个。每个实例以其自身的 <code>(i, j)</code> 对执行循环体。<code>.at(i, j)</code> 访问器在位置 <code>(i, j)</code> 索引张量，加法直接执行——一个元素，一个线程。</p>
-<p>如果你写过 CUDA，可能会想：这些实例是 CUDA 线程？线程块？简短的回答是，不带任何标注的 <code>parallel</code> 让编译器自行决定。在底层，这里的 32 个实例会变成单个线程块中的 32 个 CUDA 线程——但鳄霸在此层级刻意隐藏了这种映射。在<a href="../ch03-parallelism/">第 3 章</a>中，你将学会使用 <code>: block</code> 和 <code>: thread</code> 等<strong>空间限定符</strong>来显式控制映射，嵌套多个 <code>parallel</code> 轴来构建线程块-线程层次结构，以及将它们映射到 warp 和 warpgroup。现在，只需将 <code>parallel</code> 理解为"在 GPU 上并发运行所有实例"，然后继续前进。</p>
+<p>你可能会问：这些实例是单条线程，还是某个组？简短的回答是：不带任何标注的 <code>parallel</code> 让编译器自行决定。在底层，这里的 32 个实例映射到同一个执行单元上的 32 个 lane——但 Croqtile 在这一层刻意隐藏了这种映射。在<a href="../ch03-parallelism/">第 3 章</a>中，你将学会使用 <code>: block</code> 和 <code>: thread</code> 等<strong>空间限定符</strong>来显式控制映射，嵌套多个 <code>parallel</code> 轴来构建两层层次结构，以及把各轴映射到第 3 章介绍的层级。现在，只需把 <code>parallel</code> 理解为「并发运行所有实例」，然后继续前进。</p>
 <p><strong>返回值。</strong></p>
 <pre class="highlight"><code class="language-choreo">return output;</code></pre>
 <p><code>__co__</code> 函数返回其结果张量。签名中的返回类型（<code>s32 [4, 8]</code>）必须与实际返回的内容匹配。宿主端的调用者接收到一个 <code>choreo::spanned_data</code>——一个带有形状元数据的拥有型缓冲区，可以用 <code>[i][j]</code> 进行索引。</p>
@@ -2652,8 +2652,8 @@ rhs.fill_random(-10, 10);</code></pre>
 <p>鳄霸文件使用 <code>.co</code> 扩展名。编译器的使用方式类似 <code>gcc</code> 或 <code>clang</code>：</p>
 <pre class="highlight"><code class="language-bash">croq ele_add.co                          # 生成 a.out
 croq ele_add.co -o ele_add               # 指定输出文件名
-croq -es -t cuda ele_add.co -o out.cu    # 仅输出 CUDA 源码</code></pre>
-<p><code>-es</code> 标志在转译后停止，让你检查生成的 CUDA 代码。<code>-t</code> 标志选择目标平台。</p>
+croq -es -t &lt;target&gt; ele_add.co -o out.cxx  # 仅输出目标源码</code></pre>
+<p><code>-es</code> 标志在转译后停止，让你检查所选目标生成的代码。<code>-t</code> 标志选择目标平台。</p>
 <p>要查看所有可用选项，运行 <code>croq --help</code>：</p>
 <pre class="highlight"><code class="language-bash">croq --help</code></pre>
 <p>这会打印完整的编译器标志列表——输出命名、目标选择、详细度和诊断选项。值得浏览一遍，这样你在需要时知道有什么可用的。</p>
@@ -2676,7 +2676,7 @@ croq -es -t cuda ele_add.co -o out.cu    # 仅输出 CUDA 源码</code></pre>
 
 <h2 id="_6">目前你掌握了什么<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <p>现在你已经掌握了每个鳄霸程序的骨架：一个带有类型化、具形状参数和返回值的 <code>__co__</code> 函数；用于逐元素计算的 <code>parallel</code> 和 <code>.at()</code>；用于从输入推导输出形状的 <code>lhs.span</code>；以及宿主端创建和传递张量的 <code>make_spandata</code> / <code>.view()</code> API。</p>
-<p>这个示例可以工作，但它一次只处理一个元素，对数据如何在内存层次中移动没有任何控制。在真实硬件上这很重要——GPU 通过批量搬运数据而非逐元素搬运来达到峰值吞吐。<a href="../ch02-data-movement/">下一章</a>将引入 <code>dma.copy</code> 和 <code>chunkat</code> 来表达块级数据搬运。</p>
+<p>这个示例可以工作，但它一次只处理一个元素，对数据如何在内存层次中移动没有任何控制。在真实硬件上这很重要——执行引擎靠成批搬运数据、而不是逐元素搬运，才能达到峰值吞吐。<a href="../ch02-data-movement/">下一章</a>将引入 <code>dma.copy</code> 和 <code>chunkat</code> 来表达块级数据搬运。</p>
 
 
 

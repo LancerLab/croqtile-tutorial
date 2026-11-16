@@ -808,10 +808,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-rtti-cuda-gdb" class="md-nav__link">
+  <a href="#debug-rtti" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debug RTTI 与 cuda-gdb
+        Debug RTTI 与调试器
       
     </span>
   </a>
@@ -2548,10 +2548,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-rtti-cuda-gdb" class="md-nav__link">
+  <a href="#debug-rtti" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debug RTTI 与 cuda-gdb
+        Debug RTTI 与调试器
       
     </span>
   </a>
@@ -2649,9 +2649,9 @@
 
 
 <h1 id="gdb">调试与详细输出：打印、断言与 GDB<a class="headerlink" href="#gdb" title="Permanent link">&para;</a></h1>
-<p>GPU 内核是<strong>不透明系统</strong>：成千上万线程并发执行，共享内存在主机侧不可见，且当结果错误时，没有栈回溯能指向出错行。这种不透明性并非 GPU 独有——凡是程序员无法直接观察中间状态的系统都会面临同样挑战：分布式系统（丢失的消息在哪？）、嵌入式固件（哪个中断处理程序损坏了寄存器？）、优化编译器（哪趟优化破坏了语义？）。</p>
+<p>核函数是<strong>不透明系统</strong>：成千上万线程并发执行，共享存储在主机侧不可见，且当结果错误时，没有栈回溯能指向出错行。这种不透明性并非并行核函数独有——凡是程序员无法直接观察中间状态的系统都会面临同样挑战：分布式系统（丢失的消息在哪？）、嵌入式固件（哪个中断处理程序损坏了寄存器？）、优化编译器（哪趟优化破坏了语义？）。</p>
 <p>通用的调试纪律在各地相同：<strong>系统地缩小搜索空间</strong>，从廉价检查到昂贵检查。先做静态分析与编译期断言（几乎无成本，可捕获整类缺陷）。再转向有针对性的运行时探针（成本低，能定位问题）。仅当更廉价的手段已缩小嫌疑范围时，才动用交互式调试器。</p>
-<p>Croqtile（鳄霸）在每一层都提供工具：<strong>编译期形状打印</strong>（<code>print!</code>、<code>println!</code>），可在不启动内核的情况下核对分块维度；<strong>运行时断言</strong>（<code>assert</code>）用于不变量检查；<strong>带条件的设备端 <code>println</code></strong> 用于在特定线程上做运行时检视；面向 <code>cuda-gdb</code> 的 <strong>debug RTTI</strong>；以及 <strong>详细模式</strong>（<code>-v</code>），用于查看编译器在底层实际调用了哪些外部命令。</p>
+<p>Croqtile（鳄霸）在每一层都提供工具：<strong>编译期形状打印</strong>（<code>print!</code>、<code>println!</code>），可在不启动内核的情况下核对分块维度；<strong>运行时断言</strong>（<code>assert</code>）用于不变量检查；<strong>带条件的设备端 <code>println</code></strong> 用于在特定线程上做运行时检视；面向交互式调试器的 <strong>debug RTTI</strong>；以及 <strong>详细模式</strong>（<code>-v</code>），用于查看编译器在底层实际调用了哪些外部命令。</p>
 <h2 id="print-println"><code>print!</code> 与 <code>println!</code>：编译期检视<a class="headerlink" href="#print-println" title="Permanent link">&para;</a></h2>
 <p>带感叹号的变体（<code>print!</code>、<code>println!</code>）在<strong>编译期</strong>执行，而非运行时。它们输出到编译器日志，适用于在不启动内核的情况下检视形状、范围与类型信息：</p>
 <pre class="highlight"><code class="language-choreo">__co__ void check_shapes(f32 [3, 2] b) {
@@ -2660,15 +2660,15 @@
 }</code></pre>
 <p>编译该文件时，编译器会输出：</p>
 <pre class="highlight"><code>shape of b: b.span = [3, 2]</code></pre>
-<p>无需 GPU。字符串字面量会被拼接（<code>"wor" "ld!"</code> 变为 <code>"world!"</code>）。在投入完整内核启动之前，可用 <code>print!</code> / <code>println!</code> 验证 <code>chunkat</code> 与 <code>subspan</code> 是否产生你期望的分块尺寸。</p>
+<p>无需设备。字符串字面量会被拼接（<code>"wor" "ld!"</code> 变为 <code>"world!"</code>）。在投入完整内核启动之前，可用 <code>print!</code> / <code>println!</code> 验证 <code>chunkat</code> 与 <code>subspan</code> 是否产生你期望的分块尺寸。</p>
 <h2 id="print-println_1"><code>print</code> 与 <code>println</code>：运行时设备端输出<a class="headerlink" href="#print-println_1" title="Permanent link">&para;</a></h2>
-<p>不带感叹号时，<code>print</code> 与 <code>println</code> 会在生成的 CUDA 中发出设备端 <code>printf</code> 调用：</p>
+<p>不带感叹号时，<code>print</code> 与 <code>println</code> 会在生成的源码中发出设备端 <code>printf</code> 调用：</p>
 <pre class="highlight"><code class="language-choreo">__co__ void inspect(s32 [4, 8] data) {
   foreach i in [data.span] {
     println("element ", i, " = ", data.at(i));
   }
 }</code></pre>
-<p>每次调用接受由逗号分隔的字符串字面量与表达式混合。各线程之间的输出顺序<strong>不确定</strong>——GPU 的 <code>printf</code> 缓冲区异步刷新。</p>
+<p>每次调用接受由逗号分隔的字符串字面量与表达式混合。各线程之间的输出顺序<strong>不确定</strong>——设备 <code>printf</code> 缓冲区异步刷新。</p>
 <p><strong>对输出加条件。</strong> 针对特定检查，请用条件守卫打印：</p>
 <pre class="highlight"><code class="language-choreo">parallel {px, py} by [8, 16] : block
   parallel {qx, qy} by [16, 16] : thread {
@@ -2691,10 +2691,10 @@
 <pre class="highlight"><code class="language-bash">croq kernel.co -rtc=high -o kernel</code></pre>
 <p>级别：<code>none</code>、<code>entry</code>（默认）、<code>low</code>、<code>medium</code>、<code>high</code>、<code>all</code>。每一级是上一级的超集。开发阶段可使用 <code>high</code> 或 <code>all</code>，生产环境使用 <code>none</code>。</p>
 <h2 id="mma">调试大量依赖 MMA 的内核<a class="headerlink" href="#mma" title="Permanent link">&para;</a></h2>
-<p>若错误答案来自 Tensor Core 路径，应<strong>先怀疑布局</strong>——行主序与列主序，以及右操作数在内存中是 <code>[N, K]</code> 还是 <code>[K, N]</code>。再检查<strong>索引</strong>（你用 <code>.at</code> / <code>chunkat</code> 绑定的 <code>block_m</code>、<code>block_n</code> 与 K 分块）。若引入了异步拷贝或拆分了生产者与消费者 warp，再检查<strong>异步顺序</strong>。</p>
-<p>常见错误包括在分阶段数据实际为列主序时误标 <code>mma.row.row</code>，或使用与 MMA 分块几何不对齐的 <code>chunkat</code> 索引。若使用打乱加载（<code>tma.copy.swiz</code> / <code>mma.load.swiz</code>），失配往往表现为误差中的规则模式（例如每第十六个元素正确，其余错位）。</p>
-<h2 id="debug-rtti-cuda-gdb">Debug RTTI 与 <code>cuda-gdb</code><a class="headerlink" href="#debug-rtti-cuda-gdb" title="Permanent link">&para;</a></h2>
-<p>当 <code>print</code> / <code>println</code> 仍不足时，Croqtile 支持 debug RTTI（Runtime Type Information），使其类型对 <code>cuda-gdb</code> 可见。</p>
+<p>若错误答案来自 <code>mma</code> 路径，应<strong>先怀疑布局</strong>——行主序与列主序，以及右操作数在存储中是 <code>[N, K]</code> 还是 <code>[K, N]</code>。再检查<strong>索引</strong>（你用 <code>.at</code> / <code>chunkat</code> 绑定的 <code>block_m</code>、<code>block_n</code> 与 K 分块）。若引入了异步拷贝或拆分了生产者与消费者区域，再检查<strong>异步顺序</strong>。</p>
+<p>常见错误包括在分阶段数据实际为列主序时误标 <code>mma.row.row</code>，或使用与 MMA 分块几何不对齐的 <code>chunkat</code> 索引。若使用重排加载（<code>dma.copy.swiz</code> / <code>mma.load.swiz</code>），失配往往表现为误差中的规则模式（例如每第十六个元素正确，其余错位）。</p>
+<h2 id="debug-rtti">Debug RTTI 与调试器<a class="headerlink" href="#debug-rtti" title="Permanent link">&para;</a></h2>
+<p>当 <code>print</code> / <code>println</code> 仍不足时，Croqtile 支持 debug RTTI（Runtime Type Information），使其类型对交互式调试器可见。</p>
 <p>使用 <code>-g</code> 编译以启用调试符号：</p>
 <pre class="highlight"><code class="language-bash">croq kernel.co -g -o kernel_debug</code></pre>
 <p>生成代码包含 Croqtile 类型的 RTTI 结构：</p>
@@ -2730,7 +2730,7 @@
 </tbody>
 </table>
 <p><strong>示例会话：</strong></p>
-<pre class="highlight"><code class="language-bash">cuda-gdb -q ./kernel_debug
+<pre class="highlight"><code class="language-bash">gdb -q ./kernel_debug
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs
@@ -2745,7 +2745,7 @@ $3 = true</code></pre>
 <h2 id="_1">综合应用<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p><img alt="Debugging workflow: shapes -&gt; one tile -&gt; sync -&gt; layout -&gt; GDB" src="../../../assets/images/ch09/fig1_debug_workflow_dark.png#only-dark" />
 <img alt="Debugging workflow: shapes -&gt; one tile -&gt; sync -&gt; layout -&gt; GDB" src="../../../assets/images/ch09/fig1_debug_workflow_light.png#only-light" /></p>
-<p>由廉价到昂贵依次排查：<code>println!</code>（编译期形状）→ 带条件的 <code>println</code> 只看一块（运行时数值）→ 事件/阶段打印（同步）→ 模式分析（布局）→ <code>cuda-gdb</code>（指针类缺陷）。运行时打印用 <code>#ifdef</code> 守卫，使之在生产构建中消失：</p>
+<p>由廉价到昂贵依次排查：<code>println!</code>（编译期形状）→ 带条件的 <code>println</code> 只看一块（运行时数值）→ 事件/阶段打印（同步）→ 模式分析（布局）→ 交互式调试器（指针类缺陷）。运行时打印用 <code>#ifdef</code> 守卫，使之在生产构建中消失：</p>
 <pre class="highlight"><code class="language-choreo">#ifdef DEBUG_PRINT
   println("tile_k=", iv_k, " accum=", mc);
 #endif</code></pre>
@@ -2787,13 +2787,13 @@ croq kernel.co -o kernel                   # 生产构建</code></pre>
 <td>几乎无——显示子进程调用</td>
 </tr>
 <tr>
-<td><code>-g</code> + <code>cuda-gdb</code> + RTTI</td>
+<td><code>-g</code> + 调试器 + RTTI</td>
 <td>运行时</td>
 <td>高——调试符号，无优化</td>
 </tr>
 </tbody>
 </table>
-<p>你从第 1 章的元素级加法起步，依次学习了数据搬运（第 2 章）、并行（第 3 章）、Tensor Core（第 4 章）、控制流（第 5 章）、流水线（第 6 章）、TMA（第 7 章）、C++ 互操作（第 8 章）以及调试（本章）。下一步可打开 <code>croqtile/benchmark/</code> 目录中的基准内核，将其各区域对应到本章内容，修改一个常量，重新构建并测量。</p>
+<p>你从第 1 章的元素级加法起步，依次学习了数据搬运（第 2 章）、并行（第 3 章）、<code>mma</code> 收缩（第 4 章）、控制流（第 5 章）、流水线（第 6 章）、重排与不规则访问（第 7 章）、C++ 互操作（第 8 章）以及调试（本章）。下一步可打开 <code>croqtile/benchmark/</code> 目录中的基准内核，将其各区域对应到本章内容，修改一个常量，重新构建并测量。</p>
 
 
 

@@ -2673,7 +2673,7 @@ Both forms compile. The shape decides which one you get, not the type name.</p>
 <pre class="highlight"><code class="language-choreo">global f32 [32, 7, 2] a;
 shared u8 [512, 144] b;
 local u8 [72, 1024] c;</code></pre>
-<p>Since Choreo handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target. For example, <em>Cuda/Cute</em> (for GPU hardware) supports:</p>
+<p>Since Choreo handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target. For example, a target that separates host and device execution supports:</p>
 <ul>
 <li><em>global</em>: Refers to the device's global storage.</li>
 <li><em>shared</em>: Refers to the device block's shared storage</li>

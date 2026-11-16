@@ -729,17 +729,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#memory-specifiers-global-shared-and-local" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Memory Specifiers: global, shared, and local
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#partial-tiles-guarding-and-zfill" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -758,73 +747,6 @@
       
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dma-vs-tma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DMA vs TMA
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="DMA vs TMA">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-main-tma-constraint" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The main TMA constraint
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#writing-dma-and-tma-that-lower-well" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Writing DMA and TMA That Lower Well
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Writing DMA and TMA That Lower Well">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#for-high-throughput-dma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        For high-throughput DMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#for-tma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        For TMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2860,17 +2782,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#memory-specifiers-global-shared-and-local" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Memory Specifiers: global, shared, and local
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#partial-tiles-guarding-and-zfill" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2889,73 +2800,6 @@
       
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dma-vs-tma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DMA vs TMA
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="DMA vs TMA">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-main-tma-constraint" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The main TMA constraint
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#writing-dma-and-tma-that-lower-well" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Writing DMA and TMA That Lower Well
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Writing DMA and TMA That Lower Well">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#for-high-throughput-dma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        For high-throughput DMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#for-tma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        For TMA
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3039,18 +2883,17 @@
 
 
 <h1 id="data-movement-the-tile-movement-engine">Data Movement: The Tile Movement Engine<a class="headerlink" href="#data-movement-the-tile-movement-engine" title="Permanent link">&para;</a></h1>
-<p>Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. GPUs fetch and stage contiguous blocks, not isolated elements. The hard part of GPU programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.</p>
+<p>Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.</p>
 <p>Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:</p>
 <ul>
 <li><code>dma.copy</code> moves a tile as-is.</li>
 <li><code>dma.transp&lt;...&gt;</code> permutes dimensions while moving it.</li>
 <li><code>dma.pad&lt;...&gt;</code> enlarges a tile and fills the border.</li>
-<li><code>tma.copy</code> uses Hopper's Tensor Memory Accelerator for the same style of transfers when the tile shape is compatible.</li>
 </ul>
-<p>This chapter introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.</p>
+<p>This chapter introduces that model, shows the core syntax, and gives the rules you need to write DMA code that is both correct and likely to lower well.</p>
 <p><img alt="Per-element vs data-block programming model comparison" src="../../assets/images/ch02/fig1_element_vs_block_dark.png#only-dark" />
 <img alt="Per-element vs data-block programming model comparison" src="../../assets/images/ch02/fig1_element_vs_block_light.png#only-light" /></p>
-<p><em>Left: element-by-element thinking. Right: tile-by-tile movement into fast memory.</em></p>
+<p><em>Left: element-by-element thinking. Right: tile-by-tile movement into fast local storage.</em></p>
 <details>
 <summary>Animated version</summary>
 
@@ -3082,10 +2925,6 @@
 <td>Optional handle to the transfer result. Use <code>future.data</code> to access the moved tile and <code>future.span</code> to query its shape.</td>
 </tr>
 <tr>
-<td><code>engine</code></td>
-<td><code>dma</code> for software cooperative copies, <code>tma</code> for Hopper TMA copies.</td>
-</tr>
-<tr>
 <td><code>operation</code></td>
 <td><code>copy</code>, <code>transp&lt;...&gt;</code>, or <code>pad&lt;...&gt;</code>.</td>
 </tr>
@@ -3105,7 +2944,7 @@ g = dma.transp&lt;1, 0&gt; matrix =&gt; local;
 h = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; shared;</code></pre>
 <p>The key shift from Chapter 1 is that these statements move shaped regions, not individual elements.</p>
 <h2 id="first-example-tiled-addition-through-shared-memory">First Example: Tiled Addition Through Shared Memory<a class="headerlink" href="#first-example-tiled-addition-through-shared-memory" title="Permanent link">&para;</a></h2>
-<p>Here is the same addition from Chapter 1, but staged through shared memory in tiles:</p>
+<p>Here is the same addition from Chapter 1, but staged through shared storage in tiles:</p>
 <pre class="highlight"><code class="language-choreo">__co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
 
@@ -3123,8 +2962,8 @@ h = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; shared;</code></pre>
 <p>The arithmetic is still element-wise addition. What changed is the data path:</p>
 <ol>
 <li><code>chunkat(tr, tc)</code> selects one logical tile from each input.</li>
-<li><code>dma.copy ... =&gt; shared</code> stages that tile into block-visible fast memory.</li>
-<li>The inner loop reads from <code>lhs_load.data</code> and <code>rhs_load.data</code>, not from global memory.</li>
+<li><code>dma.copy ... =&gt; shared</code> stages that tile into block-visible fast storage.</li>
+<li>The inner loop reads from <code>lhs_load.data</code> and <code>rhs_load.data</code>, not from global storage.</li>
 <li><code>tr # i</code> and <code>tc # j</code> map tile-local coordinates back to global output coordinates.</li>
 </ol>
 <p>This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.</p>
@@ -3182,7 +3021,7 @@ h = dma.pad&lt;{2, 1}, {3, 2}, {0, 0}, 0&gt; tile =&gt; shared;</code></pre>
 <li>Use <code>view(...).from(...)</code> when you want an explicit tile shape and element-space starting offsets.</li>
 </ul>
 <h2 id="futures-data-and-span">Futures, <code>.data</code>, and <code>.span</code><a class="headerlink" href="#futures-data-and-span" title="Permanent link">&para;</a></h2>
-<p>The result of a DMA or TMA statement is a future-like handle:</p>
+<p>The result of a DMA statement is a future-like handle:</p>
 <pre class="highlight"><code class="language-choreo">f = dma.copy input =&gt; shared;</code></pre>
 <p>That handle gives you two important things:</p>
 <ul>
@@ -3205,10 +3044,10 @@ dma.copy f.data =&gt; output;</code></pre>
 <pre class="highlight"><code class="language-choreo">f = dma.copy.async input =&gt; shared;
 wait f;
 dma.copy f.data =&gt; output;</code></pre>
-<p>The same pattern applies to TMA:</p>
-<pre class="highlight"><code class="language-choreo">f = tma.copy.async input =&gt; shared;
+<p>The same pattern applies to asynchronous copies:</p>
+<pre class="highlight"><code class="language-choreo">f = dma.copy.async input =&gt; shared;
 wait f;
-tma.copy f.data =&gt; output;</code></pre>
+dma.copy f.data =&gt; output;</code></pre>
 <p>Rule: if you read <code>f.data</code> from an async transfer, wait first.</p>
 <p>Later chapters use async copies to overlap load and compute. In this chapter, the important part is the contract: <code>.async</code> creates an in-flight transfer, and <code>wait</code> makes it safe to consume.</p>
 <h2 id="other-operations-transp-and-pad">Other Operations: <code>transp</code> and <code>pad</code><a class="headerlink" href="#other-operations-transp-and-pad" title="Permanent link">&para;</a></h2>
@@ -3244,20 +3083,6 @@ dma.copy f.data =&gt; output;</code></pre>
 <p><img alt="span(i) — Picking One Dimension" src="../../assets/images/ch02/fig_span_dark.png#only-dark" />
 <img alt="span(i) — Picking One Dimension" src="../../assets/images/ch02/fig_span_light.png#only-light" /></p>
 <p><em>Use <code>span</code> for the whole shape, <code>span(i)</code> for a single axis.</em></p>
-<h2 id="memory-specifiers-global-shared-and-local">Memory Specifiers: <code>global</code>, <code>shared</code>, and <code>local</code><a class="headerlink" href="#memory-specifiers-global-shared-and-local" title="Permanent link">&para;</a></h2>
-<p>The destination of a movement statement also states where the moved tile should live.</p>
-<ul>
-<li><code>global</code>: device memory. Large, slow, visible across the device.</li>
-<li><code>shared</code>: block-visible on-chip memory. This is the usual staging area for cooperative tiles.</li>
-<li><code>local</code>: thread-private storage. Good for small private tiles or non-cooperative use.</li>
-</ul>
-<pre class="highlight"><code class="language-choreo">f0 = dma.copy input =&gt; shared;
-f1 = dma.copy matrix_tile =&gt; local;
-dma.copy out_tile =&gt; output;</code></pre>
-<p>For performance-sensitive kernels, <code>shared</code> is the important level. The compiler's cooperative tiled lowering is aimed at global-to-shared and shared-to-global movement. <code>local</code> copies are still useful, but they are not the main fast path for cooperative block transfers.</p>
-<p><img alt="Memory Specifiers → GPU Hardware" src="../../assets/images/ch02/fig_memory_hierarchy_dark.png#only-dark" />
-<img alt="Memory Specifiers → GPU Hardware" src="../../assets/images/ch02/fig_memory_hierarchy_light.png#only-light" /></p>
-<p><em>Croqtile's memory specifiers map directly onto the GPU memory hierarchy.</em></p>
 <h2 id="partial-tiles-guarding-and-zfill">Partial Tiles, Guarding, and <code>.zfill</code><a class="headerlink" href="#partial-tiles-guarding-and-zfill" title="Permanent link">&para;</a></h2>
 <p>Real kernels often end with a partial tile. The important distinction is whether the <strong>source tile shape</strong> and <strong>destination tile shape</strong> are the same.</p>
 <p>For example:</p>
@@ -3282,83 +3107,12 @@ dma.copy out_tile =&gt; output;</code></pre>
 <p>Use <code>.zfill</code> when the valid source region is smaller than the destination tile and the consumer will treat the destination as a full dense tile. This is the common case for GEMM-style pipelines with dynamic row counts or padded edge tiles.</p>
 <p>If you add <code>.zfill</code> when the source and destination shapes are already the same, the compiler can warn that the <code>.zfill</code> is redundant. Conversely, when the shapes differ, the compiler can also warn that <code>.zfill</code> is needed to avoid using undefined values in the uncovered region.</p>
 <h2 id="swizn-shared-memory-layout-for-the-consumer"><code>.swiz&lt;N&gt;</code>: Shared-Memory Layout for the Consumer<a class="headerlink" href="#swizn-shared-memory-layout-for-the-consumer" title="Permanent link">&para;</a></h2>
-<p>Swizzle is mainly about how the tile should live in shared memory so later operations can read it efficiently.</p>
+<p>Swizzle is mainly about how the tile should live in shared storage so later operations can read it efficiently.</p>
 <p>Typical GEMM staging code looks like this:</p>
 <pre class="highlight"><code class="language-choreo">dma.copy.swiz&lt;128&gt; lhs.subspan(WARP_M, TILE_K).at(block_m, iv_k) =&gt; lhs_load_s;
 ma = mma.load.swiz&lt;128&gt; lhs_load_s.chunkat(_, iv_warp);</code></pre>
 <p>The load-side and compute-side swizzles need to agree. If you stage a tile with <code>.swiz&lt;128&gt;</code>, the consumer should usually load it with the matching swizzle.</p>
 <p>This chapter only introduces the idea. The MMA chapters go deeper into which swizzle values pair well with which matrix layouts.</p>
-<h2 id="dma-vs-tma">DMA vs TMA<a class="headerlink" href="#dma-vs-tma" title="Permanent link">&para;</a></h2>
-<p>Both engines move shaped tiles. The difference is how they do it and what constraints they require.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th><code>dma</code></th>
-<th><code>tma</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Implementation</td>
-<td>Cooperative software copy</td>
-<td>Hopper Tensor Memory Accelerator</td>
-</tr>
-<tr>
-<td>Hardware requirement</td>
-<td>General GPU path</td>
-<td>SM90+</td>
-</tr>
-<tr>
-<td>Good fit</td>
-<td>Dynamic or irregular tiles, portable code</td>
-<td>Fixed-shape high-bandwidth staging</td>
-</tr>
-<tr>
-<td>Common destination</td>
-<td><code>shared</code></td>
-<td><code>shared</code></td>
-</tr>
-<tr>
-<td>Async support</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
-<p>Example TMA use:</p>
-<pre class="highlight"><code class="language-choreo">f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) =&gt; shared;
-wait f;</code></pre>
-<p>The practical rule is simple:</p>
-<ul>
-<li>Use <code>dma</code> when tile sizes are dynamic, irregular, or you want the portable path.</li>
-<li>Use <code>tma</code> on Hopper when the tile shape is fixed and you want hardware-assisted movement.</li>
-</ul>
-<h3 id="the-main-tma-constraint">The main TMA constraint<a class="headerlink" href="#the-main-tma-constraint" title="Permanent link">&para;</a></h3>
-<p>TMA tile shapes must be host-computable. Runtime tile indices are fine:</p>
-<pre class="highlight"><code class="language-choreo">tma.copy lhs.subspan(64, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
-<p>But a kernel-runtime value cannot define the tile shape itself:</p>
-<pre class="highlight"><code class="language-choreo">// Not valid for TMA if TILE_M is only known inside the kernel
-tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
-<p>If the tile size truly depends on kernel-runtime state, use <code>dma.copy</code> instead.</p>
-<h2 id="writing-dma-and-tma-that-lower-well">Writing DMA and TMA That Lower Well<a class="headerlink" href="#writing-dma-and-tma-that-lower-well" title="Permanent link">&para;</a></h2>
-<p>You do not need to know the whole lowering pass to write good code, but a few rules matter.</p>
-<h3 id="for-high-throughput-dma">For high-throughput DMA<a class="headerlink" href="#for-high-throughput-dma" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Prefer <code>global &lt;-&gt; shared</code> movement for cooperative staging.</li>
-<li>Use enough participating threads. A warp-sized or larger cooperative group is the common case.</li>
-<li>Keep source and destination ranks aligned.</li>
-<li>Use ordinary byte-sized or larger element types.</li>
-<li>Reserve <code>local</code> for private tiles, not as the default performance path.</li>
-</ul>
-<p>If these conditions do not hold, the compiler can still generate a correct copy, but it may fall back to a simpler path.</p>
-<h3 id="for-tma">For TMA<a class="headerlink" href="#for-tma" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Use it on SM90+.</li>
-<li>Keep the tile shape fixed from the host's point of view.</li>
-<li>Stage into shared memory.</li>
-<li>Add <code>.zfill</code> for partial tiles that feed full-tile consumers.</li>
-</ul>
 <h2 id="checklist">Checklist<a class="headerlink" href="#checklist" title="Permanent link">&para;</a></h2>
 <p>By the end of this chapter, the new pieces of syntax should mean the following:</p>
 <table>
@@ -3371,11 +3125,7 @@ tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) =&gt; shared;</code></pre>
 <tbody>
 <tr>
 <td><code>dma.copy src =&gt; shared</code></td>
-<td>Move a tile into shared memory.</td>
-</tr>
-<tr>
-<td><code>tma.copy src =&gt; shared</code></td>
-<td>Use Hopper TMA to move a tile into shared memory.</td>
+<td>Move a tile into shared storage.</td>
 </tr>
 <tr>
 <td><code>dma.copy.async ...</code></td>

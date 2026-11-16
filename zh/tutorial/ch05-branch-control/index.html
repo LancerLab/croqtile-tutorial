@@ -2752,33 +2752,33 @@
 
 <h1 id="_1">控制流：分歧、并发与协调<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <p>凡面向并行机器的编程语言都必须回答一个问题：<strong>当不同线程需要做不同事情时，会发生什么？</strong></p>
-<p>在 CPU 上，答案很直接——每个核心自有程序计数器，因而每条线程可执行任意代码。在 GPU 上，答案受到严格约束。<strong>SIMT</strong>（Single Instruction, Multiple Thread）执行模型将线程编成每 <strong>warp</strong> 32 条、共享单一指令指针。当分支使一部分线程走一路、另一部分走另一路时，硬件不能简单分叉——必须对分歧路径<strong>串行化</strong>，并对非活跃线程做屏蔽。这便是 GPU 编程语言的根本张力：硬件偏好均匀性，而真实程序需要异质性。</p>
-<p>CUDA 对此只暴露一种控制流原语：<code>if</code>。全体线程求值条件；条件为假的线程被屏蔽（停用）；在 warp 内两侧路径顺序执行。这是<strong>谓词执行</strong>——简单、通用，有时代价极高。在 <code>if</code> 上发生分歧的 warp 会执行两侧，在每一侧都浪费约一半吞吐。</p>
-<p>但谓词执行并不够用。考虑矩阵乘内核：一组线程应持续从全局内存取 tile，另一组应持续在 tensor core 上对 tile 做乘法。这不是数据相关分支——而是两个<strong>结构不同的程序</strong>恰好共享同一地址空间。若用 <code>if</code> 表达，则一个程序在另一个运行时只能暂停。没有重叠，没有流水线。</p>
-<p>鳄霸（Croqtile）引入另外两种控制流原语以填补这一空白：</p>
+<p>在 CPU 上，答案很直接——每个核心自有程序计数器，因而每条线程可执行任意代码。若多条线程共享同一个指令指针，答案就受到严格约束：机器不能分叉，只能对发散路径<strong>串行化</strong>，并屏蔽不活跃的线程。这便是根本张力：硬件偏好均匀性，而真实程序需要异质性。</p>
+<p>这样的机器为此只提供一种控制流原语：<code>if</code>。全体线程求值条件；条件为假的线程被屏蔽；两侧路径在组内顺序执行。这是<strong>谓词执行</strong>——简单、通用，有时代价极高。在 <code>if</code> 上发散的组会执行两侧，每一侧都浪费约一半吞吐。</p>
+<p>但谓词执行并不够用。考虑矩阵乘核函数：一组线程应持续从全局存储取分块，另一组应持续在收缩单元上做乘法。这不是数据相关分支——而是两个<strong>结构不同的程序</strong>恰好共享同一地址空间。若用 <code>if</code> 表达，则一个程序在另一个运行时只能暂停。没有重叠，没有流水线。</p>
+<p>Croqtile 引入另外两种控制流原语来填补这一空白：</p>
 <ul>
-<li><strong><code>inthreads.async</code></strong> —— <strong>结构化并发区域</strong>：在编译期将线程划分为若干组，使其<strong>同时运行不同程序</strong>。编译器生成独立指令流；硬件独立调度。</li>
-<li><strong><code>shared event</code> / <code>wait</code> / <code>trigger</code></strong> —— <strong>区域间信令</strong>：轻量级同步令牌，使并发区域可安全通信。</li>
+<li><strong><code>inthreads.async</code></strong> —— <strong>结构化并发区域</strong>：在编译期把线程划分为若干组，使其<strong>同时运行不同程序</strong>。编译器生成独立指令流；硬件独立调度。</li>
+<li><strong><code>shared event</code> / <code>wait</code> / <code>trigger</code></strong> —— <strong>区域间协调</strong>：轻量级同步令牌，使并发区域可安全通信。</li>
 </ul>
-<p>与 <code>if</code> 一起，这三种原语覆盖 GPU 内核中的完整控制流谱系：数据相关分支、结构化程序组合，以及程序间协调。</p>
+<p>与 <code>if</code> 一起，这三个原语覆盖核函数中控制流的完整谱系：数据相关分支、结构化程序组合，以及程序间协调。</p>
 <h2 id="if">以 <code>if</code> 实现谓词执行<a class="headerlink" href="#if" title="Permanent link">&para;</a></h2>
 <p>鳄霸（Croqtile）的 <code>if</code> 行为与其 C 语言对应物类似：</p>
 <pre class="highlight"><code class="language-choreo">if (tile_id &lt; total_tiles) {
   // body executes only when the condition is true
 }</code></pre>
-<p>作用域内全体线程求值条件。条件为假的线程跳过 body。在单一 warp 内，若部分线程走分支、部分不走，硬件对两路径<strong>串行化</strong>——被跳过一侧的线程空闲，待执行侧跑完后再反过来。这便是 <strong>warp 分歧</strong>，也是运行时灵活性所付出的代价。</p>
+<p>作用域内全体线程求值条件。条件为假的线程跳过函数体。在一个协作组内，若部分线程走分支、部分不走，硬件对两条路径<strong>串行化</strong>——被跳过一侧的线程空闲，待执行侧跑完后再反过来。这就是<strong>发散</strong>，也是运行时灵活性所付出的代价。</p>
 <p><strong>何时使用 <code>if</code>：</strong> 无法在编译期解析的数据相关决策。边界检查、部分 tile 保护、条件累加。条件可依赖运行时值——循环索引、输入数据、tile 坐标。</p>
-<p><strong>代价模型：</strong> warp 内分歧会使两路径串行。跨 warp 的分歧（每个 warp 内全体一致）无额外代价——硬件直接跳过未取路径。实用规则：在可能时使 <code>if</code> 条件<strong>warp 一致</strong>（32 条线程一致）。</p>
+<p><strong>代价模型：</strong> 组内发回会使两条路径串行。跨组的发散（每组内全体一致）没有额外代价——硬件直接跳过未取路径。实用规则：尽量让 <code>if</code> 条件在协作组内一致。</p>
 <h2 id="inthreadsasync">以 <code>inthreads.async</code> 实现结构化并发区域<a class="headerlink" href="#inthreadsasync" title="Permanent link">&para;</a></h2>
 <p><code>inthreads.async</code> 解决的问题与 <code>if</code> 根本不同。它不在运行时问「这条线程是否执行这段代码？」，而在<strong>编译期</strong>声明「这组线程跑这个程序，那组跑那个程序」。</p>
-<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : group-4 {
+<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : thread {
 
   inthreads.async (p1 == 0) {
-    // program A: only warpgroup 0 compiles and runs this
+    // program A: only group 0 compiles and runs this
   }
 
   inthreads.async (p1 == 1) {
-    // program B: only warpgroup 1 compiles and runs this
+    // program B: only group 1 compiles and runs this
   }
 }</code></pre>
 <p>与 <code>if</code> 的区别是结构性的，不仅是性能：</p>
@@ -2803,8 +2803,8 @@
 </tr>
 <tr>
 <td><strong>执行</strong></td>
-<td>warp 内分歧则串行</td>
-<td>跨 warpgroup 并发</td>
+<td>组内发散则串行</td>
+<td>跨组并发</td>
 </tr>
 <tr>
 <td><strong>PL 类比</strong></td>
@@ -2812,35 +2812,35 @@
 <td>结构化并发中的 <code>async</code>/<code>spawn</code>（Trio、Go goroutine、Cilk）</td>
 </tr>
 <tr>
-<td><strong>GPU 类比</strong></td>
+<td><strong>模型</strong></td>
 <td>带屏蔽的 SPMD</td>
-<td>单次 launch 内的 MPMD</td>
+<td>单次启动内的 MPMD</td>
 </tr>
 </tbody>
 </table>
 <p><strong>何谓「结构化」？</strong> 区域按词法作用域界定——编译器在解析时即知哪些线程属于哪一区域。无动态 spawn、无无界并发。每个 <code>inthreads.async</code> 块是静态划分。这使其适于编译期分析：编译器可为各区域分配不同寄存器、发出不同指令调度，并验证共享资源使用安全。</p>
 <p><strong><code>.async</code> 修饰符。</strong> 若无 <code>.async</code>，<code>inthreads</code> 将按顺序执行各区域——线程子集轮流。<code>.async</code> 后缀为并发修饰符：告知编译器与硬件各区域可在时间上重叠。这与结构化并发框架中的 <code>async</code> 关键字类似——将区域标为可独立调度。</p>
-<p>下图示意其效果。上方时间线表示单一 warpgroup 在 DMA 与 MMA 之间交替（串行、无重叠）。下方表示两个 warpgroup 使用 <code>inthreads.async</code>——生产者 DMA 与消费者 MMA 在时间上重叠：</p>
+<p>下图示意其效果。上方时间线表示单个组在 DMA 与 MMA 之间交替（串行、无重叠）。下方表示两个组使用 <code>inthreads.async</code>——生产者 DMA 与消费者 MMA 在时间上重叠：</p>
 <p><img alt="Uniform vs structured-concurrent execution: sequential alternation vs overlapping regions" src="../../../assets/images/ch05/fig1_role_comparison_dark.png#only-dark" />
 <img alt="Uniform vs structured-concurrent execution: sequential alternation vs overlapping regions" src="../../../assets/images/ch05/fig1_role_comparison_light.png#only-light" /></p>
-<p><em>上图：单一 warpgroup 在 DMA 与 MMA 之间交替——彼此等待。下图：<code>inthreads.async</code> 划分为两个并发程序——DMA 与 MMA 重叠，墙钟时间大致减半。</em></p>
+<p><em>上图：单个组在 DMA 与 MMA 之间交替——彼此等待。下图：<code>inthreads.async</code> 划分为两个并发程序——DMA 与 MMA 重叠，墙钟时间大致减半。</em></p>
 <h3 id="1-1">典型模式：1 个生产者 + 1 个消费者<a class="headerlink" href="#1-1" title="Permanent link">&para;</a></h3>
 <p><code>inthreads.async</code> 最常见的用法是矩阵乘的 <strong>1P1C</strong>（one producer, one consumer）划分：</p>
-<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : group-4 {
+<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : thread {
 
   inthreads.async (p1 == 0) {
-    // producer: only warpgroup 0 runs this
-    // issue DMA / TMA loads, fill shared memory
+    // producer: only group 0 runs this
+    // issue DMA loads, fill shared storage
   }
 
   inthreads.async (p1 == 1) {
-    // consumer: only warpgroup 1 runs this
-    // run MMA on shared memory, accumulate results
+    // consumer: only group 1 runs this
+    // run MMA on shared storage, accumulate results
   }
 }</code></pre>
-<p><strong><code>parallel p1 by 2 : group-4</code></strong> —— 两个 warpgroup（各 128 条线程），由 <code>p1</code> 索引。</p>
-<p><strong><code>inthreads.async (p1 == 0)</code></strong> —— warpgroup 0 编译并执行生产者 body；warpgroup 1 永不见到此代码。</p>
-<p><strong><code>inthreads.async (p1 == 1)</code></strong> —— warpgroup 1 执行消费者 body。两块为共享地址空间下的独立程序。</p>
+<p><strong><code>parallel p1 by 2 : thread</code></strong> —— 外层块内的两个组，由 <code>p1</code> 索引。</p>
+<p><strong><code>inthreads.async (p1 == 0)</code></strong> —— 组 0 编译并执行生产者函数体；组 1 永远看不到这段代码。</p>
+<p><strong><code>inthreads.async (p1 == 1)</code></strong> —— 组 1 执行消费者函数体。两个块是共享同一地址空间的独立程序。</p>
 <p>但共享地址空间恰恰使问题危险。若无协调，消费者可能在生产者写完之前读取缓冲区。此处即需要 event。</p>
 <h2 id="event">以 event 实现区域间信令<a class="headerlink" href="#event" title="Permanent link">&para;</a></h2>
 <p>当 <code>inthreads.async</code> 创建并发区域时，这些区域需要通信方式。鳄霸（Croqtile）提供 <strong>event</strong>——在共享内存中声明的轻量级同步令牌：</p>
@@ -2852,27 +2852,27 @@ shared event empty;</code></pre>
 <li><strong><code>wait name</code></strong> —— 阻塞直至对应 <code>trigger</code> 发生</li>
 </ul>
 <p>生产者在将 tile 写入后调用 <code>trigger full</code>，表示「数据就绪」。消费者在读前调用 <code>wait full</code>，阻塞直至信号到达。对称地，消费者读完之后触发 <code>empty</code>（缓冲区可复用），生产者在写下一 tile 前 <code>wait empty</code>。</p>
-<p>这是<strong>基于信用的有界缓冲区</strong>协议——与操作系统（信号量）、网络流控（TCP 窗口）及硬件（warp barrier）所用模式相同。<code>full</code> 为「数据可用」信用；<code>empty</code> 为「缓冲区空闲」信用。</p>
+<p>这是由两个事件构成的<strong>有界缓冲区</strong>协议——<code>full</code> 记录某个槽位已有数据；<code>empty</code> 记录它已可重新填充。</p>
 <h3 id="event_1">多阶段流水线的 event 数组<a class="headerlink" href="#event_1" title="Permanent link">&para;</a></h3>
 <p>对具有多级缓冲的流水线，声明 event 数组：</p>
 <pre class="highlight"><code class="language-choreo">shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];</code></pre>
 <p>每个物理缓冲槽位自有 <code>full</code>/<code>empty</code> 对。环形索引 <code>stage = iv_k % MATMUL_STAGES</code> 将无界的 K 迭代映射到固定数量的物理槽。四阶段时，生产者在因 <code>wait empty</code> 阻塞前可超前运行若干 tile。</p>
 <h3 id="_2">自举协议<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
-<p>消费者必须在 K 循环开始前对 <code>empty</code> 信用<strong>播种</strong>：</p>
+<p>消费者必须在 K 循环开始前<strong>触发</strong>每一个 <code>empty</code> 事件：</p>
 <pre class="highlight"><code class="language-choreo">foreach {s} in [MATMUL_STAGES] {
   trigger empty[s];
 }</code></pre>
-<p>若无此自举，生产者首次 <code>wait empty[0]</code> 将永远阻塞——死锁，而非神秘的 MMA bug。这是常见陷阱：凡有界缓冲区协议都需初始信用。</p>
+<p>若无此自举，生产者首次 <code>wait empty[0]</code> 将永远阻塞——死锁，而非神秘的 MMA bug。这是常见陷阱：任何有界缓冲区协议都需要在第一次等待之前先把事件触发出来。</p>
 <p><a href="../ch06-synchronization/">第 6 章</a> 给出完整的双缓冲与多阶段流水线内核，将这些原语付诸实践。该章示例将 <code>inthreads.async</code>、event、<code>swap</code> 与 <code>mma.commit</code> 组合为可完整运行的矩阵乘流水线。</p>
 <h2 id="1p1c">1P1C 矩阵乘骨架<a class="headerlink" href="#1p1c" title="Permanent link">&para;</a></h2>
-<p>以下展示三种原语在 Hopper 矩阵乘中的组合方式。基于 event 的同步省略——<a href="../ch06-synchronization/">第 6 章</a> 补充完整流水线协议。请关注程序结构：</p>
+<p>以下展示三种原语在矩阵乘中的组合方式。基于 event 的同步省略——<a href="../ch06-synchronization/">第 6 章</a> 补充完整流水线协议。请关注程序结构：</p>
 <pre class="highlight"><code class="language-choreo">__co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
   parallel {block_m, block_n} by [cdiv(M, MATMUL_WARP_M), cdiv(N, MATMUL_WARP_N)] : block {
     shared f16 [MATMUL_WARP_M, MATMUL_TILE_K] lhs_load_s;
     shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
     shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
 
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
 
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
@@ -2896,8 +2896,8 @@ shared event empty;</code></pre>
     }
   }
 }</code></pre>
-<p><strong>生产者 <code>foreach</code></strong> —— 以 <code>cdiv(K, MATMUL_TILE_K)</code> 步遍历 K；warpgroup 0 向共享内存发出 <code>dma.copy</code>。</p>
-<p><strong>消费者 <code>mma</code> 路径</strong> —— warpgroup 1 不触碰这些 DMA；它读共享内存，在 <code>mc</code> 中累加，并写回结果。</p>
+<p><strong>生产者 <code>foreach</code></strong> —— 以 <code>cdiv(K, MATMUL_TILE_K)</code> 步遍历 K；组 0 向共享存储发出 <code>dma.copy</code>。</p>
+<p><strong>消费者 <code>mma</code> 路径</strong> —— 组 1 不触碰这些 DMA；它读共享存储，在 <code>mc</code> 中累加，并写回结果。</p>
 <p><strong>缺失的协调</strong> —— 两侧独立遍历 K。消费者在读时假定每个 K 条带已就绪。要使该假定成立，需要 event（见 <a href="../ch06-synchronization/">第 6 章</a>）。</p>
 <h2 id="if_1">持久调度与 <code>if</code> 守卫<a class="headerlink" href="#if_1" title="Permanent link">&para;</a></h2>
 <p>在第 3–4 章中，grid 随问题规模增长：大致每个输出 tile 一个 block。对大矩阵意味着 launch 次数多，最后一波 block 常使 SM 部分空闲——<strong>尾部利用率不足</strong>。</p>
@@ -2923,7 +2923,7 @@ shared event empty;</code></pre>
           dma.copy rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k) =&gt; rhs_load_s;
 
           foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-            parallel p by 1 : group-4 {
+            parallel p by 1 : thread {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
               mma.row.row mc, ma, mb;
@@ -2974,13 +2974,13 @@ shared event empty;</code></pre>
 </tbody>
 </table>
 <h2 id="parallelasync-stream-s"><code>parallel.async</code> 与 <code>stream s</code>：主机侧并发<a class="headerlink" href="#parallelasync-stream-s" title="Permanent link">&para;</a></h2>
-<p>上文均在 kernel 内。有时需要在<strong>主机侧</strong>并发：启动 grid 而不阻塞 CPU，或将不同 grid 绑定到不同 CUDA <code>stream</code>，使其在 GPU 上并发执行。</p>
+<p>上面这些都发生在核函数内部。有时需要在<strong>主机层</strong>并发：启动一个网格而不阻塞 CPU，或把不同网格绑定到不同的 <code>stream</code>，让它们并发执行。</p>
 <pre class="highlight"><code class="language-choreo">parallel.async {px, py} by [grid_m, grid_n] : block {
   stream s;
   // kernel body
 }</code></pre>
-<p><strong><code>parallel.async</code></strong> 立即将控制权交还主机——kernel 已入队，主机不等待完成。这相当于在非默认 <code>stream</code> 上调用 <code>cudaLaunchKernel</code> 的鳄霸（Croqtile）写法。</p>
-<p><strong><code>stream s</code></strong> 将 kernel 绑定到 CUDA <code>stream s</code>。若 SM 充足，不同 <code>stream</code> 的多个 <code>parallel.async</code> 块可在 GPU 上重叠。</p>
+<p><strong><code>parallel.async</code></strong> 立即把控制权交还主机——核函数已入队，但主机不等它完成。这是 Croqtile 表达「在指定流上非阻塞启动」的形式。</p>
+<p><strong><code>stream s</code></strong> 把核函数固定到流 <code>s</code>。在机器有足够空闲资源时，使用不同流的多个 <code>parallel.async</code> 块可以重叠执行。</p>
 <p>这是<strong>主机编排</strong>，与内核内控制流正交。它不替代用于线程划分的 <code>inthreads.async</code> 或用于运行时谓词的 <code>if</code>——它决定相对其他 grid <strong>何时、在何处</strong>运行某一 grid。</p>
 <h2 id="_3">新语法<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <table>
@@ -3029,7 +3029,7 @@ shared event empty;</code></pre>
 </tr>
 <tr>
 <td><code>stream s</code></td>
-<td>将 kernel 绑定到 CUDA <code>stream s</code></td>
+<td>把核函数绑定到流 <code>s</code></td>
 </tr>
 </tbody>
 </table>
@@ -3070,7 +3070,7 @@ shared event empty;</code></pre>
 </tr>
 </tbody>
 </table>
-<p>上文 1P1C 骨架不完整：若无 <code>wait</code> / <code>trigger</code>，消费者可能在生产者写完之前读取。<a href="../ch06-synchronization/">第 6 章</a> 补充完整同步协议——单调度表双缓冲用 <code>swap</code>，多 warpgroup 流水线用 event——使流水线安全且满吞吐运行。</p>
+<p>上面的 1P1C 骨架并不完整：没有 <code>wait</code> / <code>trigger</code>，消费者可能在生产者写完之前就读取。<a href="../ch06-synchronization/">第 6 章</a> 补上完整的同步协议——单调度表双缓冲用 <code>swap</code>，多组流水线用事件——让流水线既安全又跑满吞吐。</p>
 
 
 

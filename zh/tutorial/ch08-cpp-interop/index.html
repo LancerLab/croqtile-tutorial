@@ -714,17 +714,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#co" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        .co 文件如何编译
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#__device__-c-inline" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -736,10 +725,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#__device__-cuda-croqtile" class="md-nav__link">
+  <a href="#__device__" class="md-nav__link">
     <span class="md-ellipsis">
       
-        __device__ 函数：CUDA 与 Croqtile 并存
+        __device__ 函数
       
     </span>
   </a>
@@ -759,32 +748,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#setmaxnreg" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        寄存器提示：setmaxnreg
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         提前返回与守卫
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#__cpp__" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        __cpp__ 字符串内的宏
       
     </span>
   </a>
@@ -843,17 +810,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#co_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        如何阅读生产级 .co 文件
-      
-    </span>
-  </a>
   
 </li>
       
@@ -2538,17 +2494,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#co" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        .co 文件如何编译
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#__device__-c-inline" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2560,10 +2505,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#__device__-cuda-croqtile" class="md-nav__link">
+  <a href="#__device__" class="md-nav__link">
     <span class="md-ellipsis">
       
-        __device__ 函数：CUDA 与 Croqtile 并存
+        __device__ 函数
       
     </span>
   </a>
@@ -2583,32 +2528,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#setmaxnreg" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        寄存器提示：setmaxnreg
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         提前返回与守卫
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#__cpp__" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        __cpp__ 字符串内的宏
       
     </span>
   </a>
@@ -2667,17 +2590,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#co_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        如何阅读生产级 .co 文件
-      
-    </span>
-  </a>
   
 </li>
       
@@ -2764,46 +2676,18 @@
 <p>每一种高级语言都需要一条通往更底层机制的逃生通道。Python 有 <code>ctypes</code> 与 C 扩展，Rust 有 <code>unsafe</code> 块与 <code>extern "C"</code>，Java 有 JNI。原因总是一样的：无论抽象多么富有表现力，总有某些硬件特性、某些遗留库、某些性能攸关的内建能力处在该语言域之外。</p>
 <p>鳄霸（Croqtile）的互操作叙事包含三个部分：</p>
 <ol>
-<li><strong><code>__device__</code> 函数</strong> — 标准 CUDA device 函数，与 <code>__co__</code> 函数共存于同一 <code>.co</code> 文件中。编译器对它们原样透传。</li>
+<li><strong><code>__device__</code> 函数</strong> — 设备函数，与 <code>__co__</code> 函数共存于同一 <code>.co</code> 文件中。编译器对它们原样透传。</li>
 <li><strong><code>__cpp__</code></strong> — 将逐字 C++ 或 PTX 注入到生成代码中，用于 DSL 无法发出的硬件相关指令。</li>
 <li><strong>预处理器</strong> — <code>#define</code>、<code>#if</code>、<code>#ifdef</code>、<code>#error</code>，用于编译期配置，与 C/C++ 代码库中 <code>#define</code> 所扮演的角色相同。</li>
 </ol>
-<p>至此，本教程已堆叠起一整座抽象栈：tile、并行、MMA、流水线、事件、TMA。那是你希望在鳄霸中长期栖居的世界。本章讨论的是你需要暂时跨出去的那些时刻。</p>
-<h2 id="co"><code>.co</code> 文件如何编译<a class="headerlink" href="#co" title="Permanent link">&para;</a></h2>
-<p><code>.co</code> 文件混合三类代码。鳄霸编译器对每类代码区别对待——理解这些边界对于搞清哪些事能做、哪些事不能做十分关键。考虑下面这个骨架：</p>
-<pre class="highlight"><code class="language-choreo">__device__ __forceinline__ float fast_rsqrt(float x) {   // ①
-  return __frsqrt_rn(x);
-}
-
-__co__ void my_kernel(f32 [M, N] input, f32 [M, N]&amp; output) {   // ②
-  parallel {bm, bn} by [cdiv(M, 64), cdiv(N, 64)] : block {
-    // ... Croqtile 编排：parallel, dma, mma, events ...
-    __cpp__("asm volatile(\"setmaxnreg.dec.sync.aligned.u32 40;\");");   // ③
-  }
-}
-
-int main() {   // ④
-  auto in = choreo::make_spandata&lt;choreo::f32&gt;(M, N);
-  auto out = my_kernel(in.view());
-}</code></pre>
-<p>编译器将所有内容合并为一个 <code>.cu</code> 中间文件，然后交由 <code>nvcc</code> 处理：</p>
-<p><img alt=".co compilation: Croqtile compiler transforms __co__ and passes through __device__ and host C++, merging everything into one .cu file for nvcc" src="../../../assets/images/ch08/fig1_compilation_flow_dark.png#only-dark" />
-<img alt=".co compilation: Croqtile compiler transforms __co__ and passes through __device__ and host C++, merging everything into one .cu file for nvcc" src="../../../assets/images/ch08/fig1_compilation_flow_light.png#only-light" /></p>
-<p>各区域的处理方式：</p>
-<ul>
-<li><strong>① <code>__device__</code> 函数</strong> 被<strong>逐字拷贝</strong>到生成的 <code>.cu</code> 文件。鳄霸编译器不解析其函数体、不改写、不管理其寄存器分配。它们出现在中间源码中时与你书写时完全一致。这是与 <code>__co__</code> 函数的关键区别：<code>__device__</code> 函数是恰好住在 <code>.co</code> 文件中的纯 CUDA 代码。</li>
-<li><strong>② <code>__co__</code> 函数</strong> 是鳄霸的核心。编译器将它们变换为 <code>__global__</code> CUDA kernel：<code>parallel</code> 变为 grid/block launch 维度，<code>dma.copy</code> 变为协作 load 序列（或 TMA 描述符发射），<code>mma</code> 变为 <code>wgmma</code> 指令，<code>shared</code> 声明变为带计算尺寸的 <code>__shared__</code> 分配，事件变为 barrier/mbarrier 同步。生成代码通常为几十行鳄霸对应数百行 CUDA。</li>
-<li><strong>③ <code>__cpp__</code> 字符串</strong> 在它们出现于 <code>__co__</code> 主体中的位置被逐字符拼接到生成的 CUDA。编译器不解析其内容——它们在生成代码的拼接点处必须合法。</li>
-<li><strong>④ Host 代码</strong>（<code>main()</code> 及任何其他无注解函数）作为普通 C++ 透传，进入 host 编译路径。</li>
-</ul>
-<p>四个区域合并进一个 <code>.cu</code> 文件。<code>nvcc</code> 将 device 代码（<code>__global__</code>、<code>__device__</code>）编译为 GPU 机器码，将 host 代码编译为 CPU 代码，最终链接为单一二进制。运行 <code>croq kernel.co -v</code>（第 9 章）可查看编译器发出的完整 <code>nvcc</code> 命令。</p>
+<p>前面几章已堆起一整座抽象栈：分块、并行、MMA、流水线、事件。那是你希望长期栖居的 Croqtile 世界。本章讨论的是你需要暂时跨出去的那些时刻。</p>
 <h2 id="__device__-c-inline"><code>__device__</code> 与普通 C++ inline 的区别<a class="headerlink" href="#__device__-c-inline" title="Permanent link">&para;</a></h2>
 <p><code>__device__</code> 函数与普通 C++ 函数都被原样透传，但它们落入不同的编译路径——这一区别至关重要。</p>
-<p><code>__device__</code> 函数编译为 <strong>GPU 机器码</strong>。它可以使用 CUDA 内建（<code>__shfl_xor_sync</code>、<code>__frsqrt_rn</code>、<code>atomicAdd</code>），访问 <code>__shared__</code> 内存，在 <code>__global__</code> kernel 内部运行。<code>__co__</code> 主体通过 <code>call</code> 关键字调用它，生成的 <code>__global__</code> kernel 在设备端直接调用。</p>
-<p>普通 C++ 函数（无 <code>__device__</code> 或 <code>__co__</code> 注解）编译为 <strong>CPU 代码</strong>。它在 host 上运行——建立缓冲区、启动 kernel、打印结果。你不能在 <code>__co__</code> 主体内调用 host 函数；编译器会拒绝，因为生成的 <code>__global__</code> kernel 运行在 GPU 上。</p>
-<p>边界是严格的：<code>__device__</code> 位于 <code>nvcc</code> 切分的 device 侧，host C++ 位于 host 侧。<code>__co__</code> 函数是桥梁——编译器将其变换为 <code>__global__</code> kernel（device 侧）并生成 host 侧的启动封装。</p>
-<h2 id="__device__-cuda-croqtile"><code>__device__</code> 函数：CUDA 与 Croqtile 并存<a class="headerlink" href="#__device__-cuda-croqtile" title="Permanent link">&para;</a></h2>
-<p>当算法需要在线程或 warp 粒度上运作的辅助函数 —— 例如自定义归约、排序网络、特殊数学函数 —— 将其写成标准 CUDA <code>__device__</code> 函数往往是自然之选。鳄霸无需管理这些；它们就是普通 CUDA。</p>
+<p><code>__device__</code> 函数编译为<strong>设备机器码</strong>。它可以使用目标内建（<code>__shfl_xor_sync</code>、<code>__frsqrt_rn</code>、<code>atomicAdd</code>），访问 <code>__shared__</code> 存储，在 <code>__global__</code> kernel 内部运行。<code>__co__</code> 主体通过 <code>call</code> 关键字调用它，生成的 <code>__global__</code> kernel 在设备端直接调用。</p>
+<p>普通 C++ 函数（无 <code>__device__</code> 或 <code>__co__</code> 注解）编译为 <strong>CPU 代码</strong>。它在 host 上运行——建立缓冲区、启动 kernel、打印结果。你不能在 <code>__co__</code> 主体内调用 host 函数；编译器会拒绝，因为生成的 kernel 运行在设备上。</p>
+<p>边界是严格的：<code>__device__</code> 位于切分的设备侧，host C++ 位于主机侧。<code>__co__</code> 函数是桥梁——编译器将其变换为 <code>__global__</code> kernel（device 侧）并生成 host 侧的启动封装。</p>
+<h2 id="__device__"><code>__device__</code> 函数<a class="headerlink" href="#__device__" title="Permanent link">&para;</a></h2>
+<p>当算法需要在线程或 lane 粒度上运作的辅助函数——例如自定义归约、排序网络、特殊数学函数——把它写成设备函数往往是自然之选。Croqtile 无需管理这些；它们原样交给目标编译器。</p>
 <p><code>__co__</code> 函数可使用 <code>call</code> 关键字调用 <code>__device__</code> 函数：</p>
 <pre class="highlight"><code class="language-choreo">template &lt;int K&gt;
 __device__ void warp_topk(f32* vals, s32* idxs);
@@ -2843,55 +2727,22 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
     }
   }
 }</code></pre>
-<p><strong><code>__device__ void warp_topk&lt;K&gt;</code></strong> — 使用 shuffle 指令实现 warp 级 top-K 选择的模板 device 函数。它操作原始指针（<code>f32*</code>、<code>s32*</code>），而非 Croqtile spans。</p>
-<p><strong><code>__device__ T SHFL_XOR</code></strong> — warp shuffle 内建封装。<code>__forceinline__</code> 与 <code>__shfl_xor_sync</code> 为标准 CUDA —— Croqtile 原样透传。</p>
+<p><strong><code>__device__ void warp_topk&lt;K&gt;</code></strong> — 使用 shuffle 指令实现组内 top-K 选择的模板设备函数。它操作原始指针（<code>f32*</code>、<code>s32*</code>），而非 Croqtile spans。</p>
+<p><strong><code>__device__ T SHFL_XOR</code></strong> — lane shuffle 内建封装。<code>__forceinline__</code> 与 <code>__shfl_xor_sync</code> 是设备代码——Croqtile 原样透传。</p>
 <p><strong><code>call warp_topk&lt;8&gt;(...)</code></strong> — <code>call</code> 关键字在 <code>__co__</code> 主体内调用 <code>__device__</code> 函数。参数按指针传递；编译器负责在 Croqtile span 与原始指针之间完成地址转换。</p>
-<p><strong><code>inthreads (tid == 0)</code></strong> — 每个 warp 中只有线程 0 写回结果。注意此处使用不带 <code>.async</code> 的 <code>inthreads</code> —— 为顺序线程过滤，而非并发区域。</p>
-<p>这一模式 —— Croqtile 负责并行、tiling 与内存编排；<code>__device__</code> 函数负责 per-warp 算法 —— 在 MoE（mixture-of-experts）top-K、自定义归约与专用数学等生产级 kernel 中十分常见。</p>
+<p><strong><code>inthreads (tid == 0)</code></strong> — 每个组中只有 lane 0 写回结果。注意此处使用不带 <code>.async</code> 的 <code>inthreads</code> —— 为顺序线程过滤，而非并发区域。</p>
+<p>这一模式——Croqtile 负责并行、分块与存储编排；<code>__device__</code> 函数负责每组内的算法——在 MoE（mixture-of-experts）top-K、自定义归约与专用数学等生产级 kernel 中十分常见。</p>
 <h2 id="__cpp__-c"><code>__cpp__</code>：逐字 C++ 注入<a class="headerlink" href="#__cpp__-c" title="Permanent link">&para;</a></h2>
-<p><code>__cpp__</code> 接收一个字符串字面量，并逐字符粘贴到生成的 CUDA 文件中。置于该处的任何内容在拼接点都必须合法。鳄霸编译器既不解析也不改写其内容。</p>
+<p><code>__cpp__</code> 接收一个字符串字面量，并逐字符粘贴到生成的源码文件中。置于该处的任何内容在拼接点都必须合法。鳄霸编译器既不解析也不改写其内容。</p>
 <p><strong>两种形式：</strong></p>
 <ul>
 <li><strong><code>__cpp__("...")</code></strong> — 普通字符串；最适合短单行。</li>
 <li><strong><code>__cpp__(R"(...)")</code></strong> — 原始字符串字面量；在需要 <code>asm volatile</code> 且为每个 <code>"</code> 转义会很痛苦时使用。</li>
 </ul>
-<h3 id="setmaxnreg">寄存器提示：<code>setmaxnreg</code><a class="headerlink" href="#setmaxnreg" title="Permanent link">&para;</a></h3>
-<p>典型的 <code>__cpp__</code> 用例是 warp 特化流水线中的寄存器再分配（<a href="../ch05-branch-control/">第 5 章</a>）。producer warpgroup 寄存器占用较轻（多为 TMA load），而 consumer 较重（MMA 累加器）。PTX 的 <code>setmaxnreg</code> 指令用于移动寄存器预算：</p>
-<pre class="highlight"><code class="language-choreo">parallel p1 by 2 : group-4 {
-  inthreads.async (p1 == 0) {
-    __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 40;");)");
-    foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
-      // ... TMA loads ...
-    }
-  }
-
-  inthreads.async (p1 == 1) {
-    __cpp__(R"(asm volatile("setmaxnreg.inc.sync.aligned.u32 216;");)");
-    mc = mma.fill.f16 0.0f;
-    // ... WGMMA compute ...
-  }
-}</code></pre>
-<p><strong>放置位置</strong> — 将提示放在每个 <code>inthreads.async</code> 分支的顶部、重循环之前。</p>
 <h3 id="_1">提前返回与守卫<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
 <p>MoE 风格 kernel 常处理可变长度的 expert 段；某些 launch 宽度为零：</p>
 <pre class="highlight"><code class="language-choreo">__cpp__("if (seg_end - seg_start &lt;= 0) return;\n\n");</code></pre>
 <p>标识符须与周围生成代码所声明的一致。</p>
-<h3 id="__cpp__"><code>__cpp__</code> 字符串内的宏<a class="headerlink" href="#__cpp__" title="Permanent link">&para;</a></h3>
-<p>常见误区：以为预处理器会在字符串字面量内展开宏。</p>
-<pre class="highlight"><code class="language-choreo">#define PRODUCER_MAXNREG 40
-
-inthreads.async (p1 == 0) {
-  __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 PRODUCER_MAXNREG;");)");
-}</code></pre>
-<p>这会失败 —— 预处理器不会在字符串内展开。在 <code>__cpp__</code> 中使用数字字面量，并在其外使用 <code>#if</code> / <code>#error</code> 以强制一致性：</p>
-<pre class="highlight"><code class="language-choreo">#define PRODUCER_MAXNREG 40
-#if PRODUCER_MAXNREG &gt; 50
-#error "Producer maxnreg too high for this tile config"
-#endif
-
-inthreads.async (p1 == 0) {
-  __cpp__(R"(asm volatile("setmaxnreg.dec.sync.aligned.u32 40;");)");
-}</code></pre>
 <h2 id="_2">预处理器<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>鳄霸的预处理器在主编译遍之前运行。宏在同一 <code>.co</code> 文件的 <code>__co__</code> 区域与 host C++ 中都会展开，因此一份定义即可使 tile 几何与 host 侧检查保持一致。</p>
 <table>
@@ -2928,20 +2779,20 @@ inthreads.async (p1 == 0) {
 #define MATMUL_TILE_K 64
 #define MATMUL_WARP_K 16
 #define MATMUL_STAGES 4</code></pre>
-<p>相同名字出现在 <code>parallel</code>、共享内存声明、<code>foreach</code> 边界以及 host 侧校验中。</p>
+<p>相同名字出现在 <code>parallel</code>、共享存储声明、<code>foreach</code> 边界以及主机侧校验中。</p>
 <h3 id="error">使用 <code>#error</code> 的编译期断言<a class="headerlink" href="#error" title="Permanent link">&para;</a></h3>
 <pre class="highlight"><code class="language-choreo">#if MATMUL_SWIZ != (2 * MATMUL_TILE_K)
 #error "MATMUL_SWIZ must equal 2 * MATMUL_TILE_K for f16 kernel"
 #endif
 
 #if MATMUL_WARP_M != 64
-#error "MATMUL_WARP_M must be 64 for f16 WGMMA constraints"
+#error "MATMUL_WARP_M must be 64 for the f16 operand geometry"
 #endif</code></pre>
-<p>将这些守卫视为对硬件约束的文档化说明。</p>
+<p>把这些守卫看作对核函数所要求的 tile 几何的文档化说明。</p>
 <h3 id="_3">条件代码路径<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
 <pre class="highlight"><code class="language-choreo">#define PATH0
 
-__co__ foo() {
+__co__ auto foo() {
   #ifdef PATH0
     // path 0 code
   #else
@@ -2949,15 +2800,6 @@ __co__ foo() {
   #endif
 }</code></pre>
 <p>预处理器在鳄霸解析 <code>__co__</code> 主体之前保留一分支并丢弃另一分支。命令行定义：<code>croq kernel.co -DMATMUL_TILE_K=128</code>。</p>
-<h2 id="co_1">如何阅读生产级 <code>.co</code> 文件<a class="headerlink" href="#co_1" title="Permanent link">&para;</a></h2>
-<p>打开基准 kernel 时，自上而下阅读：</p>
-<ol>
-<li><strong>宏与 <code>#error</code> 守卫</strong> — 契约：允许的 tile 尺寸、swizzle 规则、架构标志。</li>
-<li><strong><code>__device__</code> 函数</strong> — Croqtile 原样透传的辅助算法（top-K、归约、shuffle 封装等）。</li>
-<li><strong>Host 设置</strong> — 缓冲区、launch 配置、计时；普通 C++。</li>
-<li><strong><code>__co__</code> 函数</strong> — 编排：<code>parallel</code>、<code>foreach</code>、TMA/MMA、<code>inthreads.async</code>、事件。将每个区域映射回先前章节。</li>
-<li><strong><code>__cpp__</code> 岛</strong> — 通常寥寥数行。在每一处停顿，追问硬件收到了哪些 DSL 未显式写出的内容。</li>
-</ol>
 <h2 id="_4">本章小结<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2970,28 +2812,23 @@ __co__ foo() {
 <tbody>
 <tr>
 <td><code>__device__ fn()</code></td>
-<td>标准 CUDA device 函数；逐字透传到 <code>.cu</code></td>
-<td>GPU</td>
+<td>设备函数；逐字透传到生成的源码</td>
+<td>设备</td>
 </tr>
 <tr>
 <td><code>call fn(args)</code></td>
 <td>从 <code>__co__</code> 主体内调用 <code>__device__</code> 函数</td>
-<td>GPU</td>
+<td>设备</td>
 </tr>
 <tr>
 <td><code>__cpp__("...")</code></td>
 <td>在拼接点注入逐字 C++（普通字符串）</td>
-<td>GPU</td>
+<td>目标</td>
 </tr>
 <tr>
 <td><code>__cpp__(R"(...)")</code></td>
 <td>注入逐字 C++（原始字符串；用于 <code>asm volatile</code>）</td>
-<td>GPU</td>
-</tr>
-<tr>
-<td><code>setmaxnreg</code></td>
-<td>通过 <code>__cpp__</code> 做寄存器再分配：producer 上 <code>dec</code>，consumer 上 <code>inc</code></td>
-<td>GPU</td>
+<td>目标</td>
 </tr>
 <tr>
 <td><code>#define NAME value</code></td>

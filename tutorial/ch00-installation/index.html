@@ -2584,10 +2584,6 @@
 <td>Flex</td>
 <td>2.6.4+</td>
 </tr>
-<tr>
-<td>CUDA Toolkit</td>
-<td>11.8+ (for GPU targets)</td>
-</tr>
 </tbody>
 </table>
 <p>Most Linux distributions ship Flex and an older Bison. If your system Bison is below 3.8, the setup step below will fetch a compatible version automatically.</p>
@@ -2626,7 +2622,7 @@ int main() {
 <p>The <code>croq</code> command works like <code>gcc</code> or <code>clang</code>:</p>
 <pre class="highlight"><code class="language-bash">croq program.co                     # compile and link → a.out
 croq program.co -o my_kernel        # specify output name
-croq -es -t cute program.co -o out.cu  # emit CUDA source only
+croq -es -t &lt;target&gt; program.co -o out.cxx  # emit target source only
 croq -E program.co                  # preprocess only</code></pre>
 <p>Key flags:</p>
 <table>

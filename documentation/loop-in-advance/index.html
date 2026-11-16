@@ -2618,7 +2618,7 @@
     //   code here is as if implicitly masked 'if (q == 0)'
   }
 }</code></pre>
-<p>In this example, there exists two-level of parallelization. The code inside <code>parallel p by 6</code> block but outside <code>parallel q by 2</code> blocks is only for <em>parallel-level-0</em>. However, for target like <em>CUDA/Cute</em>, it could invoke 2 parallel threads in practise to execute either code inside <em>parallel-level-0</em> or <em>parallel-level-1</em>. Therefore, the <em>parallel-level-0</em>-only part is as if guarded with a C++ block <code>if (q == 0)</code>.</p>
+<p>In this example, there exists two-level of parallelization. The code inside <code>parallel p by 6</code> block but outside <code>parallel q by 2</code> blocks is only for <em>parallel-level-0</em>. However, a target may map each sub-level to its own set of executing units, so the two sub-levels can be handled by separate instances. Therefore, the <em>parallel-level-0</em>-only part is as if guarded with a C++ block <code>if (q == 0)</code>.</p>
 <p>Conditional <code>foreach</code> Block
 Since
 It is possible to guard the <code>foreach</code> loop with conditions. One direct</p>

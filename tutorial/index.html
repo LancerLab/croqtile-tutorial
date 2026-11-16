@@ -2426,7 +2426,7 @@
 
 
 <h1 id="croqtile-tutorial">Croqtile Tutorial<a class="headerlink" href="#croqtile-tutorial" title="Permanent link">&para;</a></h1>
-<p>Welcome to the Croqtile tutorial. This guide walks you through writing high-performance GPU kernels using Croqtile, starting from scratch and building up to production-grade patterns.</p>
+<p>Welcome to the Croqtile tutorial. This guide walks you through writing high-performance kernels using Croqtile, starting from scratch and building up to production-grade patterns.</p>
 <p>Each chapter introduces a small set of new concepts by evolving a running example. By the end, you will have encountered every major Croqtile construct in a concrete, working program. For detailed syntax design and language reference, see the <a href="../documentation/">Coding Reference</a>.</p>
 <h2 id="chapters">Chapters<a class="headerlink" href="#chapters" title="Permanent link">&para;</a></h2>
 <ol>
@@ -2435,16 +2435,16 @@
 <li><a href="ch02-data-movement/">Data Movement: Tiles Instead of Elements</a></li>
 <li><a href="ch03-parallelism/">Parallelism: Mapping Work to Hardware</a></li>
 <li><a href="ch04-mma/">Tensor Cores: The <code>mma</code> Operations</a></li>
-<li><a href="ch05-branch-control/">Branch and Control: Warp Roles and Persistent Kernels</a></li>
+<li><a href="ch05-branch-control/">Branch and Control: Roles and Persistent Kernels</a></li>
 <li><a href="ch06-synchronization/">Synchronization: Pipelines, Events, and Double Buffering</a></li>
-<li><a href="ch07-advanced-movement/">Advanced Data Movement: TMA, Swizzle, and Irregular Access</a></li>
+<li><a href="ch07-advanced-movement/">Advanced Data Movement: Swizzle and Irregular Access</a></li>
 <li><a href="ch08-cpp-interop/">C++ Interop: Inline Code and the Preprocessor</a></li>
 <li><a href="ch09-debug-verbose/">Debug and Verbose: Printing, RTTI, and GDB</a></li>
 </ol>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Basic C++ knowledge (functions, pointers, arrays)</li>
-<li>Familiarity with GPU programming concepts (threads, blocks, shared memory)</li>
+<li>Familiarity with parallel programming concepts (threads, blocks, staged buffers)</li>
 <li>A working Croqtile compiler (see <a href="ch00-installation/">Chapter 0</a>)</li>
 </ul>
 

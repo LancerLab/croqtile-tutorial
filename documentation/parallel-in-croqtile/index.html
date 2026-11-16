@@ -2759,13 +2759,13 @@ In this example:</p>
     // parallel-level-1
   }
 }</code></pre>
-<p>This code defines two levels of parallelism with values <code>2</code> and <code>12</code>, respectively. This means a total of <code>2 x 12 = 24</code> parallel threads are invoked for the task. Each thread is identified by a unique combination of <code>p</code> and <code>q</code>. In Choreo, we refer to the level of <code>p</code> as <em>parallel-level-0</em> and the level of <code>q</code> as <em>parallel-level-1</em>. For those familiar with CUDA, <em>parallel-level-0</em> corresponds to the CUDA <strong>grid</strong> level, and <em>parallel-level-1</em> corresponds to the CUDA <strong>block</strong> level.</p>
-<p>The concept of multiple-level parallelism originates from hardware architecture with hierarchical memory. One key difference observable by programmers is the <strong>synchronization cost</strong>. For instance, in CUDA, threads within a <strong>block</strong> have a much lower synchronization cost compared to those across different <strong>grids</strong>. This hierarchical design encourages programmers to place the most divergent code (that requires synchronization) within the <strong>block</strong> level to enhance overall performance.</p>
+<p>This code defines two levels of parallelism with values <code>2</code> and <code>12</code>, respectively. This means a total of <code>2 x 12 = 24</code> parallel threads are invoked for the task. Each thread is identified by a unique combination of <code>p</code> and <code>q</code>. In Choreo, we refer to the level of <code>p</code> as <em>parallel-level-0</em> and the level of <code>q</code> as <em>parallel-level-1</em>. The outer level typically maps to the coarse grouping of the work and the inner level to a finer subdivision within it.</p>
+<p>The concept of multiple-level parallelism originates from hardware architecture with hierarchical memory. One key difference observable by programmers is the <strong>synchronization cost</strong>: units that share a staging level synchronize far more cheaply than units separated by a coarser boundary. This hierarchical design encourages programmers to place the code that requires synchronization at the level where it is cheapest.</p>
 <p>In Choreo syntax, you can define multiple-level parallelism in a single line:</p>
 <pre class="highlight"><code class="language-choreo">parallel p by 2, q by 12 { ... }</code></pre>
 <p>This achieves the same parallelization as the previous example. It uses the <strong>comma-separated</strong> <em>parallel-by</em> expression, assuming there is no code in the between two parallel levels.</p>
 <h3 id="sub-level-parallelism">Sub-Level Parallelism<a class="headerlink" href="#sub-level-parallelism" title="Permanent link">&para;</a></h3>
-<p>Targets like <em>CUDA</em> allow a single parallelism level to be divided into up to three sub-levels. In Choreo, <code>ituple</code> and <code>mdspan</code> are used for this syntax:</p>
+<p>Some targets allow a single parallelism level to be divided into up to three coordinate axes. In Choreo, <code>ituple</code> and <code>mdspan</code> are used for this syntax:</p>
 <pre class="highlight"><code class="language-choreo">parallel {px, py, pz} by [1, 1, 2] {
   // higher synchronization cost
   // ...
@@ -2776,7 +2776,7 @@ In this example:</p>
   // ...
 }</code></pre>
 <p>In this example, two levels of parallelism are defined. The first level (<em>level-0</em>) is subdivided into three sub-levels, annotated by the <code>{px, py, pz}</code> <code>ituple</code>. The second level (<em>level-1</em>) is subdivided into two sub-levels, annotated by the <code>{qx, qy}</code> <code>ituple</code>, or <code>t_index</code> as a whole. For each sub-level, the parallelization count corresponds to the respective value inside the <code>mdspan</code>.</p>
-<p>The concept of sub-levels originates from <em>CUDA</em>'s GPU workload management, which often involves data with 2D or 3D elements. Note that the first element inside the <code>ituple</code> represents the <strong>least significant parallel variable</strong>. Choreo adopts this ordering to align with <em>CUDA</em> developers' conventions, rather than for internal consistency.</p>
+<p>The concept of sub-levels suits workloads that involve data with 2D or 3D elements. Note that the first element inside the <code>ituple</code> represents the <strong>least significant parallel variable</strong>.</p>
 <h3 id="bounded-variable">Bounded Variable<a class="headerlink" href="#bounded-variable" title="Permanent link">&para;</a></h3>
 <p>In a <code>parallel-by</code> block, the variables defined after the <code>parallel</code> keyword are referred to as <strong>Bounded Variables</strong>. Specifically:</p>
 <ul>
@@ -2787,7 +2787,7 @@ In this example:</p>
 <p>The concept of bounded variables will be explored further in later sections, where their usage will be detailed.</p>
 <h2 id="the-implications">The Implications<a class="headerlink" href="#the-implications" title="Permanent link">&para;</a></h2>
 <h3 id="heterogeneity-transpiling-to-kernel-launch">Heterogeneity: Transpiling to Kernel Launch<a class="headerlink" href="#heterogeneity-transpiling-to-kernel-launch" title="Permanent link">&para;</a></h3>
-<p>For targets like <em>CUDA/Cute</em>, the <code>parallel-by</code> block not only specifies the number of parallel threads but also defines the boundary between host and device code, leveraging Choreo's ability to manage heterogeneity. Specifically:</p>
+<p>For targets that separate host and device execution, the <code>parallel-by</code> block not only specifies the number of parallel instances but also defines the boundary between host and device code, leveraging Choreo's ability to manage heterogeneity. Specifically:</p>
 <ul>
 <li>Code <strong>outside</strong> the <code>parallel-by</code> block is transpiled into <strong>host code</strong>.</li>
 <li>Code <strong>inside</strong> the block is transpiled into <strong>device code</strong>, as illustrated below:</li>
@@ -2802,13 +2802,13 @@ In this example:</p>
   // Generate host code
   // ...
 }</code></pre>
-<p>For those familiar with <em>CUDA</em>, this is analogous to a <strong>Kernel Launch</strong> occurring at the <code>parallel-by</code> statement. However, Choreo abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.</p>
+<p>The <code>parallel-by</code> statement is where the program launch happens. Choreo abstracts the launch details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.</p>
 <h3 id="restrictions-on-storage-specifiers">Restrictions on Storage Specifiers<a class="headerlink" href="#restrictions-on-storage-specifiers" title="Permanent link">&para;</a></h3>
 <p>Since the <code>parallel-by</code> construct in Choreo is related to hardware, including heterogeneity and memory hierarchy, it is subject to the constraints of the target platform.</p>
-<p>For example, for <em>CUDA/Cute</em> targets, a <em>spanned</em> buffer must be annotated with the appropriate storage specifier within the <em>parallel execution block</em>. This is because the target platform allows only <em>scratchpad memory</em>, such as <em>shared</em> and <em>local</em> memory, to be allocated by device code. Conversely, code outside the <em>parallel execution block</em> can only declare <em>global</em> or default host memory, which the target platform allows the host code to manage.</p>
+<p>For example, on targets that separate host and device execution, a <em>spanned</em> buffer must be annotated with the appropriate storage specifier within the <em>parallel execution block</em>. This is because the target allows only scratchpad storage, such as <em>shared</em> and <em>local</em>, to be allocated by device code. Conversely, code outside the <em>parallel execution block</em> can only declare <em>global</em> or default host storage, which the host code manages.</p>
 <p>Additionally, <em>shared</em> and <em>local</em> memory types have a lifetime limited to the duration of the kernel launch. Therefore, referencing them outside the <em>parallel execution block</em> is not possible. This constraint ensures proper lifetime management of these memory types.</p>
 <h3 id="asynchronous-kernel-launch-and-stream-binding">Asynchronous Kernel Launch and Stream Binding<a class="headerlink" href="#asynchronous-kernel-launch-and-stream-binding" title="Permanent link">&para;</a></h3>
-<p>By default, the host waits for a <code>parallel-by</code> kernel to complete before continuing. To launch kernels asynchronously, use <code>parallel.async</code>. To bind a kernel to a specific CUDA stream, use angle-bracket syntax:</p>
+<p>By default, the host waits for a <code>parallel-by</code> kernel to complete before continuing. To launch kernels asynchronously, use <code>parallel.async</code>. To bind a kernel to a specific stream, use angle-bracket syntax:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void foo(stream s, f32[M] a) {
   parallel.async&lt;s&gt; p by M : block {
     a.at(p) = 1.0f;

@@ -2584,10 +2584,6 @@
 <td>Flex</td>
 <td>2.6.4+</td>
 </tr>
-<tr>
-<td>CUDA Toolkit</td>
-<td>11.8+（用于 GPU 目标）</td>
-</tr>
 </tbody>
 </table>
 <p>大多数 Linux 发行版自带 Flex 和较旧版本的 Bison。如果你系统的 Bison 低于 3.8，下面的安装步骤会自动获取兼容版本。</p>
@@ -2626,7 +2622,7 @@ int main() {
 <p><code>croq</code> 命令的使用方式类似 <code>gcc</code> 或 <code>clang</code>：</p>
 <pre class="highlight"><code class="language-bash">croq program.co                     # 编译并链接 → a.out
 croq program.co -o my_kernel        # 指定输出文件名
-croq -es -t cuda program.co -o out.cu  # 仅输出 CUDA 源码
+croq -es -t &lt;target&gt; program.co -o out.cxx  # 仅输出目标源码
 croq -E program.co                  # 仅预处理</code></pre>
 <p>主要标志：</p>
 <table>

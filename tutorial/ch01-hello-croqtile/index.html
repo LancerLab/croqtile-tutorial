@@ -2587,7 +2587,7 @@
 <h2 id="the-two-parts-of-a-croqtile-program">The Two Parts of a Croqtile Program<a class="headerlink" href="#the-two-parts-of-a-croqtile-program" title="Permanent link">&para;</a></h2>
 <p>Every Croqtile program has exactly two parts:</p>
 <ol>
-<li><strong>Croqtile Function</strong> (<code>__co__</code>) — the kernel logic, marked with the <code>__co__</code> prefix. It describes computation on shaped tensors. The compiler transpiles this into GPU-ready code.</li>
+<li><strong>Croqtile Function</strong> (<code>__co__</code>) — the kernel logic, marked with the <code>__co__</code> prefix. It describes computation on shaped tensors. The compiler transpiles this into code for the selected target.</li>
 <li><strong>Host Program</strong> — standard C++ that prepares data, calls the Croqtile function, and checks results.</li>
 </ol>
 <p>Both parts live in a single <code>.co</code> file. The compiler tells them apart by the <code>__co__</code> prefix.</p>
@@ -2635,7 +2635,7 @@ Croqtile supports these element types: <code>s32</code> (signed 32-bit int), <co
 <pre class="highlight"><code class="language-choreo">parallel {i, j} by [4, 8]
   output.at(i, j) = lhs.at(i, j) + rhs.at(i, j);</code></pre>
 <p><code>parallel {i, j} by [4, 8]</code> creates 4 × 8 = 32 parallel instances, one per element position. Each instance runs the body with its own <code>(i, j)</code> pair. The <code>.at(i, j)</code> accessor indexes into a tensor at position <code>(i, j)</code>, and the addition is direct — one element, one thread.</p>
-<p>If you have written CUDA before, you might wonder: are these instances CUDA threads? Thread blocks? The short answer is that <code>parallel</code> without any annotation lets the compiler decide. Under the hood, the 32 instances here become 32 CUDA threads inside a single thread block — but Croqtile deliberately hides that mapping at this level. In <a href="../ch03-parallelism/">Chapter 3</a> you will learn to control the mapping explicitly with <strong>space specifiers</strong> like <code>: block</code> and <code>: thread</code>, nest multiple <code>parallel</code> axes to build a block-and-thread hierarchy, and map them onto warps and warpgroups. For now, treat <code>parallel</code> as "run all instances concurrently on the GPU" and move on.</p>
+<p>You might wonder: are these instances individual threads? Groups? The short answer is that <code>parallel</code> without any annotation lets the compiler decide. Under the hood, the 32 instances here map onto 32 lanes of one execution unit — but Croqtile deliberately hides that mapping at this level. In <a href="../ch03-parallelism/">Chapter 3</a> you will learn to control the mapping explicitly with <strong>space specifiers</strong> like <code>: block</code> and <code>: thread</code>, nest multiple <code>parallel</code> axes to build a two-level hierarchy and map them onto the levels introduced in Chapter 3. For now, treat <code>parallel</code> as "run all instances concurrently" and move on.</p>
 <p><strong>Return.</strong></p>
 <pre class="highlight"><code class="language-choreo">return output;</code></pre>
 <p>A <code>__co__</code> function returns its result tensor. The return type in the signature (<code>s32 [4, 8]</code>) must match what you actually return. The caller on the host side receives a <code>croq::spanned_data</code> — an owning buffer with shape metadata that you can index into with <code>[i][j]</code>.</p>
@@ -2653,8 +2653,8 @@ rhs.fill_random(-10, 10);</code></pre>
 <p>Croqtile files use the <code>.co</code> extension. The compiler works like <code>gcc</code> or <code>clang</code>:</p>
 <pre class="highlight"><code class="language-bash">croq ele_add.co                          # produces a.out
 croq ele_add.co -o ele_add               # specify output name
-croq -es -t cuda ele_add.co -o out.cu    # emit CUDA source only</code></pre>
-<p>The <code>-es</code> flag stops after transpilation, letting you inspect the generated CUDA code. The <code>-t</code> flag selects the target platform.</p>
+croq -es -t &lt;target&gt; ele_add.co -o out.cxx  # emit target source only</code></pre>
+<p>The <code>-es</code> flag stops after transpilation, letting you inspect the generated code for the selected target.</p>
 <p>To see all available options, run <code>croq --help</code>:</p>
 <pre class="highlight"><code class="language-bash">croq --help</code></pre>
 <p>This prints the full set of compiler flags — output naming, target selection, verbosity, and diagnostic options. It is worth scanning once so you know what is available when you need it.</p>
@@ -2677,7 +2677,7 @@ croq -es -t cuda ele_add.co -o out.cu    # emit CUDA source only</code></pre>
 
 <h2 id="what-you-have-so-far">What You Have So Far<a class="headerlink" href="#what-you-have-so-far" title="Permanent link">&para;</a></h2>
 <p>The skeleton of every Croqtile program is now in your hands: a <code>__co__</code> function with typed, shaped parameters and a return value; <code>parallel</code> and <code>.at()</code> for element-wise computation; <code>lhs.span</code> for deriving output shapes from inputs; and the host-side <code>make_spandata</code> / <code>.view()</code> API for creating and passing tensors.</p>
-<p>The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — GPUs achieve peak throughput by moving data in bulk, not element by element. The <a href="../ch02-data-movement/">next chapter</a> introduces <code>dma.copy</code> and <code>chunkat</code> to express block-level data movement.</p>
+<p>The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — an execution engine reaches peak throughput by moving data in bulk, not element by element. The <a href="../ch02-data-movement/">next chapter</a> introduces <code>dma.copy</code> and <code>chunkat</code> to express block-level data movement.</p>
 
 
 
