@@ -5,8 +5,10 @@
 \begin{lstlisting}[language=croqtile,caption={用 inthreads.async 构造结构化并发区域}]
 parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
+    // program A: only group 0 compiles and runs this
   }
   inthreads.async (p1 == 1) {
+    // program B: only group 1 compiles and runs this
   }
 }
 \end{lstlisting}

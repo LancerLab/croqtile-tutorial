@@ -1,6 +1,6 @@
 \subsection*{Layout reinterpretation: \texttt{span\_as}}
 
-Some kernels load data as a flat 1D strip but need to feed it to MMA as a 2D matrix. A naive approach would copy the data into a reshaped buffer --- \texttt{span\_as} avoids this by reinterpreting the existing buffer's shape in place:
+Some kernels load data as a flat 1D strip but need to feed it to MMA as a 2D matrix. A naive approach would copy the data into a reshaped buffer --- wasting staging space and traffic. \texttt{span\_as} avoids this by reinterpreting the existing buffer's shape in place:
 
 \begin{lstlisting}[language=croqtile,caption={A flat strip reinterpreted as a matrix}]
 flat_buffer.span_as([rows, cols])
@@ -14,7 +14,7 @@ tile_2d = strip_load.data.span_as([tile_m, tile_k]);
 ma = mma.load tile_2d.chunkat(_, iv_warp);
 \end{lstlisting}
 
-The product \co@rows * cols@ must equal the number of elements in the underlying region. A reshape preserves linear element order, so it cannot transpose a matrix or remove padding between rows. When the dimensions are constants, the compiler can check the element count before execution; dimensions derived from inputs must satisfy the same invariant for the actual call.
+The loaded 1D strip is exposed as a 2D matrix for \texttt{chunkat} and MMA operand loading, without an extra copy or additional staging storage. The product \co@rows * cols@ must equal the number of elements in the underlying region. A reshape preserves linear element order, so it cannot transpose a matrix or remove padding between rows. When the dimensions are constants, the compiler can check the element count before execution; dimensions derived from inputs must satisfy the same invariant for the actual call.
 
 Figure~\ref{fig:f09-fig7_span_as} shows the reinterpretation.
 

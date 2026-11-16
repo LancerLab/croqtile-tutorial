@@ -1,6 +1,6 @@
 \subsection*{Putting it together}
 
-Choose the first check from the symptom. If a tile has the wrong dimensions, inspect its shape with \co@println!@ before running the program. If the shape is right but the values are wrong, print one tile or add an assertion near the suspect operation. A stalled pipeline calls for event and iteration counts; a regular pattern of incorrect matrix elements calls for a layout check. Use a debugger when these checks point to an address or lifetime problem. Keep temporary output behind a preprocessor guard so it can be removed from a normal build:
+Work from cheap to expensive: \texttt{println!} (compile-time shapes) \(\rightarrow\) guarded \texttt{println} on one tile (runtime values) \(\rightarrow\) event/stage prints (synchronization) \(\rightarrow\) pattern analysis (layout) \(\rightarrow\) an interactive debugger (pointer bugs). Guard runtime prints behind \texttt{\#ifdef} so they vanish in production:
 
 \begin{lstlisting}[language=croqtile,caption={Guarding debug prints}]
 #ifdef DEBUG_PRINT

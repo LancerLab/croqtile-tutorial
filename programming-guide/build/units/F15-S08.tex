@@ -1,6 +1,6 @@
 \subsection*{Fully-Typing}
 
-A buffer declaration needs both an element type and a shape. The shape determines how many positions the buffer contains, while the fundamental type determines what each position stores. The examples below reuse a named shape for half-precision data and use a literal shape for single-precision data.
+A \emph{mdspan} cannot be applied alone to define the data for computation. In Croqtile function, a data definition must be fully-typed, which consists of a fundamental type and a \emph{mdspan}. The following code showcases how it works.
 
 \begin{lstlisting}[language=croqtile,caption={Complete Types}]
 ndims : [20, 15];

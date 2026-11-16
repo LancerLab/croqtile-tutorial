@@ -2,18 +2,18 @@
 
 凡面向并行机器的编程语言都必须回答一个问题：**当不同线程需要做不同事情时，会发生什么？**
 
-在 CPU 上，答案很直接——每个核心自有程序计数器，因而每条线程可执行任意代码。在 GPU 上，答案受到严格约束。**SIMT**（Single Instruction, Multiple Thread）执行模型将线程编成每 **warp** 32 条、共享单一指令指针。当分支使一部分线程走一路、另一部分走另一路时，硬件不能简单分叉——必须对分歧路径**串行化**，并对非活跃线程做屏蔽。这便是 GPU 编程语言的根本张力：硬件偏好均匀性，而真实程序需要异质性。
+在 CPU 上，答案很直接——每个核心自有程序计数器，因而每条线程可执行任意代码。若多条线程共享同一个指令指针，答案就受到严格约束：机器不能分叉，只能对发散路径**串行化**，并屏蔽不活跃的线程。这便是根本张力：硬件偏好均匀性，而真实程序需要异质性。
 
-CUDA 对此只暴露一种控制流原语：`if`。全体线程求值条件；条件为假的线程被屏蔽（停用）；在 warp 内两侧路径顺序执行。这是**谓词执行**——简单、通用，有时代价极高。在 `if` 上发生分歧的 warp 会执行两侧，在每一侧都浪费约一半吞吐。
+这样的机器为此只提供一种控制流原语：`if`。全体线程求值条件；条件为假的线程被屏蔽；两侧路径在组内顺序执行。这是**谓词执行**——简单、通用，有时代价极高。在 `if` 上发散的组会执行两侧，每一侧都浪费约一半吞吐。
 
-但谓词执行并不够用。考虑矩阵乘内核：一组线程应持续从全局内存取 tile，另一组应持续在 tensor core 上对 tile 做乘法。这不是数据相关分支——而是两个**结构不同的程序**恰好共享同一地址空间。若用 `if` 表达，则一个程序在另一个运行时只能暂停。没有重叠，没有流水线。
+但谓词执行并不够用。考虑矩阵乘核函数：一组线程应持续从全局存储取分块，另一组应持续在收缩单元上做乘法。这不是数据相关分支——而是两个**结构不同的程序**恰好共享同一地址空间。若用 `if` 表达，则一个程序在另一个运行时只能暂停。没有重叠，没有流水线。
 
-鳄霸（Croqtile）引入另外两种控制流原语以填补这一空白：
+Croqtile 引入另外两种控制流原语来填补这一空白：
 
-- **`inthreads.async`** —— **结构化并发区域**：在编译期将线程划分为若干组，使其**同时运行不同程序**。编译器生成独立指令流；硬件独立调度。
-- **`shared event` / `wait` / `trigger`** —— **区域间信令**：轻量级同步令牌，使并发区域可安全通信。
+- **`inthreads.async`** —— **结构化并发区域**：在编译期把线程划分为若干组，使其**同时运行不同程序**。编译器生成独立指令流；硬件独立调度。
+- **`shared event` / `wait` / `trigger`** —— **区域间协调**：轻量级同步令牌，使并发区域可安全通信。
 
-与 `if` 一起，这三种原语覆盖 GPU 内核中的完整控制流谱系：数据相关分支、结构化程序组合，以及程序间协调。
+与 `if` 一起，这三个原语覆盖核函数中控制流的完整谱系：数据相关分支、结构化程序组合，以及程序间协调。
 
 ## 以 `if` 实现谓词执行
 
@@ -25,25 +25,25 @@ if (tile_id < total_tiles) {
 }
 ```
 
-作用域内全体线程求值条件。条件为假的线程跳过 body。在单一 warp 内，若部分线程走分支、部分不走，硬件对两路径**串行化**——被跳过一侧的线程空闲，待执行侧跑完后再反过来。这便是 **warp 分歧**，也是运行时灵活性所付出的代价。
+作用域内全体线程求值条件。条件为假的线程跳过函数体。在一个协作组内，若部分线程走分支、部分不走，硬件对两条路径**串行化**——被跳过一侧的线程空闲，待执行侧跑完后再反过来。这就是**发散**，也是运行时灵活性所付出的代价。
 
 **何时使用 `if`：** 无法在编译期解析的数据相关决策。边界检查、部分 tile 保护、条件累加。条件可依赖运行时值——循环索引、输入数据、tile 坐标。
 
-**代价模型：** warp 内分歧会使两路径串行。跨 warp 的分歧（每个 warp 内全体一致）无额外代价——硬件直接跳过未取路径。实用规则：在可能时使 `if` 条件**warp 一致**（32 条线程一致）。
+**代价模型：** 组内发回会使两条路径串行。跨组的发散（每组内全体一致）没有额外代价——硬件直接跳过未取路径。实用规则：尽量让 `if` 条件在协作组内一致。
 
 ## 以 `inthreads.async` 实现结构化并发区域
 
 `inthreads.async` 解决的问题与 `if` 根本不同。它不在运行时问「这条线程是否执行这段代码？」，而在**编译期**声明「这组线程跑这个程序，那组跑那个程序」。
 
 ```choreo
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
 
   inthreads.async (p1 == 0) {
-    // program A: only warpgroup 0 compiles and runs this
+    // program A: only group 0 compiles and runs this
   }
 
   inthreads.async (p1 == 1) {
-    // program B: only warpgroup 1 compiles and runs this
+    // program B: only group 1 compiles and runs this
   }
 }
 ```
@@ -54,45 +54,45 @@ parallel p1 by 2 : group-4 {
 |---|---|---|
 | **解析时机** | 运行时——每条线程求值条件 | 编译时——线程指派固定 |
 | **指令流** | 单一程序；分歧线程被屏蔽 | 每区域独立程序 |
-| **执行** | warp 内分歧则串行 | 跨 warpgroup 并发 |
+| **执行** | 组内发散则串行 | 跨组并发 |
 | **PL 类比** | 任意语言中的 `if`/`else` | 结构化并发中的 `async`/`spawn`（Trio、Go goroutine、Cilk） |
-| **GPU 类比** | 带屏蔽的 SPMD | 单次 launch 内的 MPMD |
+| **模型** | 带屏蔽的 SPMD | 单次启动内的 MPMD |
 
 **何谓「结构化」？** 区域按词法作用域界定——编译器在解析时即知哪些线程属于哪一区域。无动态 spawn、无无界并发。每个 `inthreads.async` 块是静态划分。这使其适于编译期分析：编译器可为各区域分配不同寄存器、发出不同指令调度，并验证共享资源使用安全。
 
 **`.async` 修饰符。** 若无 `.async`，`inthreads` 将按顺序执行各区域——线程子集轮流。`.async` 后缀为并发修饰符：告知编译器与硬件各区域可在时间上重叠。这与结构化并发框架中的 `async` 关键字类似——将区域标为可独立调度。
 
-下图示意其效果。上方时间线表示单一 warpgroup 在 DMA 与 MMA 之间交替（串行、无重叠）。下方表示两个 warpgroup 使用 `inthreads.async`——生产者 DMA 与消费者 MMA 在时间上重叠：
+下图示意其效果。上方时间线表示单个组在 DMA 与 MMA 之间交替（串行、无重叠）。下方表示两个组使用 `inthreads.async`——生产者 DMA 与消费者 MMA 在时间上重叠：
 
 ![Uniform vs structured-concurrent execution: sequential alternation vs overlapping regions](../assets/images/ch05/fig1_role_comparison_dark.png#only-dark)
 ![Uniform vs structured-concurrent execution: sequential alternation vs overlapping regions](../assets/images/ch05/fig1_role_comparison_light.png#only-light)
 
-*上图：单一 warpgroup 在 DMA 与 MMA 之间交替——彼此等待。下图：`inthreads.async` 划分为两个并发程序——DMA 与 MMA 重叠，墙钟时间大致减半。*
+*上图：单个组在 DMA 与 MMA 之间交替——彼此等待。下图：`inthreads.async` 划分为两个并发程序——DMA 与 MMA 重叠，墙钟时间大致减半。*
 
 ### 典型模式：1 个生产者 + 1 个消费者
 
 `inthreads.async` 最常见的用法是矩阵乘的 **1P1C**（one producer, one consumer）划分：
 
 ```choreo
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
 
   inthreads.async (p1 == 0) {
-    // producer: only warpgroup 0 runs this
-    // issue DMA / TMA loads, fill shared memory
+    // producer: only group 0 runs this
+    // issue DMA loads, fill shared storage
   }
 
   inthreads.async (p1 == 1) {
-    // consumer: only warpgroup 1 runs this
-    // run MMA on shared memory, accumulate results
+    // consumer: only group 1 runs this
+    // run MMA on shared storage, accumulate results
   }
 }
 ```
 
-**`parallel p1 by 2 : group-4`** —— 两个 warpgroup（各 128 条线程），由 `p1` 索引。
+**`parallel p1 by 2 : thread`** —— 外层块内的两个组，由 `p1` 索引。
 
-**`inthreads.async (p1 == 0)`** —— warpgroup 0 编译并执行生产者 body；warpgroup 1 永不见到此代码。
+**`inthreads.async (p1 == 0)`** —— 组 0 编译并执行生产者函数体；组 1 永远看不到这段代码。
 
-**`inthreads.async (p1 == 1)`** —— warpgroup 1 执行消费者 body。两块为共享地址空间下的独立程序。
+**`inthreads.async (p1 == 1)`** —— 组 1 执行消费者函数体。两个块是共享同一地址空间的独立程序。
 
 但共享地址空间恰恰使问题危险。若无协调，消费者可能在生产者写完之前读取缓冲区。此处即需要 event。
 
@@ -112,7 +112,7 @@ Event 有两种操作：
 
 生产者在将 tile 写入后调用 `trigger full`，表示「数据就绪」。消费者在读前调用 `wait full`，阻塞直至信号到达。对称地，消费者读完之后触发 `empty`（缓冲区可复用），生产者在写下一 tile 前 `wait empty`。
 
-这是**基于信用的有界缓冲区**协议——与操作系统（信号量）、网络流控（TCP 窗口）及硬件（warp barrier）所用模式相同。`full` 为「数据可用」信用；`empty` 为「缓冲区空闲」信用。
+这是由两个事件构成的**有界缓冲区**协议——`full` 记录某个槽位已有数据；`empty` 记录它已可重新填充。
 
 ### 多阶段流水线的 event 数组
 
@@ -126,7 +126,7 @@ shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
 
 ### 自举协议
 
-消费者必须在 K 循环开始前对 `empty` 信用**播种**：
+消费者必须在 K 循环开始前**触发**每一个 `empty` 事件：
 
 ```choreo
 foreach {s} in [MATMUL_STAGES] {
@@ -134,13 +134,13 @@ foreach {s} in [MATMUL_STAGES] {
 }
 ```
 
-若无此自举，生产者首次 `wait empty[0]` 将永远阻塞——死锁，而非神秘的 MMA bug。这是常见陷阱：凡有界缓冲区协议都需初始信用。
+若无此自举，生产者首次 `wait empty[0]` 将永远阻塞——死锁，而非神秘的 MMA bug。这是常见陷阱：任何有界缓冲区协议都需要在第一次等待之前先把事件触发出来。
 
 [第 6 章](ch06-synchronization.md) 给出完整的双缓冲与多阶段流水线内核，将这些原语付诸实践。该章示例将 `inthreads.async`、event、`swap` 与 `mma.commit` 组合为可完整运行的矩阵乘流水线。
 
 ## 1P1C 矩阵乘骨架
 
-以下展示三种原语在 Hopper 矩阵乘中的组合方式。基于 event 的同步省略——[第 6 章](ch06-synchronization.md) 补充完整流水线协议。请关注程序结构：
+以下展示三种原语在矩阵乘中的组合方式。基于 event 的同步省略——[第 6 章](ch06-synchronization.md) 补充完整流水线协议。请关注程序结构：
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -149,7 +149,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s;
     shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
 
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
 
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
@@ -175,9 +175,9 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-**生产者 `foreach`** —— 以 `cdiv(K, MATMUL_TILE_K)` 步遍历 K；warpgroup 0 向共享内存发出 `dma.copy`。
+**生产者 `foreach`** —— 以 `cdiv(K, MATMUL_TILE_K)` 步遍历 K；组 0 向共享存储发出 `dma.copy`。
 
-**消费者 `mma` 路径** —— warpgroup 1 不触碰这些 DMA；它读共享内存，在 `mc` 中累加，并写回结果。
+**消费者 `mma` 路径** —— 组 1 不触碰这些 DMA；它读共享存储，在 `mc` 中累加，并写回结果。
 
 **缺失的协调** —— 两侧独立遍历 K。消费者在读时假定每个 K 条带已就绪。要使该假定成立，需要 event（见 [第 6 章](ch06-synchronization.md)）。
 
@@ -209,7 +209,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           dma.copy rhs.subspan(MATMUL_WARP_N, MATMUL_TILE_K).at(block_n, iv_k) => rhs_load_s;
 
           foreach {iv_warp} in [cdiv(MATMUL_TILE_K, MATMUL_WARP_K)] {
-            parallel p by 1 : group-4 {
+            parallel p by 1 : thread {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
               mma.row.row mc, ma, mb;
@@ -244,7 +244,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 ## `parallel.async` 与 `stream s`：主机侧并发
 
-上文均在 kernel 内。有时需要在**主机侧**并发：启动 grid 而不阻塞 CPU，或将不同 grid 绑定到不同 CUDA `stream`，使其在 GPU 上并发执行。
+上面这些都发生在核函数内部。有时需要在**主机层**并发：启动一个网格而不阻塞 CPU，或把不同网格绑定到不同的 `stream`，让它们并发执行。
 
 ```choreo
 parallel.async {px, py} by [grid_m, grid_n] : block {
@@ -253,9 +253,9 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 }
 ```
 
-**`parallel.async`** 立即将控制权交还主机——kernel 已入队，主机不等待完成。这相当于在非默认 `stream` 上调用 `cudaLaunchKernel` 的鳄霸（Croqtile）写法。
+**`parallel.async`** 立即把控制权交还主机——核函数已入队，但主机不等它完成。这是 Croqtile 表达「在指定流上非阻塞启动」的形式。
 
-**`stream s`** 将 kernel 绑定到 CUDA `stream s`。若 SM 充足，不同 `stream` 的多个 `parallel.async` 块可在 GPU 上重叠。
+**`stream s`** 把核函数固定到流 `s`。在机器有足够空闲资源时，使用不同流的多个 `parallel.async` 块可以重叠执行。
 
 这是**主机编排**，与内核内控制流正交。它不替代用于线程划分的 `inthreads.async` 或用于运行时谓词的 `if`——它决定相对其他 grid **何时、在何处**运行某一 grid。
 
@@ -272,7 +272,7 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 | `tile_id = tile_iter # block_id` | 为 tile 条带化组合索引 |
 | `int total_tiles = expr` | 局部整型变量 |
 | `parallel.async ... : block` | 非阻塞 kernel launch |
-| `stream s` | 将 kernel 绑定到 CUDA `stream s` |
+| `stream s` | 把核函数绑定到流 `s` |
 
 ## 本章小结
 
@@ -284,4 +284,4 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 | 主机并发 | `parallel.async` / `stream s` | 多 kernel 重叠、非阻塞 launch |
 | 持久调度 | `if` + `foreach` + `#` | 固定 grid 规模、带填充守卫的 tile 条带化 |
 
-上文 1P1C 骨架不完整：若无 `wait` / `trigger`，消费者可能在生产者写完之前读取。[第 6 章](ch06-synchronization.md) 补充完整同步协议——单调度表双缓冲用 `swap`，多 warpgroup 流水线用 event——使流水线安全且满吞吐运行。
+上面的 1P1C 骨架并不完整：没有 `wait` / `trigger`，消费者可能在生产者写完之前就读取。[第 6 章](ch06-synchronization.md) 补上完整的同步协议——单调度表双缓冲用 `swap`，多组流水线用事件——让流水线既安全又跑满吞吐。

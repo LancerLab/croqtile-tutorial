@@ -1,0 +1,5 @@
+\subsection*{Advanced Data Movement: Swizzle and Irregular Access}
+
+Section~\ref{sec:2-9} introduced \texttt{dma.copy} as Croqtile's general data movement primitive --- a way to move rectangular tiles between storage levels using a simple \texttt{src =\textgreater{} dst} arrow syntax. This part of the guide covers the two things that chapter left for later: the \textbf{swizzled layouts} a contraction consumer needs, and the \textbf{irregular-access} utilities that reach tiles the regular tiling cannot describe.
+
+Both keep the same statement form. A swizzle is a modifier on the copy; an irregular access is a different way to name the source region.

@@ -1,6 +1,6 @@
 \subsection*{Integers for Program Control}
 
-Control integers describe loop ranges, indices, and related calculations. Croqtile uses a signed 32-bit \co@int@ for these tasks. Numerical data stored in a tensor uses the separate fundamental element types described in Section 2.6.
+In high-performance computation kernels, integers are typically used for program control rather than computation. In Croqtile \emph{tileflow programs}, integers are used exclusively for loop control and array indexing. Given the limited value ranges in these scenarios, Croqtile provides a single integer type --- the \emph{32-bit signed integer} --- to simplify the design for this domain-specific use.
 
 In Croqtile, an \textbf{integer}-typed variable is defined similar to C/C++:
 

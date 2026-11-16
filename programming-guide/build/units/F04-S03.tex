@@ -1,5 +1,7 @@
 \subsection*{First Example: Tiled Addition Through shared storage}
 
+Here is the same addition from Section~\ref{sec:1-7}, but staged through shared storage in tiles:
+
 \begin{lstlisting}[language=croqtile,caption={Tiled Addition Through Shared Storage}]
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
@@ -18,7 +20,8 @@ The arithmetic is still element-wise addition. What changed is the data path:
 
 \begin{enumerate}[leftmargin=1.6em]
 \item \texttt{chunkat(tr, tc)} selects one logical tile from each input.
-\item \texttt{dma.\allowbreak{}copy .\allowbreak{}.\allowbreak{}.\allowbreak{} =\textgreater{} shared} stages that tile into block-visible fast memory.
+\item \texttt{dma.\allowbreak{}copy .\allowbreak{}.\allowbreak{}.\allowbreak{} =\textgreater{} shared} stages that tile into block-visible fast storage.
+\item The inner loop reads from \texttt{lhs\_load.data} and \texttt{rhs\_load.data}, not from global storage.
 \item \texttt{tr \# i} and \texttt{tc \# j} map tile-local coordinates back to global output coordinates.
 \end{enumerate}
 

@@ -1,23 +1,23 @@
 # Parallelism: How Croqtile Represents Parallel Work
 
-The previous two chapters kept things simple: `parallel {i, j} by [4, 8]` created 32 instances, each handling one element, and we never asked where those instances actually ran. That was fine for element-wise addition and for understanding data movement — the compiler picked sensible defaults. But a GPU is not a flat bag of identical processors. It has a deep hierarchy of execution units, and mapping your work to the right level of that hierarchy is the difference between a toy demo and a real kernel.
+The previous two chapters kept things simple: `parallel {i, j} by [4, 8]` created 32 instances, each handling one element, and we never asked where those instances actually ran. That was fine for element-wise addition and for understanding data movement — the compiler picked sensible defaults. But an execution engine is not a flat bag of identical processors. It groups work into cooperating levels, and mapping your work to the right level is the difference between a toy demo and a real kernel.
 
-This chapter introduces parallelism as a first-class concept in Croqtile: what it means, how Croqtile separates the *logical* structure (what runs concurrently) from the *physical* mapping (which hardware units run it), and how you control that mapping with **space specifiers**.
+This chapter introduces parallelism as a first-class concept in Croqtile: what it means, how Croqtile separates the *logical* structure (what runs concurrently) from the *physical* mapping (which level each axis lands on), and how you control that mapping with **space specifiers**.
 
 ## How We Think About Parallel Tasks
 
 Before we touch any Croqtile syntax, let's talk about what "parallel" actually means.
 
-Suppose you have eight independent tasks — eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single CPU core, they execute one after another. On a 4-core CPU, maybe four run simultaneously. On a GPU warp, all eight might genuinely execute in lockstep.
+Suppose you have eight independent tasks — eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single core, they execute one after another. On a four-core machine, maybe four run simultaneously. Given eight execution slots, all eight could genuinely make progress at once.
 
 ![Virtual parallelism: same tasks, different hardware schedules](../assets/images/ch03/fig1_virtual_parallelism_dark.png#only-dark)
 ![Virtual parallelism: same tasks, different hardware schedules](../assets/images/ch03/fig1_virtual_parallelism_light.png#only-light)
 
-*The same eight tasks scheduled sequentially (1 core), 4-wide (CPU), and 8-wide (GPU). The tasks are identical — only the hardware changes.*
+*The same eight tasks scheduled sequentially, four wide, and eight wide. The tasks are identical — only the number of execution slots changes.*
 
 The point is that parallelism is a **virtual** concept. When you write "these eight tasks are independent," you are making a statement about the *logic* of your program, not about the hardware. The hardware decides how many actually run simultaneously, based on how many execution units it has and how the scheduler assigns work.
 
-This distinction matters because GPU programming languages traditionally conflate the two. In CUDA, you launch a kernel with `<<<blocks, threads>>>` — that is simultaneously declaring the logical structure (how many instances) and the physical mapping (how many thread blocks, how many threads per block). If you want to change the tiling, you also have to change the launch configuration. The logical and physical are tangled together.
+This distinction matters because many parallel languages conflate the two. In a language whose launch syntax doubles as its work description, one statement declares both the logical structure (how many instances) and the physical mapping (how many blocks, how many threads per block). Changing the tiling then forces a change to the launch configuration: the logical and physical are tangled together.
 
 Croqtile untangles them.
 
@@ -26,7 +26,7 @@ Croqtile untangles them.
 Croqtile gives you two separate knobs:
 
 1. **`parallel`** — declares that iterations are independent and *may* run concurrently. This is a logical statement.
-2. **Space specifiers** (`: block`, `: thread`, `: group`, `: group-4`) — tell the compiler *which GPU hardware unit* each parallel axis maps to. This is a physical statement.
+2. **Space specifiers** (`: block`, `: thread`, `: group`) — tell the compiler where each parallel axis maps. This is a physical statement.
 
 And there is `foreach`, which is the opposite of `parallel`: iterations run **sequentially**, in order. Use `foreach` when later iterations depend on earlier ones — an accumulation loop, a K-dimension reduction, a pipeline that loads tile *k* before computing with it.
 
@@ -43,35 +43,19 @@ The `parallel` lines say "these iterations are independent." The `: block` and `
 ![Logical vs physical parallelism in Croqtile](../assets/images/ch03/fig2_logical_vs_physical_dark.png#only-dark)
 ![Logical vs physical parallelism in Croqtile](../assets/images/ch03/fig2_logical_vs_physical_light.png#only-light)
 
-*Left: the logical nesting the programmer writes (parallel = concurrent, foreach = sequential). Right: the GPU hardware hierarchy. Space specifiers bridge the two.*
+*Left: the logical nesting the programmer writes (parallel = concurrent, foreach = sequential). Right: the level structure the space specifiers select.*
 
 If you omit the space specifier — just `parallel p by 8` — the compiler picks a default mapping. That is what Chapters 1 and 2 did, and it worked fine for simple cases. Explicit specifiers are how you take control when performance matters.
 
 Both `parallel` and `foreach` support multi-dimensional indices (`{a, b}` syntax), the compose operator (`#`), and the extent operator (`#p`). Everything from Chapters 1 and 2 still applies.
 
-## Space Specifiers and Hardware Mapping
-
-A GPU has a clear execution hierarchy. From coarsest to finest:
-
-- A **thread block** (CTA) is a group of up to 1024 threads that share on-chip memory and can synchronize with each other.
-- A **warpgroup** is four warps — 128 threads — that cooperate on wide matrix instructions (WGMMA on Hopper GPUs).
-- A **warp** is 32 threads that execute in lockstep. This is the GPU's fundamental SIMD unit.
-- A **thread** is a single execution context with its own registers.
-
-Croqtile maps to each level with a space specifier:
-
-![Space specifiers mapped to GPU execution hierarchy](../assets/images/ch03/fig3_space_specifiers_dark.png#only-dark)
-![Space specifiers mapped to GPU execution hierarchy](../assets/images/ch03/fig3_space_specifiers_light.png#only-light)
-
-*The four space specifiers and the GPU hardware units they map to, with thread counts and typical operations at each level.*
-
-### `: block` — Thread Blocks
+### `: block` — Blocks
 
 ```choreo
 parallel {px, py} by [8, 16] : block
 ```
 
-This creates an 8 × 16 = 128 block grid. Each block runs on a streaming multiprocessor (SM) and has its own allocation of shared memory. Blocks cannot communicate with each other during execution — they are truly independent.
+This creates an 8 × 16 = 128 block grid. Each block runs independently and has its own allocation of shared storage. Blocks cannot communicate with each other during execution.
 
 Use `: block` for the outermost tiling of your output. If your output is `[128, 256]` and each block handles a `[16, 16]` tile, you need `128/16 × 256/16 = 8 × 16 = 128` blocks.
 
@@ -81,27 +65,9 @@ Use `: block` for the outermost tiling of your output. If your output is `[128, 
 parallel {qx, qy} by [16, 16] : thread
 ```
 
-This creates 16 × 16 = 256 threads within the enclosing block. Each thread has its own registers but shares on-chip memory with all other threads in the same block.
+This creates 16 × 16 = 256 threads within the enclosing block. Each thread has its own working storage but shares block-scoped storage with all other threads in the same block.
 
 Use `: thread` for the finest-grain parallelism — the per-element work within a tile.
-
-### `: group` — Warps
-
-```choreo
-parallel w by 4 : group
-```
-
-This creates 4 warps, each of 32 threads. Warps execute in lockstep (all 32 threads run the same instruction simultaneously). Warp-level operations like `mma.sync` (Ampere-era tensor core instructions) operate at this granularity.
-
-### `: group-4` — Warpgroups
-
-```choreo
-parallel g by 2 : group-4
-```
-
-This creates 2 warpgroups, each containing 4 warps (128 threads). On Hopper GPUs (compute capability 9.0+), WGMMA instructions require a full warpgroup to cooperate. Even when you have just one warpgroup (`parallel p by 1 : group-4`), the annotation tells the compiler that these 128 threads form a cooperative unit.
-
-Multiple warpgroups per block is how you scale work along one dimension without adding more blocks — both warpgroups share the same shared memory but maintain independent accumulators. Chapter 4 puts this to work with tensor-core operations.
 
 ### Nesting Specifiers
 
@@ -117,21 +83,6 @@ parallel {px, py} by [8, 16] : block {
 
 The outer `parallel` creates the block grid. The inner `parallel` creates threads within each block. The braces `{px, py}` introduce multi-dimensional indices — shorthand for two nested `parallel` lines.
 
-### How `shared` Enables Reuse
-
-Space specifiers interact directly with memory specifiers. Recall from Chapter 2 that `dma.copy ... => shared` places data in block-scoped shared memory, while `=> local` places data in thread-private local memory.
-
-The choice matters because of data reuse. Consider a tile that every thread in a block needs to read:
-
-![Local vs shared memory reuse](../assets/images/ch03/fig4_shared_reuse_dark.png#only-dark)
-![Local vs shared memory reuse](../assets/images/ch03/fig4_shared_reuse_light.png#only-light)
-
-*Left: with `=> local`, each thread loads its own copy — 4× the bandwidth. Right: with `=> shared`, one DMA fills shared memory and all threads read from it — 1× the bandwidth.*
-
-The rule of thumb: if multiple threads in a block need the same data, copy it into `shared`. If each thread's working set is independent, `local` keeps data closer and avoids shared-memory bank contention.
-
-In the matmul later in this chapter, the K-tiles of `lhs` and `rhs` are loaded `=> shared` because all 256 threads in the block read from them. The output accumulator stays in registers (thread-private) because each thread writes to its own element.
-
 ## Type System Aside: `mdspan` and `ituple`
 
 Before we build the matmul, two features of Croqtile's type system are worth mentioning. You have already used them implicitly; now is a good time to name them.
@@ -146,13 +97,13 @@ For the full details, see the [mdspan reference](../documentation/shape-in-chore
 
 ## Matrix Multiply: Putting It Together
 
-With `parallel`, `foreach`, `dma.copy`, `chunkat`, `#`, and space specifiers, a tiled matrix multiply is within reach. This is the first program in the tutorial that does something GPUs are famous for.
+With `parallel`, `foreach`, `dma.copy`, `chunkat`, `#`, and space specifiers, a tiled matrix multiply is within reach. It is the first program in the tutorial that combines every construct so far.
 
 The plan: multiply a `[128, 256]` matrix by a `[256, 256]` matrix to get a `[128, 256]` result.
 
 ### Scalar Matmul (No DMA)
 
-Start with just `parallel` and `.at()` — global memory, no explicit data movement:
+Start with just `parallel` and `.at()` — global storage, no explicit data movement:
 
 ```choreo
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
@@ -188,11 +139,11 @@ This is dense — here is what each piece does.
 
 **Composed global indices.** `p#m` composes the tile index with the within-tile offset. `p` selects which of the 16 row-tiles, `m` runs 0..7 within that tile, so `p#m` covers 0..127 across all tiles.
 
-**The arithmetic.** `output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n)` is the textbook dot product: for each output element, sum products along K. Every `.at()` here reads from global memory.
+**The arithmetic.** `output.at(p#m, q#n) += lhs.at(p#m, k) * rhs.at(k, q#n)` is the textbook dot product: for each output element, sum products along K. Every `.at()` here reads from global storage.
 
-### DMA Matmul: Tiles in Shared Memory
+### DMA Matmul: Tiles in Shared Storage
 
-The scalar version works but every multiply reads from global memory. Bringing K-tiles into shared memory lets all threads in a block reuse them:
+The scalar version works but every multiply reads from global storage. Bringing K-tiles into shared storage lets all threads in a block reuse them:
 
 ```choreo
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
@@ -216,10 +167,10 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 }
 ```
 
-![DMA matmul: block grid with shared memory and K-loop](../assets/images/ch03/fig6_dma_matmul_dark.png#only-dark)
-![DMA matmul: block grid with shared memory and K-loop](../assets/images/ch03/fig6_dma_matmul_light.png#only-light)
+![DMA matmul: block grid with shared storage and K-loop](../assets/images/ch03/fig6_dma_matmul_dark.png#only-dark)
+![DMA matmul: block grid with shared storage and K-loop](../assets/images/ch03/fig6_dma_matmul_light.png#only-light)
 
-*One block in detail: the K-loop loads lhs and rhs tiles into shared memory via `dma.copy`, then 256 threads compute partial products from the shared copies.*
+*One block in detail: the K-loop loads lhs and rhs tiles into shared storage via `dma.copy`, then 256 threads compute partial products from the staged copies.*
 
 What changed from the scalar version:
 
@@ -234,15 +185,6 @@ What changed from the scalar version:
 The composed indices work in two layers: `px#qx` composes block index `px` with thread index `qx` to form the global row; `py#qy` does the same for columns.
 
 **Dimension arithmetic.** With `[8, 16]` blocks, each block owns `128/8 = 16` rows and `256/16 = 16` columns. The inner `[16, 16]` threads subdivide that into one element per thread. Along K, 16 tiles of `256/16 = 16` elements each cover the full contraction.
-
-### GPU Resource Layout
-
-Here is how the matmul code maps to actual GPU hardware:
-
-![Matmul code mapped to GPU resources](../assets/images/ch03/fig7_matmul_gpu_layout_dark.png#only-dark)
-![Matmul code mapped to GPU resources](../assets/images/ch03/fig7_matmul_gpu_layout_light.png#only-light)
-
-*Left: Croqtile code with nested parallel and foreach. Right: GPU hardware — 128 blocks distributed across SMs, each with shared memory and 256 threads.*
 
 ### Host Code
 
@@ -286,13 +228,12 @@ For that thread, the K-loop runs 16 iterations. On iteration `tile_k = 0`, `dma.
 | `parallel p by N`                        | N-way parallelism, index `p` runs 0..N-1 concurrently                                      |
 | `parallel {px, py} by [M, N]`            | Multi-dimensional parallel level <br> (`p` and `q` correspond to one parallel level)       |
 | `parallel p by A, q by B`                | Comma-separated parallel levels <br> (`p` and `q` correspond to different parallel levels) |
-| `parallel p by N : block`                | Map to CUDA thread blocks                                                                  |
+| `parallel p by N : block`                | Map to blocks                                                                              |
 | `parallel q by N : thread`               | Map to threads within a block                                                              |
-| `parallel w by N : group`                | Map to warps (32 threads each)                                                             |
-| `parallel g by N : group-4`              | Map to warpgroups (128 threads each)                                                       |
-| `=> shared`                              | DMA destination: block-scoped shared memory                                                |
+| `parallel w by N : group`                | Map to groups                                                                              |
+| `=> shared`                              | DMA destination: block-scoped shared storage                                               |
 | `foreach index = {m, n, k} in [a, b, c]` | Named tuple destructuring in a `foreach`                                                   |
 | `lhs.span(0)`                            | Extract one dimension of a tensor's shape                                                  |
 | `p # m`                                  | Compose outer tile index `p` with inner offset `m`                                         |
 
-The tiled DMA matmul you built in this chapter is the structural backbone of every high-performance GPU kernel. The next chapter replaces the scalar `.at()` arithmetic in the inner loop with **tensor-core** operations — hardware-accelerated matrix multiply that processes a 16×16×16 tile in a single instruction.
+The tiled DMA matmul you built in this chapter is the structural backbone of every high-performance kernel. The next chapter replaces the scalar `.at()` arithmetic in the inner loop with **`mma`** operations — a matrix contraction that consumes a small tile per step instead of one element at a time.

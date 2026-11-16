@@ -1,10 +1,4 @@
 {
- "F11-S09": [
-  {
-   "before": "Work from cheap to expensive: \\texttt{println!} (compile-time shapes) \\(\\rightarrow\\) guarded \\texttt{println} on one tile (runtime values) \\(\\rightarrow\\) event/stage prints (synchronization) \\(\\rightarrow\\) pattern analysis (layout) \\(\\rightarrow\\) \\texttt{debugger} (pointer bugs). Guard runtime prints behind \\texttt{\\#ifdef} so they vanish in production:",
-   "after": "Choose the first check from the symptom. If a tile has the wrong dimensions, inspect its shape with \\co@println!@ before running the program. If the shape is right but the values are wrong, print one tile or add an assertion near the suspect operation. A stalled pipeline calls for event and iteration counts; a regular pattern of incorrect matrix elements calls for a layout check. Use a debugger when these checks point to an address or lifetime problem. Keep temporary output behind a preprocessor guard so it can be removed from a normal build:"
-  }
- ],
  "F11-S10": [
   {
    "before": "The tools above answer three questions in order: what the compiler believed at compile time, what the program did at runtime, and which flag exposes each. Start with \\texttt{print!} when a shape or a type is surprising, move to \\texttt{assert} when a value is surprising, and only then turn on a verbose build.",
@@ -109,10 +103,6 @@
  ],
  "F15-S08": [
   {
-   "before": "A \\emph{mdspan} cannot be applied alone to define the data for computation. In Croqtile function, a data definition must be fully-typed, which consists of a fundamental type and a \\emph{mdspan}. The following code showcases how it works.",
-   "after": "A buffer declaration needs both an element type and a shape. The shape determines how many positions the buffer contains, while the fundamental type determines what each position stores. The examples below reuse a named shape for half-precision data and use a literal shape for single-precision data."
-  },
-  {
    "before": "There are fundamental types that Croqtile has supported, including:",
    "after": "The basic element types include:"
   }
@@ -129,22 +119,6 @@
   {
    "before": "By default, when no storage qualifier appears, the data defined is considered as from the \\emph{global} storage.\n",
    "after": "Choose the storage specifier to match the code that uses the buffer. Defaults depend on the execution context and target; use an explicit specifier when a transfer or a cooperating group requires a particular storage location."
-  },
-  {
-   "before": "The following code showcases the usage.",
-   "after": "For example:"
-  }
- ],
- "F37-S04": [
-  {
-   "before": "\\begin{itemize}[leftmargin=1.6em]\n\\item The default memory space for data in Croqtile, if no storage qualifier is specified.\n\\end{itemize}",
-   "after": "A \\co@global@ declaration places the buffer in the target's global storage. It is useful for data that must remain accessible beyond one thread or one cooperating block. Declaring the storage does not initialize its contents or copy data into it:"
-  }
- ],
- "F37-S05": [
-  {
-   "before": "A \\texttt{shared} buffer follows the same declaration syntax:",
-   "after": "A \\co@shared@ buffer provides a common staging area for threads in a block. In a tiled matrix multiplication, a block can load an operand tile once and let several threads read it. The reads must follow completion of the load, and the next load must wait until those reads finish."
   }
  ],
  "F37-S07": [
@@ -177,7 +151,7 @@
  ],
  "F05-S05": [
   {
-   "before": "This creates an 8 \\(\\times\\) 16 = 128 block grid. Blocks cannot communicate with each other during execution --- they are truly independent.",
+   "before": "This creates an 8 \\(\\times\\) 16 = 128 block grid. Each block runs independently and has its own allocation of shared storage. Blocks cannot communicate with each other during execution.",
    "after": "This declares an 8 by 16 grid, giving 128 blocks. Each block must be able to complete its assigned output tile independently; the example does not provide a communication or synchronization protocol between blocks."
   }
  ],
@@ -257,12 +231,6 @@
    "after": "The \\co@__cpp__@ form inserts a string as C++ source at the point where it appears in a Croqtile function. Use it for a short target operation that needs to sit inside a particular parallel or asynchronous region. The inserted text must be valid in that scope, with all referenced names visible to the target compiler. Croqtile passes the contents through without parsing or rewriting them."
   }
  ],
- "F10-S10": [
-  {
-   "before": "L_TILE_K for f16 kernel\"\n#endif\n#if MATMUL_WARP_M != 64\n#endif\n\\end{lstlisting}\n",
-   "after": "L_TILE_K for f16 kernel\"\n#endif\n#if MATMUL_WARP_M != 64\n#endif\n\\end{lstlisting}\n\nThe preprocessor evaluates this condition before the Croqtile function is parsed. An incompatible set of constants therefore stops the build with the supplied message. Use this for relationships among configuration macros; a property of input data supplied at runtime belongs in a runtime assertion instead.\n"
-  }
- ],
  "F23-S01": [
   {
    "before": "Macros have long been a fundamental feature in C/C++ programming. To enable seamless manipulation of both C++ and \\emph{tileflow} programs, macro expansion is essential. This section demonstrates Croqtile's macro processing capabilities.\n",
@@ -295,10 +263,6 @@
   {
    "before": "The kernel is designed to operate on input data, process it in parallel, and generate the output.",
    "after": "A device helper receives the data selected and staged by its caller. Its job is to compute on that data using the target language. The following addition helper illustrates this boundary: Croqtile arranges the chunks and transfers, while the helper operates on the pointers and element count passed to it."
-  },
-  {
-   "before": "Programmers must be aware that the device program follows the \\emph{Single-Program-Multiple-Data (SPMD)} paradigm. However, unlike traditional  programs, the device program does not manage data movement ---whether between the host and device or across multiple storage levels within the device. Instead, the \\emph{tileflow program} orchestrates these tasks in a much simpler and safer manner.\n",
-   "after": "The helper runs within the parallel execution arranged by its caller. In this example, the Tileflow function performs the transfers and the helper computes on the selected chunk. Keeping those responsibilities separate lets the transfer structure change without rewriting the helper's arithmetic."
   }
  ],
  "F05-S11": [
@@ -327,10 +291,6 @@
  ],
  "F15-S12": [
   {
-   "before": "Bounded types consist of \\textbf{Bounded Scalar} and \\textbf{Bounded ITuple}. Bounded Scalar takes a range of [0, ub), where 'ub' represents its upper bound. Therefore, if an integer 'p' is set as bounded, it should also be associated with a specific upper bound. To establish such associations, programmers must code explicitly inside the \\emph{Control Structures} of 'parallel-by' and 'with-in', which will be introduced later.",
-   "after": "A bounded integer carries a value and an exclusive upper bound. In \\co@parallel p by 6@, its possible values are 0 through 5 and its upper bound is 6. A tile selection can therefore determine both which piece \\co@p@ identifies and how many pieces exist. The \\co@parallel-by@ and \\co@with-in@ constructs establish this association."
-  },
-  {
    "before": "Similarly, since \\emph{ITuple} is a group of \\emph{Integer}s, it can also be associated with a group of bounds. Specifically, in Croqtile, the \\emph{Bounded ITuple} is associated with a \\emph{mdspan} value, where a group of upper bounds are settled. In later sections, you shall illustrate the detailed syntax.\n",
    "after": "A bounded tuple extends the same idea to several dimensions. Each component has its own bound, and an \\co@mdspan@ describes the combined range. For example, a tuple bounded by \\co@[4, 8]@ can identify one of 32 positions. Section 2.7 shows how to declare and iterate over these indices."
   }
@@ -339,16 +299,6 @@
   {
    "before": "\\emph{mdspan}-represented shape. And in the following context, Croqtile calls it \\emph{spanned data}, or simply \\emph{spanned}.\n",
    "after": "The term spanned data is used for either case. An \\co@mdspan@ describes the shape; a spanned object combines that description with an element type and access to storage. Naming or deriving a shape alone does not create a copy of the data."
-  },
-  {
-   "before": "A Tileflow program moves and processes large datasets. Function inputs and outputs are often called data, while internal storage is called a buffer. This distinguishes external and internal storage from the function's perspective. Both are represented by \\textbf{spanned types}, which associate stored data with a shape.",
-   "after": "A function's inputs and outputs are often called data, while its temporary storage is called a buffer. Croqtile represents both with spanned types: stored elements associated with a shape. The terminology describes how the storage is used, not a different type system."
-  }
- ],
- "F18-S07": [
-  {
-   "before": "not overlap, so programmers do not need to manage those allocations themselves.\n",
-   "after": "not overlap, so programmers do not need to manage those allocations themselves.\n\nAutomatic allocation does not replace synchronization. If an asynchronous transfer or computation still uses a buffer, that use must finish before the storage is overwritten or released. In a pipeline, the waits and completion operations make these lifetimes explicit enough for the program to reuse the same slots safely.\n"
   }
  ],
  "F37-S01": [
@@ -421,20 +371,10 @@
    "after": "Symbolic expressions give the compiler opportunities to reuse a dimension calculation and simplify expressions that share known relationships. Constant parts can be evaluated during compilation; parts depending on input sizes remain runtime calculations. A symbolic name preserves information for optimization, but it does not turn an unknown input size into a constant or guarantee a particular performance result."
   }
  ],
- "F21-S08": [
-  {
-   "before": "alysis, so it cannot infer shapes whose dimensions change through reassignment.\n",
-   "after": "alysis, so it cannot infer shapes whose dimensions change through reassignment.\n\nFor a reader of generated code, the consequence is straightforward: a constant shape may disappear into constants, while a symbolic shape becomes a calculation in the generated program. Value numbering tries to preserve and simplify those relationships. It does not prove every mathematical identity, so an expression that seems equivalent by hand may still need a clearer formulation.\n"
-  }
- ],
  "F05-S02": [
   {
    "before": "The point is that parallelism is a \\textbf{virtual} concept.",
    "after": "Parallelism describes which tasks can be independent. The execution resources determine how many of those tasks can make progress at once."
-  },
-  {
-   "before": "If you want to change the tiling, you also have to change the launch configuration. The logical and physical are tangled together.",
-   "after": "When tile counts and launch dimensions are written as the same set of constants, changing the tiling also forces a change to the resource mapping. Keeping the two descriptions separate makes those choices easier to revise."
   },
   {
    "before": "Croqtile untangles them.\n",
@@ -475,10 +415,6 @@
   {
    "before": "The tiling primitives introduced so far --- \\texttt{chunkat}, \\texttt{subspan(.\\allowbreak{}.\\allowbreak{}.\\allowbreak{}).\\allowbreak{}at(.\\allowbreak{}.\\allowbreak{}.\\allowbreak{})} --- assume tensors that divide evenly into tiles. This works for textbook GEMM where M, N, K are multiples of the tile dimensions. Production kernels are rarely so tidy. Expert batches start at dynamic offsets. Convolution windows overlap. The last K-tile is almost never an exact multiple of TILE\\_K. Some inputs arrive as flat buffers that need reshaping before MMA can consume them.",
    "after": "Regular tiling works well when the dimensions divide evenly and the origin follows a fixed grid. Other kernels need a different description: expert batches can start at runtime offsets, convolution windows can overlap, and a final tile can contain fewer valid elements. A flat input may also need a multidimensional view before it can be consumed."
-  },
-  {
-   "before": "Croqtile provides four tools for these cases. Each one modifies how the compiler interprets a tensor's addressing without touching the pipeline structure --- DMA, TMA, MMA, events, swizzle all continue to work unchanged.\n",
-   "after": "The following operations adjust the selected region or its shape while leaving the surrounding algorithm recognizable. The resulting view still has to satisfy the chosen transfer operation's requirements, including shape, layout, and any target-specific alignment constraints."
   }
  ],
  "F09-S09": [
@@ -559,12 +495,6 @@
    "after": "The epilogue consumes the final loaded tile after the loop has stopped issuing transfers. It still requires that tile's load to be complete before reading it. The listing above illustrates handle rotation but omits a final wait and output initialization; a runnable accumulation must supply both, just as it does for the steady-state reads."
   }
  ],
- "F08-S04": [
-  {
-   "before": "\\texttt{swap(lf0, lf1)} exchanges \\textbf{future handles} --- the Croqtile-level names that refer to buffers. Only the names rotate. For triple buffering, \\texttt{rotate(f0, f1, f2)} cycles three handles in one step.\n",
-   "after": "The operation \\co@swap(lf0, lf1)@ exchanges the handles that name the current and next buffers; it does not copy their elements or wait for a transfer. For three buffers, \\co@rotate(f0, f1, f2)@ cycles the handles. In either case, follow the handle after the exchange to identify which transfer must complete before a read."
-  }
- ],
  "F08-S06": [
   {
    "before": "\\texttt{dma.any} creates a future that does not yet represent a transfer. It gives the type system something to \\texttt{swap} against on the first steady-state iteration. Before any use of \\texttt{lf1.data}, a real \\texttt{dma.copy} has been assigned.\n",
@@ -585,20 +515,8 @@
  ],
  "F06-S04": [
   {
-   "before": "One cooperative group is written \\texttt{: group} in Croqtile.",
-   "after": "The smallest example assigns one output tile to a cooperative group, written \\co@: group@. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position. The \\co@: group@ level is a hardware-warp concept; a target without warps rejects it, so read this listing against a GPU target."
-  },
-  {
    "before": "\\textbf{\\texttt{\\_\\allowbreak{}\\_\\allowbreak{}co\\_\\allowbreak{}\\_\\allowbreak{} void} and in-place output.} The kernel returns nothing;",
    "after": "The function returns \\co@void@ because it writes into the \\co@output@ parameter. The caller supplies that buffer and reads it after the operation completes. Inside the function, \\co@output_s@ is the staging buffer used between \\co@mma.store@ and the final copy."
-  },
-  {
-   "before": "With all dimensions equal to 16, the tile-grid extents are 1 by 1.",
-   "after": "When the matrix dimensions and the tile dimensions are all 16, the block grid is 1 by 1. Larger matrices produce more output tiles. The \\co@MMA_M@, \\co@MMA_N@, and \\co@MMA_K@ names in the listing must be defined consistently with the intended fragment geometry before compiling it."
-  },
-  {
-   "before": "The four-step syntax reads linearly and the tile geometry is obvious.\n",
-   "after": "The accumulator spans the entire K loop. Initializing it inside that loop would discard earlier contributions, while storing inside the loop would expose only a partial result. Keeping initialization before the loop and the store after it makes the output tile's lifetime visible."
   },
   {
    "before": "\\textbf{Block grid.} \\texttt{cdiv(M, TILE\\_\\allowbreak{}M)} is ceiling division --- how many tiles along M, including partial tiles. \\texttt{block\\_m} and \\texttt{block\\_n} pick which output tile this block owns.",
@@ -641,16 +559,6 @@
   {
    "before": "& Kernel that writes results in-place \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n",
    "after": "& Kernel that writes results in-place \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n\nRead the modifiers together with the data path. A swizzled load must match the layout produced by the copy; a sparse operation needs metadata for the same operand tile; scaling values must belong to the tile being accumulated. The short statement names do not remove these relationships.\n"
-  },
-  {
-   "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lX@{}}\n\\toprule\n\\textbf{Syntax} & \\textbf{Meaning} \\\\\n\\midrule\n\\texttt{mc = mma.\\allowbreak{}fill 0.\\allowbreak{}0} & Initialize accumulator tile to zero \\\\\n\\texttt{mma.\\allowbreak{}fill.\\allowbreak{}f16 0.\\allowbreak{}0f} / \\texttt{mma.\\allowbreak{}fill.\\allowbreak{}f32 0.\\allowbreak{}0f} & Accumulator with explicit precision \\\\\n\\texttt{mma.\\allowbreak{}load.\\allowbreak{}swiz\\textless{}N\\textgreater{} src} & Load with swizzle mode (see \\emph{Ch 7}) \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb} & C += A \\(\\times\\) B (both row-major) \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}col mc, ma, mb} & C += A \\(\\times\\) B (A row-major, B col-major) \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row.\\allowbreak{}sp mc, ma, mb, me} & Sparse MMA with metadata operand \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row.\\allowbreak{}scale mc, ma, mb, sc\\_\\allowbreak{}a, sc\\_\\allowbreak{}b} & Fused MMA + per-tile dequantization \\\\\n\\texttt{mma.\\allowbreak{}scale mc, sc\\_\\allowbreak{}a, sc\\_\\allowbreak{}b} & Standalone post-MMA scaling \\\\\n\\texttt{mma.\\allowbreak{}store.\\allowbreak{}transp mc, dst} & Write accumulator transposed \\\\\n\\texttt{cdiv(a, b)} & Ceiling division \\\\\n\\texttt{\\_\\allowbreak{}\\_\\allowbreak{}co\\_\\allowbreak{}\\_\\allowbreak{} void fn(.\\allowbreak{}.\\allowbreak{}.\\allowbreak{})} & Kernel that writes results in-place \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}",
-   "after": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lX@{}}\n\\toprule\n\\textbf{Syntax} & \\textbf{Meaning} \\\\\n\\midrule\n\\texttt{mc = mma.\\allowbreak{}fill 0.\\allowbreak{}0} & Initialize accumulator tile to zero \\\\\n\\texttt{mma.\\allowbreak{}fill.\\allowbreak{}f16 0.\\allowbreak{}0f} / \\texttt{mma.\\allowbreak{}fill.\\allowbreak{}f32 0.\\allowbreak{}0f} & Accumulator with explicit precision \\\\\n\\texttt{mma.\\allowbreak{}load.\\allowbreak{}swiz\\textless{}N\\textgreater{} src} & Load with swizzle mode (Section 3.7) \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb} & C += A \\(\\times\\) B (both row-major) \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}col mc, ma, mb} & C += A \\(\\times\\) B (A row-major, B col-major) \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row.\\allowbreak{}sp mc, ma, mb, me} & Sparse MMA with metadata operand \\\\\n\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row.\\allowbreak{}scale mc, ma, mb, sc\\_\\allowbreak{}a, sc\\_\\allowbreak{}b} & Fused MMA + per-tile dequantization \\\\\n\\texttt{mma.\\allowbreak{}scale mc, sc\\_\\allowbreak{}a, sc\\_\\allowbreak{}b} & Standalone post-MMA scaling \\\\\n\\texttt{mma.\\allowbreak{}store.\\allowbreak{}transp mc, dst} & Write accumulator transposed \\\\\n\\texttt{cdiv(a, b)} & Ceiling division \\\\\n\\texttt{\\_\\allowbreak{}\\_\\allowbreak{}co\\_\\allowbreak{}\\_\\allowbreak{} void fn(.\\allowbreak{}.\\allowbreak{}.\\allowbreak{})} & Kernel that writes results in-place \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}"
-  }
- ],
- "F07-S01": [
-  {
-   "before": "Predicated execution is not enough. This is not a data-dependent branch --- it is two \\textbf{structurally different programs} that happen to share an address space. Trying to express this with \\texttt{if} means one program pauses while the other runs. There is no overlap, no pipeline.",
-   "after": "A tiled matrix multiplication also has work with different roles: one group can load the next operands while another computes with the current operands. The groups need to progress independently between well-defined handoffs. A runtime condition describes which branch an instance takes; a pipeline also needs a way to express those separate roles and their dependencies."
   }
  ],
  "F08-S01": [
@@ -665,16 +573,8 @@
  ],
  "F07-S04": [
   {
-   "before": "\\textbf{\\texttt{parallel p1 by 2 :\\allowbreak{} group-\\allowbreak{}4}}",
-   "after": "The declaration \\co@parallel p1 by 2 : group-4@ creates two cooperating groups in the same surrounding block. The value of \\co@p1@ selects a role; it does not identify a tile along K."
-  },
-  {
    "before": "\\textbf{\\texttt{inthreads.\\allowbreak{}async (p1 == 0)}}",
    "after": "The region for \\co@p1 == 0@ is the producer. It owns the writes that fill the shared staging buffers. The other group can proceed with computation while those writes target a different, available slot."
-  },
-  {
-   "before": "\\textbf{\\texttt{inthreads.\\allowbreak{}async (p1 == 1)}} --- The two blocks are separate programs sharing an address space.",
-   "after": "The region for \\co@p1 == 1@ is the consumer. It reads completed tiles and updates its accumulator. The two regions share staging storage, so the event protocol must identify when a slot changes from writable to readable and back again."
   }
  ],
  "F07-S08": [
@@ -693,10 +593,6 @@
  ],
  "F07-S09": [
   {
-   "before": "tions; the final two padded tile IDs are skipped by the if guard.}\n\\end{figure}\n",
-   "after": "tions; the final two padded tile IDs are skipped by the if guard.}\n\\end{figure}\n\nFor four workers and ten output tiles, the composed tile indices are 0--3 on the first iteration, 4--7 on the second, and 8--11 on the third. The guard accepts only 8 and 9 in the last iteration. This covers each valid tile once, but it does not guarantee that every worker stays busy until the end; tile cost and the remaining work still determine utilization.\n"
-  },
-  {
    "before": "\\textbf{\\texttt{parallel block\\_\\allowbreak{}id by NUM\\_\\allowbreak{}GROUPS :\\allowbreak{} block}} --- Fixed worker count.",
    "after": "The declaration fixes the number of workers at \\co@NUM_GROUPS@. Work size changes the number of loop iterations rather than the number of launched blocks."
   },
@@ -707,12 +603,6 @@
   {
    "before": "\\textbf{\\texttt{if (tile\\_\\allowbreak{}id \\textless{} total\\_\\allowbreak{}tiles)}} --- The \\texttt{if} guard: a runtime predicate that skips the body for padding iterations. This is exactly the use case \\texttt{if} is designed for --- a data-dependent decision, not a structural partition.",
    "after": "The condition \\co@tile_id < total_tiles@ excludes indices beyond the final valid tile. All work for that tile belongs inside the guard, including any producer-consumer protocol whose participants must agree whether the tile exists."
-  }
- ],
- "F36-S04": [
-  {
-   "before": "hout stream binding, asynchronous \\texttt{parallel-by} uses the default stream.\n",
-   "after": "hout stream binding, asynchronous \\texttt{parallel-by} uses the default stream.\n\nA stream selects an ordering context for launches. It does not make two kernels independent if the second reads data written by the first. When using separate streams, keep that dependency explicit and retain the buffers until their queued users finish. Host-side return from an asynchronous launch only confirms that execution was submitted.\n"
   }
  ],
  "F08-S11": [
@@ -735,16 +625,6 @@
    "after": "The completed pipeline adds two dependencies to the earlier skeleton: input readiness before computation, and completion of operand use before slot reuse. When adapting it, trace one slot through a full cycle and then through its next reuse. This exposes missing handoffs and mismatched iteration counts more clearly than looking at either loop alone."
   }
  ],
- "F08-S15": [
-  {
-   "before": "Both patterns overlap data movement and computation, but differ in complexity. Start with \\texttt{swap} for simpler kernels.",
-   "after": "Handle rotation is enough when one group controls both the transfer schedule and the computation. Separate producer and consumer regions need events because neither can infer the other's progress from its own instruction order. More buffering can give them room to overlap, but it cannot repair a missing dependency."
-  },
-  {
-   "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Pattern} & \\textbf{Primitives used} & \\textbf{When to use} \\\\\n\\midrule\n\\texttt{swap} double buffering & \\texttt{dma.any}, \\texttt{swap} & Single thread group interleaving load and compute \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}",
-   "after": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Pattern} & \\textbf{Primitives used} & \\textbf{When to use} \\\\\n\\midrule\n\\texttt{swap} double buffering & \\texttt{dma.any}, \\texttt{swap} & Single thread group interleaving load and compute \\\\\nEvent pipeline & \\co@inthreads.async@, events & Separate producer and consumer groups \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}"
-  }
- ],
  "F10-S01": [
   {
    "before": "Every high-level language needs an escape hatch to the layer below. Python has \\texttt{ctypes} and C extensions. Rust has \\texttt{unsafe} blocks and \\texttt{extern \"C\"}. Java has JNI.",
@@ -753,56 +633,14 @@
  ],
  "F10-S04": [
   {
-   "before": "\\textbf{\\texttt{\\_\\allowbreak{}\\_\\allowbreak{}device\\_\\allowbreak{}\\_\\allowbreak{} T SHFL\\_\\allowbreak{}XOR}} --- Croqtile passes them through.",
-   "after": "The \\co@SHFL_XOR@ helper is ordinary device code passed to the target compiler. Its use inside the computation belongs to the helper's implementation; Croqtile does not translate that body into tile operations."
-  },
-  {
-   "before": "\\textbf{\\texttt{\\_\\allowbreak{}\\_\\allowbreak{}device\\_\\allowbreak{}\\_\\allowbreak{} void group\\_\\allowbreak{}topk\\textless{}K\\textgreater{}}} --- It operates on raw pointers (\\texttt{f32*}, \\texttt{s32*}), not Croqtile spans.",
-   "after": "The helper receives raw pointers to element storage. Its interface must therefore state any sizes or layout assumptions that it needs; the pointer alone does not preserve the Croqtile shape."
-  },
-  {
    "before": "\\textbf{\\texttt{call group\\_\\allowbreak{}topk\\textless{}8\\textgreater{}(.\\allowbreak{}.\\allowbreak{}.\\allowbreak{})}} --- The \\texttt{call} keyword invokes a \\texttt{\\_\\_device\\_\\_} function from within a \\texttt{\\_\\_co\\_\\_} body. Arguments are passed by pointer; the compiler handles the address translation between Croqtile spans and raw pointers.",
-   "after": "The \\co@call group_topk<8>(...)@ statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call."
-  },
-  {
-   "before": "\\textbf{\\texttt{inthreads (tid == 0)}} --- Note this uses \\texttt{inthreads} without \\texttt{.async} --- a sequential thread filter, not a concurrent region.",
-   "after": "The \\co@inthreads (tid == 0)@ region selects one thread for the enclosed work and rejoins afterwards. It has no \\co@.async@ modifier, so it does not introduce a separately progressing producer or consumer."
+   "after": "The \\co@call warp_topk<8>(...)@ statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call."
   }
  ],
  "F10-S06": [
   {
    "before": "\\textbf{Placement} --- Put the hint at the top of each \\texttt{inthreads.\\allowbreak{}async} branch, before the heavy loop.\n",
    "after": "The injected strings place target-specific register hints at the start of the producer and consumer regions, before their long-running loops. The two roles can have different resource needs. Croqtile preserves the instruction text; the target compiler and device determine whether the hint is valid. Keep this code close to the region whose behavior it changes, and verify the result with the target tools."
-  }
- ],
- "F09-S04": [
-  {
-   "before": "That flexibility has a cost.",
-   "after": "Writing every load and address calculation separately gives a programmer many choices, but it also leaves the compiler to recover which operations form one tile transfer. Croqtile asks the program to describe that region explicitly. The restriction is useful when the desired movement fits a regular shape, because its geometry is available before individual transfers are generated."
-  }
- ],
- "F13-S02": [
-  {
-   "before": "You work on tensors and tiles, not raw buffers and pointers.\n",
-   "after": "A tile selection can use the input shape and bounded indices directly. For example, changing the number of chunks changes the derived chunk size without requiring a second set of manually calculated offsets. The programmer still chooses the partition; the language keeps the consequences of that choice connected."
-  }
- ],
- "F13-S03": [
-  {
-   "before": "In development builds, 1,319 runtime assertions guard every transfer and memory access. Together they eliminate entire classes of bugs that would otherwise need \\texttt{memcheck} and hours of printf debugging.\n",
-   "after": "Shape and rank checks catch incompatible uses before execution when enough information is available. Runtime checks cover constraints that depend on actual inputs, and assertions can state additional application requirements. Together they help localize failures, but they do not replace checking output values or the synchronization protocol."
-  }
- ],
- "F13-S04": [
-  {
-   "before": "First-class symbolic dimensions let you write a kernel once and run it on any shape without recompilation. The compiler derives packed-K, metadata columns, grid dimensions, and shared-memory size automatically. Static and runtime memory are unified --- no template metaprogramming, no boilerplate.\n",
-   "after": "Symbolic dimensions let one source program express a family of input shapes. Output sizes and iteration counts can be derived from the named dimensions instead of repeated as independent constants. Each call must still satisfy the kernel's tiling, layout, and target constraints; symbolic shapes do not imply that every shape is supported equally well."
-  }
- ],
- "F13-S05": [
-  {
-   "before": "Compact, structured syntax can keep an entire kernel within an AI agent's context window, often in 30--60 lines. Structured error messages and documented command-line options support autonomous cycles of compilation, profiling, and refinement.\n",
-   "after": "Compact source gives an automated tuning process room to retain the kernel, compiler diagnostics, and measurement results together. Explicit tile sizes and cooperation scopes also provide concrete choices to vary. Each candidate still needs correctness checks and measurement on the intended workload; a successful compilation only establishes part of that evidence."
   }
  ],
  "F40-S01": [
@@ -885,10 +723,6 @@
   {
    "before": "\\textbf{Note, a mdspan can only be defined. No modification to an existing mdspan is allowed. Further, a mdspan can only be defined once.}",
    "after": "A named \\co@mdspan@ must be initialized when declared and cannot be modified afterwards. To describe a different shape, derive a new name from the existing one. This preserves the relationship between shape expressions for the compiler's analysis."
-  },
-  {
-   "before": "In the above example, the expression 'sp(0)' reasons about the first dimension value of mdspan 'sp'. The dimension values are in essence integer values, which are suitable for integer arithmetic.",
-   "after": "The expression \\co@sp(0)@ returns the first extent of \\co@sp@. Extents are integer values and can participate in integer arithmetic."
   }
  ],
  "F17-S08": [
@@ -913,10 +747,6 @@
   {
    "before": "\\textbf{Composed global indices.} \\texttt{p\\#m} composes the tile index with the within-tile offset. \\texttt{p} selects which of the 16 row-tiles, \\texttt{m} runs 0..7 within that tile, so \\texttt{p\\#m} covers 0..127 across all tiles.",
    "after": "The composed row \\co@p#m@ has value \\co@p * 8 + m@. As p visits the 16 row tiles and m visits the eight rows within each tile, it covers rows 0 through 127. The column expression \\co@q#n@ works the same way with four columns per tile."
-  },
-  {
-   "before": "\\textbf{The arithmetic.} \\texttt{output.\\allowbreak{}at(p\\#\\allowbreak{}m, q\\#\\allowbreak{}n) += lhs.\\allowbreak{}at(p\\#\\allowbreak{}m, k) * rhs.\\allowbreak{}at(k, q\\#\\allowbreak{}n)} is the textbook dot product: for each output element, sum products along K.\n",
-   "after": "For each output position, the body sums \\co@lhs.at(p#m, k) * rhs.at(k, q#n)@ over K. All contributions go to the same output element. The zeroing loop runs in the same parallel instance, so each accumulator element is cleared by the instance that owns it."
   }
  ],
  "F09-S07": [
@@ -969,12 +799,6 @@
    "after": "Without \\co@.async@, the region rejoins the surrounding execution before later code proceeds. Adding \\co@.async@ allows other regions to advance independently. Any data handoff between them then needs an explicit synchronization protocol."
   }
  ],
- "F07-S11": [
-  {
-   "before": "\\textbf{\\texttt{parallel.async}} returns control to the host immediately --- the kernel is enqueued but the host does not wait for completion. This is the Croqtile equivalent of \\texttt{launch\\_kernel} with a non-default stream.",
-   "after": "An asynchronous launch returns control to the host after submitting the kernel. Completion happens later. Stream binding selects which stream receives the work; without an explicit binding, the default stream is used."
-  }
- ],
  "F24-S03": [
   {
    "before": "\\textbf{Croqtile transpilation process would not apply any check between the callers and the callees}, including the function existence, function signature consistency, and parameter consistency. It delegates such duties to the target compilation process. Programmers must be careful about the conventions between Croqtile function and device function consequently.",
@@ -987,28 +811,10 @@
    "after": "To inspect one execution path, guard the print with a condition on its index:"
   }
  ],
- "F09-S03": [
-  {
-   "before": "\\textbf{Swizzle} applies a fixed XOR-style remapping to column indices within each row, spreading accesses across banks. Croqtile exposes it on \\textbf{both DMA and TMA}, with the same syntax and the same effect:",
-   "after": "A swizzle changes how elements of a staged tile are arranged in shared storage. The logical matrix shape stays the same, but the reader must use the matching address mapping. Croqtile exposes this choice on the copy operation:"
-  }
- ],
  "F06-S02": [
   {
-   "before": "col} cover most kernels. Choosing the wrong variant produces incorrect results.\n",
+   "before": "col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint --- each layout is interpreted differently.",
    "after": "col} cover most kernels. Choosing the wrong variant produces incorrect results.\n\nFor two K slices, initialize \\co@mc@ once, load the first pair of operands and accumulate, then load the second pair and accumulate into the same \\co@mc@. Only then store the output. The load handles describe operand fragments; the accumulator holds the partial result across iterations. This distinction explains why fill and store sit outside the repeated load-and-multiply sequence.\n"
-  }
- ],
- "F17-S02": [
-  {
-   "before": "In high-performance computation kernels, integers are typically used for program control rather than computation. In Croqtile \\emph{tileflow programs}, integers are used exclusively for loop control and array indexing. Given the limited value ranges in these scenarios, Croqtile provides a single integer type --- the \\emph{32-bit signed integer} --- to simplify the design for this domain-specific use.",
-   "after": "Control integers describe loop ranges, indices, and related calculations. Croqtile uses a signed 32-bit \\co@int@ for these tasks. Numerical data stored in a tensor uses the separate fundamental element types described in Section 2.6."
-  }
- ],
- "F17-S05": [
-  {
-   "before": "In Croqtile, multiple integers can be grouped into an \\textbf{integer-tuple}, or \\textbf{i-tuple} (or \\textbf{ituple}). The keyword \\texttt{ituple} can be used to define an \\emph{i-tuple}. The following code showcases the usage:",
-   "after": "An integer tuple, written \\co@ituple@, groups several integer values in a fixed order. Its initializer uses braces:"
   }
  ],
  "F15-S11": [
@@ -1018,10 +824,6 @@
   }
  ],
  "F15-S15": [
-  {
-   "before": "Similar to 'parallel-by', 'with-in' statement can also bind \\emph{i-tuples} to a \\emph{mdspan}. The following code shows an example.",
-   "after": "A \\co@with-in@ statement binds indices to a range without launching parallel instances. For a two-dimensional range, it can bind one tuple:"
-  },
   {
    "before": "Or even to name both the \\emph{i-tuple} and its elements.",
    "after": "The tuple and its components can also be named together:"
@@ -1035,12 +837,6 @@
   {
    "before": "\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{parallel}}: This keyword initiates the \\emph{parallel execution block}.\n\\item \\textbf{\\texttt{p}}: It is the \\textbf{parallel variable}. It contains an integer value identifying the current \\emph{parallel thread}. Each \\emph{parallel thread} runs the same code but with a different value of \\emph{parallel variable} \\texttt{p}.\n\\item \\textbf{\\texttt{by 6}}: It indicates that there are totally 6 \\emph{parallel thread}s. Thus, the \\emph{parallel variable} \\texttt{p} ranges from \\texttt{0} to \\texttt{5} across different threads.\n\\end{itemize}",
    "after": "\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{parallel}}: This keyword initiates the \\emph{parallel execution block}.\n\\item \\textbf{\\texttt{p}}: It is the \\textbf{parallel variable}. It contains an integer value identifying the current \\emph{parallel thread}. Each \\emph{parallel thread} runs the same code but with a different value of \\emph{parallel variable} \\texttt{p}.\n\\item \\textbf{\\texttt{by 6}}: It indicates that there are 6 \\emph{parallel thread}s. Thus, the \\emph{parallel variable} \\texttt{p} ranges from \\texttt{0} to \\texttt{5} across different threads.\n\\end{itemize}"
-  }
- ],
- "F31-S04": [
-  {
-   "before": "One key difference observable by programmers is the \\textbf{synchronization cost}. This hierarchical design encourages programmers to place the most divergent code (that requires synchronization) within the \\textbf{block} level to enhance overall performance.",
-   "after": "The nesting determines which instances belong to the same enclosing region. Shared data and synchronization must follow that structure. Put cooperating work at a level whose instances can use the required storage and synchronization operations."
   }
  ],
  "F32-S02": [
@@ -1057,18 +853,6 @@
   {
    "before": "Furthermore, This rule also applies to the \\emph{comma-separated bounded variable list} that follows the \\texttt{foreach} statement:",
    "after": "The same outer-to-inner ordering applies to a comma-separated list of bounded variables:"
-  }
- ],
- "F18-S03": [
-  {
-   "before": "Note \\texttt{s32} is different from \\texttt{int}. Although they occupy the same amount of storage, in Croqtile, \\texttt{s32} cannot be used alone to define programming entities. For example:",
-   "after": "The element type \\co@s32@ and the control type \\co@int@ have different roles, even though both describe 32-bit integers. A declaration that adds a shape creates a buffer; without one, the same element type declares an ordinary control integer:"
-  }
- ],
- "F18-S05": [
-  {
-   "before": "The syntax for the \\emph{initialization expression} of a \\emph{spanned data} is straightforward: it encloses an initial value inside brackets following the variable name. However, its functionality is limited --- it always sets all elements to a fixed value.\n",
-   "after": "The braces after the buffer name contain one initial value, applied to every element. This form fills the whole buffer; it is not an element-by-element initializer list."
   }
  ],
  "F18-S06": [
@@ -1091,16 +875,8 @@
  ],
  "F24-S04": [
   {
-   "before": "In this example, it passes different data types as arguments from Croqtile function to the device functions, which matches the device parameters exactly. Note that in the device function, the **corresponding parameter type of the \\emph{spanned data} argument is simply the pointer of its \\_element type\\_**, where the shape information is dropped. For example, the \\texttt{foo}'s argument \\texttt{p} is \\texttt{float*}, which corresponds the \\emph{spanned data} argument \\texttt{input.data}. In Croqtile, the parameter is described as a \\textbf{decayed} pointer of the \\emph{spanned data}. If using other form like \\texttt{float p[]}, it will trigger failure in target compilation stage.",
-   "after": "Here the spanned-data arguments become pointers to their element types. The device helper receives those pointers without shape metadata; pass any required dimensions separately. The declared pointer element type must match the data supplied by the call."
-  },
-  {
    "before": "For some types like \\texttt{f16}, and \\texttt{bf16}, there may not be native target support of such types, it is possible to utilize \\texttt{croq::f16} and \\texttt{croq::bf16} to handle such types.\n",
    "after": "For element formats without a native target type, use the corresponding Croqtile C++ type, such as \\co@croq::f16@ or \\co@croq::bf16@, where supported."
-  },
-  {
-   "before": "The following code showcases an example:",
-   "after": "For example:"
   }
  ],
  "F37-S02": [
@@ -1149,16 +925,6 @@
    "after": "Croqtile can generate a wrapper for the \\co@bar<3>@ specialization. The function template itself has C++ linkage; the wrapper provides the target-facing entry point."
   }
  ],
- "F05-S18": [
-  {
-   "before": "Section~\\ref{sec:3-7} replaces the scalar \\texttt{.at()} arithmetic in the inner loop with contraction operations\n",
-   "after": "Section 3.7 replaces scalar arithmetic in the inner loop with matrix contraction operations."
-  },
-  {
-   "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lX@{}}\n\\toprule\n\\textbf{Syntax} & \\textbf{Meaning} \\\\\n\\midrule\n\\texttt{parallel p by N} & N-way parallelism, index \\texttt{p} runs 0..N-1 concurrently \\\\\n\\texttt{parallel \\{px, py\\} by [M, N]} & Multi-dimensional parallel level \\textless{}br\\textgreater{} (\\texttt{p} and \\texttt{q} correspond to one parallel level) \\\\\n\\texttt{parallel p by A, q by B} & Comma-separated parallel levels \\textless{}br\\textgreater{} (\\texttt{p} and \\texttt{q} correspond to different parallel levels) \\\\\n\\texttt{parallel q by N :\\allowbreak{} thread} & Map to threads within a block \\\\\n\\texttt{foreach index = \\{m, n, k\\} in [a, b, c]} & Named tuple destructuring in a \\texttt{foreach} \\\\\n\\texttt{lhs.span(0)} & Extract one dimension of a tensor's shape \\\\\n\\texttt{p \\# m} & Compose outer tile index \\texttt{p} with inner offset \\texttt{m} \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}",
-   "after": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lX@{}}\n\\toprule\n\\textbf{Syntax} & \\textbf{Meaning} \\\\\n\\midrule\n\\texttt{parallel p by N} & N-way parallelism, index \\texttt{p} runs 0..N-1 concurrently \\\\\n\\texttt{parallel \\{px, py\\} by [M, N]} & Multi-dimensional parallel level   (\\texttt{p} and \\texttt{q} correspond to one parallel level) \\\\\n\\texttt{parallel p by A, q by B} & Comma-separated parallel levels   (\\texttt{p} and \\texttt{q} correspond to different parallel levels) \\\\\n\\texttt{parallel q by N :\\allowbreak{} thread} & Map to threads within a block \\\\\n\\texttt{foreach index = \\{m, n, k\\} in [a, b, c]} & Named tuple destructuring in a \\texttt{foreach} \\\\\n\\texttt{lhs.span(0)} & Extract one dimension of a tensor's shape \\\\\n\\texttt{p \\# m} & Compose outer tile index \\texttt{p} with inner offset \\texttt{m} \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}"
-  }
- ],
  "F11-S08": [
   {
    "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Croqtile type} & \\textbf{GDB type} & \\textbf{Fields} \\\\\n\\midrule\nShaped tensor \\textless{}br/\\textgreater{} (\\texttt{s32 [M, N]}) & \\texttt{croq:\\allowbreak{}:\\allowbreak{}rtti:\\allowbreak{}:\\allowbreak{}spanned\\textless{}int, 2\\textgreater{}} & \\texttt{.span.data[]} (dimensions), \\textless{}br/\\textgreater{}\\texttt{.stride.data[]} (strides), \\textless{}br/\\textgreater{}\\texttt{.data} (pointer) \\\\\nIndex tuple & \\texttt{croq:\\allowbreak{}:\\allowbreak{}rtti:\\allowbreak{}:\\allowbreak{}bounded\\_\\allowbreak{}ituple\\textless{}N\\textgreater{}} & \\texttt{.data[]} (values), \\textless{}br/\\textgreater{}\\texttt{.ub[]} (upper bounds) \\\\\nInteger tuple & \\texttt{croq:\\allowbreak{}:\\allowbreak{}rtti:\\allowbreak{}:\\allowbreak{}ituple\\textless{}N\\textgreater{}} & \\texttt{.data[]} (values) \\\\\nMulti-dim span & \\texttt{croq:\\allowbreak{}:\\allowbreak{}rtti:\\allowbreak{}:\\allowbreak{}mdspan\\textless{}N\\textgreater{}} & \\texttt{.data[]} (extents) \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}",
@@ -1169,26 +935,12 @@
   {
    "before": "\\begin{itemize}[leftmargin=1.6em]\n\\item The code defines the tiling parameters with four bounded variables: \\texttt{q}, \\texttt{n}, \\texttt{h}, and \\texttt{w}, whose upper bounders are \\texttt{6}, \\texttt{N/6}, \\texttt{H/16}, and \\texttt{W/512}.\n\\item Suppose \\texttt{N} is 18, \\texttt{q} represents physical thread index. You want each thread to process data that is contiguous in the first dimension. That is, the first thread handles input[0\\textasciitilde{}2][xxx], the second thread handles input[3\\textasciitilde{}5][xxx], and so on.\n\\item \\texttt{q \\# n} will result in a new bounded variable implicitly, whose upper bound is \\texttt{N}: bound of \\texttt{q} multiply bound of \\texttt{n}.\n\\item For every data move, the stride of each dimension is 1, 3, 16, 512. In the last dimension, the index is \\texttt{w}. In the first dimension, the index is \\texttt{q * (bound of n) + n}.\n\\end{itemize}",
    "after": "\\begin{itemize}[leftmargin=1.6em]\n\\item The code defines the tiling parameters with four bounded variables: \\texttt{q}, \\texttt{n}, \\texttt{h}, and \\texttt{w}, whose upper bounds are \\texttt{6}, \\texttt{N/6}, \\texttt{H/16}, and \\texttt{W/512}.\n\\item Suppose \\texttt{N} is 18, \\texttt{q} represents physical thread index. You want each thread to process data that is contiguous in the first dimension. That is, the first thread handles input[0\\textasciitilde{}2][xxx], the second thread handles input[3\\textasciitilde{}5][xxx], and so on.\n\\item \\texttt{q \\# n} will result in a new bounded variable implicitly, whose upper bound is \\texttt{N}: bound of \\texttt{q} multiply bound of \\texttt{n}.\n\\item For every data move, the stride of each dimension is 1, 3, 16, 512. In the last dimension, the index is \\texttt{w}. In the first dimension, the index is \\texttt{q * (bound of n) + n}.\n\\end{itemize}"
-  },
-  {
-   "before": "The example combines \\textbf{two bounded variables} to select tiles. The \\textbf{\\texttt{\\#} operator} composes their coordinates over a Cartesian product. Operand order matters: the operation is \\textbf{not commutative}.",
-   "after": "The RGB-to-grayscale example in Section 3.10.2 combines a worker index q with a sequential image index n. The expression \\co@q # n@ assigns consecutive images to each worker. For N = 18 and six workers, the inner bound is 3, so worker 1 processes images 3, 4, and 5. The details below use that same partition."
-  },
-  {
-   "before": "\\noindent\\textbf{The \\texttt{\\#} Operator:}\\par\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item The code defines the tiling parameters with four bounded variables: \\texttt{q}, \\texttt{n}, \\texttt{h}, and \\texttt{w}, whose upper bounds are \\texttt{6}, \\texttt{N/6}, \\texttt{H/16}, and \\texttt{W/512}.\n\\item Suppose \\texttt{N} is 18, \\texttt{q} represents physical thread index. You want each thread to process data that is contiguous in the first dimension. That is, the first thread handles input[0\\textasciitilde{}2][xxx], the second thread handles input[3\\textasciitilde{}5][xxx], and so on.\n\\item \\texttt{q \\# n} will result in a new bounded variable implicitly, whose upper bound is \\texttt{N}: bound of \\texttt{q} multiply bound of \\texttt{n}.\n\\item For every data move, the stride of each dimension is 1, 3, 16, 512. In the last dimension, the index is \\texttt{w}. In the first dimension, the index is \\texttt{q * (bound of n) + n}.\n\\end{itemize}\n\n\\noindent\\textbf{Why this is Important:}\\par\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item The combination of \\texttt{q} and \\texttt{n} ensures that physical and virtual parallelism can work together efficiently.\n\\item This helps optimize \\textbf{memory access patterns}, especially when working with large matrices, where efficient memory use is crucial.\n\\item Unlike higher-level loop scheduling techniques like in TVM, which abstract away the actual data movement, Croqtile explicitly links \\textbf{virtual loops} to \\textbf{physical DMA operations}. This results in more efficient data movement and computation.\n\\end{itemize}",
-   "after": "With six workers, q has bound 6 and n has bound N / 6. Their composition has bound N and value \\co@q * (N / 6) + n@. The remaining indices h and w choose spatial tiles; the channel dimension stays whole. Thus the worker assignment and the local traversal jointly identify the source tile and its output position.\n\nChanging the operand order changes the assignment. For N = 18, \\co@n # q@ would give worker 1 the images 1, 7, and 13 as n advances, instead of the consecutive images 3, 4, and 5 selected by \\co@q # n@. The operator makes this scheduling choice explicit in the data expression; its performance depends on how the resulting accesses behave on the target."
   }
  ],
  "F19-S05": [
   {
    "before": "\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{Compile-time Checks}: Croqtile verifies rank consistency. In this example, \\texttt{lhs.span} has a ranked of \\texttt{2}, matching the rank of \\texttt{\\{tile\\_\\allowbreak{}m, tile\\_\\allowbreak{}k\\}}, so there are no issues.\n\\item \\textbf{Runtime Checks}: Croqtile generates code to validate dimensions at runtime. For instance, in the declaration of \\texttt{tiled\\_lhs}, its shape must not have a dimension of \\texttt{0}, which would result in an invalid zero-sized buffer. Croqtile's \\emph{transpilation} process generates the following \\emph{target host code}:\n\\end{itemize}",
    "after": "\\begin{itemize}[leftmargin=1.6em]\n\\item \\textbf{Compile-time Checks}: Croqtile verifies rank consistency. In this example, \\texttt{lhs.span} has a rank of \\texttt{2}, matching the rank of \\texttt{\\{tile\\_\\allowbreak{}m, tile\\_\\allowbreak{}k\\}}, so there are no issues.\n\\item \\textbf{Runtime Checks}: Croqtile generates code to validate dimensions at runtime. For instance, in the declaration of \\texttt{tiled\\_lhs}, its shape must not have a dimension of \\texttt{0}, which would result in an invalid zero-sized buffer. Croqtile's \\emph{transpilation} process generates the following \\emph{target host code}:\n\\end{itemize}"
-  }
- ],
- "F12-S02": [
-  {
-   "before": "\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{Program structure}: How Croqtile programs are organized --- the \\texttt{\\_\\_co\\_\\_} function, host-side APIs, and C++ interoperability.\n\\end{enumerate}\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{Shaped data}: Croqtile's type system for multi-dimensional tensors --- shapes, MDSpan, spanned data, symbolic dimensions, and dynamic shapes.\n\\end{enumerate}\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{Loop and parallelism}: SPMD parallelism, loop control, tiling, and iteration constructs.\n\\end{enumerate}\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{Data movement}: DMA statements, tiling with \\texttt{chunkat}, TMA, swizzle, and advanced data movement patterns.\n\\end{enumerate}\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{C++ embeddings}: Input/output conventions, \\texttt{\\_\\_cpp\\_\\_} inline blocks, macros, and preprocessor integration.\n\\end{enumerate}\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{Optimization patterns}: Tileflow optimizations, async DMA patterns, multi-buffering, and performance tuning techniques.\n\\end{enumerate}",
-   "after": "\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{Program structure}: How Croqtile programs are organized --- the \\texttt{\\_\\_co\\_\\_} function, host-side APIs, and C++ interoperability.\n\n\\item \\textbf{Shaped data}: Croqtile's type system for multi-dimensional tensors --- shapes, MDSpan, spanned data, symbolic dimensions, and dynamic shapes.\n\n\\item \\textbf{Loop and parallelism}: SPMD parallelism, loop control, tiling, and iteration constructs.\n\n\\item \\textbf{Data movement}: DMA statements, tiling with \\texttt{chunkat}, swizzle, and advanced data movement patterns.\n\n\\item \\textbf{C++ embeddings}: Input/output conventions, \\texttt{\\_\\_cpp\\_\\_} inline blocks, macros, and preprocessor integration.\n\n\\item \\textbf{Optimization patterns}: Tileflow optimizations, async DMA patterns, multi-buffering, and performance tuning techniques.\n\\end{enumerate}"
   }
  ],
  "F07-S10": [
@@ -1207,12 +959,6 @@
    "after": "After a \\co@foreach@ loop, a \\co@with-in@ index has its outside-the-loop value again; it is not a C++ loop variable left at the terminating value. A parallel index follows a different rule: its value identifies the current parallel instance. The example below concerns the sequential \\co@with-in@ case."
   }
  ],
- "F33-S04": [
-  {
-   "before": "Some code structures in Croqtile imply implicit masking. One typical situation is the multi-level \\texttt{parallel-by} block. The following code showcases an example:",
-   "after": "Some code structures in Croqtile imply implicit masking. One typical situation is the multi-level \\texttt{parallel-by} block. For example:"
-  }
- ],
  "F28-S07": [
   {
    "before": "Croqtile allows the \\texttt{wait} statement to take multiple \\emph{future}s. However, using a \\emph{future} from a \\textbf{Sync-DMA} in a \\texttt{wait} statement will result in an error. The following code provides an example:",
@@ -1225,12 +971,6 @@
    "after": "It is possible to use the \\texttt{chunkat} expression for either the source or the destination of a \\emph{DMA statement}. When \\texttt{chunkat} is used only for the source, it typically divides the input or buffer into smaller chunks to move it to storage closer to the processor. In contrast, when \\texttt{chunkat} is used only for the destination, it typically moves the buffer to compose part of the output. For example:"
   }
  ],
- "F34-S09": [
-  {
-   "before": "In Croqtile, code between multiple \\texttt{parallel-by} levels can be considered as a type of implicit masking. The following code showcases an example:",
-   "after": "In Croqtile, code between multiple \\texttt{parallel-by} levels can be considered as a type of implicit masking. For example:"
-  }
- ],
  "F38-S01": [
   {
    "before": "In croqtile function \\texttt{ele\\_add}, there are two input parameters: 'lhs' and 'rhs', both double-buffered in local storage. You refer to these buffers as 'A' and 'B'. While buffer A is used for computation, buffer B is filled with data via a DMA operation. Once the kernel function completes computation on buffer A, the roles of A and B are swapped: A becomes the buffer for loading the next data chunk, and B becomes the buffer for computation. This process iterates until all data chunks are consumed.",
@@ -1239,28 +979,6 @@
   {
    "before": "In the code, futures 'lfB' and 'rfB' are declared as dummies. These dummy futures serve as placeholders and are replaced by DMA statements at lines 13-14. The reason for declaring dummy futures is that the futures ('lfB' and 'rfB') of the DMA invoked in the body stage are used in the epilogue stage (lines 21-22). However, from a lexical scope perspective, defining futures inside the foreach-block (lines 12-20) would not extend their lifetime to their last uses. Therefore, it is necessary to declare 'lfB' and 'rfB' early.",
    "after": "The placeholders \\co@lfB@ and \\co@rfB@ are declared before the inner loop so their names remain available in the epilogue. The loop replaces them with real transfer results before using their data. Declaring those names only inside the loop would put them out of scope when the final chunk is consumed."
-  }
- ],
- "F09-S11": [
-  {
-   "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Concept} & \\textbf{Syntax} & \\textbf{Role} \\\\\n\\midrule\nSoftware DMA (Ch. 2, 6) & \\texttt{dma.copy} / \\texttt{dma.\\allowbreak{}copy.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & Thread-cooperative tile transfer; \\\\\nSwizzle & \\texttt{.\\allowbreak{}swiz\\textless{}N\\textgreater{}} on copy + \\texttt{mma.\\allowbreak{}load.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & layout conflict-free SMEM layout; same effect for DMA and TMA \\\\\nArbitrary windows & \\texttt{view(M,N).\\allowbreak{}from(r,c)} & Ragged or runtime-positioned slices \\\\\nStrided tiling & \\texttt{.\\allowbreak{}subspan().\\allowbreak{}step().\\allowbreak{}at()} & Non-packed layouts, overlapping stencils \\\\\nPartial tiles & \\texttt{.zfill} & Zero-fill out-of-bounds elements \\\\\nShape reinterpretation & \\texttt{span\\_\\allowbreak{}as([dims])} & Zero-copy reshape for staging buffers \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n",
-   "after": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Concept} & \\textbf{Syntax} & \\textbf{Role} \\\\\n\\midrule\nSoftware DMA & \\texttt{dma.copy} / \\texttt{dma.\\allowbreak{}copy.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & Thread-cooperative tile transfer; \\\\\nSwizzle & \\texttt{.\\allowbreak{}swiz\\textless{}N\\textgreater{}} on copy + \\texttt{mma.\\allowbreak{}load.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & layout conflict-free SMEM layout; same effect for DMA and TMA \\\\\nArbitrary windows & \\texttt{view(M,N).\\allowbreak{}from(r,c)} & Ragged or runtime-positioned slices \\\\\nStrided tiling & \\texttt{.\\allowbreak{}subspan().\\allowbreak{}step().\\allowbreak{}at()} & Non-packed layouts, overlapping stencils \\\\\nPartial tiles & \\texttt{.zfill} & Zero-fill out-of-bounds elements \\\\\nShape reinterpretation & \\texttt{span\\_\\allowbreak{}as([dims])} & Zero-copy reshape for staging buffers \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n"
-  },
-  {
-   "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Concept} & \\textbf{Syntax} & \\textbf{Role} \\\\\n\\midrule\nSoftware DMA & \\texttt{dma.copy} / \\texttt{dma.\\allowbreak{}copy.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & Thread-cooperative tile transfer; \\\\\nSwizzle & \\texttt{.\\allowbreak{}swiz\\textless{}N\\textgreater{}} on copy + \\texttt{mma.\\allowbreak{}load.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & layout conflict-free SMEM layout; same effect for DMA and TMA \\\\\nArbitrary windows & \\texttt{view(M,N).\\allowbreak{}from(r,c)} & Ragged or runtime-positioned slices \\\\\nStrided tiling & \\texttt{.\\allowbreak{}subspan().\\allowbreak{}step().\\allowbreak{}at()} & Non-packed layouts, overlapping stencils \\\\\nPartial tiles & \\texttt{.zfill} & Zero-fill out-of-bounds elements \\\\\nShape reinterpretation & \\texttt{span\\_\\allowbreak{}as([dims])} & Zero-copy reshape for staging buffers \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n",
-   "after": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Concept} & \\textbf{Syntax} & \\textbf{Role} \\\\\n\\midrule\nSoftware DMA & \\texttt{dma.copy} / \\texttt{dma.\\allowbreak{}copy.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & Thread-cooperative tile transfer; \\\\\nSwizzle & \\texttt{.\\allowbreak{}swiz\\textless{}N\\textgreater{}} on copy + \\texttt{mma.\\allowbreak{}load.\\allowbreak{}swiz\\textless{}N\\textgreater{}} & Shared-memory remapping; matching modes on copy and load \\\\\nArbitrary windows & \\texttt{view(M,N).\\allowbreak{}from(r,c)} & Ragged or runtime-positioned slices \\\\\nStrided tiling & \\texttt{.\\allowbreak{}subspan().\\allowbreak{}step().\\allowbreak{}at()} & Non-packed layouts, overlapping stencils \\\\\nPartial tiles & \\texttt{.zfill} & Zero-fill out-of-bounds elements \\\\\nShape reinterpretation & \\texttt{span\\_\\allowbreak{}as([dims])} & Zero-copy reshape for staging buffers \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n"
-  }
- ],
- "F40-S04": [
-  {
-   "before": "\\begin{itemize}[leftmargin=1.6em]\n\\item The \\texttt{lhs} and \\texttt{rhs} matrices are tiled using the \\texttt{chunkat} method. The chunks are defined by \\texttt{m\\_tile}, \\texttt{k\\_tile}, and \\texttt{n\\_tile}, which represent different dimensions of the matrices involved in the multiplication.\n\\item The chunks for both matrices are loaded asynchronously into the  (\\texttt{lhs\\_load} and \\texttt{rhs\\_load}) with the \\texttt{dma.copy.async} operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.\n\\end{itemize}",
-   "after": "\\begin{itemize}[leftmargin=1.6em]\n\\item The \\texttt{lhs} and \\texttt{rhs} matrices are tiled using the \\texttt{chunkat} method. The chunks are defined by \\texttt{m\\_tile}, \\texttt{k\\_tile}, and \\texttt{n\\_tile}, which represent different dimensions of the matrices involved in the multiplication.\n\\item The chunks for both matrices are loaded asynchronously into shared storage (\\texttt{lhs\\_load} and \\texttt{rhs\\_load}) with the \\texttt{dma.copy.async} operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.\n\\end{itemize}"
-  }
- ],
- "F10-S13": [
-  {
-   "before": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Syntax} & \\textbf{What it does} & \\textbf{Runs on} \\\\\n\\midrule\n\\texttt{\\#\\allowbreak{}define NAME value} & Object-like macro; shared across \\texttt{\\_\\_co\\_\\_} and host regions & Preprocessor \\\\\n\\texttt{\\#if} / \\texttt{\\#ifdef} / \\texttt{\\#error} & Conditional compilation and compile-time assertions & Preprocessor \\\\\n\\texttt{-DNAME=value} & Define macros from the command line for tile sweeps & Preprocessor \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}",
-   "after": "\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n\\textbf{Syntax} & \\textbf{What it does} & \\textbf{Runs on} \\\\\n\\midrule\n\\texttt{\\#\\allowbreak{}define NAME value} & Object-like macro; shared across \\texttt{\\_\\_co\\_\\_} and host regions & Preprocessor \\\\\n\\texttt{\\#if} / \\texttt{\\#ifdef} / \\texttt{\\#error} & Conditional compilation and compile-time assertions & Preprocessor \\\\\n\\texttt{-DNAME=value} & Define macros from the command line for tile sweeps & Preprocessor \\\\\n\\co@call helper(...)@ & Invoke a device helper & Device \\\\\n\\co@__cpp__(\"...\")@ & Insert target C++ at the current scope & Target-dependent \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}"
   }
  ]
 }

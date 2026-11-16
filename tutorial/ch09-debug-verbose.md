@@ -1,10 +1,10 @@
 # Debug and Verbose: Printing, Assertions, and GDB
 
-GPU kernels are **opaque systems**. Thousands of threads execute concurrently, shared memory is invisible from the host, and when results are wrong, there is no stack trace pointing to the bad line. This opacity is not unique to GPUs — any system where the programmer cannot directly observe intermediate state faces the same challenge: distributed systems (where is the lost message?), embedded firmware (which interrupt handler corrupted the register?), optimizing compilers (which pass broke the semantics?).
+Kernels are **opaque systems**. Thousands of threads execute concurrently, shared storage is invisible from the host, and when results are wrong, there is no stack trace pointing to the bad line. This opacity is not unique to parallel kernels — any system where the programmer cannot directly observe intermediate state faces the same challenge: distributed systems (where is the lost message?), embedded firmware (which interrupt handler corrupted the register?), optimizing compilers (which pass broke the semantics?).
 
 The universal debugging discipline is the same everywhere: **systematically narrow the search space**, from cheap checks to expensive ones. Start with static analysis and compile-time assertions (free, catches whole classes of bugs). Move to targeted runtime probes (cheap, localizes the problem). Resort to interactive debuggers only when the cheaper tools have narrowed the suspect list.
 
-Croqtile provides tools at each level: **compile-time shape printing** (`print!`, `println!`) to verify tile dimensions without launching a kernel, **runtime assertions** (`assert`) for invariant checks, **guarded device `println`** for runtime inspection of specific threads, **debug RTTI** for `cuda-gdb`, and a **verbose mode** (`-v`) to see what the compiler is actually doing under the hood.
+Croqtile provides tools at each level: **compile-time shape printing** (`print!`, `println!`) to verify tile dimensions without launching a kernel, **runtime assertions** (`assert`) for invariant checks, **guarded device `println`** for runtime inspection of specific threads, **debug RTTI** for an interactive debugger, and a **verbose mode** (`-v`) to see what the compiler is actually doing under the hood.
 
 ## `print!` and `println!`: compile-time inspection
 
@@ -23,11 +23,11 @@ When you compile this file, the compiler emits:
 shape of b: b.span = [3, 2]
 ```
 
-No GPU needed. String literals are concatenated (`"wor" "ld!"` becomes `"world!"`). Use `print!` / `println!` to verify that `chunkat` and `subspan` produce the tile sizes you expect before you spend time on a full kernel launch.
+No device needed. String literals are concatenated (`"wor" "ld!"` becomes `"world!"`). Use `print!` / `println!` to verify that `chunkat` and `subspan` produce the tile sizes you expect before you spend time on a full kernel launch.
 
 ## `print` and `println`: runtime device output
 
-Without the bang, `print` and `println` emit device-side `printf` calls in the generated CUDA:
+Without the bang, `print` and `println` emit device-side `printf` calls in the generated source:
 
 ```choreo
 __co__ void inspect(s32 [4, 8] data) {
@@ -37,7 +37,7 @@ __co__ void inspect(s32 [4, 8] data) {
 }
 ```
 
-Each call takes a comma-separated mix of string literals and expressions. The output order across threads is **nondeterministic** — GPU `printf` buffers are flushed asynchronously.
+Each call takes a comma-separated mix of string literals and expressions. The output order across threads is **nondeterministic** — device `printf` buffers are flushed asynchronously.
 
 **Guarding output.** For a specific check, guard the print with a condition:
 
@@ -65,13 +65,13 @@ On the device, this compiles to a `printf` of the message followed by an abort. 
 
 ## Verbose mode: `-v`
 
-Pass `-v` (or `--verbose`) to the compiler to see the external commands it invokes — which preprocessor, which code generator, which `nvcc` invocation:
+Pass `-v` (or `--verbose`) to the compiler to see the external commands it invokes — which preprocessor, which code generator, which target-compiler invocation:
 
 ```bash
 croq kernel.co -v -o kernel
 ```
 
-This is useful when you suspect the compiler is passing wrong flags to `nvcc` or when you need to see the exact generated file paths for manual inspection.
+This is useful when you suspect the compiler is passing wrong flags to the target compiler or when you need to see the exact generated file paths for manual inspection.
 
 ## Runtime checks: `-rtc`
 
@@ -85,13 +85,13 @@ Levels: `none`, `entry` (default), `low`, `medium`, `high`, `all`. Each level is
 
 ## Debugging MMA-heavy kernels
 
-When the wrong answer comes from a tensor-core path, suspect **layout first** — row versus column major, and whether the RHS is `[N, K]` versus `[K, N]` in memory. Then check **indexing** (which `block_m`, `block_n`, and K slice you attached with `.at` / `chunkat`). Then check **async ordering** if you introduced asynchronous copies or split producer and consumer warps.
+When the wrong answer comes from an `mma` path, suspect **layout first** — row versus column major, and whether the RHS is `[N, K]` versus `[K, N]` in memory. Then check **indexing** (which `block_m`, `block_n`, and K slice you attached with `.at` / `chunkat`). Then check **async ordering** if you introduced asynchronous copies or split producer and consumer regions.
 
-A common mistake is mislabeling `mma.row.row` when the staged data is actually column-major, or using `chunkat` indices that do not align with the MMA tile geometry. If you use swizzled loads (`tma.copy.swiz` / `mma.load.swiz`), a mismatch shows up as a regular pattern in the error (e.g., every sixteenth element correct, the rest shifted).
+A common mistake is mislabeling `mma.row.row` when the staged data is actually column-major, or using `chunkat` indices that do not align with the MMA tile geometry. If you use swizzled loads (`dma.copy.swiz` / `mma.load.swiz`), a mismatch shows up as a regular pattern in the error (e.g., every sixteenth element correct, the rest shifted).
 
-## Debug RTTI and `cuda-gdb`
+## Debug RTTI and the debugger
 
-When `print` / `println` is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to `cuda-gdb`.
+When `print` / `println` is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to an interactive debugger.
 
 Compile with `-g` to enable debug symbols:
 
@@ -111,7 +111,7 @@ The generated code includes RTTI structs for Croqtile types:
 **Example session:**
 
 ```bash
-cuda-gdb -q ./kernel_debug
+gdb -q ./kernel_debug
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs
@@ -131,7 +131,7 @@ The `__dbg_` prefix on variable names is generated by the compiler — it makes 
 ![Debugging workflow: shapes -> one tile -> sync -> layout -> GDB](../assets/images/ch09/fig1_debug_workflow_dark.png#only-dark)
 ![Debugging workflow: shapes -> one tile -> sync -> layout -> GDB](../assets/images/ch09/fig1_debug_workflow_light.png#only-light)
 
-Work from cheap to expensive: `println!` (compile-time shapes) → guarded `println` on one tile (runtime values) → event/stage prints (synchronization) → pattern analysis (layout) → `cuda-gdb` (pointer bugs). Guard runtime prints behind `#ifdef` so they vanish in production:
+Work from cheap to expensive: `println!` (compile-time shapes) → guarded `println` on one tile (runtime values) → event/stage prints (synchronization) → pattern analysis (layout) → an interactive debugger (pointer bugs). Guard runtime prints behind `#ifdef` so they vanish in production:
 
 ```choreo
 #ifdef DEBUG_PRINT
@@ -153,17 +153,17 @@ croq kernel.co -o kernel                   # production build
 | `print` / `println`      | Runtime      | Medium — serialized `printf`          |
 | `-rtc=high`              | Runtime      | Medium — bounds checks                |
 | `-v` / `--verbose`       | Compiler     | Free — shows subprocess invocations   |
-| `-g` + `cuda-gdb` + RTTI | Runtime      | High — debug symbols, no optimization |
+| `-g` + debugger + RTTI   | Runtime      | High — debug symbols, no optimization |
 
 You have learned the following concepts:
 
 - simple element-wise addition in Croqtile (Chapter 1)
 - data movement (Chapter 2)
 - parallelism (Chapter 3)
-- tensor cores (Chapter 4)
+- `mma` contraction (Chapter 4)
 - control flow (Chapter 5)
 - pipelining (Chapter 6)
-- TMA (Chapter 7)
+- swizzle and irregular access (Chapter 7)
 - C++ interop (Chapter 8)
 - debugging (Chapter 9)
 

@@ -8,6 +8,8 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 }
 \end{lstlisting}
 
-异步启动在提交核函数后将控制权返回主机，完成发生在之后。流绑定选择接收工作的流，没有显式绑定时使用默认流。
+\textbf{\texttt{parallel.async}} 立即把控制权交还主机——核函数已入队，但主机不等它完成。这是 Croqtile 表达「在指定流上非阻塞启动」的形式。
+
+\textbf{\texttt{parallel.async\textless{}s\textgreater{}}} 把核函数固定到流 \co@s@。使用不同流的多个 \co@parallel.async@ 块，在机器有足够空闲资源时可以重叠执行。
 
 这属于\textbf{主机编排}，与核函数内部的控制流互不相干。它既不能替代用于线程划分的 \co@inthreads.async@，也不能替代用于运行时谓词的 \co@if@——它决定的是一个网格相对于其他网格\emph{在何时、何处}运行。

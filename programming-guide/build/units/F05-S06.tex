@@ -4,6 +4,6 @@
 parallel {qx, qy} by [16, 16] : thread
 \end{lstlisting}
 
-This creates 16 \(\times\) 16 = 256 threads within the enclosing block.
+This creates 16 \(\times\) 16 = 256 threads within the enclosing block. Each thread has its own working storage but shares block-scoped storage with all other threads in the same block.
 
 Use \texttt{: thread} for the finest-grain parallelism --- the per-element work within a tile.

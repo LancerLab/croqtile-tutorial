@@ -1,5 +1,7 @@
 \subsection*{\texttt{print} and \texttt{println}: runtime device output}
 
+Without the bang, \texttt{print} and \texttt{println} emit device-side \texttt{printf} calls in the generated source:
+
 \begin{lstlisting}[language=croqtile,caption={A runtime inspect kernel}]
 __co__ void inspect(s32 [4, 8] data) {
   foreach i in [data.span] {
@@ -8,7 +10,7 @@ __co__ void inspect(s32 [4, 8] data) {
 }
 \end{lstlisting}
 
-Each call takes a comma-separated mix of string literals and expressions. The output order across threads is \textbf{nondeterministic}.
+Each call takes a comma-separated mix of string literals and expressions. The output order across threads is \textbf{nondeterministic}. --- device \texttt{printf} buffers are flushed asynchronously.
 
 To inspect one execution path, guard the print with a condition on its index:
 

@@ -30,7 +30,7 @@ H: Language Basics
 === CH3
 H: Programming Guide
 I: This chapter organises the same language by function. It explains the structure of a Croqtile program, its type system, symbolic shapes, parallelism, tile selection, data movement, contraction and coordination, and the reasoning behind them. Complete kernels sit beside the feature they demonstrate, so each section also stands on its own.
-N: quickref collects the syntax in one place. For the compiler design behind the language, see [参考文献].
+N: For the compiler design behind these constructs, see [参考文献].
 
 === CHTITLE3
 H: Programming Guide
@@ -119,9 +119,6 @@ H: Arbitrary-Offset Windows: view and from
 === SEC:3.5.2
 H: Strided Tiles: subspan, step, and at
 
-=== SEC:3.5.3
-H: Zero-Padding with zfill
-
 === SEC:3.5.4
 H: Layout Reinterpretation with span_as
 
@@ -137,20 +134,11 @@ H: Worked Example: DMA Matmul
 === SEC:3.6.2
 H: Multi-Buffering: dma.any, swap, and rotate
 
-=== SEC:3.6.3
-H: Worked Example: A Pipelined Kernel
-
 === SEC:3.7
 H: Contraction and Layout Contracts
 
 === SEC:3.7.1
 H: Worked Example: One Cooperative Group
-
-=== SEC:3.7.2
-H: Worked Example: Widening the Cooperation Scope
-
-=== SEC:3.7.3
-H: Worked Example: Two Cooperative Groups
 
 === SEC:3.7.9
 H: MMA Syntax Summary
@@ -185,9 +173,6 @@ H: C++ Interoperability and the Preprocessor
 === SEC:3.9.1
 H: Worked Example: Calling a Device Helper
 
-=== SEC:3.9.2
-H: Verbatim C++ Injection
-
 === SEC:3.9.10
 H: Interoperability Summary
 
@@ -209,9 +194,9 @@ P: A condensed index of the constructs used in this guide, grouped the way you m
 H: Declarations and shapes
 T: | Construct | Meaning | <ROW> | --- | --- | <ROW> | `__co__ T [shape] f(T [shape] a)` | Croqtile function with shaped parameters. | <ROW> | `__co__ void` / `__co__ auto` | In-place result / inferred return type. | <ROW> | `T [a.span] b;` | Buffer with a copied shape. | <ROW> | `a.span` / `a.span(i)` | Whole shape / one dimension. | <ROW> | `x : [7, 8]` | Named `mdspan` declaration. | <ROW> | `a = 1, 2, 3` | `ituple` declaration. | <ROW> | `tensor.at(i, j)` | Position access. |
 H: Iteration
-T: | Construct | Meaning | <ROW> | --- | --- | <ROW> | `parallel p by N` / `parallel p, q by [M, N]` | Independent instances. | <ROW> | `: block` / `: thread` / `: group` / `: group-4` | Annotations on a parallel axis. | <ROW> | `foreach idx in [N]` / `foreach t(1:)` | Ordered / sliced iteration. | <ROW> | `with idx in [a, b]` | Scoped index binding. | <ROW> | `p # m` / `#p` | Compose indices / axis extent. | <ROW> | `cdiv(a, b)` | Ceiling division. |
+T: | Construct | Meaning | <ROW> | --- | --- | <ROW> | `parallel p by N` / `parallel p, q by [M, N]` | Independent instances. | <ROW> | `: block` / `: thread` / `: group` | Annotations on a parallel axis. | <ROW> | `foreach idx in [N]` / `foreach t(1:)` | Ordered / sliced iteration. | <ROW> | `with idx in [a, b]` | Scoped index binding. | <ROW> | `p # m` / `#p` | Compose indices / axis extent. | <ROW> | `cdiv(a, b)` | Ceiling division. |
 H: Tile selection and movement
-T: | Construct | Meaning | <ROW> | --- | --- | <ROW> | `f = dma.copy src => shared` | Tile movement statement. | <ROW> | `f = tma.copy src => shared` | The same statement form on the other engine. | <ROW> | `a.chunkat(t)` | One tile of a regular partition. | <ROW> | `a.subspan(M, K).at(i, j)` | Explicit extents and tile coordinates. | <ROW> | `a.subspan(M, K).step(sM, sK).at(i, j)` | Strided tile selection. | <ROW> | `a.view(M, N).from(r, c)` | Window with explicit element offsets. | <ROW> | `a.span_as([dims])` | Shape reinterpretation without moving data. | <ROW> | `f.data` / `f.span` / `dma.any` | Moved tile / its shape / placeholder handle. | <ROW> | `.async` / `wait f` / `swap` / `rotate` | Async transfer and handle rotation. | <ROW> | `global` / `shared` / `local` | Storage specifiers. |
+T: | Construct | Meaning | <ROW> | --- | --- | <ROW> | `f = dma.copy src => shared` | Tile movement statement. | <ROW> | `a.chunkat(t)` | One tile of a regular partition. | <ROW> | `a.subspan(M, K).at(i, j)` | Explicit extents and tile coordinates. | <ROW> | `a.subspan(M, K).step(sM, sK).at(i, j)` | Strided tile selection. | <ROW> | `a.view(M, N).from(r, c)` | Window with explicit element offsets. | <ROW> | `a.span_as([dims])` | Shape reinterpretation without moving data. | <ROW> | `f.data` / `f.span` / `dma.any` | Moved tile / its shape / placeholder handle. | <ROW> | `.async` / `wait f` / `swap` / `rotate` | Async transfer and handle rotation. | <ROW> | `global` / `shared` / `local` | Storage specifiers. |
 H: Statement modifiers and contraction
 T: | Construct | Meaning | <ROW> | --- | --- | <ROW> | `dma.transp<...>` / `dma.pad<...>` | Transform while moving. | <ROW> | `.zfill` / `.swiz<N>` | Fill and layout modifiers. | <ROW> | `mc = mma.fill 0.0` | Zero an accumulator. | <ROW> | `ma = mma.load src.chunkat(...)` | Load an operand. | <ROW> | `mma.row.row mc, ma, mb` | Contraction with a layout contract. | <ROW> | `mma.store mc, dst` | Store the accumulator. | <ROW> | `.sp` / `.scale` / `mma.commit` / `mma.scale` | Contraction variants and stage fence. |
 H: Coordination, interop and diagnostics

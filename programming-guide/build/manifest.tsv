@@ -31,39 +31,26 @@ F04-S13	tutorial/ch02-data-movement.md	3.5	kept	`#`: Compose and Extent
 F04-S14	tutorial/ch02-data-movement.md	2.8	kept	Compose: `outer # inner`
 F04-S15	tutorial/ch02-data-movement.md	2.8	kept	Extent: `#name`
 F04-S16	tutorial/ch02-data-movement.md	2.4	kept	`span` and `span(i)`
-F04-S17	tutorial/ch02-data-movement.md	X	moved	
 F04-S18	tutorial/ch02-data-movement.md	3.7	kept	Partial Tiles, Guarding, and `.zfill`
 F04-S19	tutorial/ch02-data-movement.md	3.7	kept	`.swiz<N>`: Shared-Memory Layout for the Consumer
-F04-S20	tutorial/ch02-data-movement.md	3.6	omitted	DMA vs TMA
-F04-S21	tutorial/ch02-data-movement.md	3.6	omitted	The main TMA constraint
-F04-S22	tutorial/ch02-data-movement.md	X	moved	
-F04-S23	tutorial/ch02-data-movement.md	X	moved	
-F04-S24	tutorial/ch02-data-movement.md	X	moved	
 F04-S25	tutorial/ch02-data-movement.md	2.15	kept	Checklist
 F05-S01	tutorial/ch03-parallelism.md	3.4	kept	Parallelism: How Croqtile Represents Parallel Work
 F05-S02	tutorial/ch03-parallelism.md	3.4	kept	How We Think About Parallel Tasks
 F05-S03	tutorial/ch03-parallelism.md	2.7	kept	Croqtile's Two-Layer Parallelism Model
-F05-S04	tutorial/ch03-parallelism.md	X	moved	
-F05-S05	tutorial/ch03-parallelism.md	2.7	kept	`: block` — Thread Blocks
+F05-S05	tutorial/ch03-parallelism.md	2.7	kept	`: block` — Blocks
 F05-S06	tutorial/ch03-parallelism.md	2.7	kept	`: thread` — Threads Within a Block
-F05-S07	tutorial/ch03-parallelism.md	X	moved	
-F05-S08	tutorial/ch03-parallelism.md	3.4	omitted	`: group-4` — Warpgroups
 F05-S09	tutorial/ch03-parallelism.md	2.7	kept	Nesting Specifiers
-F05-S10	tutorial/ch03-parallelism.md	X	moved	
 F05-S11	tutorial/ch03-parallelism.md	3.2	kept	Type System Aside: `mdspan` and `ituple`
 F05-S12	tutorial/ch03-parallelism.md	3.4	kept	Matrix Multiply: Putting It Together
 F05-S13	tutorial/ch03-parallelism.md	3.4.1	kept	Scalar Matmul (No DMA)
-F05-S14	tutorial/ch03-parallelism.md	3.6.1	kept	DMA Matmul: Tiles in Shared Memory
-F05-S15	tutorial/ch03-parallelism.md	X	moved	
+F05-S14	tutorial/ch03-parallelism.md	3.6.1	kept	DMA Matmul: Tiles in Shared Storage
 F05-S16	tutorial/ch03-parallelism.md	2.3	kept	Host Code
 F05-S17	tutorial/ch03-parallelism.md	3.4.2	kept	Tracing One Output Element
 F05-S18	tutorial/ch03-parallelism.md	2.15	kept	Summary of New Syntax
 F06-S01	tutorial/ch04-mma.md	3.7	kept	Tensor Contraction: the `mma` Syntax
 F06-S02	tutorial/ch04-mma.md	2.12	kept	The four-step MMA syntax
 F06-S03	tutorial/ch04-mma.md	3.7	kept	Scaling the cooperation scope
-F06-S04	tutorial/ch04-mma.md	3.7.1	kept	One warp, one tile: the simplest MMA matmul
-F06-S05	tutorial/ch04-mma.md	3.7.2	omitted	Widening the scope: warpgroups and WGMMA
-F06-S06	tutorial/ch04-mma.md	3.7.3	omitted	Tiling further: two warpgroups sharing operands
+F06-S04	tutorial/ch04-mma.md	3.7.1	kept	One group, one tile: the simplest MMA matmul
 F06-S07	tutorial/ch04-mma.md	3.7	kept	Beyond dense FP16: what else the four steps express
 F06-S08	tutorial/ch04-mma.md	3.7.9	kept	New syntax
 F06-S09	tutorial/ch04-mma.md	3.7.10	kept	Chapter summary
@@ -96,11 +83,9 @@ F08-S12	tutorial/ch06-synchronization.md	3.8.5	kept	Event flow for one stage
 F08-S13	tutorial/ch06-synchronization.md	1.5	kept	Debugging tip
 F08-S14	tutorial/ch06-synchronization.md	2.15	kept	New syntax
 F08-S15	tutorial/ch06-synchronization.md	3.8.10	kept	Summary
-F09-S01	tutorial/ch07-advanced-movement.md	X	moved	
-F09-S02	tutorial/ch07-advanced-movement.md	3.6	omitted	`tma.copy`: hardware tensor movement
-F09-S03	tutorial/ch07-advanced-movement.md	3.7	kept	Swizzle and bank conflicts
+F09-S01	tutorial/ch07-advanced-movement.md	3.5	kept	Advanced Data Movement: Swizzle and Irregular Access
+F09-S03	tutorial/ch07-advanced-movement.md	3.7	kept	Swizzle and layout conflicts
 F09-S04	tutorial/ch07-advanced-movement.md	3.10	kept	Why the restricted interface works: expressiveness vs performance
-F09-S05	tutorial/ch07-advanced-movement.md	3.6.3	omitted	Example: TMA in a pipelined matmul
 F09-S06	tutorial/ch07-advanced-movement.md	3.5	kept	Handling irregular access
 F09-S07	tutorial/ch07-advanced-movement.md	3.5.1	kept	Arbitrary-offset windows: `view` and `from`
 F09-S08	tutorial/ch07-advanced-movement.md	3.5.2	kept	Strided tiles: `.subspan`, `.step`, and `.at`
@@ -109,17 +94,13 @@ F09-S10	tutorial/ch07-advanced-movement.md	3.5.4	kept	Layout reinterpretation: `
 F09-S11	tutorial/ch07-advanced-movement.md	3.5.10	kept	Chapter summary
 F09-S12	tutorial/ch07-advanced-movement.md	3.5.10	kept	New syntax
 F10-S01	tutorial/ch08-cpp-interop.md	3.9	kept	C++ Interop: Device Functions, Inline Code, and the Preprocessor
-F10-S02	tutorial/ch08-cpp-interop.md	1.4	omitted	How `.co` files compile
 F10-S03	tutorial/ch08-cpp-interop.md	3.9	kept	`__device__` vs ordinary C++ inline
-F10-S04	tutorial/ch08-cpp-interop.md	3.9.1	kept	`__device__` functions: CUDA alongside Croqtile
+F10-S04	tutorial/ch08-cpp-interop.md	3.9.1	kept	`__device__` functions
 F10-S05	tutorial/ch08-cpp-interop.md	2.13	kept	`__cpp__`: verbatim C++ injection
-F10-S06	tutorial/ch08-cpp-interop.md	3.9.2	omitted	Register hints: `setmaxnreg`
-F10-S07	tutorial/ch08-cpp-interop.md	2.13	omitted	Macros inside `__cpp__` strings
 F10-S08	tutorial/ch08-cpp-interop.md	2.13	kept	The preprocessor
 F10-S09	tutorial/ch08-cpp-interop.md	2.13	kept	Tile geometry as macros
 F10-S10	tutorial/ch08-cpp-interop.md	2.13	kept	Compile-time assertions with `#error`
 F10-S11	tutorial/ch08-cpp-interop.md	2.13	kept	Conditional code paths
-F10-S12	tutorial/ch08-cpp-interop.md	1.4	omitted	Reading a production `.co` file
 F10-S13	tutorial/ch08-cpp-interop.md	3.9.10	kept	Chapter summary
 F11-S01	tutorial/ch09-debug-verbose.md	3.11	kept	Debug and Verbose: Printing, Assertions, and GDB
 F11-S02	tutorial/ch09-debug-verbose.md	2.14	kept	`print!` and `println!`: compile-time inspection
@@ -128,7 +109,7 @@ F11-S04	tutorial/ch09-debug-verbose.md	2.14	kept	`assert`: runtime invariant che
 F11-S05	tutorial/ch09-debug-verbose.md	1.5	kept	Verbose mode: `-v`
 F11-S06	tutorial/ch09-debug-verbose.md	1.5	kept	Runtime checks: `-rtc`
 F11-S07	tutorial/ch09-debug-verbose.md	1.5	kept	Debugging MMA-heavy kernels
-F11-S08	tutorial/ch09-debug-verbose.md	1.5	kept	Debug RTTI and `cuda-gdb`
+F11-S08	tutorial/ch09-debug-verbose.md	1.5	kept	Debug RTTI and the debugger
 F11-S09	tutorial/ch09-debug-verbose.md	1.5	kept	Putting it together
 F11-S10	tutorial/ch09-debug-verbose.md	1.5	kept	Summary
 F12-S01	documentation/index.md	1.1	kept	Croqtile Coding Reference
@@ -323,11 +304,6 @@ F40-S04	documentation/tileflow-opt.md	3.10.1	kept	Memory Tiling with `chunkat`
 F40-S05	documentation/tileflow-opt.md	3.10.2	kept	Example 2: rgb2gray
 F40-S06	documentation/tileflow-opt.md	3.10.2	kept	Example Code
 F40-S07	documentation/tileflow-opt.md	3.5	kept	Compose Two Bounded Variables for Tiling with `#`
-F40-S08	documentation/tileflow-opt.md	X	moved	
-F40-S09	documentation/tileflow-opt.md	X	moved	
-F40-S10	documentation/tileflow-opt.md	X	moved	
-F40-S11	documentation/tileflow-opt.md	X	moved	
-F40-S12	documentation/tileflow-opt.md	X	moved	
 F41-S01	documentation/async-dma-patterns.md	占位	placeholder	
 F42-S01	documentation/contribute.md	占位	placeholder	
 F43-S01	documentation/dynamic-design.md	占位	placeholder	

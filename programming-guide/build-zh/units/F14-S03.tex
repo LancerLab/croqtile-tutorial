@@ -3,6 +3,7 @@
 普通 C++ 代码还可以包含设备辅助函数。因此，完整示例中常见三个区域：设备辅助函数、调用它的 \co@__co__@ 函数，以及主机侧的 \co@main()@。下面按这个顺序列出它们。
 
 \begin{lstlisting}[language=croqtile,caption={单份源文件中的三个区域}]
+// Device program: runs on the target device
 __device__ void device_function(...) {
   // High-performance device kernel implementation
 }

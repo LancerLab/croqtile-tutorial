@@ -1,4 +1,4 @@
-在 Croqtile 中，可以用尖括号语法把 \co@parallel-by@ 块绑定到指定的流：
+流让多个核函数和数据传输能在设备上并发执行。在 Croqtile 中，可以用尖括号语法把 \co@parallel-by@ 块绑定到指定的流：
 
 \begin{lstlisting}[language=croqtile,caption={流绑定}]
 __co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
@@ -18,3 +18,5 @@ __co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
 \item \textbf{\texttt{parallel.async\textless{}s0\textgreater{}}}：在流 \co@s0@ 上异步启动核函数。
 \item \textbf{\texttt{parallel.async\textless{}s1\textgreater{}}}：在流 \co@s1@ 上启动第二个核函数。
 \end{itemize}
+
+两个核函数都在不同流上用 \co@.async@ 启动，因此可以在设备上并发执行。

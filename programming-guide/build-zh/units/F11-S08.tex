@@ -24,7 +24,7 @@ croq kernel.co -g -o kernel_debug
 \end{table}
 
 \begin{lstlisting}[language=croqtile,caption={在调试器中查看变量}]
-debugger -q ./kernel_debug
+gdb -q ./kernel_debug
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs

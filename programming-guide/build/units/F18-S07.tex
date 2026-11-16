@@ -1,5 +1,3 @@
 \subsection*{Buffer Lifetime Management}
 
 The Croqtile compiler manages the lifetime of storage allocated inside a function. It attempts to reuse buffers whose lifetimes do not overlap, so programmers do not need to manage those allocations themselves.
-
-Automatic allocation does not replace synchronization. If an asynchronous transfer or computation still uses a buffer, that use must finish before the storage is overwritten or released. In a pipeline, the waits and completion operations make these lifetimes explicit enough for the program to reuse the same slots safely.

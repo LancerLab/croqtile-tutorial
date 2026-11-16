@@ -1,3 +1,5 @@
 \subsection*{Parallelism: How Croqtile Represents Parallel Work}
 
-The previous two chapters kept things simple: \texttt{parallel \{i, j\} by [4, 8]} created 32 instances, each handling one element, and you never asked where those instances actually ran. That was fine for element-wise addition and for understanding data movement --- the compiler picked sensible defaults.
+The previous two chapters kept things simple: \texttt{parallel \{i, j\} by [4, 8]} created 32 instances, each handling one element, and you never asked where those instances actually ran. That was fine for element-wise addition and for understanding data movement --- the compiler picked sensible defaults. But an execution engine is not a flat bag of identical processors. It groups work into cooperating levels, and mapping your work to the right level is the difference between a toy demo and a real kernel.
+
+This part of the guide introduces parallelism as a first-class concept in Croqtile: what it means, how Croqtile separates the \emph{logical} structure (what runs concurrently) from the \emph{physical} mapping (which level each axis lands on), and how you control that mapping with \textbf{space specifiers}.

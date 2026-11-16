@@ -7,9 +7,12 @@
 \textbf{Syntax} & \textbf{Meaning} \\
 \midrule
 \texttt{parallel p by N} & N-way parallelism, index \texttt{p} runs 0..N-1 concurrently \\
-\texttt{parallel \{px, py\} by [M, N]} & Multi-dimensional parallel level   (\texttt{p} and \texttt{q} correspond to one parallel level) \\
-\texttt{parallel p by A, q by B} & Comma-separated parallel levels   (\texttt{p} and \texttt{q} correspond to different parallel levels) \\
+\texttt{parallel \{px, py\} by [M, N]} & Multi-dimensional parallel level \textless{}br\textgreater{} (\texttt{p} and \texttt{q} correspond to one parallel level) \\
+\texttt{parallel p by A, q by B} & Comma-separated parallel levels \textless{}br\textgreater{} (\texttt{p} and \texttt{q} correspond to different parallel levels) \\
+\texttt{parallel p by N :\allowbreak{} block} & Map to blocks \\
 \texttt{parallel q by N :\allowbreak{} thread} & Map to threads within a block \\
+\texttt{parallel w by N :\allowbreak{} group} & Map to groups \\
+\texttt{=\textgreater{} shared} & DMA destination: block-scoped shared storage \\
 \texttt{foreach index = \{m, n, k\} in [a, b, c]} & Named tuple destructuring in a \texttt{foreach} \\
 \texttt{lhs.span(0)} & Extract one dimension of a tensor's shape \\
 \texttt{p \# m} & Compose outer tile index \texttt{p} with inner offset \texttt{m} \\
@@ -17,4 +20,4 @@
 \end{tabularx}
 \end{table}
 
-Section 3.7 replaces scalar arithmetic in the inner loop with matrix contraction operations.
+The tiled DMA matmul you built in this part of the guide is the structural backbone of every high-performance kernel. Section~\ref{sec:3-7} replaces the scalar \texttt{.at()} arithmetic in the inner loop with \textbf{\texttt{mma}} operations --- a matrix contraction that consumes a small tile per step instead of one element at a time.

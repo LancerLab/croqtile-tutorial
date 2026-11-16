@@ -1,10 +1,10 @@
-\subsection*{Debug RTTI and \texttt{debugger}}
+\subsection*{Debug RTTI and the debugger}
 
-When \texttt{print} / \texttt{println} is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to \texttt{debugger}.
+When \texttt{print} / \texttt{println} is not enough, Croqtile supports debug RTTI (Runtime Type Information) that makes its types visible to an interactive debugger.
 
 Compile with \texttt{-g} to enable debug symbols:
 
-\begin{lstlisting}[language={},caption={Debug RTTI and debugger}]
+\begin{lstlisting}[language={},caption={Debug RTTI and the debugger}]
 croq kernel.co -g -o kernel_debug
 \end{lstlisting}
 
@@ -24,8 +24,8 @@ Multi-dim span & \texttt{croq:\allowbreak{}:\allowbreak{}rtti:\allowbreak{}:\all
 \end{tabularx}
 \end{table}
 
-\begin{lstlisting}[language={},caption={Debug RTTI and debugger}]
-debugger -q ./kernel_debug
+\begin{lstlisting}[language={},caption={Debug RTTI and the debugger}]
+gdb -q ./kernel_debug
 (gdb) break my_kernel
 (gdb) run
 (gdb) ptype __dbg_lhs

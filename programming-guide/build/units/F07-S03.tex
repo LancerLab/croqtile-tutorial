@@ -5,8 +5,10 @@ The form \co@inthreads.async@ assigns different thread groups to separately prog
 \begin{lstlisting}[language=croqtile,caption={Structured concurrent regions with inthreads.async}]
 parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
+    // program A: only group 0 compiles and runs this
   }
   inthreads.async (p1 == 1) {
+    // program B: only group 1 compiles and runs this
   }
 }
 \end{lstlisting}
@@ -21,16 +23,17 @@ The distinction from \texttt{if} is structural, not just performance:
 \midrule
 \textbf{Resolution} & Runtime --- every thread evaluates the condition & Compile time --- thread assignment is fixed \\
 \textbf{Instruction streams} & One program; divergent threads masked & Separate programs per region \\
+\textbf{Execution} & Serial within a group if divergent & Concurrent across groups \\
 \textbf{PL analogy} & \texttt{if}/\texttt{else} in any language & \texttt{async}/\texttt{spawn} in structured concurrency (Trio, Go goroutines, Cilk) \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The regions are lexically scoped, so the compiler can identify their participants from the program structure. The code does not create an unbounded number of tasks at runtime. Each region operates within the declared parallel scope.
+The regions are lexically scoped, so the compiler can identify their participants from the program structure. The code does not create an unbounded number of tasks at runtime. Each region operates within the declared parallel scope. This is what makes it amenable to compile-time analysis: the compiler can allocate storage differently for each region, emit different instruction schedules, and verify that shared resources are used safely.
 
 Without \co@.async@, the region rejoins the surrounding execution before later code proceeds. Adding \co@.async@ allows other regions to advance independently. Any data handoff between them then needs an explicit synchronization protocol.
 
-The figure below shows the effect. --- The producer's DMA and the consumer's MMA overlap in time:
+The figure below shows the effect. The top timeline shows one group alternating between DMA and MMA (sequential, no overlap). The bottom shows two groups with \texttt{inthreads.\allowbreak{}async} --- the producer's DMA and the consumer's MMA overlap in time:
 
 Figure~\ref{fig:f07-fig1_role_comparison} compares the two schedules.
 

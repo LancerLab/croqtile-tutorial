@@ -1,8 +1,10 @@
 \subsection*{Debug and Verbose: Printing, Assertions, and GDB}
 
+Kernels are \textbf{opaque systems}. Thousands of threads execute concurrently, shared storage is invisible from the host, and when results are wrong, there is no stack trace pointing to the bad line. This opacity is not unique to parallel kernels
+
 Debugging works best by \textbf{systematically narrowing the search}, starting with inexpensive checks. Static analysis and compile-time assertions catch errors without runtime overhead. Targeted runtime checks then help locate the problem. Use an interactive debugger once these checks have narrowed the possible causes.
 
-Croqtile provides tools at each level: \textbf{compile-time shape printing} (\texttt{print!}, \texttt{println!}) to verify tile dimensions without launching a kernel, \textbf{runtime assertions} (\texttt{assert}) for invariant checks, \textbf{guarded device \texttt{println}} for runtime inspection of specific threads, \textbf{debug RTTI} for \texttt{debugger}, and a \textbf{verbose mode} (\texttt{-v}) to see what the compiler is actually doing under the hood.
+Croqtile provides tools at each level: \textbf{compile-time shape printing} (\texttt{print!}, \texttt{println!}) to verify tile dimensions without launching a kernel, \textbf{runtime assertions} (\texttt{assert}) for invariant checks, \textbf{guarded device \texttt{println}} for runtime inspection of specific threads, \textbf{debug RTTI} for an interactive debugger, and a \textbf{verbose mode} (\texttt{-v}) to see what the compiler is actually doing under the hood.
 
 Start from a small input whose expected result is easy to compute. For a wrong matrix element, recover its tile and local coordinates, check the selected input slices, and compare one partial sum before examining the full output. If the program hangs, trace one event slot instead: record its initial state, each trigger, and the instance expected to consume it. This distinguishes an indexing error from a missing handoff.
 

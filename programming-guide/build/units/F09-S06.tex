@@ -2,4 +2,4 @@
 
 Regular tiling works well when the dimensions divide evenly and the origin follows a fixed grid. Other kernels need a different description: expert batches can start at runtime offsets, convolution windows can overlap, and a final tile can contain fewer valid elements. A flat input may also need a multidimensional view before it can be consumed.
 
-The following operations adjust the selected region or its shape while leaving the surrounding algorithm recognizable. The resulting view still has to satisfy the chosen transfer operation's requirements, including shape, layout, and any target-specific alignment constraints.
+Croqtile provides four tools for these cases. Each one modifies how the compiler interprets a tensor's addressing without touching the pipeline structure --- DMA, MMA, events and swizzle all continue to work unchanged.

@@ -1,10 +1,10 @@
-\subsection*{\texttt{\_\_device\_\_} functions: target alongside Croqtile}
+\subsection*{\texttt{\_\_device\_\_} functions}
 
-A custom reduction, sorting network, or specialized math operation can be implemented as a device helper.
+When an algorithm needs a helper function that operates at the lane or thread level --- a custom reduction, a sorting network, a special math function --- writing it as a device function is often the natural choice. Croqtile does not need to manage these; they are passed through to the target compiler.
 
 A \texttt{\_\_co\_\_} function can call a \texttt{\_\_device\_\_} function using the \texttt{call} keyword:
 
-\begin{lstlisting}[language=croqtile,caption={device functions: target alongside Croqtile}]
+\begin{lstlisting}[language=croqtile,caption={device functions}]
 #define N_TOKENS 1024
 #define N_EXPERTS 8
 #define N_THREAD 128
@@ -41,12 +41,12 @@ __co__ void moe_topk(f32 [N_TOKENS, N_EXPERTS] scores,
 }
 \end{lstlisting}
 
-The helper receives raw pointers to element storage. Its interface must therefore state any sizes or layout assumptions that it needs; the pointer alone does not preserve the Croqtile shape.
+\textbf{\texttt{\_\allowbreak{}\_\allowbreak{}device\_\allowbreak{}\_\allowbreak{} void group\_\allowbreak{}topk\textless{}K\textgreater{}}} --- A templated device function implementing group-level top-K selection using shuffle instructions. It operates on raw pointers (\texttt{f32*}, \texttt{s32*}), not Croqtile spans.
 
-The \co@SHFL_XOR@ helper is ordinary device code passed to the target compiler. Its use inside the computation belongs to the helper's implementation; Croqtile does not translate that body into tile operations.
+\textbf{\texttt{\_\allowbreak{}\_\allowbreak{}device\_\allowbreak{}\_\allowbreak{} T SHFL\_\allowbreak{}XOR}} --- A lane-shuffle intrinsic wrapper. The \texttt{\_\allowbreak{}\_\allowbreak{}forceinline\_\allowbreak{}\_\allowbreak{}} and \texttt{\_\allowbreak{}\_\allowbreak{}shfl\_\allowbreak{}xor\_\allowbreak{}sync} are device code --- Croqtile passes them through unchanged.
 
-The \co@call group_topk<8>(...)@ statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call.
+The \co@call warp_topk<8>(...)@ statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call.
 
-The \co@inthreads (tid == 0)@ region selects one thread for the enclosed work and rejoins afterwards. It has no \co@.async@ modifier, so it does not introduce a separately progressing producer or consumer.
+\textbf{\texttt{inthreads (tid == 0)}} --- Only lane 0 of each group writes back results. Note this uses \texttt{inthreads} without \texttt{.async} --- a sequential thread filter, not a concurrent region.
 
-In this pattern, Croqtile handles parallelism, tiling, and data movement, while the device helper performs the specialized computation. Production kernels use it for MoE top-K, custom reductions, and specialized math.
+This pattern --- Croqtile handles the parallelism, tiling, and memory orchestration; \texttt{\_\_device\_\_} functions handle the per-group algorithm --- is common in production kernels like MoE (mixture-of-experts) top-K, custom reductions, and specialized math.

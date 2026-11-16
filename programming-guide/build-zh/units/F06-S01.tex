@@ -1,10 +1,18 @@
 \subsection*{张量收缩：\texttt{mma} 语法}
 
-3.4 节的分块矩阵乘法是按 CPU 的方式计算内部收缩的：一个 \co@foreach k@ 循环，每次迭代把两个标量相乘，累加到同一个输出元素上。这种写法可以得到正确结果。
+3.4 节的分块矩阵乘法是按 CPU 的方式计算内部收缩的：一个 \co@foreach k@ 循环，每次迭代把两个标量相乘，累加到同一个输出元素上。这种写法可以得到正确结果，却也是最慢的加速器用法，因为它忽略了为这件事专门设计的计算单元。
 
-真正的任务是\textbf{二维张量收缩}——C += A × B，其中 A、B、C 都是形状固定的小矩阵分块。它是每个 GEMM、每个以 im2col 矩阵乘表达的卷积、每个注意力头 QKT 的内层核函数。
+真正的任务是\textbf{二维张量收缩}——C += A × B，其中 A、B、C 都是形状固定的小矩阵分块。它是每个 GEMM、每个以 im2col 矩阵乘表达的卷积、每个注意力头 QKT 的内层核函数。这类运算足够核心，因此加速器把它作为一条宏指令执行：取一分块 A、一分块 B，相乘，累加到 C。各实现的 tile 尺寸不同，但数学形状相同。
 
-困难在于矩阵元素如何分布到参与协作的操作数片段中。布局声明必须与数据布局一致，例如把列主序分块当作行主序片段使用，就可能得到错误结果。下面的颜色只示意分布，不表示某条指令的精确映射。
+图~\ref{fig:f06-fig1_tensor_contraction} 展示了以分块为单位的收缩运算。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{f06-fig1_tensor_contraction_light.png}
+\caption{二维张量收缩：A[M,K] 乘 B[K,N] 得到 C[M,N]。}
+\label{fig:f06-fig1_tensor_contraction}
+\end{figure}
+
+让程序员为难的不是算术，而是\textbf{操作数布局}。分块并不连续存放在某个线程的存储里，而是\textbf{碎片化}分布到协作的各个 lane 上，具体散布方式取决于数据类型以及操作数是 A、B 还是 C。布局弄错——比如把列主序分块当成行主序片段装入——结果会静默出错。
 
 图~\ref{fig:f06-fig2_register_loading} 展示了操作数分块如何分布到协作的各个 lane 上。
 
@@ -14,7 +22,7 @@
 \label{fig:f06-fig2_register_loading}
 \end{figure}
 
-Croqtile 用 \co@fill@、\co@load@、乘加和 \co@store@ 表达收缩，由编译器处理片段元素在所选协作范围内的分布。程序员仍需选择兼容的分块形状并声明操作数布局，这层抽象以这些选择正确为前提。
+Croqtile 用四个抽象操作处理不透明的分块：\textbf{fill}、\textbf{load}、\textbf{multiply}、\textbf{store}。无论哪个后端运行，它们描述的都是同一套二维收缩流程；编译器负责片段布局、lane 映射与指令选择——你描述\emph{要做什么}收缩，而不是\emph{how} 操作数如何散布。
 
 图~\ref{fig:f06-fig3_mma_syntax} 展示了这四个步骤以及它们沿 K 维的重复。
 

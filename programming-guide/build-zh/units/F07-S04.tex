@@ -5,8 +5,12 @@
 \begin{lstlisting}[language=croqtile,caption={典型模式：1 生产者 1 消费者}]
 parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
+    // producer: only group 0 runs this
+    // issue DMA loads, fill shared storage
   }
   inthreads.async (p1 == 1) {
+    // consumer: only group 1 runs this
+    // run MMA on shared storage, accumulate results
   }
 }
 \end{lstlisting}

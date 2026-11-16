@@ -2,18 +2,18 @@
 
 Every programming language that targets a parallel machine must answer one question: **what happens when different threads need to do different things?**
 
-On a CPU, the answer is trivial — each core has its own program counter, so each thread runs whatever code it likes. On a GPU, the answer is deeply constrained. The SIMT (Single Instruction, Multiple Thread) execution model groups threads into **warps** of 32 that share a single instruction pointer. When a branch sends some threads one way and other threads another way, the hardware cannot simply fork — it must **serialize** the divergent paths and mask inactive threads. This is the fundamental tension of GPU programming languages: the hardware wants uniformity, but real programs need heterogeneity.
+On a CPU, the answer is trivial — each core has its own program counter, so each thread runs whatever code it likes. On a machine that shares one instruction pointer across a group of threads, the answer is deeply constrained. When a branch sends some threads one way and other threads another way, the hardware cannot simply fork — it must **serialize** the divergent paths and mask inactive threads. This is the fundamental tension: the hardware wants uniformity, but real programs need heterogeneity.
 
-CUDA exposes exactly one control-flow primitive for this: `if`. All threads evaluate the condition; threads where it is false are masked (deactivated); both paths execute sequentially within the warp. This is **predicated execution** — simple, universal, and sometimes ruinously expensive. A warp that diverges on an `if` runs both sides, throwing away half its throughput on each.
+A machine like that exposes exactly one control-flow primitive for this: `if`. All threads evaluate the condition; threads where it is false are masked (deactivated); both paths execute sequentially within the group. This is **predicated execution** — simple, universal, and sometimes ruinously expensive. A group that diverges on an `if` runs both sides, throwing away half its throughput on each.
 
-But predicated execution is not enough. Consider a matmul kernel where one group of threads should continuously fetch tiles from global memory while another group continuously multiplies tiles on the tensor cores. This is not a data-dependent branch — it is two **structurally different programs** that happen to share an address space. Trying to express this with `if` means one program pauses while the other runs. There is no overlap, no pipeline.
+But predicated execution is not enough. Consider a matmul kernel where one group of threads should continuously fetch tiles from global storage while another group continuously multiplies tiles in the contraction unit. This is not a data-dependent branch — it is two **structurally different programs** that happen to share an address space. Trying to express this with `if` means one program pauses while the other runs. There is no overlap, no pipeline.
 
 Croqtile introduces two additional control-flow primitives to fill this gap:
 
 - **`inthreads.async`** — **structured concurrent regions**: compile-time partitioning of threads into groups that run **different programs simultaneously**. The compiler generates separate instruction streams; the hardware schedules them independently.
 - **`shared event` / `wait` / `trigger`** — **inter-region signaling**: lightweight synchronization tokens that let concurrent regions communicate safely.
 
-Together with `if`, these three primitives cover the full spectrum of control flow in a GPU kernel: data-dependent branching, structural program composition, and inter-program coordination.
+Together with `if`, these three primitives cover the full spectrum of control flow in a kernel: data-dependent branching, structural program composition, and inter-program coordination.
 
 ## Predicated execution with `if`
 
@@ -25,25 +25,25 @@ if (tile_id < total_tiles) {
 }
 ```
 
-All threads in scope evaluate the condition. Threads where it is false skip the body. Within a single warp, if some threads take the branch and others do not, the hardware **serializes** the two paths — threads on the skipped side sit idle while the taken side runs, then vice versa. This is **warp divergence**, and it is the price of runtime flexibility.
+All threads in scope evaluate the condition. Threads where it is false skip the body. Inside one cooperating group, if some threads take the branch and others do not, the hardware **serializes** the two paths — threads on the skipped side sit idle while the taken side runs, then vice versa. This is **divergence**, and it is the price of runtime flexibility.
 
 **When to use `if`:** data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values — loop indices, input data, tile coordinates.
 
-**Cost model:** divergence within a warp serializes both paths. Divergence across warps (where all threads in each warp agree) costs nothing — the hardware simply skips the not-taken path. The practical rule: keep `if` conditions **warp-uniform** (all 32 threads agree) whenever possible.
+**Cost model:** divergence inside a group serializes both paths. Divergence across groups (where the threads in each group agree) costs nothing — the hardware simply skips the not-taken path. The practical rule: keep `if` conditions **uniform across the cooperating group** whenever possible.
 
 ## Structured concurrent regions with `inthreads.async`
 
 `inthreads.async` solves a fundamentally different problem than `if`. Instead of asking "should this thread execute this code?" at runtime, it says "this group of threads runs this program, that group runs that program" at **compile time**.
 
 ```choreo
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
 
   inthreads.async (p1 == 0) {
-    // program A: only warpgroup 0 compiles and runs this
+    // program A: only group 0 compiles and runs this
   }
 
   inthreads.async (p1 == 1) {
-    // program B: only warpgroup 1 compiles and runs this
+    // program B: only group 1 compiles and runs this
   }
 }
 ```
@@ -54,51 +54,51 @@ The distinction from `if` is structural, not just performance:
 |-------------------------|------------------------------------------------|-----------------------------------------------------------------------|
 | **Resolution**          | Runtime — every thread evaluates the condition | Compile time — thread assignment is fixed                             |
 | **Instruction streams** | One program; divergent threads masked          | Separate programs per region                                          |
-| **Execution**           | Serial within a warp if divergent              | Concurrent across warpgroups                                          |
+| **Execution**           | Serial within a group if divergent             | Concurrent across groups                                              |
 | **PL analogy**          | `if`/`else` in any language                    | `async`/`spawn` in structured concurrency (Trio, Go goroutines, Cilk) |
-| **GPU analogy**         | SPMD with masking                              | MPMD within a single kernel launch                                    |
+| **Model**               | SPMD with masking                              | MPMD within a single kernel launch                                    |
 
-**Why "structured"?** The regions are lexically scoped — the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each `inthreads.async` block is a static partition. This is what makes it amenable to compile-time analysis: the compiler can allocate registers differently for each region, emit different instruction schedules, and verify that shared resources are used safely.
+**Why "structured"?** The regions are lexically scoped — the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each `inthreads.async` block is a static partition. This is what makes it amenable to compile-time analysis: the compiler can allocate storage differently for each region, emit different instruction schedules, and verify that shared resources are used safely.
 
 **The `.async` modifier.** Without `.async`, `inthreads` would execute regions sequentially — thread subsets take turns. The `.async` suffix is the concurrency modifier: it tells the compiler and hardware that the regions may overlap in time. This is analogous to the `async` keyword in structured concurrency frameworks — it marks a region as independently schedulable.
 
-The figure below shows the effect. The top timeline shows a single warpgroup alternating between DMA and MMA (sequential, no overlap). The bottom shows two warpgroups with `inthreads.async` — the producer's DMA and the consumer's MMA overlap in time:
+The figure below shows the effect. The top timeline shows one group alternating between DMA and MMA (sequential, no overlap). The bottom shows two groups with `inthreads.async` — the producer's DMA and the consumer's MMA overlap in time:
 
 ![Uniform vs structured-concurrent execution: sequential alternation vs overlapping regions](../assets/images/ch05/fig1_role_comparison_dark.png#only-dark)
 ![Uniform vs structured-concurrent execution: sequential alternation vs overlapping regions](../assets/images/ch05/fig1_role_comparison_light.png#only-light)
 
-*Top: one warpgroup alternates DMA and MMA — each waits for the other. Bottom: `inthreads.async` partitions into two concurrent programs — DMA and MMA overlap, roughly halving wall-clock time.*
+*Top: one group alternates DMA and MMA — each waits for the other. Bottom: `inthreads.async` partitions into two concurrent programs — DMA and MMA overlap, roughly halving wall-clock time.*
 
 ### The canonical pattern: 1 producer + 1 consumer
 
 The most common use of `inthreads.async` is the **1P1C** (one producer, one consumer) split for matmul:
 
 ```choreo
-parallel p1 by 2 : group-4 {
+parallel p1 by 2 : thread {
 
   inthreads.async (p1 == 0) {
-    // producer: only warpgroup 0 runs this
-    // issue DMA / TMA loads, fill shared memory
+    // producer: only group 0 runs this
+    // issue DMA loads, fill shared storage
   }
 
   inthreads.async (p1 == 1) {
-    // consumer: only warpgroup 1 runs this
-    // run MMA on shared memory, accumulate results
+    // consumer: only group 1 runs this
+    // run MMA on shared storage, accumulate results
   }
 }
 ```
 
-**`parallel p1 by 2 : group-4`** — Two warpgroups (128 threads each), indexed by `p1`.
+**`parallel p1 by 2 : thread`** — Two groups within the enclosing block, indexed by `p1`.
 
-**`inthreads.async (p1 == 0)`** — Warpgroup 0 compiles and runs the producer body; warpgroup 1 never sees this code.
+**`inthreads.async (p1 == 0)`** — Group 0 compiles and runs the producer body; group 1 never sees this code.
 
-**`inthreads.async (p1 == 1)`** — Warpgroup 1 runs the consumer body. The two blocks are separate programs sharing an address space.
+**`inthreads.async (p1 == 1)`** — Group 1 runs the consumer body. The two blocks are separate programs sharing an address space.
 
 But sharing an address space is exactly what makes this dangerous. Without coordination, the consumer might read a buffer before the producer has finished writing it. This is where events come in.
 
 ## Inter-region signaling with events
 
-When `inthreads.async` creates concurrent regions, those regions need a way to communicate. Croqtile provides **events** — lightweight synchronization tokens declared in shared memory:
+When `inthreads.async` creates concurrent regions, those regions need a way to communicate. Croqtile provides **events** — lightweight synchronization tokens declared in shared storage:
 
 ```choreo
 shared event full;
@@ -140,7 +140,7 @@ Without this bootstrap, the producer's first `wait empty[0]` blocks forever — 
 
 ## A 1P1C matmul skeleton
 
-Here is how the three primitives sit together inside a Hopper matmul. Event-based synchronization is omitted — [Chapter 6](ch06-synchronization.md) adds the full pipeline protocol. Focus on the program structure:
+Here is how the three primitives sit together inside a matmul. Event-based synchronization is omitted — [Chapter 6](ch06-synchronization.md) adds the full pipeline protocol. Focus on the program structure:
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -149,7 +149,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [WARP_N, TILE_K] rhs_load_s;
     shared f16 [WARP_M, WARP_N] output_s;
 
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
 
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, TILE_K)] {
@@ -175,9 +175,9 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 }
 ```
 
-**Producer `foreach`** — Walks K with `cdiv(K, TILE_K)` steps; warpgroup 0 issues `dma.copy` into shared memory.
+**Producer `foreach`** — Walks K with `cdiv(K, TILE_K)` steps; group 0 issues `dma.copy` into shared storage.
 
-**Consumer `mma` path** — Warpgroup 1 never touches those DMAs; it reads shared memory, accumulates in `mc`, and writes the result.
+**Consumer `mma` path** — Group 1 never touches those DMAs; it reads shared storage, accumulates in `mc`, and writes the result.
 
 **Missing coordination** — Both sides loop over K independently. The consumer assumes each K-slab is ready when it reads. Making that assumption correct requires events ([Chapter 6](ch06-synchronization.md)).
 
@@ -185,7 +185,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 In Chapters 3–4, the grid grew with the problem: roughly one block per output tile. For large matrices that means large launch counts, and the last wave of blocks often leaves SMs partially idle — **tail underutilization**.
 
-A **persistent kernel** fixes the launch size (often near the SM count) and lets each block iterate over multiple tiles:
+A **persistent kernel** fixes the launch size (often close to the number of available execution units) and lets each block iterate over multiple tiles:
 
 ```choreo
 __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, N] output) {
@@ -209,7 +209,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
           dma.copy rhs.subspan(WARP_N, TILE_K).at(block_n, iv_k) => rhs_load_s;
 
           foreach {iv_warp} in [cdiv(TILE_K, WARP_K)] {
-            parallel p by 1 : group-4 {
+            parallel p by 1 : thread {
               ma = mma.load lhs_load_s.chunkat(_, iv_warp);
               mb = mma.load rhs_load_s.chunkat(_, iv_warp);
               mma.row.row mc, ma, mb;
@@ -245,7 +245,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 ## `parallel.async`: host-level concurrency
 
 <!-- 
-Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU, or pin different grids to different CUDA streams so they can execute concurrently on the GPU. 
+Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU, or pin different grids to different streams so they can execute concurrently.
 -->
 Everything above runs inside a kernel. Sometimes you need concurrency at the **host level**: launch a grid without blocking the CPU.
 
@@ -255,9 +255,9 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 }
 ```
 
-**`parallel.async`** returns control to the host immediately — the kernel is enqueued but the host does not wait for completion. This is the Croqtile equivalent of `cudaLaunchKernel` with a non-default stream.
+**`parallel.async`** returns control to the host immediately — the kernel is enqueued but the host does not wait for completion. This is Croqtile's form of a non-blocking launch on a chosen stream.
 
-**`parallel.async<s>`** pins the kernel to CUDA stream `s`. Multiple `parallel.async` blocks with different streams can overlap on the GPU if there are enough SMs.
+**`parallel.async<s>`** pins the kernel to stream `s`. Multiple `parallel.async` blocks with different streams can overlap if the machine has enough free resources.
 
 This is **host orchestration**, orthogonal to in-kernel control flow. It does not replace `inthreads.async` for thread partitioning or `if` for runtime predicates — it decides *when* and *where* a grid runs relative to other grids.
 
@@ -283,7 +283,7 @@ parallel p by BLK_CNT: block {
 |----------------------------------|----------------------------------------------------------------------|
 | `if (expr) { ... }`              | Predicated execution — runtime conditional, divergent threads masked |
 | `inthreads.async (condition)`    | Structured concurrent region — compile-time thread partitioning      |
-| `shared event name`              | Declare a synchronization token in shared memory                     |
+| `shared event name`              | Declare a synchronization token in shared storage                    |
 | `shared event name[N]`           | Declare N synchronization tokens                                     |
 | `trigger name`                   | Record that a condition is met                                       |
 | `wait name`                      | Block until the corresponding `trigger` fires                        |
@@ -291,7 +291,7 @@ parallel p by BLK_CNT: block {
 | `int total_tiles = expr`         | Local integer variable                                               |
 | `parallel.async ... : block`     | Non-blocking kernel launch                                           |
 | `yield`                          | Early return from `parallel` block                                   |
-| `stream s`                       | Bind kernel to CUDA stream `s`                                       |
+| `stream s`                       | Bind kernel to stream `s`                                            |
 
 ## Chapter summary
 
@@ -303,4 +303,4 @@ parallel p by BLK_CNT: block {
 | Host concurrency       | `parallel.async` / `stream s`       | Multi-kernel overlap, non-blocking launch                                 |
 | Persistent scheduling  | `if` + `foreach` + `#`              | Fixed grid size, tile striping with padding guard                         |
 
-The 1P1C skeleton above is incomplete: without `wait` / `trigger`, the consumer can read before the producer has finished writing. [Chapter 6](ch06-synchronization.md) adds the full synchronization protocols — `swap` for single-schedule double buffering, events for multi-warpgroup pipelines — so the pipeline runs safely and at full throughput.
+The 1P1C skeleton above is incomplete: without `wait` / `trigger`, the consumer can read before the producer has finished writing. [Chapter 6](ch06-synchronization.md) adds the full synchronization protocols — `swap` for single-schedule double buffering, events for multi-group pipelines — so the pipeline runs safely and at full throughput.

@@ -11,7 +11,6 @@ You need a C++17-capable compiler and two parser-generator tools:
 | GCC          | 8.1+ (or Clang 6+)      |
 | Bison        | 3.8+                    |
 | Flex         | 2.6.4+                  |
-| CUDA Toolkit | 11.8+ (for GPU targets) |
 
 Most Linux distributions ship Flex and an older Bison. If your system Bison is below 3.8, the setup step below will fetch a compatible version automatically.
 
@@ -77,7 +76,7 @@ The `croq` command works like `gcc` or `clang`:
 ```bash
 croq program.co                     # compile and link → a.out
 croq program.co -o my_kernel        # specify output name
-croq -es -t cute program.co -o out.cu  # emit CUDA source only
+croq -es -t <target> program.co -o out.cxx  # emit target source only
 croq -E program.co                  # preprocess only
 ```
 

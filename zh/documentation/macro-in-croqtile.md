@@ -66,5 +66,5 @@ chore-preprocessing -> choreo compilation -> c/c++ preprocessing -> c/c++ compil
 choreo 预处理的主要目标是使 host/device 宏作为整体协同工作，但该流程有时会导致行为差异。从实现角度，Choreo 预处理器仅替换/条件编译 **tileflow 函数内部**的代码，其余预处理交给 C++ 预处理器，从而将 Choreo 预处理限制在较小范围内。
 
 ## 预定义宏
-为模拟目标 native 编译，choreo 预处理还会从目标平台读取内置宏。例如，生成 CUDA/Cute 代码时全局定义 `__CUDA__`，而 `__CUDA_ARCH__` 仅在 CUDA/Cute device 代码编译时设置。
+为模拟目标 native 编译，choreo 预处理还会从目标平台读取内置宏：目标标识宏全局定义，架构宏只在编译设备代码时设置。
 因此，这些宏既可用于 tileflow 函数，也可用于 host 代码。

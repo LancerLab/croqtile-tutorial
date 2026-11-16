@@ -2,7 +2,7 @@
 
 Before you touch any Croqtile syntax, let's talk about what "parallel" actually means.
 
-Suppose you have eight independent tasks --- eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single CPU core, they execute one after another. On a 4-core CPU, maybe four run simultaneously.
+Suppose you have eight independent tasks --- eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single core, they execute one after another. On a four-core machine, maybe four run simultaneously. Given eight execution slots, all eight could genuinely make progress at once.
 
 Figure~\ref{fig:f05-fig1_virtual_parallelism} shows the same work at three widths.
 
@@ -14,6 +14,6 @@ Figure~\ref{fig:f05-fig1_virtual_parallelism} shows the same work at three width
 
 Parallelism describes which tasks can be independent. The execution resources determine how many of those tasks can make progress at once.
 
-When tile counts and launch dimensions are written as the same set of constants, changing the tiling also forces a change to the resource mapping. Keeping the two descriptions separate makes those choices easier to revise.
+This distinction matters because many parallel languages conflate the two. In a language whose launch syntax doubles as its work description, one statement declares both the logical structure (how many instances) and the physical mapping (how many blocks, how many threads per block). Changing the tiling then forces a change to the launch configuration: the logical and physical are tangled together.
 
 Croqtile uses \co@parallel@ for the independent work and space specifiers for its mapping. The work can therefore be read before deciding whether an axis belongs to blocks, threads, or cooperating groups.

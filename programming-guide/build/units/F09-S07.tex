@@ -16,7 +16,7 @@ Figure~\ref{fig:f09-fig4_view_from} shows the window at a non-tile origin.
 \label{fig:f09-fig4_view_from}
 \end{figure}
 
-The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy}, \texttt{dma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
+The power of \texttt{view} / \texttt{from} is composability: once you carve out a window, all downstream operations --- \texttt{subspan}, \texttt{chunkat}, \texttt{dma.copy} --- apply to the window as if it were a standalone tensor. The pipeline stays unchanged; only the origin shifts:
 
 \begin{lstlisting}[language=croqtile,caption={A window at a runtime offset}]
 expert_lhs = lhs.view(expert_M, K).from(expert_offset, 0);

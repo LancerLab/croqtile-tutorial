@@ -62,7 +62,7 @@ __co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
 
 ### `swap`: names, not bytes
 
-`swap(lf0, lf1)` exchanges **future handles** — the Croqtile-level names that refer to buffers. Shared-memory contents stay where the hardware placed them; only the names rotate. In CUDA, the same idiom is often a `^ 1` buffer index or a boolean phase variable. For triple buffering, `rotate(f0, f1, f2)` cycles three handles in one step.
+`swap(lf0, lf1)` exchanges **future handles** — the Croqtile-level names that refer to buffers. The staged contents stay where the hardware placed them; only the names rotate. In a language with explicit buffer arrays, the same idiom is often a `^ 1` buffer index or a boolean phase variable. For triple buffering, `rotate(f0, f1, f2)` cycles three handles in one step.
 
 ### `with tile_k in 16`
 
@@ -84,7 +84,7 @@ Opens a scoped region and binds `tile_k` as a tile axis with extent 16. Inside t
 
 ## Why you cannot "just overlap" without events
 
-The `swap` pattern works because one thread group controls both loading and computing — it knows the order. Warp specialization ([Chapter 5](ch05-branch-control.md)) puts them on **different** warpgroups with different program counters. They cannot share a `swap` schedule; they need a signaling mechanism.
+The `swap` pattern works because one thread group controls both loading and computing — it knows the order. Role specialization ([Chapter 5](ch05-branch-control.md)) puts them in **different** regions with different program counters. They cannot share a `swap` schedule; they need a signaling mechanism.
 
 The picture below contrasts a strict load-then-compute staircase with double-buffered overlap: same logical work, less idle time.
 
@@ -111,7 +111,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [WARP_N, TILE_K] rhs_load_s[STAGES];
     shared f16 [WARP_M, WARP_N] output_s;
 
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, TILE_K)] {
           stage = iv_k % STAGES;
@@ -180,7 +180,7 @@ If something looks wrong after editing a pipeline, verify **event order and trip
 | `rotate(f0, f1, f2)`        | Cycle three future handles                       |
 | `with tile_k in N { ... }`  | Scoped tile axis binding with extent N           |
 | `foreach tile_k(1:)`        | Iterate starting from index 1                    |
-| `mma.commit`                | Fence between pipeline stages for WGMMA          |
+| `mma.commit`                | Fence between pipeline stages                    |
 | `__co__ auto fn(...)`       | Return type inferred from `return` statement     |
 
 ## Summary
@@ -188,8 +188,8 @@ If something looks wrong after editing a pipeline, verify **event order and trip
 | Pattern                 | Primitives used                                                      | When to use                                                     |
 |-------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------|
 | `swap` double buffering | `dma.any`, `swap`                                                    | Single thread group interleaving load and compute               |
-| 1P1C event pipeline     | `inthreads.async`, `shared event[]`, `wait`, `trigger`, `mma.commit` | Separate producer/consumer warpgroups with multi-stage pipeline |
+| 1P1C event pipeline     | `inthreads.async`, `shared event[]`, `wait`, `trigger`, `mma.commit` | Separate producer/consumer groups with multi-stage pipeline      |
 
-Both patterns achieve the same goal — overlapping memory and compute — but at different levels of complexity. Start with `swap` for simpler kernels; graduate to events when you need warp specialization.
+Both patterns achieve the same goal — overlapping memory and compute — but at different levels of complexity. Start with `swap` for simpler kernels; graduate to events when you need role specialization.
 
-The [next chapter](ch07-advanced-movement.md) moves on to hardware-accelerated **TMA**, **swizzled** shared layouts, and **`view` / `from`** for irregular access — the same synchronization patterns from this chapter, with richer data movement primitives underneath.
+The [next chapter](ch07-advanced-movement.md) moves on to **swizzled** shared layouts and **`view` / `from`** for irregular access — the same synchronization patterns from this chapter, with richer data movement under them.

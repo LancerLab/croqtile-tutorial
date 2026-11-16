@@ -6,7 +6,7 @@ You are about to write, compile, and run a complete Croqtile program — an elem
 
 Every Croqtile program has exactly two parts:
 
-1. **Croqtile Function** (`__co__`) — the kernel logic, marked with the `__co__` prefix. It describes computation on shaped tensors. The compiler transpiles this into GPU-ready code.
+1. **Croqtile Function** (`__co__`) — the kernel logic, marked with the `__co__` prefix. It describes computation on shaped tensors. The compiler transpiles this into code for the selected target.
 2. **Host Program** — standard C++ that prepares data, calls the Croqtile function, and checks results.
 
 Both parts live in a single `.co` file. The compiler tells them apart by the `__co__` prefix.
@@ -83,7 +83,7 @@ parallel {i, j} by [4, 8]
 
 `parallel {i, j} by [4, 8]` creates 4 × 8 = 32 parallel instances, one per element position. Each instance runs the body with its own `(i, j)` pair. The `.at(i, j)` accessor indexes into a tensor at position `(i, j)`, and the addition is direct — one element, one thread.
 
-If you have written CUDA before, you might wonder: are these instances CUDA threads? Thread blocks? The short answer is that `parallel` without any annotation lets the compiler decide. Under the hood, the 32 instances here become 32 CUDA threads inside a single thread block — but Croqtile deliberately hides that mapping at this level. In [Chapter 3](ch03-parallelism.md) you will learn to control the mapping explicitly with **space specifiers** like `: block` and `: thread`, nest multiple `parallel` axes to build a block-and-thread hierarchy, and map them onto warps and warpgroups. For now, treat `parallel` as "run all instances concurrently on the GPU" and move on.
+You might wonder: are these instances individual threads? Groups? The short answer is that `parallel` without any annotation lets the compiler decide. Under the hood, the 32 instances here map onto 32 lanes of one execution unit — but Croqtile deliberately hides that mapping at this level. In [Chapter 3](ch03-parallelism.md) you will learn to control the mapping explicitly with **space specifiers** like `: block` and `: thread`, nest multiple `parallel` axes to build a two-level hierarchy and map them onto the levels introduced in Chapter 3. For now, treat `parallel` as "run all instances concurrently" and move on.
 
 **Return.**
 
@@ -121,10 +121,10 @@ Croqtile files use the `.co` extension. The compiler works like `gcc` or `clang`
 ```bash
 croq ele_add.co                          # produces a.out
 croq ele_add.co -o ele_add               # specify output name
-croq -es -t cuda ele_add.co -o out.cu    # emit CUDA source only
+croq -es -t <target> ele_add.co -o out.cxx  # emit target source only
 ```
 
-The `-es` flag stops after transpilation, letting you inspect the generated CUDA code. The `-t` flag selects the target platform.
+The `-es` flag stops after transpilation, letting you inspect the generated code for the selected target.
 
 To see all available options, run `croq --help`:
 
@@ -157,4 +157,4 @@ This prints the full set of compiler flags — output naming, target selection, 
 
 The skeleton of every Croqtile program is now in your hands: a `__co__` function with typed, shaped parameters and a return value; `parallel` and `.at()` for element-wise computation; `lhs.span` for deriving output shapes from inputs; and the host-side `make_spandata` / `.view()` API for creating and passing tensors.
 
-The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — GPUs achieve peak throughput by moving data in bulk, not element by element. The [next chapter](ch02-data-movement.md) introduces `dma.copy` and `chunkat` to express block-level data movement.
+The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — an execution engine reaches peak throughput by moving data in bulk, not element by element. The [next chapter](ch02-data-movement.md) introduces `dma.copy` and `chunkat` to express block-level data movement.

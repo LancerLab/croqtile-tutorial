@@ -1,20 +1,19 @@
 # Data Movement: The Tile Movement Engine
 
-Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. GPUs fetch and stage contiguous blocks, not isolated elements. The hard part of GPU programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.
+Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.
 
 Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:
 
 - `dma.copy` moves a tile as-is.
 - `dma.transp<...>` permutes dimensions while moving it.
 - `dma.pad<...>` enlarges a tile and fills the border.
-- `tma.copy` uses Hopper's Tensor Memory Accelerator for the same style of transfers when the tile shape is compatible.
 
-This chapter introduces that model, shows the core syntax, and gives the rules you need to write DMA and TMA code that is both correct and likely to lower well.
+This chapter introduces that model, shows the core syntax, and gives the rules you need to write DMA code that is both correct and likely to lower well.
 
 ![Per-element vs data-block programming model comparison](../assets/images/ch02/fig1_element_vs_block_dark.png#only-dark)
 ![Per-element vs data-block programming model comparison](../assets/images/ch02/fig1_element_vs_block_light.png#only-light)
 
-*Left: element-by-element thinking. Right: tile-by-tile movement into fast memory.*
+*Left: element-by-element thinking. Right: tile-by-tile movement into fast local storage.*
 
 <details>
 <summary>Animated version</summary>
@@ -43,7 +42,6 @@ The important pieces are:
 | Part | Meaning |
 |------|---------|
 | `future` | Optional handle to the transfer result. Use `future.data` to access the moved tile and `future.span` to query its shape. |
-| `engine` | `dma` for software cooperative copies, `tma` for Hopper TMA copies. |
 | `operation` | `copy`, `transp<...>`, or `pad<...>`. |
 | `modifiers` | Optional flags such as `.async`, `.zfill`, or `.swiz<N>`. |
 | `source => destination` | The source view and the destination memory or destination view. |
@@ -60,7 +58,7 @@ The key shift from Chapter 1 is that these statements move shaped regions, not i
 
 ## First Example: Tiled Addition Through Shared Memory
 
-Here is the same addition from Chapter 1, but staged through shared memory in tiles:
+Here is the same addition from Chapter 1, but staged through shared storage in tiles:
 
 ```choreo
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
@@ -82,8 +80,8 @@ __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
 The arithmetic is still element-wise addition. What changed is the data path:
 
 1. `chunkat(tr, tc)` selects one logical tile from each input.
-2. `dma.copy ... => shared` stages that tile into block-visible fast memory.
-3. The inner loop reads from `lhs_load.data` and `rhs_load.data`, not from global memory.
+2. `dma.copy ... => shared` stages that tile into block-visible fast storage.
+3. The inner loop reads from `lhs_load.data` and `rhs_load.data`, not from global storage.
 4. `tr # i` and `tc # j` map tile-local coordinates back to global output coordinates.
 
 This is the core Croqtile pattern: select a tile, move it, compute on the moved tile.
@@ -166,7 +164,7 @@ You can think of the three forms like this:
 
 ## Futures, `.data`, and `.span`
 
-The result of a DMA or TMA statement is a future-like handle:
+The result of a DMA statement is a future-like handle:
 
 ```choreo
 f = dma.copy input => shared;
@@ -209,12 +207,12 @@ wait f;
 dma.copy f.data => output;
 ```
 
-The same pattern applies to TMA:
+The same pattern applies to asynchronous copies:
 
 ```choreo
-f = tma.copy.async input => shared;
+f = dma.copy.async input => shared;
 wait f;
-tma.copy f.data => output;
+dma.copy f.data => output;
 ```
 
 Rule: if you read `f.data` from an async transfer, wait first.
@@ -291,27 +289,6 @@ This comes up constantly in data movement code because output shapes often come 
 
 *Use `span` for the whole shape, `span(i)` for a single axis.*
 
-## Memory Specifiers: `global`, `shared`, and `local`
-
-The destination of a movement statement also states where the moved tile should live.
-
-- `global`: device memory. Large, slow, visible across the device.
-- `shared`: block-visible on-chip memory. This is the usual staging area for cooperative tiles.
-- `local`: thread-private storage. Good for small private tiles or non-cooperative use.
-
-```choreo
-f0 = dma.copy input => shared;
-f1 = dma.copy matrix_tile => local;
-dma.copy out_tile => output;
-```
-
-For performance-sensitive kernels, `shared` is the important level. The compiler's cooperative tiled lowering is aimed at global-to-shared and shared-to-global movement. `local` copies are still useful, but they are not the main fast path for cooperative block transfers.
-
-![Memory Specifiers → GPU Hardware](../assets/images/ch02/fig_memory_hierarchy_dark.png#only-dark)
-![Memory Specifiers → GPU Hardware](../assets/images/ch02/fig_memory_hierarchy_light.png#only-light)
-
-*Croqtile's memory specifiers map directly onto the GPU memory hierarchy.*
-
 ## Partial Tiles, Guarding, and `.zfill`
 
 Real kernels often end with a partial tile. The important distinction is whether the **source tile shape** and **destination tile shape** are the same.
@@ -348,7 +325,7 @@ If you add `.zfill` when the source and destination shapes are already the same,
 
 ## `.swiz<N>`: Shared-Memory Layout for the Consumer
 
-Swizzle is mainly about how the tile should live in shared memory so later operations can read it efficiently.
+Swizzle is mainly about how the tile should live in shared storage so later operations can read it efficiently.
 
 Typical GEMM staging code looks like this:
 
@@ -361,76 +338,13 @@ The load-side and compute-side swizzles need to agree. If you stage a tile with 
 
 This chapter only introduces the idea. The MMA chapters go deeper into which swizzle values pair well with which matrix layouts.
 
-## DMA vs TMA
-
-Both engines move shaped tiles. The difference is how they do it and what constraints they require.
-
-| | `dma` | `tma` |
-|---|---|---|
-| Implementation | Cooperative software copy | Hopper Tensor Memory Accelerator |
-| Hardware requirement | General GPU path | SM90+ |
-| Good fit | Dynamic or irregular tiles, portable code | Fixed-shape high-bandwidth staging |
-| Common destination | `shared` | `shared` |
-| Async support | Yes | Yes |
-
-Example TMA use:
-
-```choreo
-f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) => shared;
-wait f;
-```
-
-The practical rule is simple:
-
-- Use `dma` when tile sizes are dynamic, irregular, or you want the portable path.
-- Use `tma` on Hopper when the tile shape is fixed and you want hardware-assisted movement.
-
-### The main TMA constraint
-
-TMA tile shapes must be host-computable. Runtime tile indices are fine:
-
-```choreo
-tma.copy lhs.subspan(64, 64).at(block_m, iv_k) => shared;
-```
-
-But a kernel-runtime value cannot define the tile shape itself:
-
-```choreo
-// Not valid for TMA if TILE_M is only known inside the kernel
-tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) => shared;
-```
-
-If the tile size truly depends on kernel-runtime state, use `dma.copy` instead.
-
-## Writing DMA and TMA That Lower Well
-
-You do not need to know the whole lowering pass to write good code, but a few rules matter.
-
-### For high-throughput DMA
-
-- Prefer `global <-> shared` movement for cooperative staging.
-- Use enough participating threads. A warp-sized or larger cooperative group is the common case.
-- Keep source and destination ranks aligned.
-- Use ordinary byte-sized or larger element types.
-- Reserve `local` for private tiles, not as the default performance path.
-
-If these conditions do not hold, the compiler can still generate a correct copy, but it may fall back to a simpler path.
-
-### For TMA
-
-- Use it on SM90+.
-- Keep the tile shape fixed from the host's point of view.
-- Stage into shared memory.
-- Add `.zfill` for partial tiles that feed full-tile consumers.
-
 ## Checklist
 
 By the end of this chapter, the new pieces of syntax should mean the following:
 
 | Syntax | Meaning |
 |--------|---------|
-| `dma.copy src => shared` | Move a tile into shared memory. |
-| `tma.copy src => shared` | Use Hopper TMA to move a tile into shared memory. |
+| `dma.copy src => shared` | Move a tile into shared storage. |
 | `dma.copy.async ...` | Start a non-blocking DMA transfer. |
 | `wait f` | Wait until future `f` is ready to consume. |
 | `future.data` | Access the moved tile. |

@@ -171,8 +171,10 @@ def emit_figure(payload, caption, path=None):
 
 def emit_code(payload, caption):
     lang = payload.get('language') or 'croqtile'
+    # A listing caption is a moving argument, so \lstinline cannot appear in
+    # it; code spans become \texttt the same way table cells do.
     return ('\\begin{lstlisting}[language=' + lang + ',caption={' +
-            texify(caption) + '}]\n' + payload['code'] +
+            texify(caption, table=True) + '}]\n' + payload['code'] +
             '\n\\end{lstlisting}')
 
 

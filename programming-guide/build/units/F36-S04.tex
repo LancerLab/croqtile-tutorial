@@ -7,5 +7,3 @@
 \end{itemize}
 
 Without stream binding, asynchronous \texttt{parallel-by} uses the default stream.
-
-A stream selects an ordering context for launches. It does not make two kernels independent if the second reads data written by the first. When using separate streams, keep that dependency explicit and retain the buffers until their queued users finish. Host-side return from an asynchronous launch only confirms that execution was submitted.

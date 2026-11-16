@@ -1,5 +1,7 @@
 \subsection*{\texttt{.\allowbreak{}swiz\textless{}N\textgreater{}}: Shared-Memory Layout for the Consumer}
 
+Swizzle is mainly about how the tile should live in shared storage so later operations can read it efficiently.
+
 Typical GEMM staging code looks like this:
 
 \begin{lstlisting}[language=croqtile,caption={.swiz N : Shared-Memory Layout for the Consumer}]

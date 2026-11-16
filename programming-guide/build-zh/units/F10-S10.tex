@@ -5,6 +5,7 @@
 #error "MATMUL_SWIZ must equal 2 * MATMUL_TILE_K for f16 kernel"
 #endif
 #if MATMUL_WARP_M != 64
+#error "MATMUL_WARP_M must be 64 for the f16 operand geometry"
 #endif
 \end{lstlisting}
 

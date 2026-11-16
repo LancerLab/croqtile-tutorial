@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  13 NOV 2026 17:19
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  16 NOV 2026 18:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1661,7 +1661,7 @@ Package microtype Info: Character `\textquestiondown ' is missing
 (microtype)             in font `\TU/FandolSong-Regular.otf(0)/b/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 27--15
+Underfull \hbox (badness 10000) in paragraph at lines 28--15
 
  []
 
@@ -1688,22 +1688,22 @@ File: figures/f04-fig_span_light.png Graphic file (type bmp)
 (./build-zh/units/F15-S09.tex) (./build-zh/units/F18-S01.tex)
 (./build-zh/units/F18-S03.tex [22]) (./build-zh/units/F18-S04.tex)
 (./build-zh/units/F18-S05.tex [23]) (./build-zh/units/F18-S06.tex)
-(./build-zh/units/F18-S08.tex) (./build-zh/units/F37-S04.tex)
-(./build-zh/units/F37-S05.tex [24]) (./build-zh/units/F37-S06.tex)
+(./build-zh/units/F18-S08.tex) (./build-zh/units/F37-S04.tex [24])
+(./build-zh/units/F37-S05.tex) (./build-zh/units/F37-S06.tex)
 (./build-zh/units/F37-S07.tex) (./build-zh/units/F37-S08.tex [25])
 (./build-zh/units/F05-S03.tex
 File: figures/f05-fig2_logical_vs_physical_light.png Graphic file (type bmp)
 <figures/f05-fig2_logical_vs_physical_light.png>
-) (./build-zh/units/F05-S05.tex) [26]
-(./build-zh/units/F05-S06.tex) (./build-zh/units/F05-S09.tex)
-(./build-zh/units/F08-S05.tex) [27] (./build-zh/units/F08-S07.tex)
+) (./build-zh/units/F05-S05.tex [26])
+(./build-zh/units/F05-S06.tex) (./build-zh/units/F05-S09.tex [27])
+(./build-zh/units/F08-S05.tex) (./build-zh/units/F08-S07.tex)
 (./build-zh/units/F15-S14.tex) (./build-zh/units/F15-S15.tex [28])
 (./build-zh/units/F15-S16.tex) (./build-zh/units/F31-S03.tex [29])
 (./build-zh/units/F31-S04.tex) (./build-zh/units/F31-S05.tex [30])
 (./build-zh/units/F32-S01.tex) (./build-zh/units/F32-S02.tex)
 (./build-zh/units/F32-S03.tex) (./build-zh/units/F32-S04.tex [31])
 (./build-zh/units/F32-S05.tex) (./build-zh/units/F32-S06.tex [32])
-(./build-zh/units/F32-S07.tex) (./build-zh/units/F32-S08.tex [33])
+(./build-zh/units/F32-S07.tex [33]) (./build-zh/units/F32-S08.tex)
 (./build-zh/units/F32-S10.tex) (./build-zh/units/F04-S05.tex [34]
 File: figures/f04-fig3_chunkat_light.png Graphic file (type bmp)
 <figures/f04-fig3_chunkat_light.png>
@@ -1712,17 +1712,17 @@ File: figures/f04-fig3_chunkat_light.png Graphic file (type bmp)
 (./build-zh/units/F04-S14.tex
 File: figures/f04-fig_compose_light.png Graphic file (type bmp)
 <figures/f04-fig_compose_light.png>
-) (./build-zh/units/F04-S15.tex [36]
+) (./build-zh/units/F04-S15.tex
 File: figures/f04-fig_extent_light.png Graphic file (type bmp)
 <figures/f04-fig_extent_light.png>
 )
-(./build-zh/units/F15-S19.tex [37]) (./build-zh/units/F29-S01.tex)
-(./build-zh/units/F29-S02.tex) (./build-zh/units/F29-S03.tex
+(./build-zh/units/F15-S19.tex [36] [37]) (./build-zh/units/F29-S01.tex)
+(./build-zh/units/F29-S02.tex) (./build-zh/units/F29-S03.tex [38]
 File: figures/f29-chunkat.png Graphic file (type bmp)
 <figures/f29-chunkat.png>
 )
-(./build-zh/units/F29-S04.tex [38]) (./build-zh/units/F29-S06.tex)
-(./build-zh/units/F04-S02.tex [39]) (./build-zh/units/F04-S03.tex [40]
+(./build-zh/units/F29-S04.tex [39]) (./build-zh/units/F29-S06.tex)
+(./build-zh/units/F04-S02.tex) (./build-zh/units/F04-S03.tex [40]
 File: figures/f04-fig2_tiled_add_light.png Graphic file (type bmp)
 <figures/f04-fig2_tiled_add_light.png>
 )
@@ -1730,31 +1730,31 @@ File: figures/f04-fig2_tiled_add_light.png Graphic file (type bmp)
 File: figures/f04-fig_future_data_light.png Graphic file (type bmp)
 <figures/f04-fig_future_data_light.png>
 ) (./build-zh/units/F04-S09.tex [42])
-(./build-zh/units/F04-S11.tex) (./build-zh/units/F04-S12.tex)
-(./build-zh/units/F14-S08.tex [43]
+(./build-zh/units/F04-S11.tex) (./build-zh/units/F04-S12.tex [43])
+(./build-zh/units/F14-S08.tex [44]
 File: figures/f14-chunkat_3d_light.png Graphic file (type bmp)
 <figures/f14-chunkat_3d_light.png>
-) [44] (./build-zh/units/F28-S01.tex)
-(./build-zh/units/F28-S03.tex) (./build-zh/units/F28-S04.tex [45])
+) (./build-zh/units/F28-S01.tex)
+(./build-zh/units/F28-S03.tex [45]) (./build-zh/units/F28-S04.tex)
 (./build-zh/units/F28-S06.tex) (./build-zh/units/F28-S07.tex [46])
 (./build-zh/units/F28-S08.tex) (./build-zh/units/F34-S06.tex [47])
-(./build-zh/units/F34-S09.tex) (./build-zh/units/F35-S01.tex)
-(./build-zh/units/F35-S02.tex [48]) (./build-zh/units/F07-S06.tex [49])
-(./build-zh/units/F07-S07.tex) (./build-zh/units/F35-S05.tex)
-(./build-zh/units/F07-S02.tex [50]) (./build-zh/units/F07-S12.tex)
-(./build-zh/units/F06-S02.tex [51]) (./build-zh/units/F10-S05.tex)
-(./build-zh/units/F10-S08.tex) (./build-zh/units/F10-S09.tex)
-(./build-zh/units/F10-S10.tex [52]) (./build-zh/units/F10-S11.tex)
-(./build-zh/units/F15-S20.tex) [53] (./build-zh/units/F23-S01.tex)
-(./build-zh/units/F23-S02.tex) (./build-zh/units/F23-S03.tex)
-(./build-zh/units/F23-S04.tex [54]) (./build-zh/units/F24-S01.tex)
-(./build-zh/units/F24-S02.tex) (./build-zh/units/F24-S03.tex [55])
-(./build-zh/units/F24-S04.tex) (./build-zh/units/F24-S07.tex)
-(./build-zh/units/F11-S02.tex [56]) (./build-zh/units/F11-S03.tex)
-(./build-zh/units/F11-S04.tex [57]) (./build-zh/units/F04-S25.tex)
-(./build-zh/units/F05-S18.tex) (./build-zh/units/F07-S13.tex)
-(./build-zh/units/F08-S14.tex) [58] [59])
-(./content-zh/ch03-programming-guide.tex [60]
+(./build-zh/units/F34-S09.tex [48]) (./build-zh/units/F35-S01.tex)
+(./build-zh/units/F35-S02.tex [49]) (./build-zh/units/F07-S06.tex)
+(./build-zh/units/F07-S07.tex) [50] (./build-zh/units/F35-S05.tex)
+(./build-zh/units/F07-S02.tex) (./build-zh/units/F07-S12.tex [51])
+(./build-zh/units/F06-S02.tex) (./build-zh/units/F10-S05.tex)
+(./build-zh/units/F10-S08.tex [52]) (./build-zh/units/F10-S09.tex)
+(./build-zh/units/F10-S10.tex) (./build-zh/units/F10-S11.tex [53])
+(./build-zh/units/F15-S20.tex) (./build-zh/units/F23-S01.tex)
+(./build-zh/units/F23-S02.tex [54]) (./build-zh/units/F23-S03.tex)
+(./build-zh/units/F23-S04.tex) (./build-zh/units/F24-S01.tex)
+(./build-zh/units/F24-S02.tex) [55] (./build-zh/units/F24-S03.tex)
+(./build-zh/units/F24-S04.tex [56]) (./build-zh/units/F24-S07.tex)
+(./build-zh/units/F11-S02.tex) (./build-zh/units/F11-S03.tex [57])
+(./build-zh/units/F11-S04.tex) (./build-zh/units/F04-S25.tex)
+(./build-zh/units/F05-S18.tex [58]) (./build-zh/units/F07-S13.tex)
+(./build-zh/units/F08-S14.tex)) (./content-zh/ch03-programming-guide.tex
+[59] [60]
 第 3.
 (./build-zh/units/F14-S01.tex) (./build-zh/units/F14-S02.tex)
 (./build-zh/units/F14-S04.tex
@@ -1797,13 +1797,13 @@ Package microtype Info: Character `\textquestiondown ' is missing
 (./build-zh/units/F15-S06.tex
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 3.
-) (./build-zh/units/F15-S07.tex [65] [66])
+ [65]) (./build-zh/units/F15-S07.tex [66])
 (./build-zh/units/F15-S12.tex) (./build-zh/units/F15-S17.tex)
 (./build-zh/units/F15-S22.tex) (./build-zh/units/F17-S03.tex)
-(./build-zh/units/F17-S08.tex) (./build-zh/units/F18-S02.tex
+(./build-zh/units/F17-S08.tex [67]) (./build-zh/units/F18-S02.tex
 LaTeX Font Info:    Font shape `TU/lmss/bx/it' in size <12> not available
 (Font)              Font shape `TU/lmss/bx/sl' tried instead on input line 1.
- [67])
+)
 (./build-zh/units/F18-S07.tex) (./build-zh/units/F31-S06.tex)
 (./build-zh/units/F32-S09.tex [68]) (./build-zh/units/F37-S01.tex)
 (./build-zh/units/F37-S02.tex) (./build-zh/units/F37-S03.tex)
@@ -1817,7 +1817,7 @@ LaTeX Font Info:    Font shape `TU/lmss/bx/it' in size <12> not available
 (./build-zh/units/F21-S02.tex [73]) (./build-zh/units/F21-S03.tex)
 (./build-zh/units/F21-S04.tex) [74] (./build-zh/units/F21-S05.tex)
 (./build-zh/units/F21-S06.tex) (./build-zh/units/F21-S07.tex)
-(./build-zh/units/F21-S08.tex [75]) (./build-zh/units/F21-S09.tex)
+(./build-zh/units/F21-S08.tex) (./build-zh/units/F21-S09.tex [75])
 (./build-zh/units/F21-S10.tex) (./build-zh/units/F05-S01.tex)
 (./build-zh/units/F05-S02.tex
 File: figures/f05-fig1_virtual_parallelism_light.png Graphic file (type bmp)
@@ -1840,111 +1840,103 @@ File: figures/f05-fig5_scalar_matmul_light.png Graphic file (type bmp)
 <figures/f05-fig5_scalar_matmul_light.png>
 ) (./build-zh/units/F05-S17.tex [82])
 (./build-zh/units/F04-S04.tex) (./build-zh/units/F04-S13.tex)
-(./build-zh/units/F09-S06.tex) (./build-zh/units/F29-S05.tex [83])
-(./build-zh/units/F40-S07.tex) (./build-zh/units/F09-S07.tex
+(./build-zh/units/F09-S01.tex) (./build-zh/units/F09-S06.tex) [83]
+(./build-zh/units/F29-S05.tex) (./build-zh/units/F40-S07.tex)
+(./build-zh/units/F09-S07.tex [84]
 File: figures/f09-fig4_view_from_light.png Graphic file (type bmp)
 <figures/f09-fig4_view_from_light.png>
- [84])
-(./build-zh/units/F09-S08.tex
+) [85] (./build-zh/units/F09-S08.tex
 File: figures/f09-fig5_subspan_step_light.png Graphic file (type bmp)
 <figures/f09-fig5_subspan_step_light.png>
-) [85] (./build-zh/units/F09-S10.tex [86]
+)
+(./build-zh/units/F09-S10.tex [86]
 File: figures/f09-fig7_span_as_light.png Graphic file (type bmp)
 <figures/f09-fig7_span_as_light.png>
-)
-(./build-zh/units/F09-S11.tex
+) (./build-zh/units/F09-S11.tex
 Underfull \hbox (badness 10000) in paragraph at lines 15--15
 []|\TU/FandolSong-Regular.otf(0)/m/n/10 拷 贝 上 的 \TU/lmtt/m/n/10 .swiz<N> \TU/Fa
 ndolSong-Regular.otf(0)/m/n/10 与
  []
 
-) (./build-zh/units/F09-S12.tex) (./build-zh/units/F03-S07.tex [87])
-(./build-zh/units/F04-S01.tex
+[87]) (./build-zh/units/F09-S12.tex) (./build-zh/units/F03-S07.tex)
+(./build-zh/units/F04-S01.tex [88]
 File: figures/f04-fig1_element_vs_block_light.png Graphic file (type bmp)
 <figures/f04-fig1_element_vs_block_light.png>
 ) (./build-zh/units/F04-S10.tex)
-(./build-zh/units/F15-S18.tex [88]) [89] (./build-zh/units/F28-S02.tex)
-(./build-zh/units/F28-S05.tex) (./build-zh/units/F39-S01.tex)
+(./build-zh/units/F15-S18.tex [89]) (./build-zh/units/F28-S02.tex)
+(./build-zh/units/F28-S05.tex [90]) (./build-zh/units/F39-S01.tex)
 (./build-zh/units/F39-S02.tex) (./build-zh/units/F39-S03.tex)
-(./build-zh/units/F39-S04.tex) (./build-zh/units/F39-S05.tex [90])
+(./build-zh/units/F39-S04.tex) (./build-zh/units/F39-S05.tex)
 (./build-zh/units/F39-S06.tex) (./build-zh/units/F39-S07.tex)
-(./build-zh/units/F39-S08.tex) (./build-zh/units/F05-S14.tex
+(./build-zh/units/F39-S08.tex) (./build-zh/units/F05-S14.tex [91]
 File: figures/f05-fig6_dma_matmul_light.png Graphic file (type bmp)
 <figures/f05-fig6_dma_matmul_light.png>
- [91])
-(./build-zh/units/F08-S02.tex [92]) (./build-zh/units/F08-S03.tex)
-(./build-zh/units/F08-S04.tex) (./build-zh/units/F08-S06.tex [93])
-(./build-zh/units/F38-S01.tex [94]) (./build-zh/units/F06-S01.tex
+ [92])
+(./build-zh/units/F08-S02.tex [93]) (./build-zh/units/F08-S03.tex)
+(./build-zh/units/F08-S04.tex) (./build-zh/units/F08-S06.tex)
+(./build-zh/units/F38-S01.tex [94]) (./build-zh/units/F06-S01.tex [95]
+File: figures/f06-fig1_tensor_contraction_light.png Graphic file (type bmp)
+<figures/f06-fig1_tensor_contraction_light.png>
 File: figures/f06-fig2_register_loading_light.png Graphic file (type bmp)
 <figures/f06-fig2_register_loading_light.png>
 File: figures/f06-fig3_mma_syntax_light.png Graphic file (type bmp)
 <figures/f06-fig3_mma_syntax_light.png>
 )
-(./build-zh/units/F06-S03.tex) (./build-zh/units/F04-S18.tex [95] [96])
-(./build-zh/units/F04-S19.tex [97]) (./build-zh/units/F09-S03.tex
+(./build-zh/units/F06-S03.tex) (./build-zh/units/F04-S18.tex [96] [97])
+(./build-zh/units/F04-S19.tex [98]) (./build-zh/units/F09-S03.tex
 File: figures/f09-fig2_swizzle_light.png Graphic file (type bmp)
 <figures/f09-fig2_swizzle_light.png>
 )
-(./build-zh/units/F06-S07.tex [98]) (./build-zh/units/F06-S04.tex [99] [100])
-(./build-zh/units/F06-S08.tex) (./build-zh/units/F06-S09.tex) [101]
-(./build-zh/units/F07-S01.tex) (./build-zh/units/F07-S03.tex [102]
+(./build-zh/units/F06-S07.tex [99] [100]) (./build-zh/units/F06-S04.tex
+[101]) (./build-zh/units/F06-S08.tex) (./build-zh/units/F06-S09.tex) [102]
+[103] (./build-zh/units/F07-S01.tex) (./build-zh/units/F07-S03.tex [104]
 File: figures/f07-fig1_role_comparison_light.png Graphic file (type bmp)
 <figures/f07-fig1_role_comparison_light.png>
 )
-(./build-zh/units/F07-S05.tex [103]) (./build-zh/units/F08-S01.tex)
+(./build-zh/units/F07-S05.tex [105]) (./build-zh/units/F08-S01.tex)
 (./build-zh/units/F08-S09.tex
 File: figures/f08-fig1_pipeline_timeline_light.png Graphic file (type bmp)
 <figures/f08-fig1_pipeline_timeline_light.png>
-) (./build-zh/units/F34-S07.tex [104])
-(./build-zh/units/F35-S03.tex
-Underfull \vbox (badness 7649) has occurred while \output is active []
-
- [105])
-(./build-zh/units/F35-S04.tex [106]) (./build-zh/units/F07-S04.tex)
-(./build-zh/units/F07-S08.tex [107]) (./build-zh/units/F07-S09.tex [108]
+) (./build-zh/units/F34-S07.tex [106])
+(./build-zh/units/F35-S03.tex [107]) (./build-zh/units/F35-S04.tex) [108]
+(./build-zh/units/F07-S04.tex) (./build-zh/units/F07-S08.tex [109])
+(./build-zh/units/F07-S09.tex [110]
 File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type bmp)
 <figures/f07-fig2_persistent_kernel_light.png>
-)
-[109] (./build-zh/units/F07-S10.tex) (./build-zh/units/F07-S11.tex [110])
-(./build-zh/units/F31-S10.tex) (./build-zh/units/F36-S01.tex)
-(./build-zh/units/F36-S02.tex [111]) (./build-zh/units/F36-S03.tex)
-(./build-zh/units/F36-S04.tex) (./build-zh/units/F08-S10.tex [112]
-Underfull \vbox (badness 3354) has occurred while \output is active []
-
- [113])
-(./build-zh/units/F08-S11.tex) (./build-zh/units/F08-S12.tex
+) (./build-zh/units/F07-S10.tex)
+(./build-zh/units/F07-S11.tex [111] [112]) (./build-zh/units/F31-S10.tex)
+(./build-zh/units/F36-S01.tex [113]) (./build-zh/units/F36-S02.tex)
+(./build-zh/units/F36-S03.tex) (./build-zh/units/F36-S04.tex [114])
+(./build-zh/units/F08-S10.tex [115]) (./build-zh/units/F08-S11.tex)
+(./build-zh/units/F08-S12.tex
 File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type bmp)
 <figures/f08-fig2_event_credit_flow_light.png>
-)
-(./build-zh/units/F07-S14.tex) (./build-zh/units/F08-S15.tex [114] [115])
-(./build-zh/units/F10-S01.tex) (./build-zh/units/F10-S03.tex)
-(./build-zh/units/F23-S05.tex [116]) (./build-zh/units/F23-S06.tex)
-(./build-zh/units/F24-S05.tex) (./build-zh/units/F24-S06.tex [117])
-(./build-zh/units/F25-S08.tex) (./build-zh/units/F10-S04.tex [118])
-(./build-zh/units/F10-S13.tex) (./build-zh/units/F09-S04.tex [119]
+) [116] (./build-zh/units/F07-S14.tex)
+(./build-zh/units/F08-S15.tex [117]) (./build-zh/units/F10-S01.tex)
+(./build-zh/units/F10-S03.tex) (./build-zh/units/F23-S05.tex) [118]
+(./build-zh/units/F23-S06.tex) (./build-zh/units/F24-S05.tex)
+(./build-zh/units/F24-S06.tex) (./build-zh/units/F25-S08.tex [119])
+(./build-zh/units/F10-S04.tex [120]) (./build-zh/units/F10-S13.tex)
+(./build-zh/units/F09-S04.tex [121]
 File: figures/f09-fig8_expressiveness_light.png Graphic file (type bmp)
 <figures/f09-fig8_expressiveness_light.png>
-)
-(./build-zh/units/F13-S02.tex)
-Underfull \vbox (badness 2401) has occurred while \output is active []
-
- [120]
-(./build-zh/units/F13-S03.tex) (./build-zh/units/F13-S04.tex)
+) (./build-zh/units/F13-S02.tex)
+(./build-zh/units/F13-S03.tex) (./build-zh/units/F13-S04.tex) [122]
 (./build-zh/units/F13-S05.tex) (./build-zh/units/F40-S01.tex)
-(./build-zh/units/F40-S02.tex) (./build-zh/units/F40-S03.tex [121]
+(./build-zh/units/F40-S02.tex) (./build-zh/units/F40-S03.tex [123])
+(./build-zh/units/F40-S04.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [122])
-(./build-zh/units/F40-S04.tex) (./build-zh/units/F40-S05.tex)
-(./build-zh/units/F40-S06.tex [123]) (./build-zh/units/F11-S01.tex))
-(./content-zh/appendix-a-quickref.tex [124]
+ [124])
+(./build-zh/units/F40-S05.tex) (./build-zh/units/F40-S06.tex [125])
+(./build-zh/units/F11-S01.tex)) (./content-zh/appendix-a-quickref.tex [126]
 Appendix A.
-[125
+[127
 
-]) (./content-zh/backmatter.tex [126] [127] [128
+]) (./content-zh/backmatter.tex [128] [129] [130
 
 ] (./main-zh.bbl)))
-[129
+[131
 
 ]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 12.
@@ -1956,12 +1948,12 @@ Package rerunfilecheck Info: File `main-zh.out' has not changed.
 (rerunfilecheck)             Checksum: 7B9CE8C5B14E9BED6AC43C458EF1B7CD;5399.
  ) 
 Here is how much of TeX's memory you used:
- 35731 strings out of 481819
- 790688 string characters out of 5936389
- 1317999 words of memory out of 5000000
- 51141 multiletter control sequences out of 15000+600000
+ 35766 strings out of 481819
+ 792743 string characters out of 5936389
+ 1265250 words of memory out of 5000000
+ 51172 multiletter control sequences out of 15000+600000
  539477 words of font info for 105 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,13n,107p,861b,1903s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on main-zh.pdf (133 pages).
+Output written on main-zh.pdf (135 pages).

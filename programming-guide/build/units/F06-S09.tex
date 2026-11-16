@@ -7,13 +7,14 @@
 \textbf{Topic} & \textbf{Takeaway} \\
 \midrule
 2D tensor contraction & C += A \(\times\) B on tile-shaped operands --- the universal inner kernel \\
+Backend diversity & Different backends implement the contraction differently; tile sizes and operand layouts differ \\
 Four-step abstraction & \textbf{fill \(\rightarrow\) load \(\rightarrow\) multiply \(\rightarrow\) store}; the compiler handles fragment layouts for each target \\
-Scaling cooperation & Syntax stays invariant \\
-Layout contract & \texttt{mma.row.row}, \texttt{mma.row.col}, etc. \\
+Scaling cooperation & More cooperating groups per tile --- the four operations stay invariant \\
+Layout contract & \texttt{mma.row.row}, \texttt{mma.row.col}, etc. --- must match the staged data \\
 Sparse and quantized & \texttt{.sp} adds a metadata operand; \texttt{.scale} fuses per-tile dequantization \\
 Swizzle and pipeline & \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} matches swizzled shared layouts \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The contraction is fast, but loads and compute still take turns --- Section~\ref{sec:3-8} introduces \textbf{role specialization} so different thread groups can play different roles: one group loading data while another computes, overlapping memory and math in time.
+The contraction is fast, but loads and compute still take turns --- while the contraction unit works, the memory path idles. Section~\ref{sec:3-8} introduces \textbf{role specialization} so different regions can play different roles: one group loading data while another computes, overlapping memory and math in time.

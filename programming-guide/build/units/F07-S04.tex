@@ -5,16 +5,20 @@ The most common use of \texttt{inthreads.\allowbreak{}async} is the \textbf{1P1C
 \begin{lstlisting}[language=croqtile,caption={The canonical pattern: 1 producer 1 consumer}]
 parallel p1 by 2 : thread {
   inthreads.async (p1 == 0) {
+    // producer: only group 0 runs this
+    // issue DMA loads, fill shared storage
   }
   inthreads.async (p1 == 1) {
+    // consumer: only group 1 runs this
+    // run MMA on shared storage, accumulate results
   }
 }
 \end{lstlisting}
 
-The declaration \co@parallel p1 by 2 : thread@ creates two cooperating groups in the same surrounding block. The value of \co@p1@ selects a role; it does not identify a tile along K.
+\textbf{\texttt{parallel p1 by 2 :\allowbreak{} thread}} --- Two groups within the enclosing block, indexed by \texttt{p1}.
 
-The region for \co@p1 == 0@ is the producer. It owns the writes that fill the shared staging buffers. The other group can proceed with computation while those writes target a different, available slot.
+The region for \co@p1 == 0@ is the producer. It owns the writes that fill the shared staging buffers. The other group can proceed with computation while those writes target a different, available slot. --- Group 0 compiles and runs the producer body; group 1 never sees this code.
 
-The region for \co@p1 == 1@ is the consumer. It reads completed tiles and updates its accumulator. The two regions share staging storage, so the event protocol must identify when a slot changes from writable to readable and back again.
+\textbf{\texttt{inthreads.\allowbreak{}async (p1 == 1)}} --- Group 1 runs the consumer body. The two blocks are separate programs sharing an address space.
 
 Because both regions share a buffer, their reads and writes must be coordinated. Without synchronization, the consumer could read before the producer finishes writing. Events express the required ordering.

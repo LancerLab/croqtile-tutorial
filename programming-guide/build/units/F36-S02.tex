@@ -1,4 +1,4 @@
-In Croqtile, you can bind a \texttt{parallel-by} block to a specific stream using angle-bracket syntax:
+Streams allow multiple kernels and memory transfers to execute concurrently on the device. In Croqtile, you can bind a \texttt{parallel-by} block to a specific stream using angle-bracket syntax:
 
 \begin{lstlisting}[language=croqtile,caption={Stream Binding}]
 __co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
@@ -18,3 +18,5 @@ In this example:
 \item \textbf{\texttt{parallel.\allowbreak{}async\textless{}s0\textgreater{}}}: Launches the kernel asynchronously on stream \texttt{s0}.
 \item \textbf{\texttt{parallel.\allowbreak{}async\textless{}s1\textgreater{}}}: Launches a second kernel on stream \texttt{s1}.
 \end{itemize}
+
+Since both kernels are launched on different streams with \texttt{.async}, they can execute concurrently on the device.

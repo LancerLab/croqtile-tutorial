@@ -12,7 +12,7 @@ Here, the scalar \emph{integer} types include \texttt{int}, \texttt{s32} and \te
 
 Croqtile does not perform arithmetic on these floating-point scalar values in Tileflow code. Instead, the Tileflow program passes them to device functions for computation.
 
-For example:
+The following code showcases an example:
 
 \begin{lstlisting}[language=croqtile,caption={The Convention: Allowed Argument Types}]
 __device__ void bar(float *p, int m, int n) {}
@@ -26,6 +26,6 @@ __co__ void foobar(f32 [M, 24] input, int N, float padding) {
 }
 \end{lstlisting}
 
-Here the spanned-data arguments become pointers to their element types. The device helper receives those pointers without shape metadata; pass any required dimensions separately. The declared pointer element type must match the data supplied by the call.
+In this example, it passes different data types as arguments from Croqtile function to the device functions, which matches the device parameters exactly. Note that in the device function, the **corresponding parameter type of the \emph{spanned data} argument is simply the pointer of its \_element type\_**, where the shape information is dropped. For example, the \texttt{foo}'s argument \texttt{p} is \texttt{float*}, which corresponds the \emph{spanned data} argument \texttt{input.data}. In Croqtile, the parameter is described as a \textbf{decayed} pointer of the \emph{spanned data}. If using other form like \texttt{float p[]}, it will trigger failure in target compilation stage.
 
 For element formats without a native target type, use the corresponding Croqtile C++ type, such as \co@croq::f16@ or \co@croq::bf16@, where supported.

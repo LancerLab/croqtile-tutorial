@@ -166,7 +166,7 @@ Choreo has significant difference with C++ on parallelization, loop, etc.
 
 
 ### Parallel Region: the 'parallel-by' Block
-In systems like CPU, it allows of asynchronous thread to realize the parallel execution. However, in Choreo, it employs the Single Instruction Multiple Data (SPMD) model as it way to realize parallelization. This is similar to some OpenMP parallel directive, and some parallel programming language like OpenCL/CUDA.
+In systems like CPU, it allows of asynchronous thread to realize the parallel execution. However, in Choreo, it employs the Single Instruction Multiple Data (SPMD) model as it way to realize parallelization. This is similar to some OpenMP parallel directives and to other SPMD languages.
 
 However, the syntax of constructing a parallel region is quite different. It employs the C-style bracket and encloses the code for parallel execution within the 'parallel-by' block.
 
@@ -176,7 +176,7 @@ parallel p by 6 {
 }
 ```
 
-The above code snippet illustrates the method to create a parallel region with Choreo keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. If you are familiar with programming CUDA, you may think 'p' is a equivalence of 'thread index'. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)
+The above code snippet illustrates the method to create a parallel region with Choreo keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. You can read 'p' as the index of the executing instance. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)
 
 Despite parallelism, there is one more implication of 'parallel-by'. In the statement, 'p' is an integer associated with its bound [0, 6). We name 'p' as a **bounded integer** instead of a simple integer. In some special operations like 'chunkat' (explain later), it requires the *bounded-integer* to work properly since the bound is essential for its computation.
 
@@ -233,7 +233,7 @@ f = dma.copy.async g_data => l_data;
 // ... async operations
 wait f;         // explicit wait
 ```
-Here, we utilize the data transfer engine (DTE) to invoke a linear copy, which moves the 'data' residing in global memory to 'data1' in local memory. You might observe the assignment of 'f'. This is the handler for the asynchronous DMA entity. In Choreo, we refer to it as the 'future' of the DMA operation. Programmers have the option to code the explicit synchronization statement 'wait' to pause the current thread until the 'future' arrives. Otherwise, the thread continues execution in parallel with the DMA operation.
+Here, the DMA statement invokes a linear copy, which moves the 'data' residing in global storage to 'data1' in local storage. You might observe the assignment of 'f'. This is the handler for the asynchronous DMA entity. In Choreo, we refer to it as the 'future' of the DMA operation. Programmers have the option to code the explicit synchronization statement 'wait' to pause the current thread until the 'future' arrives. Otherwise, the thread continues execution in parallel with the DMA operation.
 
 At times, programmers may find it tedious to explicitly define temporal data. Choreo offers an even simpler syntax:
 ```
@@ -241,7 +241,7 @@ global f32 [10] data;
 f = dma.copy data => local;
 ... f.data;  // retrieve the 'local' data from the future
 ```
-Here, we do not need to specify the exact target location where the DMA transfers data. Instead, we only specify the destination memory type. This is advantageous in many scenarios. Programmers often prefer to avoid dealing with scratchpad memory (SPM) management. In this code, the local memory allocation is left to the compiler. And to retrieve the transferred data, we simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
+Here, we do not need to specify the exact target location where the DMA transfers data. Instead, we only specify the destination storage type. This is advantageous in many scenarios. Programmers often prefer to avoid dealing with scratchpad memory (SPM) management. In this code, the local memory allocation is left to the compiler. And to retrieve the transferred data, we simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
 
 DMA operations entail intricate details that demand careful programming. Programmers should refer to the DMA manual to make informed decisions for their code. Nonetheless, Choreo compiler provides plenty of static and runtime checks to assist programmers in avoiding potential errors in this aspect.
 

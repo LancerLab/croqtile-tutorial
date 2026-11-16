@@ -459,7 +459,11 @@ def check():
     for k, lines in tpl.items():
         if k not in zh:
             continue
-        a = [x.split(':', 1)[0] for x in lines]
+        # The figure lead-in is an English sentence with the figure number in
+        # it; the Chinese edition emits the rendered figure directly, so the
+        # translated block drops those lines.
+        a = [x.split(':', 1)[0] for x in lines
+             if not x.startswith('P: Figure ')]
         b = [x.split(':', 1)[0] for x in zh[k]]
         if a != b:
             mismatch.append((k, a, b))

@@ -1,12 +1,14 @@
 \subsection*{默认行为与用法}
 
-省略说明符时，存储位置由目标平台和所在执行上下文决定。入门代码这样写很方便，但仅凭一个没有说明符的名字，无法判断哪些线程能共享其内容。追踪数据流时，应把声明与包围它的并行区域一起阅读。
+默认情况下，未指定存储限定符时数据被视为位于全局存储。省略说明符把存储选择留给目标平台和所在执行上下文。入门代码这样写很方便，但仅凭一个没有说明符的名字，无法判断哪些线程能共享其内容。
+
+例如，下面的代码定义了一个没有任何存储限定符的数组 d0，意味着它位于全局存储：
 
 \begin{lstlisting}[language=croqtile,caption={不带说明符的声明}]
 f32 [100, 100] d0;
 \end{lstlisting}
 
-选择 \co@shared@ 或 \co@local@ 时，将说明符写在元素类型之前：
+若要把数据放到其他存储空间（shared 或 local），需要写出对应的存储限定符。例如，下面的代码把矩阵 d0 放在 local 存储，把矩阵 d1 放在 shared 存储：
 
 \begin{lstlisting}[language=croqtile,caption={显式选择 local 存储}]
 local f32 [10, 10] d0;     // Small data, local to the thread

@@ -169,10 +169,6 @@
    "after": "If you omit the space specifier, as in \\texttt{parallel p by 8}, the compiler chooses a default mapping. The introductory examples use this form. Explicit specifiers let you control the mapping when performance requires it."
   },
   {
-   "before": "tell the compiler  each parallel axis maps to",
-   "after": "tell the compiler where each parallel axis maps"
-  },
-  {
    "before": "\\begin{lstlisting}[language=croqtile,caption={Croqtile s Two-Layer Parallelism Model}]",
    "after": "\\begin{lstlisting}[language=croqtile,caption={Croqtile's Two-Layer Parallelism Model}]"
   }
@@ -181,10 +177,6 @@
   {
    "before": "In systems like CPU, it allows of asynchronous thread to realize the parallel execution. However, in Croqtile, it employs the Single Instruction Multiple Data (SPMD) model as it way to realize parallelization.",
    "after": "Systems such as CPUs can use asynchronous threads for parallel execution. Croqtile expresses parallel work with the Single Program, Multiple Data (SPMD) model."
-  },
-  {
-   "before": "The above code snippet illustrates the method to create a parallel region with Croqtile keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)",
-   "after": "The \\texttt{parallel} and \\texttt{by} keywords declare six execution instances. Each runs the same SPMD code with a different value of \\texttt{p}. You can think of \\texttt{p} as the index of a six-iteration loop whose iterations are independent and may execute in any order."
   },
   {
    "before": "Despite parallelism, there is one more implication of 'parallel-by'. In the statement, 'p' is an integer associated with its bound [0, 6). You name 'p' as a \\textbf{bounded integer} instead of a simple integer. In some special operations like 'chunkat' (explain later), it requires the \\emph{bounded-integer} to work properly since the bound is essential for its computation.",
@@ -223,12 +215,6 @@
   {
    "before": "This achieves the same parallelization as the previous example. It uses the \\textbf{comma-separated} \\emph{parallel-by} expression, assuming there is no code in the between two parallel levels.",
    "after": "This comma-separated form expresses the same two parallel levels as the nested version, provided there is no intervening code between those levels."
-  }
- ],
- "F31-S05": [
-  {
-   "before": "Targets like  allow a single parallelism level to be divided into up to three sub-levels. In Croqtile, \\texttt{ituple} and \\texttt{mdspan} are used for this syntax:",
-   "after": "Some targets allow a single parallel level to be divided into up to three coordinate axes. Croqtile expresses these axes using \\texttt{ituple} and \\texttt{mdspan}:"
   }
  ],
  "F32-S06": [
@@ -327,16 +313,6 @@
    "after": "Section 2.8 explains how data expressions select tiles or blocks within a buffer."
   }
  ],
- "F07-S02": [
-  {
-   "before": "The practical rule: keep \\texttt{if} conditions  (all 32 threads agree) whenever possible.",
-   "after": "Whenever possible, keep \\texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree."
-  },
-  {
-   "before": "\n\nAll threads in scope evaluate the condition. Threads where it is false skip the body. --- Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.\n\n\\textbf{When to use \\texttt{if}:} data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values --- loop indices, input data, tile coordinates.\n\nWhenever possible, keep \\texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree.",
-   "after": "\n\nAll threads in scope evaluate the condition. Threads where it is false skip the body. Threads on the skipped side sit idle while the taken side runs, then vice versa. This is the price of runtime flexibility.\n\n\\textbf{When to use \\texttt{if}:} data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values --- loop indices, input data, tile coordinates.\n\nWhenever possible, keep \\texttt{if} conditions uniform across the execution group: in this example, all 32 threads should agree."
-  }
- ],
  "F07-S12": [
   {
    "before": "Sometimes you need to early return from a \\texttt{parallel} block. The \\texttt{yield} keyword generates a \\texttt{return;} instruction that leaves the device code for that instance.",
@@ -419,10 +395,6 @@
   {
    "before": "You repeat the code as below:",
    "after": "The device helper from the earlier example is repeated below:"
-  },
-  {
-   "before": "Here, the \\texttt{extern \"C\"} annotation replaces the \\texttt{\\_\\_device\\_\\_} keyword used in  target, as  requires C-linkage for the device functions.",
-   "after": "In this separate-source example, \\texttt{extern \"C\"} replaces \\texttt{\\_\\_device\\_\\_} because the target requires C linkage for device functions."
   }
  ],
  "F14-S09": [
@@ -433,16 +405,6 @@
   {
    "before": "You may have noticed that Croqtile not only abstracts DMA operations into higher-level semantics but also combines iteration and tiling for ease of use. This makes Croqtile code concise and expressive. In the following chapters, you will delve deeper into Croqtile's syntax and semantics to explore its full potential.",
    "after": "Croqtile combines higher-level DMA operations with iteration and tiling, so a compact program can express the full data flow. The following sections explain the syntax and semantics of these constructs."
-  }
- ],
- "F31-S08": [
-  {
-   "before": "For targets like , the \\texttt{parallel-by} block not only specifies the number of parallel threads but also defines the boundary between host and device code, leveraging Croqtile's ability to manage heterogeneity. Specifically:",
-   "after": "For targets that separate host and device execution, \\texttt{parallel-by} specifies both the parallel instance count and the boundary between host and device code:"
-  },
-  {
-   "before": "For those familiar with , this is analogous to a  occurring at the \\texttt{parallel-by} statement. However, Croqtile abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.",
-   "after": "The \\texttt{parallel-by} statement therefore also marks a device-program launch. Croqtile represents this boundary through the same SPMD parallelism model used to describe the work."
   }
  ],
  "F15-S02": [
@@ -623,10 +585,6 @@
  ],
  "F33-S04": [
   {
-   "before": "In this example, there exists two-level of parallelization. The code inside \\texttt{parallel p by 6} block but outside \\texttt{parallel q by 2} blocks is only for \\emph{parallel-level-0}. However, for target like , it could invoke 2 parallel threads in practise to execute either code inside \\emph{parallel-level-0} or \\emph{parallel-level-1}. Therefore, the \\emph{parallel-level-0}-only part is as if guarded with a C++ block \\texttt{if (q == 0)}.",
-   "after": "This example has two parallel levels. Code inside \\texttt{parallel p by 6} but outside \\texttt{parallel q by 2} belongs only to the outer level. If the target launches two inner instances for that region, the outer-only code behaves as though guarded by \\texttt{if (q == 0)}."
-  },
-  {
    "before": "Conditional \\texttt{foreach} Block Since It is possible to guard the \\texttt{foreach} loop with conditions. One direct",
    "after": "A condition can also guard a \\texttt{foreach} loop, controlling execution of the loop as a whole."
   },
@@ -689,16 +647,6 @@
    "after": "\\subsection*{Async Operation: the DMA Statement}\n\nAlongside parallel execution, Croqtile provides asynchronous DMA statements for data movement.\n\nAn asynchronous DMA operation runs alongside the SPMD code. Like an asynchronous CPU thread, it allows other work to continue, but its behavior is restricted to the configured data transfer.\n\nThe following code showcases one basic DMA statement."
   }
  ],
- "F28-S05": [
-  {
-   "before": "Here, the \\textbf{DMA configuration}s are enclosed by \\texttt{\\textless{}\\textgreater{}}. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as , are listed below as an example:",
-   "after": "DMA configurations appear in angle brackets, and their contents depend on the operation. The supported syntax and constraints also depend on the target platform."
-  },
-  {
-   "before": "Programmers should note that support for DMA types other than \\texttt{dma.copy} varies by platform. For instance, on the  platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads.",
-   "after": "Support for operations other than \\texttt{dma.copy} varies by platform. A transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads."
-  }
- ],
  "F38-S01": [
   {
    "before": "To aggressively optimize the high-performance computation kernels, one effective method is to overlap computation with DMA (Direct Memory Access) data movement. This approach, known as \\textbf{multi-buffering optimization}, typically requires programmers to manage multiple buffers.",
@@ -713,38 +661,10 @@
    "after": "\n\nIn croqtile function \\texttt{ele\\_add}, there are two input parameters: 'lhs' and 'rhs', both double-buffered in local storage. You refer to these buffers as 'A' and 'B'. While buffer A is used for computation, buffer B is filled with data via a DMA operation. Once the kernel function completes computation on buffer A, the roles of A and B are swapped: A becomes the buffer for loading the next data chunk, and B becomes the buffer for computation. This process iterates until all data chunks are consumed.\n\nThe implementation divides data movements and computations into three stages, including:\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item the \\textbf{prologue}(line 8-11). It preloads the first chunk of data. In this example, buffer A is pre-loaded with data.\n\\item the \\textbf{body}(line 12-20). It processes the data preloaded in the previous iteration or in prologue, and preloads the data for next iteration.\n\\item and the \\textbf{epilogue} (lines 21-23). It processes the last data chunk only.\n\\end{itemize}\n\nIn the code, futures 'lfB' and 'rfB' are declared as dummies. These dummy futures serve as placeholders and are replaced by DMA statements at lines 13-14. The reason for declaring dummy futures is that the futures ('lfB' and 'rfB') of the DMA invoked in the body stage are used in the epilogue stage (lines 21-22). However, from a lexical scope perspective, defining futures inside the foreach-block (lines 12-20) would not extend their lifetime to their last uses. Therefore, it is necessary to declare 'lfB' and 'rfB' early.\n\nThe \\textbf{swap} statements at lines 18-19 exchange futures to ensure the \\textbf{wait} statement at line 15 functions correctly. Note that only futures with identical DMA operations can be swapped. Additionally, the iteration range of the \\emph{foreach} statement at line 12 is adjusted. \\texttt{foreach y(1:)} means the loop over the \\emph{bounded variable} 'y' starts from the second value up to the upper bound. In line 17, the \\emph{chunkat} expression is also tuned. \\texttt{y - 1} results in the current value of 'y' minus 1, setting up the body stage to work properly with the prologue stage. This adjustment is necessary because the iteration count must be reduced by 1, and the pre-load operation should fetch the 'next' chunk while computation is conducted on the 'current' chunk of data. Alternatively, you can use \\texttt{foreach y(:-1)} and adjust the chunkat expression of the pre-load statements at lines 13-14 to achieve the same effect.\n\nIn line 23, the expression \\texttt{y(-1)} retrieves the 'last value' of 'y' within its bound.\n\nBy the end of the loop the newest chunk is always held by \\co@lfA@ and \\co@rfA@: each iteration loads the next chunk into \\co@lfB@ and \\co@rfB@ and then swaps, so the epilogue waits on \\co@lfA@, \\co@rfA@ directly, whatever the tile count.\n\nTo use more than two buffers, replace \\textbf{swap} with \\textbf{rotate}."
   }
  ],
- "F06-S03": [
-  {
-   "before": "The four-step syntax stays the same regardless of how many threads cooperate on a single contraction. What changes is the \\textbf{cooperation scope} --- And that progression is the story of this section.",
-   "after": "The four-step syntax stays the same as the number of cooperating threads changes. The following examples vary the \\textbf{cooperation scope} while preserving those operations."
-  }
- ],
  "F06-S05": [
   {
    "before": "Fill, load, multiply, store --- the rhythm is identical. The differences are mechanical:",
    "after": "The sequence remains fill, load, multiply, and store; the space specifier determines the cooperation scope."
-  }
- ],
- "F06-S07": [
-  {
-   "before": "But it needs a \\textbf{metadata operand} \\texttt{me} that encodes which elements are nonzero:",
-   "after": "A sparse contraction also needs a \\textbf{metadata operand} \\texttt{me} that identifies the nonzero elements:"
-  }
- ],
- "F07-S01": [
-  {
-   "before": "On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. --- It must \\textbf{serialize} the divergent paths and mask inactive threads.",
-   "after": "On a CPU, each core has its own program counter. When threads share an instruction stream, however, divergent paths execute in sequence while inactive threads are masked."
-  },
-  {
-   "before": "All threads evaluate the condition; threads where it is false are masked (deactivated); This is \\textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.",
-   "after": "All threads evaluate the condition, and those for which it is false are masked. This \\textbf{predicated execution} is simple and widely used, but divergent paths can be expensive."
-  }
- ],
- "F08-S09": [
-  {
-   "before": "The \\texttt{swap} pattern works because one thread group controls both loading and computing --- it knows the order. They cannot share a \\texttt{swap} schedule; they need a signaling mechanism.",
-   "after": "The \\texttt{swap} pattern uses one thread group to control both loading and computation in a known order. Separate producer and consumer groups need a signaling mechanism to coordinate their independent schedules."
   }
  ],
  "F34-S07": [
@@ -785,23 +705,9 @@
   {
    "before": "Both patterns achieve the same goal --- overlapping memory and compute --- but at different levels of complexity. Start with \\texttt{swap} for simpler kernels;",
    "after": "Both patterns overlap data movement and computation, but differ in complexity. Start with \\texttt{swap} for simpler kernels."
-  },
-  {
-   "before": "The same synchronization patterns from this part of the guide, with richer data movement primitives underneath.",
-   "after": "The same synchronization patterns can be combined with the richer data-movement primitives described in this guide."
-  }
- ],
- "F10-S01": [
-  {
-   "before": "The preceding sections have built a stack of abstractions: tiles, parallelism, MMA, pipelines, events, TMA. That is the Croqtile you want to live in. This part of the guide is about the times you need to step outside.",
-   "after": "The preceding sections introduced tiles, parallelism, MMA, pipelines, and events. C++ interoperability extends these abstractions when a kernel needs additional device functions or target-specific code."
   }
  ],
  "F10-S03": [
-  {
-   "before": "A \\texttt{\\_\\_device\\_\\_} function compiles to . The \\texttt{\\_\\_co\\_\\_} body calls it with the \\texttt{call} keyword, and the generated \\texttt{\\_\\_global\\_\\_} kernel invokes it directly on the device.",
-   "after": "A \\texttt{\\_\\_device\\_\\_} function compiles to device code. The \\texttt{\\_\\_co\\_\\_} body invokes it with \\texttt{call}, and the generated \\texttt{\\_\\_global\\_\\_} kernel calls it directly on the device."
-  },
   {
    "before": "You cannot call a host function from inside a \\texttt{\\_\\_co\\_\\_} body;",
    "after": "You cannot call a host function from inside a \\texttt{\\_\\_co\\_\\_} body."
@@ -817,13 +723,6 @@
    "after": "\\begin{lstlisting}[language=croqtile,caption={Differences from C++ Preprocessing}]"
   }
  ],
- "F23-S06": [
-  {
-   "before": "To mimic a target native compilation, croqtile preprocess also takes the builtin macros from the target. Consequently, these macros can be utilized inside tileflow functions as well as the host code.",
-   "after": "Croqtile also imports the target's built-in macros to match native compilation. These macros can be used in both Tileflow functions and host code."
-  }
- ],
- "F24-S06": [],
  "F25-S08": [
   {
    "before": "Like C++ functions, Croqtile functions can be defined anyway in the source code. One common raised question is about the \\textbf{function signature}, as long as programmers may want to link the module with Croqtile function definition.",
@@ -846,22 +745,6 @@
   {
    "before": "\n\nAs the comment depicts, Croqtile compiler may generate a specialization version of function template \\texttt{bar\\textless{}3\\textgreater{}}, which enables the function template as well. But note that, the function template no longer requires \\texttt{extern \"C\" decoration} as those for normal \\emph{factor} device functions.\n\nAs the implementation is different with other targets, you may utilize \\texttt{-kt} to enable such functionality for \\emph{croqtile-factor} compilation.",
    "after": "\n\nAs the comment depicts, Croqtile compiler may generate a specialization version of function template \\texttt{bar\\textless{}3\\textgreater{}}, which enables the function template as well. But note that, the function template no longer requires \\texttt{extern \"C\" decoration} as those for normal \\emph{factor} device functions.\n\nAs the implementation differs from other targets, you may utilize \\texttt{-kt} to enable such functionality for \\emph{croqtile-factor} compilation."
-  }
- ],
- "F10-S04": [
-  {
-   "before": "A custom reduction, a sorting network, a special math function --- Croqtile does not need to manage these;",
-   "after": "A custom reduction, sorting network, or specialized math operation can be implemented as a device helper."
-  },
-  {
-   "before": "This pattern --- Croqtile handles the parallelism, tiling, and memory orchestration; --- Is common in production kernels like MoE (mixture-of-experts) top-K, custom reductions, and specialized math.",
-   "after": "In this pattern, Croqtile handles parallelism, tiling, and data movement, while the device helper performs the specialized computation. Production kernels use it for MoE top-K, custom reductions, and specialized math."
-  }
- ],
- "F13-S05": [
-  {
-   "before": "Compact, structured syntax keeps entire kernels inside AI context windows (30--60 lines vs. Structured error messages and well-documented CLI arguments let autonomous agents compile, profile, and iterate without human intervention.",
-   "after": "Compact, structured syntax can keep an entire kernel within an AI agent's context window, often in 30--60 lines. Structured error messages and documented command-line options support autonomous cycles of compilation, profiling, and refinement."
   }
  ],
  "F11-S01": [
@@ -906,20 +789,10 @@
    "after": "\\subsection*{Return Type and Type Deduction}\n\nLike the input, the result may be \\emph{spanned data}, a scalar, or nothing at all. A scalar return uses the same set of types as a scalar parameter.\n\nIn addition to the explicit return type annotation, Croqtile supports type inference on returns. For example:"
   }
  ],
- "F18-S04": [
-  {
-   "before": "\n\nSince Croqtile handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{global}: Refers to the device's global storage.\n\\item \\emph{shared}: Refers to the device block's shared storage\n\\item \\emph{local}: Refers to the thread-private storage.\n\\end{itemize}\n\nOther targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters.",
-   "after": "\n\nSince Croqtile handles storage in a heterogeneous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.\n\n\\begin{itemize}[leftmargin=1.6em]\n\\item \\emph{global}: Refers to the device's global storage.\n\\item \\emph{shared}: Refers to the device block's shared storage\n\\item \\emph{local}: Refers to the thread-private storage.\n\\end{itemize}\n\nOther targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters."
-  }
- ],
  "F06-S02": [
   {
-   "before": "Every contraction kernel follows the same rhythm, and the spelling makes each step visible:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{mma.fill 0.0}}\n\\item \\textbf{\\texttt{mma.load}}\n\\item \\textbf{\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb}} --- issue the contraction: \\textbf{C += A \\(\\times\\) B} into \\texttt{mc}.\n\\item \\textbf{\\texttt{mma.\\allowbreak{}store mc, dst}}\n\\end{enumerate}\n\nYou loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \\texttt{mc}), then run step 4 once to flush the completed output tile. --- You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\\texttt{row.row} here).\n\nThe \\texttt{.row.row} suffix is a \\textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \\texttt{row.row}, \\texttt{row.col}, \\texttt{col.row}, and \\texttt{col.col}; in practice, \\texttt{row.row} and \\texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint",
+   "before": "Every contraction kernel follows the same rhythm, and the spelling makes each step visible:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{mma.fill 0.0}}\n\\item \\textbf{\\texttt{mma.load}} --- bring operand tiles from shared storage into opaque MMA tiles \\texttt{ma} and \\texttt{mb}.\n\\item \\textbf{\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb}} --- issue the contraction: \\textbf{C += A \\(\\times\\) B} into \\texttt{mc}.\n\\item \\textbf{\\texttt{mma.\\allowbreak{}store mc, dst}} --- write \\texttt{mc} out into shared storage.\n\\end{enumerate}\n\nYou loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \\texttt{mc}), then run step 4 once to flush the completed output tile. --- You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\\texttt{row.row} here).\n\nThe \\texttt{.row.row} suffix is a \\textbf{layout contract} --- it states how the elements of \\texttt{ma} and \\texttt{mb} are arranged. Both operands are row-major. If B is stored column-major in shared storage, you write \\texttt{mma.\\allowbreak{}row.\\allowbreak{}col mc, ma, mb} instead. The full set of layout combinations is \\texttt{row.row}, \\texttt{row.col}, \\texttt{col.row}, and \\texttt{col.col}; in practice, \\texttt{row.row} and \\texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint",
    "after": "Every contraction kernel follows the same rhythm, and the spelling makes each step visible:\n\n\\begin{enumerate}[leftmargin=1.6em]\n\\item \\textbf{\\texttt{mma.fill 0.0}}\n\\item \\textbf{\\texttt{mma.load}}\n\\item \\textbf{\\texttt{mma.\\allowbreak{}row.\\allowbreak{}row mc, ma, mb}} --- issue the contraction: \\textbf{C += A \\(\\times\\) B} into \\texttt{mc}.\n\\item \\textbf{\\texttt{mma.\\allowbreak{}store mc, dst}}\n\\end{enumerate}\n\nYou loop steps 2--3 over K (loading the next K-slice each iteration, accumulating into the same \\texttt{mc}), then run step 4 once to flush the completed output tile. You do not declare per-lane layouts; the compiler derives them from the target and your layout choice (\\texttt{row.row} here).\n\nThe \\texttt{.row.row} suffix is a \\textbf{layout contract} --- Both operands are row-major. The full set of layout combinations is \\texttt{row.row}, \\texttt{row.col}, \\texttt{col.row}, and \\texttt{col.col}; in practice, \\texttt{row.row} and \\texttt{row.col} cover most kernels. Choosing the wrong variant is a correctness bug, not a performance hint"
-  },
-  {
-   "before": "Choosing the wrong variant is a correctness bug, not a performance hint",
-   "after": "Choosing the wrong variant produces incorrect results."
   }
  ],
  "F21-S05": [
@@ -964,16 +837,6 @@
   {
    "before": "\\subsection*{DMA vs TMA}\n\nBoth engines move shaped tiles. The difference is how they do it and what constraints they require.\n\n\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n & \\textbf{\\texttt{dma}} & \\textbf{\\texttt{tma}} \\\\\n\\midrule\nCommon destination & \\texttt{shared} & \\texttt{shared} \\\\\nAsync support & Yes & Yes \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n\nExample TMA use:",
    "after": "\\subsection*{DMA vs TMA}\n\nBoth engines move shaped tiles. The difference is how they do it and which constraints they impose.\n\n\\begin{table}[htbp]\n\\centering\\small\n\\begin{tabularx}{\\linewidth}{@{}lXX@{}}\n\\toprule\n & \\textbf{\\texttt{dma}} & \\textbf{\\texttt{tma}} \\\\\n\\midrule\nCommon destination & \\texttt{shared} & \\texttt{shared} \\\\\nAsync support & Yes & Yes \\\\\n\\bottomrule\n\\end{tabularx}\n\\end{table}\n\nExample TMA use:"
-  }
- ],
- "F34-S03": [
-  {
-   "before": "\\subsection*{Masking in SPMD}\n\nIt is typically necessary to mask off some \\emph{parallel threads} in SPMD programming. For example, programmers often divide data into chunks for parallel or iterative processing. However, there may be a remainder that cannot be evenly distributed across all threads.\n\n\\begin{figure}[htbp]\\centering\n\\includegraphics[width=\\linewidth,height=0.56\\textheight,keepaspectratio]{f34-masking-datachunk-dispatch.png}\n\\end{figure}\n\nThe figure aboves showcases a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \\emph{thread-0} is required to work. You may observe the \\textbf{thread mask} for each iteration are \\texttt{1111}, except for the last iteration (\\texttt{1000}). The thread mask is a combination of boolean bits, where \\texttt{1} stands for \\textbf{active}, and \\texttt{0} stands for \\textbf{inactive}. So in this case, only \\emph{thread-0} is set to be \\emph{active} to avoid unnecessary data chunk processing in the last iteration.",
-   "after": "\\subsection*{Masking in SPMD}\n\nIt is typically necessary to mask off some \\emph{parallel threads} in SPMD programming. For example, programmers often divide data into chunks for parallel or iterative processing. However, there may be a remainder that cannot be evenly distributed across all threads.\n\n\\begin{figure}[htbp]\\centering\n\\includegraphics[width=\\linewidth,height=0.56\\textheight,keepaspectratio]{f34-masking-datachunk-dispatch.png}\n\\end{figure}\n\nThe figure above shows a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \\emph{thread-0} is required to work. You may observe the \\textbf{thread mask} for each iteration is \\texttt{1111}, except for the last iteration (\\texttt{1000}). The thread mask is a combination of boolean bits, where \\texttt{1} stands for \\textbf{active}, and \\texttt{0} stands for \\textbf{inactive}. So in this case, only \\emph{thread-0} is set to be \\emph{active} to avoid unnecessary data chunk processing in the last iteration."
-  },
-  {
-   "before": "The figure above shows a tiling of 13 data chunks, where 4 parallel threads are invoked for the processing of each chunk. In this case, 4 iterations are required to process all the data chunks. However, for the last iteration, only \\emph{thread-0} is required to work. You may observe the \\textbf{thread mask} for each iteration is \\texttt{1111}, except for the last iteration (\\texttt{1000}). The thread mask is a combination of boolean bits, where \\texttt{1} stands for \\textbf{active}, and \\texttt{0} stands for \\textbf{inactive}. So in this case, only \\emph{thread-0} is set to be \\emph{active} to avoid unnecessary data chunk processing in the last iteration.",
-   "after": "The figure distributes 13 data chunks across four parallel instances in four iterations. All instances are active for the first three iterations, giving mask \\texttt{1111}. Only instance 0 has work in the final iteration, giving mask \\texttt{0001} when the least significant bit represents instance 0. A \\texttt{1} denotes an active instance and a \\texttt{0} an inactive one, preventing unnecessary processing of nonexistent chunks."
   }
  ],
  "F06-S06": [
@@ -1080,16 +943,6 @@
    "after": "synchronous \\texttt{parallel-by} uses device-wide synchronization."
   }
  ],
- "F14-S04": [
-  {
-   "before": "Similar to , where the target compiler",
-   "after": "The target compiler"
-  },
-  {
-   "before": "Similar to , where host and device code",
-   "after": "Host and device code"
-  }
- ],
  "F11-S03": [
   {
    "before": "\\textbf{nondeterministic}",
@@ -1100,18 +953,6 @@
   {
    "before": "Croqtile provides \\textbf{events}",
    "after": "Croqtile provides \\textbf{events}."
-  }
- ],
- "F06-S04": [
-  {
-   "before": "With all dimensions 16, extents are 1\\(\\times\\)1",
-   "after": "With all dimensions equal to 16, the tile-grid extents are 1 by 1."
-  }
- ],
- "F05-S14": [
-  {
-   "before": "\\begin{lstlisting}[language=croqtile,caption={DMA Matmul: Tiles in shared storage}]",
-   "after": "\\begin{lstlisting}[language=croqtile,caption={DMA Matmul: Tiles in Shared Storage}]"
   }
  ],
  "F04-S03": [

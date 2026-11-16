@@ -6,11 +6,13 @@
 \toprule
 \textbf{Syntax} & \textbf{What it does} & \textbf{Runs on} \\
 \midrule
+\texttt{\_\allowbreak{}\_\allowbreak{}device\_\allowbreak{}\_\allowbreak{} fn()} & Device function; passed through unchanged to the generated source & Device \\
+\texttt{call fn(args)} & Invoke a \texttt{\_\_device\_\_} function from a \texttt{\_\_co\_\_} body & Device \\
+\texttt{\_\allowbreak{}\_\allowbreak{}cpp\_\allowbreak{}\_\allowbreak{}(".\allowbreak{}.\allowbreak{}.\allowbreak{}")} & Inject verbatim C++ at the splice point (ordinary string) & Target \\
+\texttt{\_\allowbreak{}\_\allowbreak{}cpp\_\allowbreak{}\_\allowbreak{}(R"(.\allowbreak{}.\allowbreak{}.\allowbreak{})")} & Inject verbatim C++ (raw string; use for \texttt{asm volatile}) & Target \\
 \texttt{\#\allowbreak{}define NAME value} & Object-like macro; shared across \texttt{\_\_co\_\_} and host regions & Preprocessor \\
 \texttt{\#if} / \texttt{\#ifdef} / \texttt{\#error} & Conditional compilation and compile-time assertions & Preprocessor \\
 \texttt{-DNAME=value} & Define macros from the command line for tile sweeps & Preprocessor \\
-\co@call helper(...)@ & Invoke a device helper & Device \\
-\co@__cpp__("...")@ & Insert target C++ at the current scope & Target-dependent \\
 \bottomrule
 \end{tabularx}
 \end{table}

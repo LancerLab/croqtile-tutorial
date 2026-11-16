@@ -23,7 +23,7 @@ sp : [7, 8];
 int b = sp(0) + sp(1);   // 'b' equals to 15 (7 + 8)
 \end{lstlisting}
 
-The expression \co@sp(0)@ returns the first extent of \co@sp@. Extents are integer values and can participate in integer arithmetic.
+In the above example, the expression 'sp(0)' reasons about the first dimension value of mdspan 'sp'. The dimension values are in essence integer values, which are suitable for integer arithmetic.
 
 You can therefore derive a new \texttt{mdspan} from an existing one:
 

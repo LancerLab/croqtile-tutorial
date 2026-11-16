@@ -1,6 +1,10 @@
 \subsection*{\texttt{global}：全局存储}
 
-声明中的 \co@global@ 把缓冲区放入目标平台的全局存储，适合需要超出单个线程或协作块访问范围的数据。选择存储位置并不等于初始化内容，也不会自动把已有数据搬入其中：
+\begin{itemize}[leftmargin=1.6em]
+\item 未指定存储限定符时，这是 Croqtile 中数据的默认存储空间。
+\item 全局存储空间中的数据通常容量最大、最为充裕，但访问它比访问更局部的存储慢。
+\item 全局存储适合存放需要在多个处理单元或组件之间共享的大型数据集，例如深度学习中的矩阵或大型科学数据集。
+\end{itemize}
 
 \begin{lstlisting}[language=croqtile,caption={全局存储声明}]
 global f32 [100, 200] matrix;

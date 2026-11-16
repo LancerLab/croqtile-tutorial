@@ -38,7 +38,7 @@ tests a specific operator (e.g., add, mul, relu, sigmoid, softmax, tanh).
 
 
 ## Compile Choreo-C++ Program
-In the current implementation, Choreo performs **source-to-source translation** (or **transpilation**) to convert *Choreo-C++* programs into vendor-supported C++ language code and APIs (such as CUDA/Cute, and more).
+In the current implementation, Choreo performs **source-to-source translation** (or **transpilation**) to convert *Choreo-C++* programs into C++ language code and APIs for the selected target.
 
 However, since Choreo integrates lower-level *target compiler* in its compilation process, it appears as an **end-to-end compiler** when the vendor-provided device-level C++ compiler is properly configured.
 
@@ -60,9 +60,9 @@ This command generates an `a.out` executable file. The `-o <filename>` option ca
 
 The `-t <platform>` option allows you to specify the target platform for the compilation. Additionally, the `-es` option generates *target source code* without performing the "target compilation*. For instance:
 ```bash
-croq -t cuda your_program.co -es -o cuda_source.co
+croq -t <target> your_program.co -es -o target_source.co
 ```
-This command produces CUDA C++ source code, which can be useful for specific development tasks.
+This command produces C++ source code for the selected target, which can be useful for specific development tasks.
 
 Notably, Choreo allows the `-E` option to support Choreo-only preprocessing. The Choreo preprocessor handles simple macros and preprocessor directives such as `#if`, `#ifdef`, `#ifndef`, `#else`, and `#endif`, enabling Choreo functions to be integrated with other C++ code. The `-E` option outputs the preprocessed code, for example, removing code within `#if 0` and `#endif` directives inside Choreo functions.
 

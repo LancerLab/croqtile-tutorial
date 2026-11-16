@@ -1,6 +1,8 @@
-\subsection*{示例：先搬运分块，再计算加法}
+\subsection*{第一个示例：经由共享存储的分块加法}
 
-\begin{lstlisting}[language=croqtile,caption={第一个示例：经由共享存储的分块加法}]
+下面把 1.7 节的同一个加法改成经由共享存储分块完成：
+
+\begin{lstlisting}[language=croqtile,caption={经由共享存储的分块加法}]
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
   parallel {tr, tc} by [4, 8] : block {
@@ -14,15 +16,16 @@ __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
 }
 \end{lstlisting}
 
-下面仍计算逐元素加法，先把输入分块搬入共享存储：
+算术仍然是逐元素加法，改变的是数据路径：
 
 \begin{itemize}[leftmargin=1.6em]
-\item \co@chunkat(tr, tc)@ 选择输入分块。
-\item \co@dma.copy ... => shared@ 将分块搬入共享缓冲区。
-\item \co@tr # i@ 与 \co@tc # j@ 将块内坐标组合成输出坐标。
+\item \co@chunkat(tr, tc)@ 从每个输入中选出一个逻辑分块。
+\item \co@dma.copy ... => shared@ 把该分块搬入块内可见的快速存储。
+\item 内层循环从 \co@lhs_load.data@ 与 \co@rhs_load.data@ 读取，而不是从全局存储读取。
+\item \co@tr # i@ 与 \co@tc # j@ 把块内坐标映射回全局输出坐标。
 \end{itemize}
 
-程序依次选择分块、搬入缓冲区，再对其中的元素计算。两个输入的同一分块分别由 \co@lhs_load@ 和 \co@rhs_load@ 引用；内部循环使用搬运后的形状遍历元素，最后把块内索引组合成原输出中的位置。
+这就是 Croqtile 的核心模式：选一个分块，搬运它，再在搬动后的分块上计算。
 
 图~\ref{fig:f04-fig2_tiled_add} 跟踪了一个分块走完这三步的过程。
 

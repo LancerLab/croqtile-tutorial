@@ -1,6 +1,6 @@
 \subsection*{The 'with-in' Block and 'where' Clause}
 
-A \co@with-in@ statement binds indices to a range without launching parallel instances. For a two-dimensional range, it can bind one tuple:
+Similar to 'parallel-by', 'with-in' statement can also bind \emph{i-tuples} to a \emph{mdspan}. The following code shows an example.
 
 \begin{lstlisting}[language=croqtile,caption={Indexing a with-in block}]
 with index in [10, 10] {

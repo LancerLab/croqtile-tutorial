@@ -6,8 +6,8 @@
 \toprule
 \textbf{Concept} & \textbf{Syntax} & \textbf{Role} \\
 \midrule
-Software DMA & \texttt{dma.copy} / \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} & Thread-cooperative tile transfer; \\
-Swizzle & \texttt{.\allowbreak{}swiz\textless{}N\textgreater{}} on copy + \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} & Shared-memory remapping; matching modes on copy and load \\
+Tile transfer (Ch. 2, 6) & \texttt{dma.copy} / \texttt{dma.\allowbreak{}copy.\allowbreak{}swiz\textless{}N\textgreater{}} & Thread-cooperative tile transfer \\
+Swizzle & \texttt{.\allowbreak{}swiz\textless{}N\textgreater{}} on copy + \texttt{mma.\allowbreak{}load.\allowbreak{}swiz\textless{}N\textgreater{}} & Swizzled shared-storage layout shared by copy and consumer \\
 Arbitrary windows & \texttt{view(M,N).\allowbreak{}from(r,c)} & Ragged or runtime-positioned slices \\
 Strided tiling & \texttt{.\allowbreak{}subspan().\allowbreak{}step().\allowbreak{}at()} & Non-packed layouts, overlapping stencils \\
 Partial tiles & \texttt{.zfill} & Zero-fill out-of-bounds elements \\

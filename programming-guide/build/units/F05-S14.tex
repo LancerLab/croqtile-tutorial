@@ -1,4 +1,6 @@
-\subsection*{DMA Matmul: Tiles in shared storage}
+\subsection*{DMA Matmul: Tiles in Shared Storage}
+
+The scalar version works but every multiply reads from global storage. Bringing K-tiles into shared storage lets all threads in a block reuse them:
 
 \begin{lstlisting}[language=croqtile,caption={DMA Matmul: Tiles in Shared Storage}]
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {

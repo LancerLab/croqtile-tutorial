@@ -1,15 +1,14 @@
 # 数据搬运：Tile 搬运引擎
 
-第 1 章使用的是标量索引：选一个位置，读取输入，计算，再写回结果。这种方式很适合解释正确性，但并不是硬件真正想要的数据访问方式。GPU 获取和暂存的是连续的数据块，而不是彼此孤立的单个元素。GPU 编程真正困难的部分，通常并不是算术本身，而是如何组织这些块级传输，让计算单元在正确的时间、从正确的内存层级、以正确的形状拿到数据。
+第 1 章使用的是标量索引：选一个位置，读取输入，计算，再写回结果。这种方式很适合解释正确性，但并不是硬件真正想要的数据访问方式。执行引擎获取和暂存的是连续的数据块，而不是彼此孤立的单个元素。真正困难的部分通常并不是算术本身，而是如何组织这些块级传输，让计算单元在正确的时间、从正确的存储层级、以正确的形状拿到数据。
 
 Croqtile 把这件事显式化了。它不把数据搬运当作索引背后的隐式副作用，而是提供一组明确的 tile 搬运语句：
 
 - `dma.copy` 按原样搬运一个 tile。
 - `dma.transp<...>` 在搬运过程中做维度置换。
 - `dma.pad<...>` 在搬运过程中扩展 tile 并填充边界。
-- `tma.copy` 在 tile 形状满足条件时，使用 Hopper 的 Tensor Memory Accelerator 完成同类搬运。
 
-本章介绍这个模型，说明核心语法，并给出用户真正需要知道的规则，帮助你写出既正确又更容易 lower 到高性能路径的 DMA / TMA 代码。
+本章介绍这个模型，说明核心语法，并给出用户真正需要知道的规则，帮助你写出既正确又更容易 lower 到高性能路径的 DMA 代码。
 
 ![逐元素 vs 数据块编程模型对比](../assets/images/ch02/fig1_element_vs_block_dark.png#only-dark)
 ![逐元素 vs 数据块编程模型对比](../assets/images/ch02/fig1_element_vs_block_light.png#only-light)
@@ -43,7 +42,6 @@ future = engine.operation.modifiers source => destination;
 | 部分 | 含义 |
 |------|------|
 | `future` | 可选的传输结果句柄。用 `future.data` 访问搬运后的 tile，用 `future.span` 查询它的形状。 |
-| `engine` | `dma` 表示软件协作复制，`tma` 表示 Hopper TMA 复制。 |
 | `operation` | `copy`、`transp<...>` 或 `pad<...>`。 |
 | `modifiers` | 可选修饰符，例如 `.async`、`.zfill` 或 `.swiz<N>`。 |
 | `source => destination` | 源视图，以及目标内存或目标视图。 |
@@ -58,9 +56,9 @@ h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
 
 与第 1 章相比，最关键的变化是：这些语句搬运的是有形状的区域，而不是单个元素。
 
-## 第一个例子：通过 Shared Memory 做分块加法
+## 第一个例子：通过共享存储做分块加法
 
-下面把第 1 章的加法改写成通过 shared memory 暂存 tile：
+下面把第 1 章的加法改写成通过共享存储暂存 tile：
 
 ```choreo
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
@@ -166,7 +164,7 @@ lhs.view(TILE_M, TILE_K).from(offset_m, offset_k)
 
 ## Future、`.data` 与 `.span`
 
-DMA 或 TMA 语句的结果是一个 future 风格的句柄：
+DMA 语句的结果是一个 future 风格的句柄：
 
 ```choreo
 f = dma.copy input => shared;
@@ -209,12 +207,12 @@ wait f;
 dma.copy f.data => output;
 ```
 
-TMA 也一样：
+异步复制同样如此：
 
 ```choreo
-f = tma.copy.async input => shared;
+f = dma.copy.async input => shared;
 wait f;
-tma.copy f.data => output;
+dma.copy f.data => output;
 ```
 
 规则很简单：如果你要读取异步传输得到的 `f.data`，就必须先 `wait`。
@@ -291,27 +289,6 @@ s32 [lhs.span(0), rhs.span(1)] output;
 
 *`span` 表示完整形状，`span(i)` 表示单独一个轴。*
 
-## 内存限定符：`global`、`shared` 与 `local`
-
-搬运语句的目标位置，也决定了这个 tile 最终放在哪一层内存中。
-
-- `global`：设备内存。大、慢，但整个设备都可见。
-- `shared`：线程块可见的片上内存。协作式 tile staging 的典型落点。
-- `local`：线程私有存储。适合小型私有 tile 或非协作式使用。
-
-```choreo
-f0 = dma.copy input => shared;
-f1 = dma.copy matrix_tile => local;
-dma.copy out_tile => output;
-```
-
-对于性能敏感的 kernel，`shared` 是最关键的一层。编译器的协作式 tiled lowering 主要针对 global-to-shared 与 shared-to-global 搬运。`local` 复制仍然有用，但它不是协作式块搬运的主要高性能路径。
-
-![内存限定符 → GPU 硬件](../assets/images/ch02/fig_memory_hierarchy_dark.png#only-dark)
-![内存限定符 → GPU 硬件](../assets/images/ch02/fig_memory_hierarchy_light.png#only-light)
-
-*Croqtile 的内存限定符直接映射到 GPU 的内存层级。*
-
 ## 部分 Tile、边界保护与 `.zfill`
 
 真实 kernel 经常会遇到尾块。这里最重要的区别不是“最后一个 tile 是否不完整”，而是**源 tile 的形状**与**目标 tile 的形状**是否相同。
@@ -346,9 +323,9 @@ dma.copy.swiz<32>.zfill
 
 如果源和目标形状已经相同，却仍然手动写 `.zfill`，编译器可能会警告这个 `.zfill` 是冗余的。反过来，如果形状不匹配，编译器也可能提示你需要 `.zfill`，否则未覆盖区域会留下未定义值。
 
-## `.swiz<N>`：为消费者选择 Shared Memory 布局
+## `.swiz<N>`：为消费者选择共享存储布局
 
-Swizzle 主要决定 tile 在 shared memory 中应该以什么布局存放，以便后续操作高效读取。
+Swizzle 主要决定 tile 在共享存储中应该以什么布局存放，以便后续操作高效读取。
 
 典型的 GEMM staging 代码如下：
 
@@ -361,76 +338,13 @@ ma = mma.load.swiz<128> lhs_load_s.chunkat(_, iv_warp);
 
 本章只介绍这个概念。MMA 相关章节会更深入地说明不同矩阵布局该如何搭配不同的 swizzle 值。
 
-## DMA 与 TMA
-
-二者都搬运有形状的 tile。区别在于它们怎么做，以及各自的约束是什么。
-
-| | `dma` | `tma` |
-|---|---|---|
-| 实现方式 | 软件协作复制 | Hopper Tensor Memory Accelerator |
-| 硬件要求 | 通用 GPU 路径 | SM90+ |
-| 适用场景 | 动态或不规则 tile，可移植代码 | 固定形状、高带宽 staging |
-| 常见目标位置 | `shared` | `shared` |
-| 是否支持异步 | 是 | 是 |
-
-TMA 示例：
-
-```choreo
-f = tma.copy.async lhs.subspan(64, 64).at(block_m, iv_k) => shared;
-wait f;
-```
-
-实践上的规则很简单：
-
-- 当 tile 尺寸是动态的、不规则的，或者你要可移植路径时，用 `dma`。
-- 当你在 Hopper 上、tile 形状固定、并希望用硬件加速搬运时，用 `tma`。
-
-### TMA 最重要的约束
-
-TMA 的 tile 形状必须是 host 可计算的。运行时 tile 索引本身没有问题：
-
-```choreo
-tma.copy lhs.subspan(64, 64).at(block_m, iv_k) => shared;
-```
-
-但如果 tile 形状本身依赖 kernel 运行时值，就不行：
-
-```choreo
-// 如果 TILE_M 只有在 kernel 内才知道，这种写法不适用于 TMA
-tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) => shared;
-```
-
-如果 tile 尺寸真的依赖 kernel 运行时状态，请改用 `dma.copy`。
-
-## 如何写出更容易 Lower 到好路径的 DMA / TMA
-
-你不需要理解完整 lowering pass 才能写出好代码，但有几条规则很重要。
-
-### 对高吞吐 DMA 来说
-
-- 优先使用 `global <-> shared` 搬运来做协作式 staging。
-- 使用足够多的参与线程。常见的协作组大小通常至少是一个 warp。
-- 保持源和目标的秩一致。
-- 使用普通的按字节寻址元素类型，至少 1 字节以上。
-- `local` 更适合私有 tile，不应该默认当成主要性能路径。
-
-如果这些条件不满足，编译器仍然能生成正确的复制，但可能会退化到更简单的路径。
-
-### 对 TMA 来说
-
-- 在 SM90+ 上使用它。
-- 保持 tile 形状从 host 的角度看是固定的。
-- 把 tile 暂存到 shared memory。
-- 当部分 tile 会被完整 tile 消费者读取时，添加 `.zfill`。
-
 ## 小结清单
 
 读完这一章后，下面这些语法应该分别表示：
 
 | 语法 | 含义 |
 |------|------|
-| `dma.copy src => shared` | 把一个 tile 搬运到 shared memory。 |
-| `tma.copy src => shared` | 用 Hopper TMA 把一个 tile 搬运到 shared memory。 |
+| `dma.copy src => shared` | 把一个 tile 搬运到 shared storage。 |
 | `dma.copy.async ...` | 启动一个非阻塞 DMA 传输。 |
 | `wait f` | 等待 future `f` 可安全消费。 |
 | `future.data` | 访问搬运后的 tile。 |
@@ -438,7 +352,7 @@ tma.copy lhs.subspan(TILE_M, 64).at(block_m, iv_k) => shared;
 | `dma.transp<...>` | 在传输过程中做维度置换。 |
 | `dma.pad<...>` | 在传输过程中按显式填充值做 padding。 |
 | `.zfill` | 当有效源区域小于目标 tile 时，将未覆盖部分写成 0。 |
-| `.swiz<N>` | 为 shared memory 选择 swizzle 布局。 |
+| `.swiz<N>` | 为共享存储选择 swizzle 布局。 |
 | `chunkat(...)` | 从规则 tiling 中选出一个等分 tile。 |
 | `subspan(...).at(...)` | 用显式 tile 形状和 tile 坐标选出一个 tile。 |
 | `view(...).from(...)` | 用显式形状和显式元素偏移选出一个 tile。 |

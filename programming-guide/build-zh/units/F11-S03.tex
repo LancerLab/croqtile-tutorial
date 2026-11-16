@@ -1,5 +1,7 @@
 \subsection*{\texttt{print} 与 \texttt{println}：运行时设备输出}
 
+不带感叹号时，\co@print@ 与 \co@println@ 在生成的源码中发出设备侧 \co@printf@ 调用：
+
 \begin{lstlisting}[language=croqtile,caption={一个运行时检视核函数}]
 __co__ void inspect(s32 [4, 8] data) {
   foreach i in [data.span] {
@@ -8,9 +10,9 @@ __co__ void inspect(s32 [4, 8] data) {
 }
 \end{lstlisting}
 
-运行时打印接受字符串和表达式，参数用逗号分隔。它适合观察实际执行中的索引或数据，与编译时检视互相补充。多个并行实例的输出顺序不固定，因此读取日志时需要结合实例索引辨认来源。
+每次调用接受字符串字面量和表达式的逗号分隔组合。线程之间的输出顺序是\textbf{不确定的}——设备 \co@printf@ 缓冲区是异步刷出的。
 
-若只需检查一条执行路径，可以用索引条件限制打印：
+若要检查某一条执行路径，可以用索引条件限制打印：
 
 \begin{lstlisting}[language=croqtile,caption={并行块内的打印}]
 parallel {px, py} by [8, 16] : block
@@ -22,4 +24,4 @@ parallel {px, py} by [8, 16] : block
   }
 \end{lstlisting}
 
-调试时可以用条件限制打印的实例，避免大量重复输出。
+没有这层限制，每个线程都会打印一行——大网格会产生数千行。

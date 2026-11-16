@@ -1574,7 +1574,15 @@ def inline(raw, uid, kind='prose', allow_scrub=True, depth=0):
 # Registry parsing
 # ---------------------------------------------------------------------------
 def parse_registry():
+    """Read the unit register.
+
+    Rows pair with source sections by position, so removing a section means
+    removing one row and nothing else shifts: the UID written in each row is
+    the label that row keeps, and the overrides, chapter order and
+    translations that name those UIDs stay valid.
+    """
     files, rows = [], {}
+    seen = collections.Counter()
     for line in open(REG, encoding='utf-8'):
         m = re.match(r'^### F(\d+) `(.+)`', line)
         if m:
@@ -1586,8 +1594,10 @@ def parse_registry():
         cells = [c.strip() for c in re.split(r'(?<!\\)\|', line.strip().strip('|'))]
         if len(cells) < 5:
             continue
-        rows[(int(m.group(2)), int(m.group(3)))] = {
-            'uid': 'F%02d-S%02d' % (int(m.group(2)), int(m.group(3))),
+        fid = int(m.group(2))
+        seen[fid] += 1
+        rows[(fid, seen[fid])] = {
+            'uid': m.group(1),
             'heading': cells[1], 'cls': cells[3], 'slot': cells[4],
             'note': cells[5] if len(cells) > 5 else '',
         }
@@ -1767,7 +1777,10 @@ def heading_for(title, uid, slot):
 # Block conversion
 # ---------------------------------------------------------------------------
 LIST_RE = re.compile(r'^(\s*)([-*+]|\d+\.)\s+(.*)$')
-IMAGE_RE = re.compile(r'^\s*!\[([^\]]*)\]\(([^)]+)\)')
+# Alt text routinely contains square brackets, e.g. "A[M,K] x B[K,N]" for a
+# matmul figure. The character class must not stop at the first `]`, or the
+# image is left in the prose as literal Markdown and never typeset.
+IMAGE_RE = re.compile(r'^\s*!\[(.*)\]\(([^)]+)\)')
 ITALIC_RE = re.compile(r'^\s*\*([^*].*?)\*\s*$')
 
 

@@ -1,5 +1,7 @@
 \subsection*{DMA 矩阵乘法：共享存储中的分块}
 
+标量版本能工作，但每次乘法都从全局存储读取。把 K 分块装入共享存储，块内所有线程就能复用它们：
+
 \begin{lstlisting}[language=croqtile,caption={DMA 矩阵乘法：共享存储中的分块}]
 __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
   s32 [lhs.span(0), rhs.span(1)] output;
@@ -31,9 +33,8 @@ __co__ s32 [128, 256] matmul(s32 [128, 256] lhs, s32 [256, 256] rhs) {
 
 \begin{itemize}[leftmargin=1.6em]
 \item 外层 \co@parallel@ 现在用 \co@: block@ 和花括号形式的索引 \co@{px, py}@。8 × 16 的块网格覆盖整个输出。
-\item 对 \co@tile_k@ 的 \co@foreach@ 分 16 步走完 K 维。每一步用 \co@dma.copy ... => shared@ 把 \co@lhs@ 和 \co@rhs@ 的一条条带复制到 \co@shared@ 存储。
-\item 内层 \co@parallel {qx, qy} by [16, 16] : thread@ 在每个块里创建 256 个线程，每个线程负责块内分块的一个输出元素。
-\item 算术从 \co@lhs_load.data@ 和 \co@rhs_load.data@ 读取，也就是共享内存里的副本，而不是全局的 \co@lhs@ 和 \co@rhs@。
+\item 对 \co@tile_k@ 的 \co@foreach@ 分 16 步走完 K 维。每一步用 \co@dma.copy ... => shared@ 把两个输入分块搬入共享存储。
+\item 内层 \co@parallel {qx, qy} by [16, 16] : thread@ 让每个线程负责一个输出元素。
 \end{itemize}
 
 合成索引分两层：\co@px#qx@ 把块索引 \co@px@ 和线程索引 \co@qx@ 合成为全局行，\co@py#qy@ 对列做同样的事。

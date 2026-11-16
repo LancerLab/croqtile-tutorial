@@ -11,7 +11,6 @@
 | GCC | 8.1+（或 Clang 6+） |
 | Bison | 3.8+ |
 | Flex | 2.6.4+ |
-| CUDA Toolkit | 11.8+（用于 GPU 目标） |
 
 大多数 Linux 发行版自带 Flex 和较旧版本的 Bison。如果你系统的 Bison 低于 3.8，下面的安装步骤会自动获取兼容版本。
 
@@ -77,7 +76,7 @@ croq verify.co -o verify
 ```bash
 croq program.co                     # 编译并链接 → a.out
 croq program.co -o my_kernel        # 指定输出文件名
-croq -es -t cuda program.co -o out.cu  # 仅输出 CUDA 源码
+croq -es -t <target> program.co -o out.cxx  # 仅输出目标源码
 croq -E program.co                  # 仅预处理
 ```
 

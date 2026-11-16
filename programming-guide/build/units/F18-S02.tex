@@ -1,5 +1,5 @@
 \subsection*{\emph{Spanned}: Data and Buffers}
 
-A function's inputs and outputs are often called data, while its temporary storage is called a buffer. Croqtile represents both with spanned types: stored elements associated with a shape. The terminology describes how the storage is used, not a different type system.
+A Tileflow program moves and processes large datasets. Function inputs and outputs are often called data, while internal storage is called a buffer. This distinguishes external and internal storage from the function's perspective. Both are represented by \textbf{spanned types}, which associate stored data with a shape.
 
 The term spanned data is used for either case. An \co@mdspan@ describes the shape; a spanned object combines that description with an element type and access to storage. Naming or deriving a shape alone does not create a copy of the data.

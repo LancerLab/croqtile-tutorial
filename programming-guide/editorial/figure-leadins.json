@@ -112,5 +112,11 @@
     "zh": "图~\\ref{fig:f34-masking-datachunk-dispatch} 展示了最后一轮迭代剩下的那块数据。",
     "caption_en": "Thirteen chunks over four instances: three full iterations and a remainder.",
     "caption_zh": "13 个数据块分给 4 个实例：三轮满载，最后一轮只剩一个。"
+  },
+  "f06-fig1_tensor_contraction": {
+    "en": "Figure~\\ref{fig:f06-fig1_tensor_contraction} shows the tile-shaped contraction.",
+    "zh": "图~\\ref{fig:f06-fig1_tensor_contraction} 展示了以分块为单位的收缩运算。",
+    "caption_en": "2D tensor contraction: A[M,K] times B[K,N] into C[M,N].",
+    "caption_zh": "二维张量收缩：A[M,K] 乘 B[K,N] 累加到 C[M,N]。"
   }
 }

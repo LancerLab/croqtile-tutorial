@@ -1,10 +1,10 @@
 # 同步：流水线、事件与双缓冲
 
-凡是两个工作者共享同一缓冲区的场景——CPU 线程向队列写入而另一线程读取、网卡向环形缓冲区填充数据而驱动程序排空、shell 管道连接 `grep` 与 `sort`——都面临同一问题：**生产者-消费者同步**。生产者不可覆盖消费者仍在读取的数据，消费者也不可读取生产者尚未写完的数据。经典解决方案在任何操作系统课程中都有：信号量、有界缓冲区、基于信用的流控。它们都在「写入完成」与「读取开始」之间建立 happens-before 关系。
+凡是两个工作者共享同一缓冲区的场景——CPU 线程向队列写入而另一线程读取、网卡向环形缓冲区填充数据而驱动程序排空、shell 管道连接 `grep` 与 `sort`——都面临同一问题：**生产者-消费者同步**。生产者不可覆盖消费者仍在读取的数据，消费者也不可读取生产者尚未写完的数据。经典解决方案在任何操作系统课程中都有：信号量、有界缓冲区。它们都在「写入完成」与「读取开始」之间建立 happens-before 关系。
 
-在 GPU 上，挑战在于性能。传统同步原语——互斥锁、条件变量、CAS 循环——在成千上万线程共享同一内存时代价过高。GPU 需要更轻量的机制：硬件支持的屏障、命名事件以及能编译为少量 PTX 指令（而非自旋循环）的显式信用协议。这正是鳄霸（Croqtile）所提供的。
+在这样的机器上，挑战在于性能。传统同步原语——互斥锁、条件变量、CAS 循环——在成千上万线程共享同一存储时代价过高。这样的机器需要更轻量的机制：硬件支持的屏障与命名事件。这正是鳄霸（Croqtile）所提供的。
 
-第 5 章通过 `inthreads.async` 将矩阵乘划分为两种角色：发起加载的**生产者** warpgroup 和运行 MMA 的**消费者** warpgroup，并引入了 `shared event`、`wait`、`trigger` 作为角色间的信号机制。本章将这些原语应用于完整的流水线，同时补充 **`swap` / `rotate`** 多缓冲、**`dma.copy.async`** 非阻塞拷贝，以及组织 K 循环的**序幕（prologue）/ 稳态（steady-state）/ 收尾（epilogue）**模式。
+第 5 章通过 `inthreads.async` 把矩阵乘划分为两种角色：发起加载的**生产者**组和运行 MMA 的**消费者**组，并引入了 `shared event`、`wait`、`trigger` 作为角色间的协调机制。本章将这些原语应用于完整的流水线，同时补充 **`swap` / `rotate`** 多缓冲、**`dma.copy.async`** 非阻塞拷贝，以及组织 K 循环的**序幕（prologue）/ 稳态（steady-state）/ 收尾（epilogue）**模式。
 
 我们从单缓冲情形（同一程序计数器上既加载又计算）出发，再加入 `swap` 双缓冲，最后升级到生产者与消费者作为独立程序运行的完整事件驱动流水线。
 
@@ -12,7 +12,7 @@
 
 用**一个**暂存缓冲区遍历分块矩阵乘的 K 循环时，每次迭代必须：将 A、B 的 tile 拷贝到共享内存，等待这些拷贝对后续读可见，再在该 tile 上运行 MMA。若试图在 MMA 仍读取**同一**缓冲区时启动*下一轮*迭代的拷贝，就会**覆盖**张量核心正在消费的字节。无论调度如何一厢情愿都无法消除该问题；你需要在「字节已落盘」与「MMA 读取它们」之间建立 happens-before 关系。
 
-手写 CUDA 时，人们用**屏障**（`__syncthreads`）、**原子操作**或跨流线的 **CUDA event** 来强制这一点。簿记很快爆炸：你要跟踪哪个阶段拥有哪个缓冲区、哪道栅栏消除哪类冒险，并指望循环的每条路径都对齐。鳄霸收窄设计空间：**event** 用于跨角色发信号，**`swap`** 用于旋转缓冲区*名称*而不搬运数据，显式的 **`wait` / `trigger`** 则使信用流在源码中保持可见。
+手写目标代码时，人们用屏障、原子操作或跨队列的事件来强制这一点。簿记很快爆炸：你要跟踪哪个阶段拥有哪个缓冲区、哪道栅栏消除哪类冒险，并指望循环的每条路径都对齐。Croqtile 收窄设计空间：**event** 用于跨区域交接，**`swap`** 用于旋转缓冲区*名称*而不搬运数据，显式的 **`wait` / `trigger`** 则使交接顺序在源码中保持可见。
 
 下图对比严格的**先加载后计算**阶梯与**双缓冲**重叠：逻辑工作量相同，但在流水线填满时，存储侧或算术侧的空闲时间更少。
 
@@ -96,7 +96,7 @@ foreach tile_k(1:) {
 
 ### **`swap`：交换的是名称，不是字节**
 
-`swap(lf0, lf1)` 交换的是 **future 句柄**。共享内存中的内容仍留在硬件放置的位置；仅鳄霸层面的名称在轮换。CUDA 中的同类写法常是 `^ 1` 的缓冲区下标或布尔相位；此处意图是显式的。对于三缓冲，`rotate(f0, f1, f2)` 一步轮换三个句柄。
+`swap(lf0, lf1)` 交换的是 **future 句柄**。暂存内容仍留在硬件放置的位置；只有 Croqtile 层面的名称在轮换。在显式管理缓冲区数组的语言里，同类写法常是 `^ 1` 的下标或布尔相位。对于三缓冲，`rotate(f0, f1, f2)` 一步轮换三个句柄。
 
 *注：本示例使用 `s32` 与标量累加以及 `with tile_k` 作用域——刻意简化的内核风格，用于隔离 `swap` 机制。同样的 `swap` 模式原样适用于第 4 章的 FP16/MMA 内核；变化的仅是计算部分。*
 
@@ -106,9 +106,9 @@ foreach tile_k(1:) {
 
 ## Event 实战：完整流水线
 
-当**单一**线程组在单一调度中交错加载与 MMA 时，`swap` 可用。Warp 特化（[第 5 章](ch05-branch-control.md)）将加载与计算放在**不同**的 warpgroup 上，且程序计数器不同。它们无法逐行共享 `swap` 调度；需要 **event**——第 5 章引入的信号机制。
+当**单一**线程组在单一调度中交错加载与 MMA 时，`swap` 可用。角色专化（[第 5 章](ch05-branch-control.md)）把加载与计算放在**不同**的区域上，各有自己的程序计数器。它们无法共享同一份 `swap` 调度；需要**事件**——第 5 章引入的协调机制。
 
-回顾：`shared event` 声明一个同步令牌，`trigger` 发出「条件满足」信号，`wait` 阻塞直至信号到达。这里我们将其与多级流水线结合使用：
+回顾：`shared event` 声明一个同步令牌，`trigger` 记录「条件已满足」，`wait` 阻塞直至对应触发到达。这里我们将其与多级流水线结合使用：
 
 ```choreo
 shared event full[MATMUL_STAGES], empty[MATMUL_STAGES];
@@ -131,7 +131,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
     shared f16 [MATMUL_WARP_N, MATMUL_TILE_K] rhs_load_s[MATMUL_STAGES];
     shared f16 [MATMUL_WARP_M, MATMUL_WARP_N] output_s;
 
-    parallel p1 by 2 : group-4 {
+    parallel p1 by 2 : thread {
       inthreads.async (p1 == 0) {
         foreach {iv_k} in [cdiv(K, MATMUL_TILE_K)] {
           stage = iv_k % MATMUL_STAGES;
@@ -172,16 +172,16 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 
 **生产者路径。**对每个 `iv_k`，`wait empty[stage]` 取得空闲槽，`dma.copy` 行在对应 `stage` 填充 `lhs_load_s`/`rhs_load_s`，随后 `trigger full[stage]` 将该槽交给消费者。若省略消费者序幕中的初始 `trigger empty` 引导，则第一次 `wait empty` 永远完不成——这是死锁，而非神秘的 MMA 错误。
 
-**消费者路径。**循环 `foreach {s} in [MATMUL_STAGES] { trigger empty[s]; }` 在 K 循环**之前**运行，使每个阶段以 **empty** 信用开始。否则生产者会在第一块 tile 上永远等待。随后每个 `iv_k`：`wait full[stage]`，在该阶段上执行 MMA，`mma.commit`，`trigger empty[stage]` 以释放槽位。跳过 `mma.commit` 或在运算真正完成前发 `empty` 信号，可能导致操作数仍有效时槽被复用——又一种欠同步。
+**消费者路径。**循环 `foreach {s} in [MATMUL_STAGES] { trigger empty[s]; }` 在 K 循环**之前**运行，使每个阶段以 **empty** 事件开始。否则生产者会在第一块 tile 上永远等待。随后每个 `iv_k`：`wait full[stage]`，在该阶段上执行 MMA，`mma.commit`，`trigger empty[stage]` 以释放槽位。跳过 `mma.commit`，或在运算真正完成前就触发 `empty`，都可能在操作数仍有效时复用槽位——又一种欠同步。
 
-**`mma.commit`。**Hopper 的 WGMMA 将发射与累加重叠；`mma.commit` 是在该阶段的共享缓冲区可被逻辑复用之前，完成该 K 条带对 `mc` 的贡献的栅栏。应将其视为「该阶段结束」与 `trigger empty` 之间必需的粘合剂。
+**`mma.commit`。** `mma.commit` 在该阶段的共享缓冲区可被逻辑复用之前，完成该 K 切片对 `mc` 的贡献。应将其视为「该阶段结束」与 `trigger empty` 之间必需的粘合剂。
 
-## 单阶段的信用流
+## 单阶段的事件流
 
-下图与代码一致：引导阶段授予 empty 信用；生产者等待 `empty`，填满后发 `full`；消费者等待 `full`，计算后发 `empty`。当 `iv_k` 按 `MATMUL_STAGES` 取模回绕时，同一物理阶段重新进入循环——环形安全是因为 `wait`/`trigger` 串行化访问，而非因为取模算术本身魔法般可靠。
+下图与代码一致：引导阶段触发每个 `empty` 事件；生产者等待 `empty`，填满后触发 `full`；消费者等待 `full`，计算后触发 `empty`。当 `iv_k` 按 `MATMUL_STAGES` 取模回绕时，同一物理阶段重新进入循环——环形安全是因为 `wait`/`trigger` 串行化访问，而非因为取模算术本身魔法般可靠。
 
-![单级流水线的事件信用流](../assets/images/ch06/fig2_event_credit_flow_dark.png#only-dark)
-![单级流水线的事件信用流](../assets/images/ch06/fig2_event_credit_flow_light.png#only-light)
+![单级流水线的事件流](../assets/images/ch06/fig2_event_credit_flow_dark.png#only-dark)
+![单级流水线的事件流](../assets/images/ch06/fig2_event_credit_flow_light.png#only-light)
 
 若编辑流水线后行为异常，在追查 MMA 布局之前，请先核对 **event 顺序与触发次数**：生产者与消费者必须使用相同的 `cdiv(K, MATMUL_TILE_K)` 循环，阶段过少则会在消费者快于生产者时把压力压到 `wait full` 上。
 
@@ -198,7 +198,7 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 | `rotate(f0, f1, f2)` | 轮换三个 future 句柄 |
 | `with tile_k in N { ... }` | 绑定范围为 N 的作用域 tile 轴 |
 | `foreach tile_k(1:)` | 从索引 1 开始迭代 |
-| `mma.commit` | WGMMA 流水线阶段之间的栅栏 |
+| `mma.commit` | 流水线阶段之间的栅栏 |
 | `__co__ auto fn(...)` | 由 `return` 语句推断返回类型 |
 
 ## 小结
@@ -206,10 +206,10 @@ __co__ void matmul(global f16 [M, K] lhs, global f16 [N, K] rhs, global f16 [M, 
 | 要点 | 作用 |
 |------|------|
 | 数据竞争 | 未同步的重叠会使加载破坏 MMA 操作数，或读到未完成的 tile。 |
-| CUDA 式修复 | 屏障、原子与手工 event 接线可行，但复杂度扩展性差。 |
+| 手工修复 | 屏障、原子与手工事件接线可行，但复杂度扩展性差。 |
 | `swap` / `rotate` | 旋转 **future**，使双缓冲或多缓冲在单一程序中显式可见。 |
-| `shared event` | 用 `wait` / `trigger` 与信用纪律协调**不同** warpgroup。 |
+| `shared event` | 用 `wait` / `trigger` 协调**不同**的组。 |
 | 引导 `empty` | 必需，以使生产者的第一次 `wait empty` 能够成功。 |
 | `mma.commit` | 将某一 K 条带的已完成数学与共享暂存的复用分离。 |
 
-流水线现已对拆分角色安全。[下一章](ch07-advanced-movement.md)将讨论硬件加速的 **TMA**、**swizzled** 共享布局，以及 **`view` / `from`** 的不规则访问——同步思想相同，底层搬运原语更丰富。
+流水线现已对拆分角色安全。[下一章](ch07-advanced-movement.md)将讨论 **swizzled** 共享布局与 **`view` / `from`** 的不规则访问——同步思想相同，底层搬运工具更丰富。

@@ -1,6 +1,6 @@
 \subsection*{Why the restricted interface works: expressiveness vs performance}
 
-Writing every load and address calculation separately gives a programmer many choices, but it also leaves the compiler to recover which operations form one tile transfer. Croqtile asks the program to describe that region explicitly. The restriction is useful when the desired movement fits a regular shape, because its geometry is available before individual transfers are generated.
+In a language that exposes raw addressing, a programmer implementing data movement has enormous freedom: arbitrary pointer arithmetic, variable-stride access, hand-computed conflict avoidance, custom swizzle formulas. That flexibility is a double-edged sword. The space of possible data movement patterns is vast, but the subset that actually performs well is narrow
 
 Croqtile makes tile geometry and layout explicit through structured movement operations. This gives the compiler the information it needs to lower a transfer efficiently and avoids repeating per-element address choreography.
 
@@ -12,4 +12,4 @@ Figure~\ref{fig:f09-fig8_expressiveness} contrasts the expressible range with th
 \label{fig:f09-fig8_expressiveness}
 \end{figure}
 
-The trade is explicit: structured operations constrain how a transfer is described. They support efficient lowering, while actual performance still depends on tile sizes, alignment, layouts, and synchronization.
+The trade is explicit: you give up the ability to write arbitrary data movement, and in return, every data movement you write is fast.

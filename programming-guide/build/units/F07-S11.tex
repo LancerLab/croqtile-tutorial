@@ -8,6 +8,8 @@ parallel.async {px, py} by [grid_m, grid_n] : block {
 }
 \end{lstlisting}
 
-An asynchronous launch returns control to the host after submitting the kernel. Completion happens later. Stream binding selects which stream receives the work; without an explicit binding, the default stream is used.
+\textbf{\texttt{parallel.async}} returns control to the host immediately --- the kernel is enqueued but the host does not wait for completion. This is Croqtile's form of a non-blocking launch on a chosen stream.
+
+\textbf{\texttt{parallel.\allowbreak{}async\textless{}s\textgreater{}}} pins the kernel to stream \texttt{s}. Multiple \texttt{parallel.async} blocks with different streams can overlap if the machine has enough free resources.
 
 This is \textbf{host orchestration}, orthogonal to in-kernel control flow. It does not replace \texttt{inthreads.\allowbreak{}async} for thread partitioning or \texttt{if} for runtime predicates --- it decides \emph{when} and \emph{where} a grid runs relative to other grids.

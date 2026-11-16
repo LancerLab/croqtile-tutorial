@@ -2,11 +2,11 @@
 
 Every programming language that targets a parallel machine must answer one question: \textbf{what happens when different threads need to do different things?}
 
-On a CPU, each core has its own program counter. When threads share an instruction stream, however, divergent paths execute in sequence while inactive threads are masked.
+On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. On a machine that shares one instruction pointer across a group of threads, the answer is deeply constrained. --- It must \textbf{serialize} the divergent paths and mask inactive threads.
 
-All threads evaluate the condition, and those for which it is false are masked. This \textbf{predicated execution} is simple and widely used, but divergent paths can be expensive.
+A machine like that exposes exactly one control-flow primitive for this: \texttt{if}. All threads evaluate the condition; threads where it is false are masked (deactivated); both paths execute sequentially within the group. This is \textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.
 
-A tiled matrix multiplication also has work with different roles: one group can load the next operands while another computes with the current operands. The groups need to progress independently between well-defined handoffs. A runtime condition describes which branch an instance takes; a pipeline also needs a way to express those separate roles and their dependencies.
+Predicated execution is not enough. Consider a matmul kernel where one group of threads should continuously fetch tiles from global storage while another group continuously multiplies tiles in the contraction unit. This is not a data-dependent branch --- it is two \textbf{structurally different programs} that happen to share an address space. Trying to express this with \texttt{if} means one program pauses while the other runs. There is no overlap, no pipeline.
 
 Croqtile introduces two additional control-flow primitives to fill this gap:
 
@@ -14,3 +14,5 @@ Croqtile introduces two additional control-flow primitives to fill this gap:
 \item \textbf{\texttt{inthreads.\allowbreak{}async}} --- \textbf{structured concurrent regions}: compile-time partitioning of threads into groups that run \textbf{different programs simultaneously}. The compiler generates separate instruction streams;
 \item \textbf{\texttt{shared event} / \texttt{wait} / \texttt{trigger}} --- \textbf{inter-region signaling}: lightweight synchronization tokens that let concurrent regions communicate safely.
 \end{itemize}
+
+Together with \texttt{if}, these three primitives cover the full spectrum of control flow in a kernel: data-dependent branching, structural program composition, and inter-program coordination.

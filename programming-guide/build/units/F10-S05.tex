@@ -1,6 +1,6 @@
 \subsection*{\texttt{\_\_cpp\_\_}: verbatim C++ injection}
 
-The \co@__cpp__@ form inserts a string as C++ source at the point where it appears in a Croqtile function. Use it for a short target operation that needs to sit inside a particular parallel or asynchronous region. The inserted text must be valid in that scope, with all referenced names visible to the target compiler. Croqtile passes the contents through without parsing or rewriting them.
+\texttt{\_\_cpp\_\_} takes a string literal and pastes it, character for character, into the generated source file. The \co@__cpp__@ form inserts a string as C++ source at the point where it appears in a Croqtile function. Use it for a short target operation that needs to sit inside a particular parallel or asynchronous region. The inserted text must be valid in that scope, with all referenced names visible to the target compiler. Croqtile passes the contents through without parsing or rewriting them.
 
 \begin{itemize}[leftmargin=1.6em]
 \item \textbf{\texttt{\_\allowbreak{}\_\allowbreak{}cpp\_\allowbreak{}\_\allowbreak{}(".\allowbreak{}.\allowbreak{}.\allowbreak{}")}} --- Ordinary string; best for short one-liners.
