@@ -2737,13 +2737,13 @@
     // parallel-level-1
   }
 }</code></pre>
-<p>该代码定义两级并行，取值分别为 <code>2</code> 与 <code>12</code>，即总共启动 <code>2 x 12 = 24</code> 个并行线程完成该任务。每个线程由 <code>p</code> 与 <code>q</code> 的唯一组合标识。在 Choreo 中，将 <code>p</code> 所在层级称为 <em>parallel-level-0</em>，将 <code>q</code> 所在层级称为 <em>parallel-level-1</em>。</p>
-<p>多级并行概念源于具有层次化存储的硬件架构。程序员可观察到的一个关键差异是 <strong>同步开销</strong>：共享同一暂存层级的单元，同步代价远低于被更粗粒度边界隔开的单元。该层次化设计促使程序员将最需要同步（分歧最大）的代码放在 <strong>block</strong> 层级，以提升整体性能。</p>
+<p>该代码定义两级并行，取值分别为 <code>2</code> 与 <code>12</code>，即总共启动 <code>2 x 12 = 24</code> 个并行线程完成该任务。每个线程由 <code>p</code> 与 <code>q</code> 的唯一组合标识。在 Choreo 中，将 <code>p</code> 所在层级称为 <em>parallel-level-0</em>，将 <code>q</code> 所在层级称为 <em>parallel-level-1</em>。熟悉 CUDA 的读者可将 <em>parallel-level-0</em> 对应 CUDA 的 <strong>grid</strong> 层级，<em>parallel-level-1</em> 对应 CUDA 的 <strong>block</strong> 层级。</p>
+<p>多级并行概念源于具有层次化存储的硬件架构。程序员可观察到的一个关键差异是 <strong>synchronization cost（同步开销）</strong>。例如，在 CUDA 中，同一 <strong>block</strong> 内线程的同步开销远低于跨 <strong>grid</strong> 的线程。该层次化设计促使程序员将最需要同步（分歧最大）的代码放在 <strong>block</strong> 层级，以提升整体性能。</p>
 <p>在 Choreo 语法中，可在单行中定义多级并行：</p>
 <pre class="highlight"><code class="language-choreo">parallel p by 2, q by 12 { ... }</code></pre>
 <p>其与上一示例的并行化效果相同，采用 <strong>逗号分隔</strong> 的 <em>parallel-by</em> 表达式，假定两级并行之间无中间代码。</p>
 <h3 id="_4">子级并行<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p>部分目标允许将单一并行层级划分为最多三个坐标轴。在 Choreo 中，对此类语法使用 <code>ituple</code> 与 <code>mdspan</code>：</p>
+<p>如 <em>CUDA</em> 等目标允许将单一并行层级划分为最多三个子级。在 Choreo 中，对此类语法使用 <code>ituple</code> 与 <code>mdspan</code>：</p>
 <pre class="highlight"><code class="language-choreo">parallel {px, py, pz} by [1, 1, 2] {
   // higher synchronization cost
   // ...
@@ -2754,7 +2754,7 @@
   // ...
 }</code></pre>
 <p>本例定义两级并行。第一级（<em>level-0</em>）细分为三个子级，由 <code>{px, py, pz}</code> 形式的 <code>ituple</code> 标注；第二级（<em>level-1</em>）细分为两个子级，由 <code>{qx, qy}</code> 形式的 <code>ituple</code> 标注，或整体记为 <code>t_index</code>。对每个子级，并行数量与 <code>mdspan</code> 中对应维度的取值一致。</p>
-<p>子级概念适合涉及二维或三维数据的工作负载。注意：<code>ituple</code> 中第一个元素表示 <strong>最低有效并行变量</strong>。</p>
+<p>子级概念源自 <em>CUDA</em> 的 GPU workload 管理，常涉及二维或三维数据。注意：<code>ituple</code> 中第一个元素表示 <strong>least significant parallel variable（最低有效并行变量）</strong>。Choreo 采用该顺序以与 <em>CUDA</em> 开发者习惯一致，而非出于内部一致性考虑。</p>
 <h3 id="bounded-variable">Bounded Variable（有界变量）<a class="headerlink" href="#bounded-variable" title="Permanent link">&para;</a></h3>
 <p>在 <code>parallel-by</code> 块中，<code>parallel</code> 关键字之后定义的变量称为 <strong>Bounded Variable（有界变量）</strong>。具体而言：</p>
 <ul>
@@ -2765,7 +2765,7 @@
 <p>有界变量的概念将在后续章节中进一步展开，并详细说明其用法。</p>
 <h2 id="_5">含义与推论<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <h3 id="kernel-launch">异构性：转译为 Kernel Launch<a class="headerlink" href="#kernel-launch" title="Permanent link">&para;</a></h3>
-<p>对区分主机与设备执行的目标而言，<code>parallel-by</code> 块不仅指定并行实例数量，还界定 host 与  代码的边界，利用 Choreo 管理异构性的能力。具体而言：</p>
+<p>对于 <em>CUDA/Cute</em> 等目标，<code>parallel-by</code> 块不仅指定并行线程数量，还界定 host 与 device 代码的边界，利用 Choreo 管理异构性的能力。具体而言：</p>
 <ul>
 <li><strong><code>parallel-by</code> 块之外</strong>的代码转译为 <strong>host code</strong>。</li>
 <li><strong>块内</strong>的代码转译为 <strong>device code</strong>，如下所示：</li>
@@ -2780,10 +2780,10 @@
   // Generate host code
   // ...
 }</code></pre>
-<p>启动就发生在 <code>parallel-by</code> 语句处。不过，Choreo 以统一的 SPMD 并行模型抽象这些细节，使开发者可专注于算法而无需顾虑底层异构细节。</p>
+<p>熟悉 <em>CUDA</em> 的读者可将此类比为在 <code>parallel-by</code> 语句处发生 <strong>Kernel Launch</strong>。不过，Choreo 以统一的 SPMD 并行模型抽象这些细节，使开发者可专注于算法而无需顾虑底层异构细节。</p>
 <h3 id="_6">对存储说明符的限制<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <p>由于 Choreo 中的 <code>parallel-by</code> 构造与硬件相关（包括异构性与存储层次），它受目标平台约束。</p>
-<p>例如，对区分主机与设备执行的目标而言，<em>spanned</em> buffer 必须在 <em>parallel execution block</em> 内标注恰当的 storage specifier。原因是目标平台仅允许 device 代码分配 <em>scratchpad memory</em>，如 <em>shared</em> 与 <em>local</em> memory。反之，<em>parallel execution block</em> 之外的代码只能声明 <em>global</em> 或默认 host memory，由目标平台允许 host 代码管理。</p>
+<p>例如，对于 <em>CUDA/Cute</em> 目标，<em>spanned</em> buffer 必须在 <em>parallel execution block</em> 内标注恰当的 storage specifier。原因是目标平台仅允许 device 代码分配 <em>scratchpad memory</em>，如 <em>shared</em> 与 <em>local</em> memory。反之，<em>parallel execution block</em> 之外的代码只能声明 <em>global</em> 或默认 host memory，由目标平台允许 host 代码管理。</p>
 <p>此外，<em>shared</em> 与 <em>local</em> memory 类型的生命周期仅持续于 kernel launch 期间。因此，无法在 <em>parallel execution block</em> 之外引用它们。该约束保证这些内存类型的生命周期得到正确管理。</p>
 <h3 id="_7">小结<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
 <p>本节探讨了 Choreo 在异构计算环境中处理并行性的方式，重点包括 <code>parallel-by</code> 块语法以及多级与子级并行的管理；亦说明了 Choreo 如何抽象 kernel launch 并施加内存管理约束，从而有效利用并行硬件。</p>

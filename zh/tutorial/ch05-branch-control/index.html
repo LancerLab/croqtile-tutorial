@@ -2764,7 +2764,7 @@
 <h2 id="if">以 <code>if</code> 实现谓词执行<a class="headerlink" href="#if" title="Permanent link">&para;</a></h2>
 <p>鳄霸（Croqtile）的 <code>if</code> 行为与其 C 语言对应物类似：</p>
 <pre class="highlight"><code class="language-choreo">if (tile_id &lt; total_tiles) {
-  // body executes only when the condition is true
+  // 条件为真时才执行函数体
 }</code></pre>
 <p>作用域内全体线程求值条件。条件为假的线程跳过函数体。在一个协作组内，若部分线程走分支、部分不走，硬件对两条路径<strong>串行化</strong>——被跳过一侧的线程空闲，待执行侧跑完后再反过来。这就是<strong>发散</strong>，也是运行时灵活性所付出的代价。</p>
 <p><strong>何时使用 <code>if</code>：</strong> 无法在编译期解析的数据相关决策。边界检查、部分 tile 保护、条件累加。条件可依赖运行时值——循环索引、输入数据、tile 坐标。</p>

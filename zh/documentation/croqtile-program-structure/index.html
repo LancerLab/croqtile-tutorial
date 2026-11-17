@@ -2698,8 +2698,8 @@
 <li>Tileflow 程序（Tileflow Program）</li>
 </ul>
 <h3 id="tileflow">主机、设备与 Tileflow<a class="headerlink" href="#tileflow" title="Permanent link">&para;</a></h3>
-<p>下列代码展示了一个 <em>Choreo-C++</em> 程序：</p>
-<pre class="highlight"><code class="language-choreo">// Device program: runs on the target device
+<p>下列代码展示了一个面向 <em>CUDA/Cute</em> 的 <em>Choreo-C++</em> 程序：</p>
+<pre class="highlight"><code class="language-choreo">// Device program: typically runs on GPU/NPU
 __device__ void device_function(...) {
   // High-performance device kernel implementation
 }
@@ -2722,9 +2722,9 @@ void main() {
 <p><em>主机程序</em>是 <em>Choreo-C++</em> 模块/程序的入口，也是 <em>Tileflow</em> 程序（Choreo 函数）的调用方。它以标准 C++ 编写，运行于 CPU，并管理异构应用的整体工作流。</p>
 <p>在简单的高性能核函数实现中，程序员通常在主机程序中准备必要的数据，以调用 <em>Choreo 函数</em>，并处理其返回值以推进后续步骤。</p>
 <p><strong>设备程序</strong></p>
-<p><em>设备程序</em>定义在目标设备上执行的计算密集型操作。在上例中，设备函数带有 <code>__device__</code> 前缀，表示它仅在异构设备上运行。与 <em>主机程序</em>类似，任何设备程序在 Choreo 编译过程中均不会被修改。</p>
+<p><em>设备程序</em>定义在目标设备上执行的计算密集型操作。在上例中，设备函数带有 <code>__device__</code> 前缀，该关键字来自 <em>CUDA/Cute</em>，表示其仅在异构设备上运行。与 <em>主机程序</em>类似，任何设备程序在 Choreo 编译过程中均不会被修改。</p>
 <p><strong>Tileflow 程序</strong></p>
-<p>你可能已了解主机程序与设备程序；然而，由 <em>Choreo 函数</em>（以 <code>__co__</code> 为前缀）构成的 <em>Tileflow 程序</em>才是 <em>Choreo-C++</em> 程序的核心。它在不同主机/设备之间，以及单一设备内部不同存储层级之间编排数据移动。在典型工作流中，Tileflow 程序将数据移动到合适的存储位置（作为缓冲区），并调用 <em>设备程序</em>执行计算；工作完成后，再将结果移回主机。</p>
+<p>熟悉 <em>CUDA/Cute</em> 的读者可能已了解主机程序与设备程序；然而，由 <em>Choreo 函数</em>（以 <code>__co__</code> 为前缀）构成的 <em>Tileflow 程序</em>才是 <em>Choreo-C++</em> 程序的核心。它在不同主机/设备之间，以及单一设备内部不同存储层级之间编排数据移动。在典型工作流中，Tileflow 程序将数据移动到合适的存储位置（作为缓冲区），并调用 <em>设备程序</em>执行计算；工作完成后，再将结果移回主机。</p>
 <h3 id="_2">转译与编译<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <p>Choreo 的编译过程通常包含三个主要步骤：<strong>预处理</strong>、<strong>转译</strong>与<strong>目标编译</strong>。为便于理解 Choreo-C++ 程序各部分的协作方式，完整的编译工作流如下图所示：</p>
 <p><img alt="Choreo-Workflow" src="../../../documentation/assets/figures/compile-workflow.drawio.png" /></p>
@@ -2732,7 +2732,7 @@ void main() {
 <p>因此，Choreo 编译器充当端到端编译器，其中关键步骤是将 <em>tileflow 程序</em>转译为 <em>choreo 生成代码</em>。</p>
 <p>Choreo 编译的一个显著特点是同时支持：</p>
 <ul>
-<li><strong>单源编译模型</strong>：目标编译器允许设备与主机程序位于同一源文件中进行目标编译。</li>
+<li><strong>单源编译模型</strong>：类似 <em>CUDA/Cute</em>，目标编译器允许设备与主机程序位于同一源文件中进行目标编译。</li>
 <li><strong>分源编译模型</strong>：类似 <em>OpenCL</em>，主机与设备代码必须分别编译。</li>
 </ul>
 <p>上文所示代码自然支持 <em>单源编译模型</em>。为支持 <em>分源编译模型</em>，Choreo 要求用 <code>__cok__</code> 块包裹设备程序，如下所示：</p>
@@ -2839,7 +2839,7 @@ spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_
 <p>需注意的一点是，choreo 函数的输出类型为 <code>choreo::spanned_data</code>。与并不拥有其所指数据缓冲区内存的 <code>choreo::spanned_view</code> 不同，<code>choreo::spanned_data</code> 拥有缓冲区，从而保证后续数据校验作用于有效内存。<code>choreo::spanned_view</code> 提供丰富 API，支持类 C 数组下标访问，并可通过成员函数 <code>.shape()</code> 查询形状。</p>
 <p>同样地，该形状数组中<strong>最高维</strong>列于首位（本例中为 <code>res.shape()[0]</code>）。Choreo 采用「<strong>最高维优先</strong>」顺序，亦即「<strong>行主序</strong>」：第一维变化最慢。</p>
 <h3 id="_4">设备程序：并行计算<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p><strong>设备程序</strong>定义将在目标设备上执行的计算核函数；该核函数对输入数据并行处理并产生输出。</p>
+<p><strong>设备程序</strong>定义将在 GPU 等目标设备上执行的计算核函数；该核函数对输入数据并行处理并产生输出。</p>
 <p>相关代码再次列出如下：</p>
 <pre class="highlight"><code class="language-choreo">__device__ void kernel(int * a, int * b, int * c, int n) {
   for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
@@ -2850,9 +2850,9 @@ spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_
     for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
   }
 } // end of __cok__</code></pre>
-<p>此处以 <code>extern "C"</code> 标注替代 <code>__device__</code> 关键字，因为分源编译的目标要求设备函数采用 C 链接。</p>
+<p>此处以 <code>extern "C"</code> 标注替代 <em>CUDA/Cute</em> 目标中所用的 <code>__device__</code> 关键字，因 <em>OpenCL</em> 要求设备函数采用 C 链接。</p>
 <p>Choreo 的设备编程模型因目标硬件及其支持特性而异。例如，部分专有目标允许使用向量化编程接口或<em>内建函数</em>，以充分发挥并行目标硬件的计算能力。</p>
-<p>程序员须注意，设备程序遵循<em>单程序多数据（SPMD）</em>范式：同一设备程序的多个实例并行执行，从而高效利用数据级并行。然而，与传统设备程序不同，它不负责数据移动——无论是主机与设备之间，还是设备内部多个存储层级之间；这些任务由 <em>tileflow 程序</em>以更简单、更安全的方式编排。</p>
+<p>程序员须注意，设备程序遵循<em>单程序多数据（SPMD）</em>范式：同一设备程序的多个实例并行执行，从而高效利用数据级并行。然而，与传统 <em>CUDA/Cute</em> 程序不同，设备程序不负责数据移动——无论是主机与设备之间，还是设备内部多个存储层级之间；这些任务由 <em>tileflow 程序</em>以更简单、更安全的方式编排。</p>
 <h3 id="tileflow_1">Tileflow 程序：编排数据移动<a class="headerlink" href="#tileflow_1" title="Permanent link">&para;</a></h3>
 <p><em>Tileflow 程序</em>由 <em>Choreo 函数</em>组成。如前所述，它管理主机与目标设备之间的数据移动，并确保数据在不同存储位置之间被正确拷贝。</p>
 <p>为便于查阅，再次给出代码：</p>
@@ -2879,7 +2879,7 @@ spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_
   return output;
 }</code></pre>
 <p>在该代码中，以 <code>__co__</code> 为前缀的 choreo 函数接受两个输入 <code>lhs</code> 与 <code>rhs</code>，二者形状均为 <code>[6, 17, 128]</code>，元素类型为 <code>s32</code>（有符号 32 位整数）；输出定义为与输入具有相同形状与类型。</p>
-<p><code>parallel p by 6 {...}</code> 块表示其中代码并行执行：具体而言，六个实例并发运行，意味着执行环境从主机过渡到设备。这里也正是核函数启动发生的地方：多个实例同时在设备上发起以执行计算。</p>
+<p><code>parallel p by 6 {...}</code> 块表示其中代码并行执行：具体而言，六个实例并发运行，意味着执行环境从主机过渡到设备。对熟悉 <em>CUDA</em> 的读者而言，该概念类似于核启动，即在设备上同时发起多个线程或进程以执行计算。</p>
 <p>在 <code>parallel-by</code> 块内，<code>with-in</code> 块将符号 <code>index</code> 绑定到两个值 <code>17</code> 与 <code>4</code>。在 Choreo 中，<code>index</code> 称为具有两个 <code>bounded</code> 值的 <code>bounded-ituple</code>，可用于 <code>foreach</code> 语句。（<code>bounded</code> 类型将在后续章节说明。）</p>
 <p><code>foreach index {...}</code> 语句与下列 C 代码等价：</p>
 <pre class="highlight"><code class="language-cpp">for (int x = 0; x &lt; 17; x++)  // assume 'x' represents the 1st element of 'index'

@@ -2647,7 +2647,7 @@ In this way, it also make host and choreo code be controlled within the same pre
 <pre class="highlight"><code>chore-preprocessing -&gt; choreo compilation -&gt; c/c++ preprocessing -&gt; c/c++ compilation</code></pre>
 <p>The primary target of choreo preprocessing is to make host/device macros work as a whole, but such a workflow makes it possible sometimes different. From an implementation perspective, Choreo pre-processor only substitute/conditionally-compile code inside the tileflow function, while leaving other pre-processing to the C++ preprocessor. That could restrict Choreo pre-processing in a limited scope.</p>
 <h2 id="pre-defined-macros">Pre-defined Macros<a class="headerlink" href="#pre-defined-macros" title="Permanent link">&para;</a></h2>
-<p>To mimic a target native compilation, choreo preprocess also takes the builtin macros from the target: the target identity macros are globally defined, and the architecture macro is set only while compiling device code.
+<p>To mimic a target native compilation, choreo preprocess also takes the builtin macros from the target. For example, <code>__CUDA__</code> is globally defined to generate CUDA/Cute code, while <code>__CUDA_ARCH__</code> is only set for CUDA/Cute device code compilation.
 Consequently, these macros can be utilized inside tileflow functions as well as the host code.</p>
 
 

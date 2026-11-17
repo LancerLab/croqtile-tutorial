@@ -2680,7 +2680,7 @@ mma.scale mc, sc_a, sc_b;</code></pre>
 <p>The standalone <code>mma.scale</code> appears in some MoE and mixed-precision kernels.</p>
 <p><strong>Swizzled loads and transposed stores.</strong> When a staging buffer uses a swizzle pattern (<a href="../ch07-advanced-movement/">Chapter 7</a>), the MMA load must use the matching swizzle mode: <code>mma.load.swiz&lt;N&gt;</code>. The <code>&lt;N&gt;</code> must agree between <code>dma.copy.swiz&lt;N&gt;</code> and <code>mma.load.swiz&lt;N&gt;</code> — a mismatch reads garbage. For output, <code>mma.store.transp mc, dst</code> writes the accumulator with rows and columns swapped, useful when the next stage expects column-major data.</p>
 <p><strong>Pipeline synchronization.</strong> In pipelined kernels where a producer and a consumer region overlap (<a href="../ch06-synchronization/">Chapter 6</a>), <code>mma.commit</code> marks the boundary between "done reading this K-slab's operands" and "safe to reuse the staged buffer." It is mandatory glue in event-driven pipelines.</p>
-<p>These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the hardware. The table below collects every variant for reference.</p>
+<p>These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the backend. The table below collects every variant for reference.</p>
 <h2 id="new-syntax">New syntax<a class="headerlink" href="#new-syntax" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

@@ -2683,9 +2683,9 @@
 <pre class="highlight"><code class="language-choreo">assert(stage &lt; MATMUL_STAGES, "stage index out of bounds");</code></pre>
 <p>在设备上，这会编译为先 <code>printf</code> 消息再 <code>abort</code>。可用断言尽早捕获越界索引、空指针及其他「本不应发生」的情形。</p>
 <h2 id="-v">详细模式：<code>-v</code><a class="headerlink" href="#-v" title="Permanent link">&para;</a></h2>
-<p>向编译器传入 <code>-v</code>（或 <code>--verbose</code>）可查看其调用的外部命令——哪个预处理器、哪个代码生成器、哪次 <code>nvcc</code> 调用：</p>
+<p>向编译器传入 <code>-v</code>（或 <code>--verbose</code>）可查看其调用的外部命令——哪个预处理器、哪个代码生成器、哪次目标编译器调用：</p>
 <pre class="highlight"><code class="language-bash">croq kernel.co -v -o kernel</code></pre>
-<p>当你怀疑编译器向 <code>nvcc</code> 传错了标志，或需要查看生成文件的确切路径以便手动检查时，这很有用。</p>
+<p>当你怀疑编译器向目标编译器传错了标志，或需要查看生成文件的确切路径以便手动检查时，这很有用。</p>
 <h2 id="-rtc">运行时检查：<code>-rtc</code><a class="headerlink" href="#-rtc" title="Permanent link">&para;</a></h2>
 <p>编译器支持通过 <code>-rtc</code>（或 <code>--runtime-check</code>）进行分级运行时检查：</p>
 <pre class="highlight"><code class="language-bash">croq kernel.co -rtc=high -o kernel</code></pre>

@@ -2568,8 +2568,8 @@
 This is essential for overlapping computation with data transfers or launching
 independent kernels concurrently.</p>
 <h3 id="stream-binding">Stream Binding<a class="headerlink" href="#stream-binding" title="Permanent link">&para;</a></h3>
-<p>Streams allow multiple kernels and memory transfers to execute concurrently on the
-device. In Choreo, you can bind a <code>parallel-by</code> block to a specific stream
+<p>CUDA streams allow multiple kernels and memory transfers to execute concurrently
+on the GPU. In Choreo, you can bind a <code>parallel-by</code> block to a specific stream
 using angle-bracket syntax:</p>
 <pre class="highlight"><code class="language-choreo">__co__ void foo(stream s0, stream s1, f32[M] a, f32[N] b) {
   parallel.async&lt;s0&gt; p by M : block {
@@ -2586,7 +2586,7 @@ using angle-bracket syntax:</p>
 <li><strong><code>parallel.async&lt;s1&gt;</code></strong>: Launches a second kernel on stream <code>s1</code>.</li>
 </ul>
 <p>Since both kernels are launched on different streams with <code>.async</code>, they can
-execute concurrently on the device.</p>
+execute concurrently on the GPU.</p>
 <h3 id="stream-binding-without-async">Stream Binding without <code>.async</code><a class="headerlink" href="#stream-binding-without-async" title="Permanent link">&para;</a></h3>
 <p>Stream binding also works with synchronous <code>parallel-by</code>. In this case, the host
 launches the kernel on the specified stream and then waits for that stream to

@@ -2671,7 +2671,7 @@ s16 [shape, 8] data3;           // shaped as [72, 14, 8]</code></pre>
 <pre class="highlight"><code class="language-choreo">global f32 [32, 7, 2] a;
 shared u8 [512, 144] b;
 local u8 [72, 1024] c;</code></pre>
-<p>由于 Choreo 在异构上下文中处理存储，未带存储说明符的缓冲区定义默认采用主机程序的存储类型，即 CPU 内存。其余存储说明符由目标平台定义。例如，面向加速器硬件的目标支持：</p>
+<p>由于 Choreo 在异构上下文中处理存储，未带存储说明符的缓冲区定义默认采用主机程序的存储类型，即 CPU 内存。其余存储说明符由目标平台定义。例如，面向 GPU 硬件的 <em>Cuda/Cute</em> 支持：</p>
 <ul>
 <li><em>global</em>：设备全局存储。</li>
 <li><em>shared</em>：设备线程块共享存储。</li>

@@ -2698,8 +2698,8 @@
 <li>The Tileflow Program</li>
 </ul>
 <h3 id="host-device-and-tileflow">Host, Device and Tileflow<a class="headerlink" href="#host-device-and-tileflow" title="Permanent link">&para;</a></h3>
-<p>The code below showcases a <em>Choreo-C++</em> program:</p>
-<pre class="highlight"><code class="language-choreo">// Device program: runs on the target device
+<p>The code below showcases a <em>Choreo-C++</em> program targeting <em>CUDA/Cute</em>:</p>
+<pre class="highlight"><code class="language-choreo">// Device program: typically runs on GPU/NPU
 __device__ void device_function(...) {
   // High-performance device kernel implementation
 }
@@ -2722,9 +2722,9 @@ void main() {
 <p>The <em>Host Program</em> serves as the entry point of the <em>Choreo-C++</em> module/program and is the caller of the <em>Tileflow</em> Program (Choreo Functions). Written in standard C++, it runs on the CPU and manages the overall workflow of the heterogeneous application.</p>
 <p>In a simple high-performance kernel implementation, programmers typically prepare the necessary data in the host program to invoke <em>Choreo functions</em> and handel their return values to advance further steps.</p>
 <p><strong>Device Program</strong></p>
-<p>The <em>Device Program</em> defines computation-intensive operations executed on the target device. In the example above, the device function is prefixed with <code>__device__</code>, indicating it runs exclusively on the heterogeneous device. Similar to the <em>host program</em>, any device program is not altered in Choreo compilation process.</p>
+<p>The <em>Device Program</em> defines computation-intensive operations executed on the target device. In the example above, the device function is prefixed with <code>__device__</code>, which is an keyword from <em>CUDA/Cute</em>, indicating it runs exclusively on the heterogeneous device. Similar to the <em>host program</em>, any device program is not altered in Choreo compilation process.</p>
 <p><strong>Tileflow Program</strong></p>
-<p>You may already be acquainted with host programs and device programs. However, the <em>Tileflow Program</em>, composed of <em>Choreo functions</em> (prefixed with <code>__co__</code>), is the core of <em>Choreo-C++</em> programs. It orchestrates data movement among different hosts/devices and among different storage levels within a single device. In a typical workflow, the Tileflow program moves data to an appropriate storage location (as buffer) and calls <em>device programs</em> to perform computations. Once the work is complete, it moves the results back to the host.</p>
+<p>Those familiar with <em>CUDA/Cute</em> may already be acquainted with host programs and device programs. However, the <em>Tileflow Program</em>, composed of <em>Choreo functions</em> (prefixed with <code>__co__</code>), is the core of <em>Choreo-C++</em> programs. It orchestrates data movement among different hosts/devices and among different storage levels within a single device. In a typical workflow, the Tileflow program moves data to an appropriate storage location (as buffer) and calls <em>device programs</em> to perform computations. Once the work is complete, it moves the results back to the host.</p>
 <h3 id="transpilation-and-compilation">Transpilation and Compilation<a class="headerlink" href="#transpilation-and-compilation" title="Permanent link">&para;</a></h3>
 <p>The Choreo compilation process typically involves three major steps: <strong>Pre-processing</strong>, <strong>Transpilation</strong>, and <strong>Target Compilation</strong>. To better understand how different parts of a Choreo-C++ program work together, the full compilation workflow is illustrated below:</p>
 <p><img alt="Choreo-Workflow" src="../assets/figures/compile-workflow.drawio.png" /></p>
@@ -2732,8 +2732,8 @@ void main() {
 <p>Thus, the Choreo compiler functions as a end-to-end compiler, with the key step being the transpilation of the <em>tileflow program</em> into <em>choreo-generated code</em>.</p>
 <p>One notable feature of Choreo compilation is its support for both:</p>
 <ul>
-<li><strong>Single Source Compilation Model</strong>: The target compiler allows device and host programs to be in a single source file for target compilation.</li>
-<li><strong>Separate Source Compilation Model</strong>: Host and device code must be compiled separately.</li>
+<li><strong>Single Source Compilation Model</strong>: Similar to <em>CUDA/Cute</em>, where the target compiler allows device and host programs to be in a single source file for target compilation.</li>
+<li><strong>Separate Source Compilation Model</strong>: Similar to <em>OpenCL</em>, where host and device code must be compiled separately.</li>
 </ul>
 <p>The code shown above naturally supports the <em>Single Source Compilation Model</em>. However, to support the <em>Separate Source Compilation Model</em>, Choreo requires wrapping the Device Program with the <code>__cok__</code> block, as shown below:</p>
 <pre class="highlight"><code class="language-choreo">__cok__ {
@@ -2839,7 +2839,7 @@ spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_
 <p>One important detail is that the output of the choreo function is of type <code>choreo::spanned_data</code>. Unlike <code>choreo::spanned_view</code>, which does not own the buffer memory of the data it points to, <code>choreo::spanned_data</code> owns the buffer. This ensures that the subsequent data verification process is applied to valid memory. The <code>choreo::spanned_view</code> provides rich APIs, supporting C-style array indexing and shape queries via the member function <code>.shape()</code>.</p>
 <p>Similarly, the most significant dimension is listed first in this shape array (<code>res.shape()[0]</code> in this case). Choreo follows a '<strong>most-significant-dimension-major</strong>' ordering, also known as '<strong>row-major</strong>' ordering, where the first dimension varies the slowest.</p>
 <h3 id="device-program-parallel-computation">Device Program: Parallel Computation<a class="headerlink" href="#device-program-parallel-computation" title="Permanent link">&para;</a></h3>
-<p>The <strong>device program</strong> defines the computational kernel that will be executed on the target device. The kernel is designed to operate on input data, process it in parallel, and generate the output.</p>
+<p>The <strong>device program</strong> defines the computational kernel that will be executed on the target device such as a GPU. The kernel is designed to operate on input data, process it in parallel, and generate the output.</p>
 <p>We repeat the code as below:</p>
 <pre class="highlight"><code class="language-choreo">__device__ void kernel(int * a, int * b, int * c, int n) {
   for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
@@ -2850,9 +2850,9 @@ spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_
     for (int i = 0; i &lt; n; ++i) c[i] = a[i] + b[i];
   }
 } // end of __cok__</code></pre>
-<p>Here, the <code>extern "C"</code> annotation replaces the <code>__device__</code> keyword, because a target that compiles device code separately requires C linkage for the device functions.</p>
+<p>Here, the <code>extern "C"</code> annotation replaces the <code>__device__</code> keyword used in <em>CUDA/Cute</em> target, as <em>OpenCL</em> requires C-linkage for the device functions.</p>
 <p>Choreo's device programming model varies depending on the target hardware and its supported features. For example, some private targets allows the use of vectorizing programming interfaces, or <em>intrinsic function</em> to fully leverage the computational power of the parallel target hardware.</p>
-<p>Programmers must be aware that the device program follows the <em>Single-Program-Multiple-Data (SPMD)</em> paradigm. In this paradigm, multiple instances of the same device program are executed in parallel, making it highly efficient for exploiting data-level parallelism on target hardware. However, unlike a conventional device program, it does not manage data movement —whether between the host and device or across multiple storage levels within the device. Instead, the <em>tileflow program</em> orchestrates these tasks in a much simpler and safer manner.</p>
+<p>Programmers must be aware that the device program follows the <em>Single-Program-Multiple-Data (SPMD)</em> paradigm. In this paradigm, multiple instances of the same device program are executed in parallel, making it highly efficient for exploiting data-level parallelism on target hardware. However, unlike traditional <em>CUDA/Cute</em> programs, the device program does not manage data movement —whether between the host and device or across multiple storage levels within the device. Instead, the <em>tileflow program</em> orchestrates these tasks in a much simpler and safer manner.</p>
 <h3 id="tileflow-program-orchestrating-the-data-movement">Tileflow Program: Orchestrating the Data Movement<a class="headerlink" href="#tileflow-program-orchestrating-the-data-movement" title="Permanent link">&para;</a></h3>
 <p>The <em>Tileflow Program</em> consists of <em>Choreo functions</em>. As described earlier, it manages the movement of data between the host and the target device, ensuring that data is copied correctly across different storage locations.</p>
 <p>For convenience, let’s revisit the code:</p>
@@ -2879,7 +2879,7 @@ spanned_view&lt;T, Rank&gt; make_spanview(T* ptr, std::initializer_list&lt;size_
   return output;
 }</code></pre>
 <p>In this code, the <code>__co__</code>-prefixed choreo function accepts two inputs <code>lhs</code> and <code>rhs</code>, both with the shape <code>[6, 17, 128]</code> and the element type of <code>s32</code> (signed 32-bit integer). And the output is defined to have the same shape and type as the inputs.</p>
-<p>The <code>parallel p by 6 {...}</code> block indicates that the enclosed code runs in parallel. Specifically, six instances of the code are executed concurrently. This implies a transition in the execution environment from the host to the device. This is also where the kernel launch happens: many instances are initiated to perform computations simultaneously on the device.</p>
+<p>The <code>parallel p by 6 {...}</code> block indicates that the enclosed code runs in parallel. Specifically, six instances of the code are executed concurrently. This implies a transition in the execution environment from the host to the device. For those familiar with <em>CUDA</em>, this concept is analogous to a kernel launch, where multiple threads or processes are initiated to perform computations simultaneously on the device.</p>
 <p>Inside the <code>parallel-by</code> block, a <code>with-in</code> block binds the symbol <code>index</code> to two values, <code>17</code> and <code>4</code>. In Choreo, <code>index</code> is referred to as a <code>bounded-ituple</code> with two <code>bounded</code> values, which can be used in <code>foreach</code> statements. (We will explain <code>bounded</code> types in later chapters.)</p>
 <p>The <code>foreach index {...}</code> statement is equivalent to the following C code:</p>
 <pre class="highlight"><code class="language-cpp">for (int x = 0; x &lt; 17; x++)  // assume 'x' represents the 1st element of 'index'

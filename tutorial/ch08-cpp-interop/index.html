@@ -2639,7 +2639,7 @@
 
 
 <h1 id="c-interop-device-functions-inline-code-and-the-preprocessor">C++ Interop: Device Functions, Inline Code, and the Preprocessor<a class="headerlink" href="#c-interop-device-functions-inline-code-and-the-preprocessor" title="Permanent link">&para;</a></h1>
-<p>Every high-level language needs an escape hatch to the layer below. Python has <code>ctypes</code> and C extensions. Rust has <code>unsafe</code> blocks and <code>extern "C"</code>. Java has JNI. The reason is always the same: no matter how expressive the abstraction, some hardware feature, some legacy library, some performance-critical intrinsic lives outside the language's domain.</p>
+<p>Every high-level language needs an escape hatch to the layer below. Python has <code>ctypes</code> and C extensions. Rust has <code>unsafe</code> blocks and <code>extern "C"</code>. Java has JNI. The reason is always the same: no matter how expressive the abstraction, some machine feature, some legacy library, some performance-critical intrinsic lives outside the language's domain.</p>
 <p>Croqtile's interoperability story has three parts:</p>
 <ol>
 <li><strong><code>__device__</code> functions</strong> — device functions that coexist with <code>__co__</code> functions in the same <code>.co</code> file. The compiler passes them through unchanged.</li>
