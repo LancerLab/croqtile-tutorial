@@ -12,7 +12,7 @@ Figure~\ref{fig:f05-fig1_virtual_parallelism} shows the same work at three width
 \label{fig:f05-fig1_virtual_parallelism}
 \end{figure}
 
-Parallelism describes which tasks can be independent. The execution resources determine how many of those tasks can make progress at once.
+Parallelism describes which tasks can be independent. The execution resources determine how many of those tasks can make progress at once. When you write "these eight tasks are independent," you are making a statement about the \emph{logic} of your program, not about the machine. The machine decides how many actually run simultaneously, based on how many execution slots it has and how the scheduler assigns work.
 
 This distinction matters because many parallel languages conflate the two. In a language whose launch syntax doubles as its work description, one statement declares both the logical structure (how many instances) and the physical mapping (how many blocks, how many threads per block). Changing the tiling then forces a change to the launch configuration: the logical and physical are tangled together.
 

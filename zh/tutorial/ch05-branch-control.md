@@ -21,7 +21,7 @@ Croqtile 引入另外两种控制流原语来填补这一空白：
 
 ```choreo
 if (tile_id < total_tiles) {
-  // body executes only when the condition is true
+  // 条件为真时才执行函数体
 }
 ```
 

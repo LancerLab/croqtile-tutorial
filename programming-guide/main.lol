@@ -67,33 +67,33 @@
 \contentsline {lstlisting}{\numberline {2.52}A declaration without a specifier}{24}{lstlisting.2.52}%
 \contentsline {lstlisting}{\numberline {2.53}Choosing local storage explicitly}{24}{lstlisting.2.53}%
 \contentsline {lstlisting}{\numberline {2.54}Example Code: Using Storage Qualifiers}{24}{lstlisting.2.54}%
-\contentsline {lstlisting}{\numberline {2.55}Croqtile's Two-Layer Parallelism Model}{25}{lstlisting.2.55}%
+\contentsline {lstlisting}{\numberline {2.55}Croqtile's Two-Layer Parallelism Model}{24}{lstlisting.2.55}%
 \contentsline {lstlisting}{\numberline {2.56}: block --- Blocks}{25}{lstlisting.2.56}%
-\contentsline {lstlisting}{\numberline {2.57}: thread --- Threads Within a Block}{26}{lstlisting.2.57}%
+\contentsline {lstlisting}{\numberline {2.57}: thread --- Threads Within a Block}{25}{lstlisting.2.57}%
 \contentsline {lstlisting}{\numberline {2.58}Nesting Specifiers}{26}{lstlisting.2.58}%
-\contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{27}{lstlisting.2.59}%
+\contentsline {lstlisting}{\numberline {2.59}Parallel Region: the parallel-by Block}{26}{lstlisting.2.59}%
 \contentsline {lstlisting}{\numberline {2.60}Indexing a with-in block}{27}{lstlisting.2.60}%
 \contentsline {lstlisting}{\numberline {2.61}A tuple of indices}{27}{lstlisting.2.61}%
 \contentsline {lstlisting}{\numberline {2.62}Indices derived from a tuple}{27}{lstlisting.2.62}%
 \contentsline {lstlisting}{\numberline {2.63}Nested bounded groups}{27}{lstlisting.2.63}%
-\contentsline {lstlisting}{\numberline {2.64}The foreach Block}{28}{lstlisting.2.64}%
+\contentsline {lstlisting}{\numberline {2.64}The foreach Block}{27}{lstlisting.2.64}%
 \contentsline {lstlisting}{\numberline {2.65}A named parallel index}{28}{lstlisting.2.65}%
 \contentsline {lstlisting}{\numberline {2.66}An unnamed parallel index}{28}{lstlisting.2.66}%
 \contentsline {lstlisting}{\numberline {2.67}One parallel level}{28}{lstlisting.2.67}%
-\contentsline {lstlisting}{\numberline {2.68}Two parallel levels}{29}{lstlisting.2.68}%
+\contentsline {lstlisting}{\numberline {2.68}Two parallel levels}{28}{lstlisting.2.68}%
 \contentsline {lstlisting}{\numberline {2.69}Sub-Level Parallelism}{29}{lstlisting.2.69}%
-\contentsline {lstlisting}{\numberline {2.70}A foreach loop}{30}{lstlisting.2.70}%
-\contentsline {lstlisting}{\numberline {2.71}The equivalent C++ loop}{30}{lstlisting.2.71}%
+\contentsline {lstlisting}{\numberline {2.70}A foreach loop}{29}{lstlisting.2.70}%
+\contentsline {lstlisting}{\numberline {2.71}The equivalent C++ loop}{29}{lstlisting.2.71}%
 \contentsline {lstlisting}{\numberline {2.72}A bounded variable}{30}{lstlisting.2.72}%
 \contentsline {lstlisting}{\numberline {2.73}A tuple of bounded variables}{30}{lstlisting.2.73}%
-\contentsline {lstlisting}{\numberline {2.74}A variable derived from a tuple}{31}{lstlisting.2.74}%
-\contentsline {lstlisting}{\numberline {2.75}Indexing one shape}{31}{lstlisting.2.75}%
+\contentsline {lstlisting}{\numberline {2.74}A variable derived from a tuple}{30}{lstlisting.2.74}%
+\contentsline {lstlisting}{\numberline {2.75}Indexing one shape}{30}{lstlisting.2.75}%
 \contentsline {lstlisting}{\numberline {2.76}A tuple of indices}{31}{lstlisting.2.76}%
 \contentsline {lstlisting}{\numberline {2.77}The generated C++ loop}{31}{lstlisting.2.77}%
 \contentsline {lstlisting}{\numberline {2.78}Several bounded groups}{31}{lstlisting.2.78}%
 \contentsline {lstlisting}{\numberline {2.79}The generated inner loop}{31}{lstlisting.2.79}%
-\contentsline {lstlisting}{\numberline {2.80}A foreach loop}{32}{lstlisting.2.80}%
-\contentsline {lstlisting}{\numberline {2.81}The with-in form it expands to}{32}{lstlisting.2.81}%
+\contentsline {lstlisting}{\numberline {2.80}A foreach loop}{31}{lstlisting.2.80}%
+\contentsline {lstlisting}{\numberline {2.81}The with-in form it expands to}{31}{lstlisting.2.81}%
 \contentsline {lstlisting}{\numberline {2.82}A tuple of bounded variables}{32}{lstlisting.2.82}%
 \contentsline {lstlisting}{\numberline {2.83}The derived C++ loop}{32}{lstlisting.2.83}%
 \contentsline {lstlisting}{\numberline {2.84}The bounded-variable syntax}{32}{lstlisting.2.84}%
@@ -101,58 +101,58 @@
 \contentsline {lstlisting}{\numberline {2.86}subspan(...).at(...): explicit tile extents on a tile grid}{33}{lstlisting.2.86}%
 \contentsline {lstlisting}{\numberline {2.87}view(...).from(...): explicit tile extents with explicit element offsets}{34}{lstlisting.2.87}%
 \contentsline {lstlisting}{\numberline {2.88}Compose: outer inner}{34}{lstlisting.2.88}%
-\contentsline {lstlisting}{\numberline {2.89}Extent: name}{35}{lstlisting.2.89}%
-\contentsline {lstlisting}{\numberline {2.90}Bounded-ituple/integer and chunkat Operation}{35}{lstlisting.2.90}%
+\contentsline {lstlisting}{\numberline {2.89}Extent: name}{34}{lstlisting.2.89}%
+\contentsline {lstlisting}{\numberline {2.90}Bounded-ituple/integer and chunkat Operation}{36}{lstlisting.2.90}%
 \contentsline {lstlisting}{\numberline {2.91}Ubound Operation}{36}{lstlisting.2.91}%
-\contentsline {lstlisting}{\numberline {2.92}Use chunkat Expression to Tile Data}{37}{lstlisting.2.92}%
-\contentsline {lstlisting}{\numberline {2.93}Use Multiple Bounded Variables}{38}{lstlisting.2.93}%
+\contentsline {lstlisting}{\numberline {2.92}Use chunkat Expression to Tile Data}{36}{lstlisting.2.92}%
+\contentsline {lstlisting}{\numberline {2.93}Use Multiple Bounded Variables}{37}{lstlisting.2.93}%
 \contentsline {lstlisting}{\numberline {2.94}The general DMA form}{38}{lstlisting.2.94}%
-\contentsline {lstlisting}{\numberline {2.95}A concrete copy}{39}{lstlisting.2.95}%
-\contentsline {lstlisting}{\numberline {2.96}Tiled Addition Through Shared Storage}{39}{lstlisting.2.96}%
-\contentsline {lstlisting}{\numberline {2.97}A future from a copy}{40}{lstlisting.2.97}%
-\contentsline {lstlisting}{\numberline {2.98}Reading data and span}{40}{lstlisting.2.98}%
+\contentsline {lstlisting}{\numberline {2.95}A concrete copy}{38}{lstlisting.2.95}%
+\contentsline {lstlisting}{\numberline {2.96}First Example: Tiled Addition Through Shared Storage}{39}{lstlisting.2.96}%
+\contentsline {lstlisting}{\numberline {2.97}A future from a copy}{39}{lstlisting.2.97}%
+\contentsline {lstlisting}{\numberline {2.98}Reading data and span}{39}{lstlisting.2.98}%
 \contentsline {lstlisting}{\numberline {2.99}A synchronous copy}{40}{lstlisting.2.99}%
-\contentsline {lstlisting}{\numberline {2.100}An asynchronous copy}{41}{lstlisting.2.100}%
-\contentsline {lstlisting}{\numberline {2.101}An asynchronous copy}{41}{lstlisting.2.101}%
+\contentsline {lstlisting}{\numberline {2.100}An asynchronous copy}{40}{lstlisting.2.100}%
+\contentsline {lstlisting}{\numberline {2.101}An asynchronous copy}{40}{lstlisting.2.101}%
 \contentsline {lstlisting}{\numberline {2.102}dma.transp ...}{41}{lstlisting.2.102}%
-\contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{42}{lstlisting.2.103}%
+\contentsline {lstlisting}{\numberline {2.103}dma.pad ...}{41}{lstlisting.2.103}%
 \contentsline {lstlisting}{\numberline {2.104}The tileflow program}{42}{lstlisting.2.104}%
 \contentsline {lstlisting}{\numberline {2.105}The equivalent C++ loop}{42}{lstlisting.2.105}%
-\contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{44}{lstlisting.2.106}%
+\contentsline {lstlisting}{\numberline {2.106}Basic Syntax}{43}{lstlisting.2.106}%
 \contentsline {lstlisting}{\numberline {2.107}Synchronous and Asynchronous}{44}{lstlisting.2.107}%
-\contentsline {lstlisting}{\numberline {2.108}Data Expression}{45}{lstlisting.2.108}%
+\contentsline {lstlisting}{\numberline {2.108}Data Expression}{44}{lstlisting.2.108}%
 \contentsline {lstlisting}{\numberline {2.109}Two asynchronous copies}{45}{lstlisting.2.109}%
 \contentsline {lstlisting}{\numberline {2.110}Waiting on both futures}{45}{lstlisting.2.110}%
-\contentsline {lstlisting}{\numberline {2.111}Parallel Perspective of Tileflow Programs}{46}{lstlisting.2.111}%
-\contentsline {lstlisting}{\numberline {2.112}Implicit Masking}{47}{lstlisting.2.112}%
+\contentsline {lstlisting}{\numberline {2.111}Parallel Perspective of Tileflow Programs}{45}{lstlisting.2.111}%
+\contentsline {lstlisting}{\numberline {2.112}Implicit Masking}{46}{lstlisting.2.112}%
 \contentsline {lstlisting}{\numberline {2.113}Declaring a shared event}{47}{lstlisting.2.113}%
 \contentsline {lstlisting}{\numberline {2.114}Declaring an event array}{47}{lstlisting.2.114}%
-\contentsline {lstlisting}{\numberline {2.115}Triggering an event array}{48}{lstlisting.2.115}%
-\contentsline {lstlisting}{\numberline {2.116}Waiting on an event}{48}{lstlisting.2.116}%
+\contentsline {lstlisting}{\numberline {2.115}Triggering an event array}{47}{lstlisting.2.115}%
+\contentsline {lstlisting}{\numberline {2.116}Waiting on an event}{47}{lstlisting.2.116}%
 \contentsline {lstlisting}{\numberline {2.117}Event arrays for multi-stage pipelines}{48}{lstlisting.2.117}%
 \contentsline {lstlisting}{\numberline {2.118}Bootstrap protocol}{48}{lstlisting.2.118}%
-\contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{49}{lstlisting.2.119}%
+\contentsline {lstlisting}{\numberline {2.119}Predicated execution with if}{48}{lstlisting.2.119}%
 \contentsline {lstlisting}{\numberline {2.120}Early return from parallel}{49}{lstlisting.2.120}%
-\contentsline {lstlisting}{\numberline {2.121}Tile geometry as macros}{51}{lstlisting.2.121}%
+\contentsline {lstlisting}{\numberline {2.121}Tile geometry as macros}{50}{lstlisting.2.121}%
 \contentsline {lstlisting}{\numberline {2.122}Compile-time assertions with error}{51}{lstlisting.2.122}%
 \contentsline {lstlisting}{\numberline {2.123}Conditional code paths}{51}{lstlisting.2.123}%
-\contentsline {lstlisting}{\numberline {2.124}Calling C++ Functions}{52}{lstlisting.2.124}%
+\contentsline {lstlisting}{\numberline {2.124}Calling C++ Functions}{51}{lstlisting.2.124}%
 \contentsline {lstlisting}{\numberline {2.125}An object-like macro}{52}{lstlisting.2.125}%
 \contentsline {lstlisting}{\numberline {2.126}A macro with parameters}{52}{lstlisting.2.126}%
-\contentsline {lstlisting}{\numberline {2.127}Conditional Compilation}{53}{lstlisting.2.127}%
+\contentsline {lstlisting}{\numberline {2.127}Conditional Compilation}{52}{lstlisting.2.127}%
 \contentsline {lstlisting}{\numberline {2.128}The general call syntax}{53}{lstlisting.2.128}%
-\contentsline {lstlisting}{\numberline {2.129}An illegal call site}{54}{lstlisting.2.129}%
+\contentsline {lstlisting}{\numberline {2.129}An illegal call site}{53}{lstlisting.2.129}%
 \contentsline {lstlisting}{\numberline {2.130}The Convention: Allowed Argument Types}{54}{lstlisting.2.130}%
-\contentsline {lstlisting}{\numberline {2.131}A compile-time shape print}{55}{lstlisting.2.131}%
-\contentsline {lstlisting}{\numberline {2.132}The printed shape}{55}{lstlisting.2.132}%
+\contentsline {lstlisting}{\numberline {2.131}A compile-time shape print}{54}{lstlisting.2.131}%
+\contentsline {lstlisting}{\numberline {2.132}The printed shape}{54}{lstlisting.2.132}%
 \contentsline {lstlisting}{\numberline {2.133}A runtime inspect kernel}{55}{lstlisting.2.133}%
 \contentsline {lstlisting}{\numberline {2.134}A print inside a parallel block}{55}{lstlisting.2.134}%
-\contentsline {lstlisting}{\numberline {2.135}assert: runtime invariant checks}{56}{lstlisting.2.135}%
+\contentsline {lstlisting}{\numberline {2.135}assert: runtime invariant checks}{55}{lstlisting.2.135}%
 \contentsline {lstlisting}{\numberline {3.1}Transpilation and Compilation}{59}{lstlisting.3.1}%
 \contentsline {lstlisting}{\numberline {3.2}A device helper called from tileflow}{59}{lstlisting.3.2}%
 \contentsline {lstlisting}{\numberline {3.3}The cok wrapper for separate sources}{60}{lstlisting.3.3}%
 \contentsline {lstlisting}{\numberline {3.4}Heterogeneity: Transpiling to program launch}{60}{lstlisting.3.4}%
-\contentsline {lstlisting}{\numberline {3.5}Embedding Croqtile within C++}{62}{lstlisting.3.5}%
+\contentsline {lstlisting}{\numberline {3.5}Embedding Croqtile within C++}{61}{lstlisting.3.5}%
 \contentsline {lstlisting}{\numberline {3.6}An mdspan declaration}{63}{lstlisting.3.6}%
 \contentsline {lstlisting}{\numberline {3.7}A shape literal}{63}{lstlisting.3.7}%
 \contentsline {lstlisting}{\numberline {3.8}A shape with one dimension changed}{63}{lstlisting.3.8}%
@@ -171,18 +171,18 @@
 \contentsline {lstlisting}{\numberline {3.21}The simplified graph}{71}{lstlisting.3.21}%
 \contentsline {lstlisting}{\numberline {3.22}The folded graph}{71}{lstlisting.3.22}%
 \contentsline {lstlisting}{\numberline {3.23}Explicit Masking/Condition}{74}{lstlisting.3.23}%
-\contentsline {lstlisting}{\numberline {3.24}Implicit Masking}{74}{lstlisting.3.24}%
+\contentsline {lstlisting}{\numberline {3.24}Implicit Masking}{75}{lstlisting.3.24}%
 \contentsline {lstlisting}{\numberline {3.25}Experimental: Optional Where-Binding for within}{75}{lstlisting.3.25}%
 \contentsline {lstlisting}{\numberline {3.26}Masking for Multi-Levels}{76}{lstlisting.3.26}%
 \contentsline {lstlisting}{\numberline {3.27}Scalar Matmul (No DMA)}{77}{lstlisting.3.27}%
-\contentsline {lstlisting}{\numberline {3.28}Tile and Flow}{79}{lstlisting.3.28}%
+\contentsline {lstlisting}{\numberline {3.28}Tile and Flow}{80}{lstlisting.3.28}%
 \contentsline {lstlisting}{\numberline {3.29}A window at a constant offset}{81}{lstlisting.3.29}%
 \contentsline {lstlisting}{\numberline {3.30}A window at a runtime offset}{81}{lstlisting.3.30}%
 \contentsline {lstlisting}{\numberline {3.31}Strided tiles: .subspan, .step, and .at}{82}{lstlisting.3.31}%
-\contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{82}{lstlisting.3.32}%
+\contentsline {lstlisting}{\numberline {3.32}A flat strip reinterpreted as a matrix}{83}{lstlisting.3.32}%
 \contentsline {lstlisting}{\numberline {3.33}A movement statement using the reinterpretation}{83}{lstlisting.3.33}%
 \contentsline {lstlisting}{\numberline {3.34}An asynchronous DMA declaration}{85}{lstlisting.3.34}%
-\contentsline {lstlisting}{\numberline {3.35}The same declaration with storage}{86}{lstlisting.3.35}%
+\contentsline {lstlisting}{\numberline {3.35}The same declaration with storage}{85}{lstlisting.3.35}%
 \contentsline {lstlisting}{\numberline {3.36}Operation Type}{86}{lstlisting.3.36}%
 \contentsline {lstlisting}{\numberline {3.37}Full Non-Blocking DMA Mode (Chain Mode in Croqtile)}{87}{lstlisting.3.37}%
 \contentsline {lstlisting}{\numberline {3.38}DMA Matmul: Tiles in Shared Storage}{87}{lstlisting.3.38}%
@@ -198,7 +198,7 @@
 \contentsline {lstlisting}{\numberline {3.48}One group, one tile: the simplest MMA matmul}{96}{lstlisting.3.48}%
 \contentsline {lstlisting}{\numberline {3.49}Structured concurrent regions with inthreads.async}{99}{lstlisting.3.49}%
 \contentsline {lstlisting}{\numberline {3.50}Inter-region signaling with events}{100}{lstlisting.3.50}%
-\contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{101}{lstlisting.3.51}%
+\contentsline {lstlisting}{\numberline {3.51}Make it Asynchronous}{102}{lstlisting.3.51}%
 \contentsline {lstlisting}{\numberline {3.52}Event Instances}{102}{lstlisting.3.52}%
 \contentsline {lstlisting}{\numberline {3.53}A single-instance deadlock}{102}{lstlisting.3.53}%
 \contentsline {lstlisting}{\numberline {3.54}One trigger per waiter}{103}{lstlisting.3.54}%

@@ -16,8 +16,6 @@ parallel p by 1 {
 
 两个线程都在等待同一个事件 \co@e@。由于 \co@wait@ 会复位事件，\co@thread-0@ 可能在 \co@thread-1@ 观察到触发之前就把它复位。这样一来，\co@thread-1@ 永远保持阻塞，程序死锁。
 
-并发区域严格同步执行时这类死锁不太可能出现，但对于高度异步的执行（例如 CPU 上的线程）并不是安全的代码。
-
 \begin{lstlisting}[language=croqtile,caption={一个触发、两个等待者}]
 qc = 2;
 parallel p by 1 {

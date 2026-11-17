@@ -8,8 +8,8 @@ if (tile_id < total_tiles) {
 }
 \end{lstlisting}
 
-All threads in scope evaluate the condition. Threads where it is false skip the body. --- Threads on the skipped side sit idle while the taken side runs, then vice versa. This is \textbf{divergence}, and it is the price of runtime flexibility.
+All threads in scope evaluate the condition. Threads where it is false skip the body. Inside one cooperating group, if some threads take the branch and others do not, the machine \textbf{serializes} the two paths --- threads on the skipped side sit idle while the taken side runs, then vice versa. This is \textbf{divergence}, and it is the price of runtime flexibility.
 
 Use \co@if@ for runtime decisions such as bounds checks and conditional accumulation. The condition may depend on the current tile coordinate or input values. Keep it uniform across a cooperating group when the body contains an operation that requires the group to participate together.
 
-\textbf{Cost model:} divergence inside a group serializes both paths. Divergence across groups (where the threads in each group agree) costs nothing --- The practical rule: keep \texttt{if} conditions \textbf{uniform across the cooperating group} whenever possible.
+\textbf{Cost model:} divergence inside a group serializes both paths. Divergence across groups (where the threads in each group agree) costs nothing --- the machine simply skips the not-taken path. The practical rule: keep \texttt{if} conditions \textbf{uniform across the cooperating group} whenever possible.

@@ -1,3 +1,3 @@
 \subsection*{\texttt{swap}: names, not bytes}
 
-\texttt{swap(lf0, lf1)} exchanges \textbf{future handles} --- the Croqtile-level names that refer to buffers. Only the names rotate. In a language with explicit buffer arrays, the same idiom is often a \texttt{\textasciicircum{} 1} buffer index or a boolean phase variable. For triple buffering, \texttt{rotate(f0, f1, f2)} cycles three handles in one step.
+\texttt{swap(lf0, lf1)} exchanges \textbf{future handles} --- the Croqtile-level names that refer to buffers. The staged contents stay where they were placed; only the names rotate. In a language with explicit buffer arrays, the same idiom is often a \texttt{\textasciicircum{} 1} buffer index or a boolean phase variable. For triple buffering, \texttt{rotate(f0, f1, f2)} cycles three handles in one step.

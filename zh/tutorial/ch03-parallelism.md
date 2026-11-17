@@ -93,7 +93,7 @@ parallel {px, py} by [8, 16] : block {
 
 **`ituple`** — `parallel {px, py} by [8, 16]` 中的 `{px, py}` 语法引入了一个 `ituple`（编译期整数元组）。组合运算符 `px#qx` 将两个 ituple 元素组合为全局索引。范围运算符 `#p` 提取并行变量的范围。这些都在编译期解析——没有运行时开销。
 
-完整细节请参阅 [mdspan 参考](../documentation/shape-in-choreo.md) 和 [ituple 参考](../documentation/integer-ituple.md)。目前的关键要点是：鳄霸在编译期捕获形状不匹配，而非在运行时。
+完整细节请参阅 [mdspan 参考](../documentation/shape-in-croqtile.md) 和 [ituple 参考](../documentation/integer-ituple.md)。目前的关键要点是：鳄霸在编译期捕获形状不匹配，而非在运行时。
 
 ## 矩阵乘法：综合运用
 

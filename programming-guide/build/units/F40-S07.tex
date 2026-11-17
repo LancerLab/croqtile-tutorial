@@ -16,5 +16,5 @@ The example combines \textbf{two bounded variables} to select tiles. The \textbf
 \begin{itemize}[leftmargin=1.6em]
 \item The combination of \texttt{q} and \texttt{n} ensures that physical and virtual parallelism can work together efficiently.
 \item This helps optimize \textbf{memory access patterns}, especially when working with large matrices, where efficient memory use is crucial.
-\item Croqtile's approach here is more aligned with a \textbf{physical storage hierarchy} (local, shared, and global storage). Unlike higher-level loop scheduling techniques that abstract away the actual data movement, Croqtile explicitly links \textbf{virtual loops} to \textbf{physical DMA operations}. This results in more efficient data movement and computation.
+\item Unlike higher-level loop scheduling techniques like in TVM, which abstract away the actual data movement, Croqtile explicitly links \textbf{virtual loops} to \textbf{physical DMA operations}. This results in more efficient data movement and computation.
 \end{itemize}

@@ -1,6 +1,6 @@
 # Data Movement: The Tile Movement Engine
 
-Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the hardware wants to move data. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.
+Chapter 1 used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the machine wants to move data. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic. It is organizing those block transfers so the compute units see data in the right memory level, in the right shape, at the right time.
 
 Croqtile makes that explicit. Instead of treating data movement as a hidden side effect of indexing, it gives you a small family of tile-movement statements:
 
@@ -56,7 +56,7 @@ h = dma.pad<{2, 1}, {3, 2}, {0, 0}, 0> tile => shared;
 
 The key shift from Chapter 1 is that these statements move shaped regions, not individual elements.
 
-## First Example: Tiled Addition Through Shared Memory
+## First Example: Tiled Addition Through Shared Storage
 
 Here is the same addition from Chapter 1, but staged through shared storage in tiles:
 

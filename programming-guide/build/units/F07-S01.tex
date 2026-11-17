@@ -2,7 +2,7 @@
 
 Every programming language that targets a parallel machine must answer one question: \textbf{what happens when different threads need to do different things?}
 
-On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. On a machine that shares one instruction pointer across a group of threads, the answer is deeply constrained. --- It must \textbf{serialize} the divergent paths and mask inactive threads.
+On a CPU, the answer is trivial --- each core has its own program counter, so each thread runs whatever code it likes. On a machine that shares one instruction pointer across a group of threads, the answer is deeply constrained. When a branch sends some threads one way and other threads another way, the machine cannot simply fork --- it must \textbf{serialize} the divergent paths and mask inactive threads. This is the fundamental tension: the machine wants uniformity, but real programs need heterogeneity.
 
 A machine like that exposes exactly one control-flow primitive for this: \texttt{if}. All threads evaluate the condition; threads where it is false are masked (deactivated); both paths execute sequentially within the group. This is \textbf{predicated execution} --- simple, universal, and sometimes ruinously expensive.
 
@@ -11,7 +11,7 @@ Predicated execution is not enough. Consider a matmul kernel where one group of 
 Croqtile introduces two additional control-flow primitives to fill this gap:
 
 \begin{itemize}[leftmargin=1.6em]
-\item \textbf{\texttt{inthreads.\allowbreak{}async}} --- \textbf{structured concurrent regions}: compile-time partitioning of threads into groups that run \textbf{different programs simultaneously}. The compiler generates separate instruction streams;
+\item \textbf{\texttt{inthreads.\allowbreak{}async}} --- \textbf{structured concurrent regions}: compile-time partitioning of threads into groups that run \textbf{different programs simultaneously}. The compiler generates separate instruction streams; the machine schedules them independently.
 \item \textbf{\texttt{shared event} / \texttt{wait} / \texttt{trigger}} --- \textbf{inter-region signaling}: lightweight synchronization tokens that let concurrent regions communicate safely.
 \end{itemize}
 

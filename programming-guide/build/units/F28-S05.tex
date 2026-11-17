@@ -1,6 +1,6 @@
 \subsection*{Operation Type}
 
-Beyond simple linear copies, a transfer can move shaped data and apply shape transformations in flight. Croqtile maps these capabilities at the software level as different \textbf{DMA Operation Types}. The supported operations include:
+Croqtile maps these functionalities at the software level as different \textbf{DMA Operation Types}. The supported operations include:
 
 \begin{itemize}[leftmargin=1.6em]
 \item \texttt{dma.copy}: Copies flat memory directly.
@@ -16,6 +16,6 @@ dma.transp<0, 2, 1> input => shared;  // Result shape [32, 9, 16]
 dma.pad<{1, 0, 3}, {0, 1, 2}, {0, 0, 0}, 0.1f> input => shared; // Result shape [33, 17, 14]
 \end{lstlisting}
 
-Here, the \textbf{DMA configuration}s are enclosed by \texttt{\textless{}\textgreater{}}. The configuration varies according to different operations. The detailed configuration syntax and limitations are target-specific; an example is listed below:
+Here, the \textbf{DMA configuration}s are enclosed by \texttt{\textless{}\textgreater{}}. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as , are listed below as an example:
 
-Programmers should note that support for DMA types other than \texttt{dma.copy} varies by platform: a transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads.
+Programmers should note that support for DMA types other than \texttt{dma.copy} varies by platform. For instance, a transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads.

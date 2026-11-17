@@ -465,6 +465,10 @@ def check():
         a = [x.split(':', 1)[0] for x in lines
              if not x.startswith('P: Figure ')]
         b = [x.split(':', 1)[0] for x in zh[k]]
+        # A paragraph the guide trims during generation (hardware clauses) can
+        # leave the template with a trailing P the translation does not carry.
+        while len(a) > len(b) and a[-1] == 'P':
+            a = a[:-1]
         if a != b:
             mismatch.append((k, a, b))
     bad = []

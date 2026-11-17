@@ -3,7 +3,7 @@ P: At its simplest a program has two parts. A `__co__` function describes comput
 
 === UID:F14-S03
 H: Host, Device and Tileflow
-P: The code below showcases a *Croqtile* program:
+P: Both of those parts are present here, but the ordinary C++ side is worth splitting once more: a `.co` file may also carry a `__device__` helper. The listing is written from the inside out --- a device helper, the `__co__` function that calls it, and the host `main()` that calls the `__co__` function.
 C: The three regions of one source file
 P: Execution starts at the bottom of the listing, in the host program. Written in standard C++ and run on the CPU, it is the entry point of the module and the caller of the Tileflow program --- the `__co__` functions --- and it manages the overall workflow of the heterogeneous application. A typical host body prepares the input data, invokes a Croqtile function, handles its return value and advances to the next step.
 P: The Tileflow program called from there is the part Croqtile adds. Built from `__co__` functions, it is the core of a `.co` program: it orchestrates data movement between host and device and between storage levels within a single device. A typical Tileflow body moves data into a buffer at the appropriate storage level, calls a device function to compute on it, and moves the result back to the host. It is the only region the compiler translates.
@@ -253,7 +253,7 @@ P: Both forms compile. The shape decides which one you get, not the type name.
 === UID:F18-S04
 P: In practical code, some buffer declarations must specify a **storage specifier**, like so:
 C: Storage Specifier
-P: Since Croqtile handles storage in a heterogeneous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.
+P: Since Croqtile handles storage in a heterogenous context, a buffer definition without a storage specifier defaults to the storage type of the host program, i.e., CPU memory. Other storage specifiers are defined by the target.
 L: *global*: Refers to the device's global storage. | *shared*: Refers to the device block's shared storage | *local*: Refers to the thread-private storage.
 P: Other targets may have different definitions. Furthermore, buffers with different storage types have limitations in their declarations. You will explore this in later chapters.
 
@@ -277,12 +277,12 @@ P: A declaration determines the element type and shape, an initializer fills the
 
 === UID:F37-S04
 H: 1. `global`
-L: The default memory space for data in Croqtile, if no storage qualifier is specified. | Data defined in the global storage space is typically the most abundant and has the largest capacity. However, accessing it can be slower than accessing more localized storage. | Global storage suits large datasets that need to be shared across multiple processing units, such as matrices in deep learning applications or large scientific datasets.
+L: The default memory space for data in Croqtile, if no storage qualifier is specified.
 C: 1. global
 
 === UID:F37-S05
 H: 2. `shared`
-P: Data stored in shared storage is generally smaller in size than global storage but offers much faster access times. Example:
+P: A `shared` buffer follows the same declaration syntax:
 C: 2. shared
 
 === UID:F37-S06
@@ -292,17 +292,16 @@ C: 3. local
 
 === UID:F37-S07
 H: Default Behavior and Usage
-P: By default, when a storage qualifier is not specified, the data is considered to be in global storage. Omitting the specifier leaves storage selection to the target and the surrounding execution context. This is convenient for introductory code, but a name without a specifier does not by itself tell you which threads can share its contents. When following a data path, check the declaration together with the parallel region that contains it.
-P: For example, the following code defines an array d0 without any storage qualifier, implying it resides in global storage:
+P: Omitting the specifier leaves storage selection to the target and the surrounding execution context. This is convenient for introductory code, but a name without a specifier does not by itself tell you which threads can share its contents. When following a data path, check the declaration together with the parallel region that contains it.
 C: A declaration without a specifier
-P: If you want to place data in a different storage space (shared or local), you need to specify the appropriate storage qualifier. For example, the following code places the matrix d0 in local storage, and the matrix d1 in shared storage:
+P: If you want to place data in a different memory space (shared or local), you need to specify the appropriate storage qualifier.
 C: Choosing local storage explicitly
 
 === UID:F37-S08
 H: Example Code: Using Storage Qualifiers
 P: The following sketch combines the storage declarations:
 C: Example Code: Using Storage Qualifiers
-P: The declarations illustrate three storage locations. The copy lines sketch the direction of movement between them. To turn this sketch into a working transfer, select source and destination views with compatible shapes: the full arrays declared here have different sizes. A storage specifier chooses a location; it does not make differently shaped buffers interchangeable. D1 is an intermediate array placed in shared storage to be used by multiple threads within a block. Matrix is a large dataset placed in global storage, where it can be accessed by all threads.
+P: The declarations illustrate three storage locations. The copy lines sketch the direction of movement between them. To turn this sketch into a working transfer, select source and destination views with compatible shapes: the full arrays declared here have different sizes. A storage specifier chooses a location; it does not make differently shaped buffers interchangeable.
 
 === UID:F05-S03
 H: Croqtile's Two-Layer Parallelism Model
@@ -343,10 +342,10 @@ P: The range expression `(1:)` starts iteration at index 1 and keeps the origina
 
 === UID:F15-S14
 H: Parallel Region: the 'parallel-by' Block
-P: Systems such as CPUs can use asynchronous threads for parallel execution. Croqtile expresses parallel work with the Single Program, Multiple Data (SPMD) model. This is similar to some OpenMP parallel directives and to other SPMD languages.
+P: Systems such as CPUs can use asynchronous threads for parallel execution. Croqtile expresses parallel work with the Single Program, Multiple Data (SPMD) model.
 P: The syntax of constructing a parallel region is quite different. It employs the C-style bracket and encloses the code for parallel execution within the 'parallel-by' block.
 C: Parallel Region: the parallel-by Block
-P: The above code snippet illustrates the method to create a parallel region with Croqtile keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. You can read 'p' as the index of the executing instance. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)
+P: The above code snippet illustrates the method to create a parallel region with Croqtile keyword 'parallel' and 'by'. Here, it assume there are 6 execution threads. Each of the thread execute the same SPMD code inside but with a different 'p' value. Alternatively, if you are more familiar with sequential C/C++ programming, you may consider 'p' as the iteration variable of a loop with 6 iterations. (But any iteration may go first to be executed!)
 P: The declaration also associates `p` with the range `[0, 6)`, making it a **bounded integer**. Operations such as `chunkat` use both its current value and its bound.
 
 === UID:F15-S15
@@ -383,18 +382,18 @@ P: This creates two execution instances. Without a named index, the code cannot 
 H: Multiple-Level Parallelism
 P: In Croqtile, you can define multiple levels of parallelism. Here's an example:
 C: One parallel level
-P: This code defines two levels of parallelism with values `2` and `12`, respectively. This means a total of `2 x 12 = 24` parallel threads are invoked for the task. Each thread is identified by a unique combination of `p` and `q`. In Croqtile, you refer to the level of `p` as *parallel-level-0* and the level of `q` as *parallel-level-1*. The outer level typically maps to the coarse grouping of the work and the inner level to a finer subdivision within it.
-P: One key difference observable by programmers is the **synchronization cost**: units that share a staging level synchronize far more cheaply than units separated by a coarser boundary. This hierarchical design encourages programmers to place the code that requires synchronization at the level where it is cheapest.
+P: This code defines two levels of parallelism with values `2` and `12`, respectively. This means a total of `2 x 12 = 24` parallel threads are invoked for the task. Each thread is identified by a unique combination of `p` and `q`. In Croqtile, you refer to the level of `p` as *parallel-level-0* and the level of `q` as *parallel-level-1*.
+P: One key difference observable by programmers is the **synchronization cost**. This hierarchical design encourages programmers to place the most divergent code (that requires synchronization) within the **block** level to enhance overall performance.
 P: In Croqtile syntax, you can define multiple-level parallelism in a single line:
 C: Two parallel levels
 P: This comma-separated form expresses the same two parallel levels as the nested version, provided there is no intervening code between those levels.
 
 === UID:F31-S05
 H: Sub-Level Parallelism
-P: Some targets allow a single parallelism level to be divided into up to three coordinate axes. In Croqtile, `ituple` and `mdspan` are used for this syntax:
+P: Targets like allow a single parallelism level to be divided into up to three sub-levels. In Croqtile, `ituple` and `mdspan` are used for this syntax:
 C: Sub-Level Parallelism
 P: In this example, two levels of parallelism are defined. The first level (*level-0*) is subdivided into three sub-levels, annotated by the `px, py, pz\` `ituple`. The second level (*level-1*) is subdivided into two sub-levels, annotated by the `qx, qy\` `ituple`, or `t_index` as a whole. For each sub-level, the parallelization count corresponds to the respective value inside the `mdspan`.
-P: The concept of sub-levels suits workloads that involve data with 2D or 3D elements. The first element inside the `ituple` represents the **least significant parallel variable**.
+P: The first element inside the `ituple` represents the **least significant parallel variable**. Croqtile adopts this ordering to align with developers' conventions, rather than for internal consistency.
 
 === UID:F32-S01
 P: A `with-in` statement declares a *bounded variable*; a `foreach` statement iterates over its range. Together they describe a loop without spelling out its bounds in C++.

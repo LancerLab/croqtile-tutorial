@@ -793,10 +793,6 @@
   {
    "before": "\\textbf{Why \"structured\"?} The regions are lexically scoped --- the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each \\texttt{inthreads.\\allowbreak{}async} block is a static partition.",
    "after": "The regions are lexically scoped, so the compiler can identify their participants from the program structure. The code does not create an unbounded number of tasks at runtime. Each region operates within the declared parallel scope."
-  },
-  {
-   "before": "\\textbf{The \\texttt{.async} modifier.} Without \\texttt{.async}, \\texttt{inthreads} would execute regions sequentially --- thread subsets take turns. This is analogous to the \\texttt{async} keyword in structured concurrency frameworks --- it marks a region as independently schedulable.",
-   "after": "Without \\co@.async@, the region rejoins the surrounding execution before later code proceeds. Adding \\co@.async@ allows other regions to advance independently. Any data handoff between them then needs an explicit synchronization protocol."
   }
  ],
  "F24-S03": [

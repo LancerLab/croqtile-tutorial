@@ -1,9 +1,8 @@
 \subsection*{Host, Device and Tileflow}
 
-The code below showcases a \emph{Croqtile} program:
+Both of those parts are present here, but the ordinary C++ side is worth splitting once more: a \file{.co} file may also carry a \texttt{\_\_device\_\_} helper. The listing is written from the inside out --- a device helper, the \texttt{\_\_co\_\_} function that calls it, and the host \texttt{main()} that calls the \texttt{\_\_co\_\_} function.
 
 \begin{lstlisting}[language=croqtile,caption={The three regions of one source file}]
-// Device program: runs on the target device
 __device__ void device_function(...) {
   // High-performance device kernel implementation
 }

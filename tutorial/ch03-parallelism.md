@@ -10,12 +10,12 @@ Before we touch any Croqtile syntax, let's talk about what "parallel" actually m
 
 Suppose you have eight independent tasks — eight tiles to add, eight rows to process, whatever. You can describe all eight at once and call them "parallel." But that statement says nothing about how many actually run at the same time. On a single core, they execute one after another. On a four-core machine, maybe four run simultaneously. Given eight execution slots, all eight could genuinely make progress at once.
 
-![Virtual parallelism: same tasks, different hardware schedules](../assets/images/ch03/fig1_virtual_parallelism_dark.png#only-dark)
-![Virtual parallelism: same tasks, different hardware schedules](../assets/images/ch03/fig1_virtual_parallelism_light.png#only-light)
+![Virtual parallelism: same tasks, different schedules](../assets/images/ch03/fig1_virtual_parallelism_dark.png#only-dark)
+![Virtual parallelism: same tasks, different schedules](../assets/images/ch03/fig1_virtual_parallelism_light.png#only-light)
 
 *The same eight tasks scheduled sequentially, four wide, and eight wide. The tasks are identical — only the number of execution slots changes.*
 
-The point is that parallelism is a **virtual** concept. When you write "these eight tasks are independent," you are making a statement about the *logic* of your program, not about the hardware. The hardware decides how many actually run simultaneously, based on how many execution units it has and how the scheduler assigns work.
+The point is that parallelism is a **virtual** concept. When you write "these eight tasks are independent," you are making a statement about the *logic* of your program, not about the machine. The machine decides how many actually run simultaneously, based on how many execution slots it has and how the scheduler assigns work.
 
 This distinction matters because many parallel languages conflate the two. In a language whose launch syntax doubles as its work description, one statement declares both the logical structure (how many instances) and the physical mapping (how many blocks, how many threads per block). Changing the tiling then forces a change to the launch configuration: the logical and physical are tangled together.
 
@@ -93,7 +93,7 @@ The `span(i)` syntax extracts one dimension: `lhs.span(0)` is 128, `rhs.span(1)`
 
 **`ituple`** — the `{px, py}` syntax in `parallel {px, py} by [8, 16]` introduces an `ituple`, a compile-time integer tuple. The compose operator `px#qx` combines two ituple elements into a global index. The extent operator `#p` extracts the upper bound of a parallel variable. These are all resolved at compile time — no runtime overhead.
 
-For the full details, see the [mdspan reference](../documentation/shape-in-choreo.md) and the [ituple reference](../documentation/integer-ituple.md). For now, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.
+For the full details, see the [mdspan reference](../documentation/shape-in-croqtile.md) and the [ituple reference](../documentation/integer-ituple.md). For now, the key takeaway is: Croqtile catches shape mismatches at compile time, not at runtime.
 
 ## Matrix Multiply: Putting It Together
 

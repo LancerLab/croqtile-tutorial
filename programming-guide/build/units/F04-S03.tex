@@ -1,8 +1,8 @@
-\subsection*{First Example: Tiled Addition Through shared storage}
+\subsection*{First Example: Tiled Addition Through Shared Storage}
 
 Here is the same addition from Section~\ref{sec:1-7}, but staged through shared storage in tiles:
 
-\begin{lstlisting}[language=croqtile,caption={Tiled Addition Through Shared Storage}]
+\begin{lstlisting}[language=croqtile,caption={First Example: Tiled Addition Through Shared Storage}]
 __co__ s32 [64, 128] tiled_add_2d(s32 [64, 128] lhs, s32 [64, 128] rhs) {
   s32 [lhs.span] output;
   parallel {tr, tc} by [4, 8] : block {

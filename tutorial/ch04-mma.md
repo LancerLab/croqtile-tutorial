@@ -129,7 +129,7 @@ The standalone `mma.scale` appears in some MoE and mixed-precision kernels.
 
 **Pipeline synchronization.** In pipelined kernels where a producer and a consumer region overlap ([Chapter 6](ch06-synchronization.md)), `mma.commit` marks the boundary between "done reading this K-slab's operands" and "safe to reuse the staged buffer." It is mandatory glue in event-driven pipelines.
 
-These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the hardware. The table below collects every variant for reference.
+These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the backend. The table below collects every variant for reference.
 
 ## New syntax
 

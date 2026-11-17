@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  16 NOV 2026 18:11
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2026.11.8)  17 NOV 2026 10:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1661,7 +1661,7 @@ Package microtype Info: Character `\textquestiondown ' is missing
 (microtype)             in font `\TU/FandolSong-Regular.otf(0)/b/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 28--15
+Underfull \hbox (badness 10000) in paragraph at lines 27--15
 
  []
 
@@ -1898,8 +1898,8 @@ File: figures/f07-fig1_role_comparison_light.png Graphic file (type bmp)
 File: figures/f08-fig1_pipeline_timeline_light.png Graphic file (type bmp)
 <figures/f08-fig1_pipeline_timeline_light.png>
 ) (./build-zh/units/F34-S07.tex [106])
-(./build-zh/units/F35-S03.tex [107]) (./build-zh/units/F35-S04.tex) [108]
-(./build-zh/units/F07-S04.tex) (./build-zh/units/F07-S08.tex [109])
+(./build-zh/units/F35-S03.tex [107]) (./build-zh/units/F35-S04.tex)
+(./build-zh/units/F07-S04.tex [108]) (./build-zh/units/F07-S08.tex [109])
 (./build-zh/units/F07-S09.tex [110]
 File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type bmp)
 <figures/f07-fig2_persistent_kernel_light.png>
@@ -1911,10 +1911,10 @@ File: figures/f07-fig2_persistent_kernel_light.png Graphic file (type bmp)
 (./build-zh/units/F08-S12.tex
 File: figures/f08-fig2_event_credit_flow_light.png Graphic file (type bmp)
 <figures/f08-fig2_event_credit_flow_light.png>
-) [116] (./build-zh/units/F07-S14.tex)
+) (./build-zh/units/F07-S14.tex [116])
 (./build-zh/units/F08-S15.tex [117]) (./build-zh/units/F10-S01.tex)
-(./build-zh/units/F10-S03.tex) (./build-zh/units/F23-S05.tex) [118]
-(./build-zh/units/F23-S06.tex) (./build-zh/units/F24-S05.tex)
+(./build-zh/units/F10-S03.tex) (./build-zh/units/F23-S05.tex)
+(./build-zh/units/F23-S06.tex [118]) (./build-zh/units/F24-S05.tex)
 (./build-zh/units/F24-S06.tex) (./build-zh/units/F25-S08.tex [119])
 (./build-zh/units/F10-S04.tex [120]) (./build-zh/units/F10-S13.tex)
 (./build-zh/units/F09-S04.tex [121]
@@ -1950,7 +1950,7 @@ Package rerunfilecheck Info: File `main-zh.out' has not changed.
 Here is how much of TeX's memory you used:
  35766 strings out of 481819
  792743 string characters out of 5936389
- 1265250 words of memory out of 5000000
+ 1260250 words of memory out of 5000000
  51172 multiletter control sequences out of 15000+600000
  539477 words of font info for 105 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191

@@ -311,6 +311,11 @@ content unit back to its source.
 | `F40-S05` | `documentation/tileflow-opt.md` | 3.10.2 | kept |
 | `F40-S06` | `documentation/tileflow-opt.md` | 3.10.2 | kept |
 | `F40-S07` | `documentation/tileflow-opt.md` | 3.5 | kept |
+| `F40-S08` | `documentation/tileflow-opt.md` | X | moved |
+| `F40-S09` | `documentation/tileflow-opt.md` | X | moved |
+| `F40-S10` | `documentation/tileflow-opt.md` | X | moved |
+| `F40-S11` | `documentation/tileflow-opt.md` | X | moved |
+| `F40-S12` | `documentation/tileflow-opt.md` | X | moved |
 | `F41-S01` | `documentation/async-dma-patterns.md` | 占位 | placeholder |
 | `F42-S01` | `documentation/contribute.md` | 占位 | placeholder |
 | `F43-S01` | `documentation/dynamic-design.md` | 占位 | placeholder |

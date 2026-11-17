@@ -17,8 +17,8 @@ The Croqtile compiler functions as an end-to-end compiler, with the key step bei
 The target determines whether host and device sources are compiled together or separately:
 
 \begin{itemize}[leftmargin=1.6em]
-\item \textbf{Single Source Compilation Model}: The target compiler allows device and host programs to be in a single source file for target compilation.
-\item \textbf{Separate Source Compilation Model}: Host and device code must be compiled separately.
+\item \textbf{Single Source Compilation Model}: Similar to , where the target compiler allows device and host programs to be in a single source file for target compilation.
+\item \textbf{Separate Source Compilation Model}: Similar to , where host and device code must be compiled separately.
 \end{itemize}
 
 The code shown above naturally supports the \emph{Single Source Compilation Model}. However, to support the \emph{Separate Source Compilation Model}, Croqtile requires wrapping the Device Program with the \texttt{\_\_cok\_\_} block, as shown below:

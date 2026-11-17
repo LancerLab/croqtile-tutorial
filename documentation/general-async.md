@@ -23,8 +23,8 @@ independent kernels concurrently.
 
 ### Stream Binding
 
-Streams allow multiple kernels and memory transfers to execute concurrently on the
-device. In Choreo, you can bind a `parallel-by` block to a specific stream
+CUDA streams allow multiple kernels and memory transfers to execute concurrently
+on the GPU. In Choreo, you can bind a `parallel-by` block to a specific stream
 using angle-bracket syntax:
 
 ```choreo
@@ -45,7 +45,7 @@ In this example:
 - **`parallel.async<s1>`**: Launches a second kernel on stream `s1`.
 
 Since both kernels are launched on different streams with `.async`, they can
-execute concurrently on the device.
+execute concurrently on the GPU.
 
 ### Stream Binding without `.async`
 

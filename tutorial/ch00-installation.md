@@ -85,7 +85,7 @@ Key flags:
 | Flag            | Effect                                                |
 |-----------------|-------------------------------------------------------|
 | `-o <file>`     | Set output filename                                   |
-| `-t <platform>` | Select target platform (e.g. `cute`)                  |
+| `-t <platform>` | Select the target platform                            |
 | `-es`           | Emit target source code without compiling it          |
 | `-E`            | Preprocess only (expand macros, strip `#if 0` blocks) |
 | `-c`            | Compile without linking                               |

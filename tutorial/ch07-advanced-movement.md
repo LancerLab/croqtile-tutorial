@@ -147,4 +147,4 @@ The loaded 1D strip is exposed as a 2D matrix for `chunkat` and MMA operand load
 | `.zfill`                               | Zero-fill out-of-bounds elements on copy source          |
 | `span_as(dims)`                        | Reinterpret linear storage as shaped tensor              |
 
-The [next chapter](ch08-cpp-interop.md) steps past pure Croqtile into **C++ interop**: `__device__` functions, **register hints**, **preprocessor guards**, and **inline PTX** when you need to drop down to the metal.
+The [next chapter](ch08-cpp-interop.md) steps past pure Croqtile into **C++ interop**: `__device__` functions, **preprocessor guards**, and **inline C++** when you need to drop down to the target.

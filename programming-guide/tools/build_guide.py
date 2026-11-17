@@ -1300,6 +1300,12 @@ UNIT_OVERRIDES = [
     ('F07-S07', r'\\texttt\{swap\}, and \\texttt\{mma\.commit\} into', r'\texttt{swap} into'),
     # Round 78: drop GPU-backend-only vocabulary that the tma.copy / group-4
     # rewrite leaves behind in prose.
+    # The register is kept verbatim; the guide still has to drop the two
+    # target-platform mentions it carries.
+    ('F12-S02', re.escape('tiling with \\texttt{chunkat}, TMA, swizzle'),
+     'tiling with \\texttt{chunkat}, swizzle'),
+    ('F28-S05', re.escape('on the  platform, it could be either a mapping of TMA or an orchestration of load instructions from multiple threads.'),
+     'a transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads.'),
     ('F28-S05', r'A transfer may map to TMA or to a sequence',
      'A transfer may map to a dedicated copy engine or to a sequence'),
     ('F09-S03', r'Swizzle is not a TMA-specific feature\..*?same in both cases\.',

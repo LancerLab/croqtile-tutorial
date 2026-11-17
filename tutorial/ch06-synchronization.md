@@ -62,7 +62,7 @@ __co__ auto matmul(s32 [M, K] lhs, s32 [K, N] rhs) {
 
 ### `swap`: names, not bytes
 
-`swap(lf0, lf1)` exchanges **future handles** — the Croqtile-level names that refer to buffers. The staged contents stay where the hardware placed them; only the names rotate. In a language with explicit buffer arrays, the same idiom is often a `^ 1` buffer index or a boolean phase variable. For triple buffering, `rotate(f0, f1, f2)` cycles three handles in one step.
+`swap(lf0, lf1)` exchanges **future handles** — the Croqtile-level names that refer to buffers. The staged contents stay where they were placed; only the names rotate. In a language with explicit buffer arrays, the same idiom is often a `^ 1` buffer index or a boolean phase variable. For triple buffering, `rotate(f0, f1, f2)` cycles three handles in one step.
 
 ### `with tile_k in 16`
 

@@ -17,6 +17,6 @@ __co__  void foo() {
 }
 \end{lstlisting}
 
-In this example, there exists two-level of parallelization. The code inside \texttt{parallel p by 6} block but outside \texttt{parallel q by 2} blocks is only for \emph{parallel-level-0}. However, a target may map each sub-level to its own set of executing units, so the two sub-levels can be handled by separate instances. Therefore, the \emph{parallel-level-0}-only part is as if guarded with a C++ block \texttt{if (q == 0)}.
+In this example, there exists two-level of parallelization. The code inside \texttt{parallel p by 6} block but outside \texttt{parallel q by 2} blocks is only for \emph{parallel-level-0}. However, for target like , it could invoke 2 parallel threads in practise to execute either code inside \emph{parallel-level-0} or \emph{parallel-level-1}. Therefore, the \emph{parallel-level-0}-only part is as if guarded with a C++ block \texttt{if (q == 0)}.
 
 A condition can also guard a \texttt{foreach} loop, controlling execution of the loop as a whole.

@@ -1,6 +1,6 @@
 # C++ Interop: Device Functions, Inline Code, and the Preprocessor
 
-Every high-level language needs an escape hatch to the layer below. Python has `ctypes` and C extensions. Rust has `unsafe` blocks and `extern "C"`. Java has JNI. The reason is always the same: no matter how expressive the abstraction, some hardware feature, some legacy library, some performance-critical intrinsic lives outside the language's domain.
+Every high-level language needs an escape hatch to the layer below. Python has `ctypes` and C extensions. Rust has `unsafe` blocks and `extern "C"`. Java has JNI. The reason is always the same: no matter how expressive the abstraction, some machine feature, some legacy library, some performance-critical intrinsic lives outside the language's domain.
 
 Croqtile's interoperability story has three parts:
 

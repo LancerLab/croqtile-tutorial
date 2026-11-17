@@ -14,7 +14,7 @@ f = dma.copy.async g_data => l_data;
 wait f;         // explicit wait
 \end{lstlisting}
 
-Here, the DMA statement invokes a linear copy, which moves the 'data' residing in global storage to 'data1' in local storage. The assignment names \texttt{f} as the \textbf{future} of the asynchronous DMA operation. Use \texttt{wait f} to pause the current instance until the transfer completes. Until then, the instance can continue executing alongside the transfer.
+The assignment names \texttt{f} as the \textbf{future} of the asynchronous DMA operation. Use \texttt{wait f} to pause the current instance until the transfer completes. Until then, the instance can continue executing alongside the transfer.
 
 Explicit temporary-buffer declarations can be repetitive. Croqtile also allows the following shorter form:
 
@@ -24,6 +24,6 @@ f = dma.copy data => local;
 ... f.data;  // retrieve the 'local' data from the future
 \end{lstlisting}
 
-Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination storage type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
+Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination memory type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
 
 The shorter declaration leaves allocation to the compiler, but the data dependency is unchanged. Identify the destination through the future, wait if the transfer is asynchronous, and check that the next operation expects the resulting shape and storage. The advanced patterns below preserve these requirements while allowing several transfers to be in flight.

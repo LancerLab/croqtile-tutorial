@@ -1,6 +1,6 @@
 \subsection*{C++ Interop: Device Functions, Inline Code, and the Preprocessor}
 
-A kernel may need a reduction, a sorting routine, or an instruction that Croqtile does not express directly. Existing device C++ can supply that computation while Croqtile continues to arrange its inputs, outputs, and parallel scope. The interface needs to preserve the assumptions on both sides of the call.
+A kernel may need a reduction, a sorting routine, or an instruction that Croqtile does not express directly. Existing device C++ can supply that computation while Croqtile continues to arrange its inputs, outputs, and parallel scope. The interface needs to preserve the assumptions on both sides of the call. The reason is always the same: no matter how expressive the abstraction, some machine feature, some legacy library, some performance-critical intrinsic lives outside the language's domain.
 
 Croqtile's interoperability story has three parts:
 

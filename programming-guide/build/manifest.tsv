@@ -17,7 +17,7 @@ F03-S06	tutorial/ch01-hello-croqtile.md	1.3	kept	Build and Compile
 F03-S07	tutorial/ch01-hello-croqtile.md	3.6	kept	What You Have So Far
 F04-S01	tutorial/ch02-data-movement.md	3.6	kept	Data Movement: The Tile Movement Engine
 F04-S02	tutorial/ch02-data-movement.md	2.9	kept	The DMA Statement Family
-F04-S03	tutorial/ch02-data-movement.md	2.9	kept	First Example: Tiled Addition Through Shared Memory
+F04-S03	tutorial/ch02-data-movement.md	2.9	kept	First Example: Tiled Addition Through Shared Storage
 F04-S04	tutorial/ch02-data-movement.md	3.5	kept	`chunkat`, `subspan`, and `view().from()`: Three Ways to Select a Tile
 F04-S05	tutorial/ch02-data-movement.md	2.8	kept	`chunkat(...)`: equal partitioning
 F04-S06	tutorial/ch02-data-movement.md	2.8	kept	`subspan(...).at(...)`: explicit tile extents on a tile grid
@@ -304,6 +304,11 @@ F40-S04	documentation/tileflow-opt.md	3.10.1	kept	Memory Tiling with `chunkat`
 F40-S05	documentation/tileflow-opt.md	3.10.2	kept	Example 2: rgb2gray
 F40-S06	documentation/tileflow-opt.md	3.10.2	kept	Example Code
 F40-S07	documentation/tileflow-opt.md	3.5	kept	Compose Two Bounded Variables for Tiling with `#`
+F40-S08	documentation/tileflow-opt.md	X	moved	
+F40-S09	documentation/tileflow-opt.md	X	moved	
+F40-S10	documentation/tileflow-opt.md	X	moved	
+F40-S11	documentation/tileflow-opt.md	X	moved	
+F40-S12	documentation/tileflow-opt.md	X	moved	
 F41-S01	documentation/async-dma-patterns.md	占位	placeholder	
 F42-S01	documentation/contribute.md	占位	placeholder	
 F43-S01	documentation/dynamic-design.md	占位	placeholder	

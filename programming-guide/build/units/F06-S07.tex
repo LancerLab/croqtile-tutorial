@@ -29,4 +29,4 @@ The standalone \texttt{mma.scale} appears in some MoE and mixed-precision kernel
 
 \textbf{Pipeline synchronization.} In pipelined kernels where a producer and a consumer region overlap (Section~\ref{sec:3-8-5}), \texttt{mma.commit} marks the boundary between "done reading this K-slab's operands" and "safe to reuse the staged buffer." It is mandatory glue in event-driven pipelines.
 
-The table below collects every variant for reference.
+These extensions all follow the same design principle: the four-step skeleton stays fixed, and the variant suffix communicates a specific contract to the backend. The table below collects every variant for reference.

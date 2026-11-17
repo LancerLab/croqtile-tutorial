@@ -2,7 +2,7 @@
 
 Every programming language that targets a parallel machine must answer one question: **what happens when different threads need to do different things?**
 
-On a CPU, the answer is trivial — each core has its own program counter, so each thread runs whatever code it likes. On a machine that shares one instruction pointer across a group of threads, the answer is deeply constrained. When a branch sends some threads one way and other threads another way, the hardware cannot simply fork — it must **serialize** the divergent paths and mask inactive threads. This is the fundamental tension: the hardware wants uniformity, but real programs need heterogeneity.
+On a CPU, the answer is trivial — each core has its own program counter, so each thread runs whatever code it likes. On a machine that shares one instruction pointer across a group of threads, the answer is deeply constrained. When a branch sends some threads one way and other threads another way, the machine cannot simply fork — it must **serialize** the divergent paths and mask inactive threads. This is the fundamental tension: the machine wants uniformity, but real programs need heterogeneity.
 
 A machine like that exposes exactly one control-flow primitive for this: `if`. All threads evaluate the condition; threads where it is false are masked (deactivated); both paths execute sequentially within the group. This is **predicated execution** — simple, universal, and sometimes ruinously expensive. A group that diverges on an `if` runs both sides, throwing away half its throughput on each.
 
@@ -10,7 +10,7 @@ But predicated execution is not enough. Consider a matmul kernel where one group
 
 Croqtile introduces two additional control-flow primitives to fill this gap:
 
-- **`inthreads.async`** — **structured concurrent regions**: compile-time partitioning of threads into groups that run **different programs simultaneously**. The compiler generates separate instruction streams; the hardware schedules them independently.
+- **`inthreads.async`** — **structured concurrent regions**: compile-time partitioning of threads into groups that run **different programs simultaneously**. The compiler generates separate instruction streams; the machine schedules them independently.
 - **`shared event` / `wait` / `trigger`** — **inter-region signaling**: lightweight synchronization tokens that let concurrent regions communicate safely.
 
 Together with `if`, these three primitives cover the full spectrum of control flow in a kernel: data-dependent branching, structural program composition, and inter-program coordination.
@@ -25,11 +25,11 @@ if (tile_id < total_tiles) {
 }
 ```
 
-All threads in scope evaluate the condition. Threads where it is false skip the body. Inside one cooperating group, if some threads take the branch and others do not, the hardware **serializes** the two paths — threads on the skipped side sit idle while the taken side runs, then vice versa. This is **divergence**, and it is the price of runtime flexibility.
+All threads in scope evaluate the condition. Threads where it is false skip the body. Inside one cooperating group, if some threads take the branch and others do not, the machine **serializes** the two paths — threads on the skipped side sit idle while the taken side runs, then vice versa. This is **divergence**, and it is the price of runtime flexibility.
 
 **When to use `if`:** data-dependent decisions that cannot be resolved at compile time. Bounds checks, partial-tile guards, conditional accumulation. The condition can depend on runtime values — loop indices, input data, tile coordinates.
 
-**Cost model:** divergence inside a group serializes both paths. Divergence across groups (where the threads in each group agree) costs nothing — the hardware simply skips the not-taken path. The practical rule: keep `if` conditions **uniform across the cooperating group** whenever possible.
+**Cost model:** divergence inside a group serializes both paths. Divergence across groups (where the threads in each group agree) costs nothing — the machine simply skips the not-taken path. The practical rule: keep `if` conditions **uniform across the cooperating group** whenever possible.
 
 ## Structured concurrent regions with `inthreads.async`
 
@@ -60,7 +60,7 @@ The distinction from `if` is structural, not just performance:
 
 **Why "structured"?** The regions are lexically scoped — the compiler knows at parse time which threads belong to which region. There is no dynamic spawn, no unbounded concurrency. Each `inthreads.async` block is a static partition. This is what makes it amenable to compile-time analysis: the compiler can allocate storage differently for each region, emit different instruction schedules, and verify that shared resources are used safely.
 
-**The `.async` modifier.** Without `.async`, `inthreads` would execute regions sequentially — thread subsets take turns. The `.async` suffix is the concurrency modifier: it tells the compiler and hardware that the regions may overlap in time. This is analogous to the `async` keyword in structured concurrency frameworks — it marks a region as independently schedulable.
+**The `.async` modifier.** Without `.async`, `inthreads` would execute regions sequentially — thread subsets take turns. The `.async` suffix is the concurrency modifier: it tells the compiler and the machine that the regions may overlap in time. This is analogous to the `async` keyword in structured concurrency frameworks — it marks a region as independently schedulable.
 
 The figure below shows the effect. The top timeline shows one group alternating between DMA and MMA (sequential, no overlap). The bottom shows two groups with `inthreads.async` — the producer's DMA and the consumer's MMA overlap in time:
 

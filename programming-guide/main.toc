@@ -14,12 +14,12 @@
 \contentsline {section}{\numberline {2.7}Iteration: parallel-by, with-in, and foreach}{24}{section.2.7}%
 \contentsline {section}{\numberline {2.8}Tile Selection: chunkat, subspan, and view/from}{33}{section.2.8}%
 \contentsline {section}{\numberline {2.9}Data Movement: the DMA Statement and Futures}{38}{section.2.9}%
-\contentsline {section}{\numberline {2.10}Coordination: inthreads, Events, and Async Blocks}{46}{section.2.10}%
-\contentsline {section}{\numberline {2.11}Branching and Early Return}{49}{section.2.11}%
-\contentsline {section}{\numberline {2.12}The Four-Step MMA Syntax}{50}{section.2.12}%
+\contentsline {section}{\numberline {2.10}Coordination: inthreads, Events, and Async Blocks}{45}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Branching and Early Return}{48}{section.2.11}%
+\contentsline {section}{\numberline {2.12}The Four-Step MMA Syntax}{49}{section.2.12}%
 \contentsline {section}{\numberline {2.13}C++ Embedding, Calls, Macros, and the Preprocessor}{50}{section.2.13}%
-\contentsline {section}{\numberline {2.14}Printing, Assertions, and Compile-Time Inspection}{55}{section.2.14}%
-\contentsline {section}{\numberline {2.15}Syntax Quick Reference}{56}{section.2.15}%
+\contentsline {section}{\numberline {2.14}Printing, Assertions, and Compile-Time Inspection}{54}{section.2.14}%
+\contentsline {section}{\numberline {2.15}Syntax Quick Reference}{55}{section.2.15}%
 \contentsline {chapter}{\numberline {3}Programming Guide}{58}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Program Structure and Compilation Models}{58}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Syntax Design and the Type System}{61}{section.3.2}%
@@ -28,7 +28,7 @@
 \contentsline {subsection}{\numberline {3.4.1}Worked Example: Tiled Matrix Multiplication}{77}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Tracing One Output Element}{78}{subsection.3.4.2}%
 \contentsline {section}{\numberline {3.5}Tile Selection and Data Expressions}{79}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{80}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.1}Arbitrary-Offset Windows: view and from}{81}{subsection.3.5.1}%
 \contentsline {subsection}{\numberline {3.5.2}Strided Tiles: subspan, step, and at}{82}{subsection.3.5.2}%
 \contentsline {subsection}{\numberline {3.5.3}Layout Reinterpretation with span\_as}{82}{subsection.3.5.3}%
 \contentsline {subsection}{\numberline {3.5.4}Tile Selection: Summary and Syntax}{83}{subsection.3.5.4}%
@@ -41,7 +41,7 @@
 \contentsline {subsection}{\numberline {3.7.3}MMA Design Summary}{98}{subsection.3.7.3}%
 \contentsline {section}{\numberline {3.8}Coordination, Pipelines, and Persistent Scheduling}{98}{section.3.8}%
 \contentsline {subsection}{\numberline {3.8.1}Canonical Pattern: One Producer and One Consumer}{103}{subsection.3.8.1}%
-\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{103}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.2}Worked Example: A 1P1C Kernel Skeleton}{104}{subsection.3.8.2}%
 \contentsline {subsection}{\numberline {3.8.3}Persistent Scheduling}{105}{subsection.3.8.3}%
 \contentsline {subsection}{\numberline {3.8.4}Host-Level Concurrency and Stream Binding}{106}{subsection.3.8.4}%
 \contentsline {subsection}{\numberline {3.8.5}Worked Example: A Full Event Pipeline}{108}{subsection.3.8.5}%
@@ -51,7 +51,7 @@
 \contentsline {subsection}{\numberline {3.9.2}Interoperability Summary}{114}{subsection.3.9.2}%
 \contentsline {section}{\numberline {3.10}Tileflow Patterns and Design Rationales}{114}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}Worked Example: Tiled matmul}{116}{subsection.3.10.1}%
-\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{118}{subsection.3.10.2}%
+\contentsline {subsection}{\numberline {3.10.2}Worked Example: rgb2gray}{117}{subsection.3.10.2}%
 \contentsline {section}{\numberline {3.11}Diagnostics and Methodology}{118}{section.3.11}%
 \contentsline {chapter}{\numberline {A}Syntax Quick Reference}{120}{appendix.A}%
 \contentsline {section}{\numberline {A.1}Declarations and shapes}{120}{section.A.1}%

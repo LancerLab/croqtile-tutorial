@@ -157,4 +157,4 @@ This prints the full set of compiler flags — output naming, target selection, 
 
 The skeleton of every Croqtile program is now in your hands: a `__co__` function with typed, shaped parameters and a return value; `parallel` and `.at()` for element-wise computation; `lhs.span` for deriving output shapes from inputs; and the host-side `make_spandata` / `.view()` API for creating and passing tensors.
 
-The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — an execution engine reaches peak throughput by moving data in bulk, not element by element. The [next chapter](ch02-data-movement.md) introduces `dma.copy` and `chunkat` to express block-level data movement.
+The example works, but it processes one element at a time with no control over how data moves through the memory hierarchy. On real hardware that matters — a machine reaches peak throughput by moving data in bulk, not element by element. The [next chapter](ch02-data-movement.md) introduces `dma.copy` and `chunkat` to express block-level data movement.

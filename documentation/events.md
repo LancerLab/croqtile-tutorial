@@ -84,7 +84,7 @@ parallel p by 1 {
 
 In this code, two threads wait a single event `e`. However, since `wait` resets the event `e`, it is possible that `thread-0` resets the event before `thread-1` find the `e` has been triggered. As a result, `thread-1` is never unblocked and deadlocking happens.
 
-Though such deadlocks are less likely where concurrent regions execute in lock-step, it is not safe code for highly asynchronous executing like threading in CPUs. Since Choreo supports multiple levels of asynchronous execution, including different hardware/software, a more robust way is to assign each thread an event for `wait` statements.
+Though such deadlocks are less possible for GPU-like SIMT hardware, where both threads execute in lock-step, it is not safe code for highly asynchronous executing like threading in CPUs. Since Choreo supports multiple levels of asynchronous execution, including different hardware/software, a more robust way is to assign each thread an event for `wait` statements.
 
 ```
 qc = 2;

@@ -1,6 +1,6 @@
 \subsection*{Data Movement: The Tile Movement Engine}
 
-Section~\ref{sec:1-3} used scalar indexing: pick one position, read inputs, compute, write output. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic.
+Section~\ref{sec:1-3} used scalar indexing: pick one position, read inputs, compute, write output. That is a good way to explain correctness, but it is not how the machine wants to move data. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic.
 
 A tiled implementation instead selects a region, stages it in the storage used by the computation, and reuses it there. Croqtile expresses the transfer directly, including transformations that belong to the movement itself:
 

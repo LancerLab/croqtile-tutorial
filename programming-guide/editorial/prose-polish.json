@@ -955,10 +955,5 @@
    "after": "Croqtile provides \\textbf{events}."
   }
  ],
- "F04-S03": [
-  {
-   "before": "\\begin{lstlisting}[language=croqtile,caption={First Example: Tiled Addition Through shared storage}]",
-   "after": "\\begin{lstlisting}[language=croqtile,caption={Tiled Addition Through Shared Storage}]"
-  }
- ]
+ "F04-S03": []
 }

@@ -14,27 +14,27 @@ F: The three steps: preprocessing, transpilation, and target compilation.
 P: As shown in the figure, immediately after *pre-processing*, Croqtile *transpiles* (*source-to-source* compilation) the *tileflow program* into target code, leaving the user-provided *host program* and *device program* unchanged. The *tileflow program* is *transpiled* into host and device source code, which you refer to as *croqtile-generated code*. The compiler then combines the user-provided code and *croqtile-generated* code to perform the *target compilation* process. This process can generate various outputs, such as transpiled source code, workscripts, target modules, target assembly, and executables.
 P: The Croqtile compiler functions as an end-to-end compiler, with the key step being the transpilation of the *tileflow program* into *croqtile-generated code*.
 P: The target determines whether host and device sources are compiled together or separately:
-L: **Single Source Compilation Model**: The target compiler allows device and host programs to be in a single source file for target compilation. | **Separate Source Compilation Model**: Host and device code must be compiled separately.
+L: **Single Source Compilation Model**: Similar to , where the target compiler allows device and host programs to be in a single source file for target compilation. | **Separate Source Compilation Model**: Similar to , where host and device code must be compiled separately.
 P: The code shown above naturally supports the *Single Source Compilation Model*. However, to support the *Separate Source Compilation Model*, Croqtile requires wrapping the Device Program with the `__cok__` block, as shown below:
 C: Transpilation and Compilation
 P: The `__cok__` wrapper marks device code that Croqtile must separate from host code before invoking the target compilers. It is needed when the target uses separate host and device compilation. The source can still be maintained as one `.co` file; the wrapper tells the build process where to split it.
 
 === UID:F14-S07
 H: Device Program: Parallel Computation
-P: The **device program** defines the computational kernel that will be executed on the target device. A device helper receives the data selected and staged by its caller. Its job is to compute on that data using the target language. The following addition helper illustrates this boundary: Croqtile arranges the chunks and transfers, while the helper operates on the pointers and element count passed to it.
+P: A device helper receives the data selected and staged by its caller. Its job is to compute on that data using the target language. The following addition helper illustrates this boundary: Croqtile arranges the chunks and transfers, while the helper operates on the pointers and element count passed to it.
 P: The device helper from the earlier example is repeated below:
 C: A device helper called from tileflow
 P: For targets that only support the _Separated Source Programming Model_, the code may need to be wrapped within a `_`_cok__ block. The equivalent code is shown below:
 C: The cok wrapper for separate sources
-P: Here, the `extern "C"` annotation replaces the `__device__` keyword, because a target that compiles device code separately requires C linkage for the device functions.
-P: Programmers must be aware that the device program follows the *Single-Program-Multiple-Data (SPMD)* paradigm. However, unlike a conventional device program, it does not manage data movement ---whether between the host and device or across multiple storage levels within the device. Instead, the *tileflow program* orchestrates these tasks in a much simpler and safer manner.
+P: Here, the `extern "C"` annotation replaces the `__device__` keyword used in target, as requires C-linkage for the device functions.
+P: Programmers must be aware that the device program follows the *Single-Program-Multiple-Data (SPMD)* paradigm. However, unlike traditional programs, the device program does not manage data movement ---whether between the host and device or across multiple storage levels within the device. Instead, the *tileflow program* orchestrates these tasks in a much simpler and safer manner.
 
 === UID:F31-S08
 H: Heterogeneity: Transpiling to program launch
-P: For targets that separate host and device execution, the `parallel-by` block not only specifies the number of parallel instances but also defines the boundary between host and device code, leveraging Croqtile's ability to manage heterogeneity. Specifically:
+P: For targets like , the `parallel-by` block not only specifies the number of parallel threads but also defines the boundary between host and device code, leveraging Croqtile's ability to manage heterogeneity. Specifically:
 L: Code **outside** the `parallel-by` block is transpiled into **host code**. | Code **inside** the block is transpiled into **device code**, as illustrated below:
 C: Heterogeneity: Transpiling to program launch
-P: The `parallel-by` statement is where the program launch happens. Croqtile abstracts the launch details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.
+P: For those familiar with , this is analogous to a occurring at the `parallel-by` statement. However, Croqtile abstracts these details with the unified SPMD parallelism model, allowing developers to focus on their algorithms without worrying about the underlying heterogeneity.
 
 === UID:F12-S02
 P: This reference covers every aspect of programming with Croqtile:
@@ -43,7 +43,6 @@ L: **Shaped data**: Croqtile's type system for multi-dimensional tensors --- sha
 L: **Loop and parallelism**: SPMD parallelism, loop control, tiling, and iteration constructs.
 L: **Data movement**: DMA statements, tiling with `chunkat`, swizzle, and advanced data movement patterns.
 L: **C++ embeddings**: Input/output conventions, `__cpp__` inline blocks, macros, and preprocessor integration.
-L: **MPMD programming**: Thread masking, events, async execution, and role specialization.
 L: **Optimization patterns**: Tileflow optimizations, async DMA patterns, multi-buffering, and performance tuning techniques.
 
 === UID:F14-S09
@@ -355,7 +354,7 @@ C: Explicit Masking/Condition
 H: Implicit Masking
 P: Some code structures in Croqtile imply implicit masking. One typical situation is the multi-level `parallel-by` block. The following code showcases an example:
 C: Implicit Masking
-P: In this example, there exists two-level of parallelization. The code inside `parallel p by 6` block but outside `parallel q by 2` blocks is only for *parallel-level-0*. However, a target may map each sub-level to its own set of executing units, so the two sub-levels can be handled by separate instances. Therefore, the *parallel-level-0*-only part is as if guarded with a C++ block `if (q == 0)`.
+P: In this example, there exists two-level of parallelization. The code inside `parallel p by 6` block but outside `parallel q by 2` blocks is only for *parallel-level-0*. However, for target like , it could invoke 2 parallel threads in practise to execute either code inside *parallel-level-0* or *parallel-level-1*. Therefore, the *parallel-level-0*-only part is as if guarded with a C++ block `if (q == 0)`.
 P: A condition can also guard a `foreach` loop, controlling execution of the loop as a whole.
 
 === UID:F33-S05
@@ -449,7 +448,7 @@ P: Using the `chunkat` expression for both the source and destination is rarely 
 H: Compose Two Bounded Variables for Tiling with `#`
 P: The example combines **two bounded variables** to select tiles. The **`#` operator** composes their coordinates over a Cartesian product. Operand order matters: the operation is **not commutative**.
 L: The code defines the tiling parameters with four bounded variables: `q`, `n`, `h`, and `w`, whose upper bounds are `6`, `N/6`, `H/16`, and `W/512`. | Suppose `N` is 18, `q` represents physical thread index. You want each thread to process data that is contiguous in the first dimension. That is, the first thread handles input[02][xxx], the second thread handles input[35][xxx], and so on. | `q # n` will result in a new bounded variable implicitly, whose upper bound is `N`: bound of `q` multiply bound of `n`. | For every data move, the stride of each dimension is 1, 3, 16, 512. In the last dimension, the index is `w`. In the first dimension, the index is `q * (bound of n) + n`.
-L: The combination of `q` and `n` ensures that physical and virtual parallelism can work together efficiently. | This helps optimize **memory access patterns**, especially when working with large matrices, where efficient memory use is crucial. | Croqtile's approach here is more aligned with a **physical storage hierarchy** (local, shared, and global storage). Unlike higher-level loop scheduling techniques that abstract away the actual data movement, Croqtile explicitly links **virtual loops** to **physical DMA operations**. This results in more efficient data movement and computation.
+L: The combination of `q` and `n` ensures that physical and virtual parallelism can work together efficiently. | This helps optimize **memory access patterns**, especially when working with large matrices, where efficient memory use is crucial. | Unlike higher-level loop scheduling techniques like in TVM, which abstract away the actual data movement, Croqtile explicitly links **virtual loops** to **physical DMA operations**. This results in more efficient data movement and computation.
 
 === UID:F09-S07
 P: A mixture-of-experts kernel often packs different numbers of tokens for different experts. Each expert's data begins at an offset known only at runtime, so a fixed tile grid may not describe the required slice. A window gives that slice its own origin before the inner tiling begins.
@@ -498,7 +497,7 @@ P: 2.9 introduces `dma.copy` and `chunkat` to express block-level data movement.
 
 === UID:F04-S01
 H: Data Movement: The Tile Movement Engine
-P: 1.3 used scalar indexing: pick one position, read inputs, compute, write output.
+P: 1.3 used scalar indexing: pick one position, read inputs, compute, write output. An execution engine fetches and stages contiguous blocks, not isolated elements. The hard part of kernel programming is usually not the arithmetic.
 P: A tiled implementation instead selects a region, stages it in the storage used by the computation, and reuses it there. Croqtile expresses the transfer directly, including transformations that belong to the movement itself:
 L: `dma.copy` moves a tile as-is. | `dma.`transp<...> permutes dimensions while moving it. | `dma.`pad<...> enlarges a tile and fills the border.
 P: This part of the guide introduces that model, shows the core syntax, and gives the rules you need to write DMA code that is both correct and likely to lower well.
@@ -515,10 +514,10 @@ P: Alongside parallel execution, Croqtile provides asynchronous DMA statements f
 P: An asynchronous DMA operation runs alongside the SPMD code. Like an asynchronous CPU thread, it allows other work to continue, but its behavior is restricted to the configured data transfer.
 P: The following code showcases one basic DMA statement.
 C: An asynchronous DMA declaration
-P: Here, the DMA statement invokes a linear copy, which moves the 'data' residing in global storage to 'data1' in local storage. The assignment names `f` as the **future** of the asynchronous DMA operation. Use `wait f` to pause the current instance until the transfer completes. Until then, the instance can continue executing alongside the transfer.
+P: The assignment names `f` as the **future** of the asynchronous DMA operation. Use `wait f` to pause the current instance until the transfer completes. Until then, the instance can continue executing alongside the transfer.
 P: Explicit temporary-buffer declarations can be repetitive. Croqtile also allows the following shorter form:
 C: The same declaration with storage
-P: Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination storage type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
+P: Here, you do not need to specify the exact target location where the DMA transfers data. Instead, you only specify the destination memory type. This is advantageous in many scenarios. And to retrieve the transferred data, you simply invoke the 'data' member function of 'future'. Besides, the dma operation is not marked with '.async', so the wait operation on 'f' is not needed and cannot be performed.
 P: The shorter declaration leaves allocation to the compiler, but the data dependency is unchanged. Identify the destination through the future, wait if the transfer is asynchronous, and check that the next operation expects the resulting shape and storage. The advanced patterns below preserve these requirements while allowing several transfers to be in flight.
 
 === UID:F28-S02
@@ -527,12 +526,12 @@ P: Croqtile aims to address multiple levels of data movement. Croqtile adopts th
 
 === UID:F28-S05
 H: Operation Type
-P: Beyond simple linear copies, a transfer can move shaped data and apply shape transformations in flight. Croqtile maps these capabilities at the software level as different **DMA Operation Types**. The supported operations include:
+P: Croqtile maps these functionalities at the software level as different **DMA Operation Types**. The supported operations include:
 L: `dma.copy`: Copies flat memory directly. | `dma.pad`: Pads shaped data while transferring the data. | `dma.transp`: Transposes shaped data while transferring the data.
 P: The configurations, such as padding and transposing details, are programmed as parameters of the DMA operation. For example:
 C: Operation Type
-P: Here, the **DMA configuration**s are enclosed by ``>. The configuration varies according to different operations. The detailed configuration syntax and limitations are target-specific; an example is listed below:
-P: Programmers should note that support for DMA types other than `dma.copy` varies by platform: a transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads.
+P: Here, the **DMA configuration**s are enclosed by ``>. The configuration varies according to different operations. The detailed configuration syntax and limitations for a specific platform, such as , are listed below as an example:
+P: Programmers should note that support for DMA types other than `dma.copy` varies by platform. For instance, a transfer may map to a dedicated copy engine or to a sequence of load instructions issued by cooperating threads.
 
 === UID:F39-S01
 P: The data movement is essential for *tileflow programs*. The *DMA statement* has a form for each of those levels, from a single copy to a chained non-blocking transfer.
@@ -674,7 +673,7 @@ P: The table below collects every variant for reference.
 H: One group, one tile: the simplest MMA matmul
 P: The smallest example assigns one output tile to a cooperative group, written `: group`. It accepts left and right operands plus an output buffer supplied by the caller. Follow one output tile through the code: initialize its accumulator, visit every K slice, store the accumulated tile in shared storage, and copy it to its output position. The `: group` level names a fixed cooperating group; a target that has no such level rejects it, so read this listing against a target that provides one.
 C: One group, one tile: the simplest MMA matmul
-P: The function returns `void` because it writes into the `output` parameter. The caller supplies that buffer and reads it after the operation completes. Inside the function, `output_s` is the staging buffer used between `mma.store` and the final copy.
+P: The function returns `void` because it writes into the `output` parameter. The caller supplies that buffer and reads it after the operation completes. Inside the function, `output_s` is the staging buffer used between `mma.store` and the final copy. results go through `output`, matching the usual pattern of writing back in place.
 P: The ceiling division `cdiv(M, TILE_M)` counts the tiles along M, including a possible partial tile. The pair `(block_m, block_n)` identifies the output tile assigned to the current block. The operand selections use the same output coordinates with the current K-slice coordinate.
 P: **Group grid and `mma.fill`.** `parallel group_`m, group_n ... : group maps MMA tiles to cooperating groups. With all dimensions 16, extents are 1$×$1 --- one group covers the whole block tile. Wider block tiles would add groups, each with its own `mc`.
 P: **K loop and DMA.** Each `iv_k` stage pulls A and B strips into shared storage via `dma.copy` with `subspan(.`..).at(...). Section 3.5 explains how `subspan` and `chunkat` select tiles.
@@ -756,7 +755,6 @@ P: Events are lock-free by default to support efficient synchronization between 
 P: For example,
 C: A single-instance deadlock
 P: Both threads wait on the same event `e`. Because `wait` resets the event, `thread-0` may reset it before `thread-1` observes the trigger. In that case, `thread-1` remains blocked and the program deadlocks.
-P: Though such deadlocks are less likely where concurrent regions execute in lock-step, it is not safe code for highly asynchronous executing like threading in CPUs.
 C: One trigger per waiter
 P: In this code, you utilize an event array to guarantee each event is waited and reset by a single thread.
 
@@ -800,7 +798,7 @@ P: This is **host orchestration**, orthogonal to in-kernel control flow. It does
 
 === UID:F31-S10
 H: Asynchronous program launch and Stream Binding
-P: By default, the host waits for a `parallel-by` kernel to complete before continuing. To launch kernels asynchronously, use `parallel.async`. To bind a kernel to a specific stream, use angle-bracket syntax:
+P: By default, the host waits for a `parallel-by` kernel to complete before continuing. To launch kernels asynchronously, use `parallel.async`.
 C: Asynchronous program launch and Stream Binding
 P: 3.8.4 covers this in detail.
 
@@ -813,11 +811,10 @@ C: The synchronous form
 P: With `.async`, the host code continues immediately after launching the kernel. This is essential for overlapping computation with data transfers or launching independent kernels concurrently.
 
 === UID:F36-S02
-P: Streams allow multiple kernels and memory transfers to execute concurrently on the device. In Croqtile, you can bind a `parallel-by` block to a specific stream using angle-bracket syntax:
+P: In Croqtile, you can bind a `parallel-by` block to a specific stream using angle-bracket syntax:
 C: Stream Binding
 P: In this example:
 L: **`stream s0, stream s1`**: Stream parameters passed from the host. | **`parallel.`async**s0>: Launches the kernel asynchronously on stream `s0`. | **`parallel.`async**s1>: Launches a second kernel on stream `s1`.
-P: Since both kernels are launched on different streams with `.async`, they can execute concurrently on the device.
 
 === UID:F36-S03
 H: Stream Binding without `.async`
@@ -881,7 +878,7 @@ P: Croqtile preprocessing coordinates macros across the host and device portions
 
 === UID:F23-S06
 H: Pre-defined Macros
-P: Consequently, these macros can be utilized inside tileflow functions as well as the host code.
+P: To mimic a target native compilation, croqtile preprocess also takes the builtin macros from the target. Consequently, these macros can be utilized inside tileflow functions as well as the host code.
 
 === UID:F24-S05
 
@@ -906,9 +903,9 @@ H: `__device__` functions
 P: When an algorithm needs a helper function that operates at the lane or thread level --- a custom reduction, a sorting network, a special math function --- writing it as a device function is often the natural choice. Croqtile does not need to manage these; they are passed through to the target compiler.
 P: A `__co__` function can call a `__device__` function using the `call` keyword:
 C: device functions
-P: The helper receives raw pointers to element storage. Its interface must therefore state any sizes or layout assumptions that it needs; the pointer alone does not preserve the Croqtile shape.
+P: **`_`_**device__ void group_topk<K> --- A templated device function implementing group-level top-K selection using shuffle instructions. It operates on raw pointers (`f32*`, `s32*`), not Croqtile spans.
 P: **`_`_**device__ T SHFL_XOR --- A lane-shuffle intrinsic wrapper. The `_`_forceinline__ and `_`_shfl_xor_sync are device code --- Croqtile passes them through unchanged.
-P: The `call group_topk<8>(...)` statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call.
+P: The `call warp_topk<8>(...)` statement supplies the helper's compile-time configuration and ordinary arguments. Croqtile converts spanned-data arguments to element pointers, and the target compiler validates the resulting C++ call.
 P: **`inthreads (tid == 0)`** --- Only lane 0 of each group writes back results. Note this uses `inthreads` without `.async` --- a sequential thread filter, not a concurrent region.
 P: This pattern --- Croqtile handles the parallelism, tiling, and memory orchestration; `__device__` functions handle the per-group algorithm --- is common in production kernels like MoE (mixture-of-experts) top-K, custom reductions, and specialized math.
 
@@ -927,19 +924,19 @@ P: The trade is explicit: you give up the ability to write arbitrary data moveme
 
 === UID:F13-S02
 H: Easy to Use
-P: You work on tensors and tiles, not raw buffers and pointers. DMA transfers, memory allocation, and synchronization that take dozens of lines of hand-written target code reduce to a single `dma.`copy ... => ... statement. Every construct lowers to the same code you would write by hand: zero-cost abstraction, no runtime overhead, no hidden allocations.
+P: You work on tensors and tiles, not raw buffers and pointers.
 
 === UID:F13-S03
 H: Compile-Time Safety
-P: Compile-time diagnostic checks catch shape mismatches, tiling errors, and DMA violations before any code runs. In development builds, runtime assertions guard every transfer and memory access. Together they eliminate entire classes of bugs that would otherwise need a memory checker and hours of printf debugging.
+P: In development builds, 1,319 runtime assertions guard every transfer and memory access. Together they eliminate entire classes of bugs that would otherwise need `memcheck` and hours of printf debugging.
 
 === UID:F13-S04
 H: Dynamic Shapes
-P: First-class symbolic dimensions let you write a kernel once and run it on any shape without recompilation. The compiler derives packed-K, metadata columns, grid dimensions, and staged buffer size automatically. Static and runtime memory are unified --- no template metaprogramming, no boilerplate.
+P: First-class symbolic dimensions let you write a kernel once and run it on any shape without recompilation. The compiler derives packed-K, metadata columns, grid dimensions, and shared-memory size automatically. Static and runtime memory are unified --- no template metaprogramming, no boilerplate.
 
 === UID:F13-S05
 H: Born for AI Tuning
-P: Compact, structured syntax keeps entire kernels inside AI context windows (30--60 lines instead of hundreds). Structured error messages and well-documented CLI arguments let autonomous agents compile, profile, and iterate without human intervention.
+P: Compact, structured syntax keeps entire kernels inside AI context windows (30--60 lines vs. Structured error messages and well-documented CLI arguments let autonomous agents compile, profile, and iterate without human intervention.
 
 === UID:F40-S01
 H: Tiling Optimisation in Croqtile
@@ -957,7 +954,7 @@ P: The outer bounds `[4, 4, 8]` cut the operands into `[128, 256]` left tiles, `
 === UID:F40-S04
 H: Memory Tiling with `chunkat`
 P: In the matrix multiplication example, **memory tiling** is achieved using the `chunkat` method, which slices the input matrices `lhs` (left-hand side) and `rhs` (right-hand side) into smaller chunks to be processed in parallel.
-L: The `lhs` and `rhs` matrices are tiled using the `chunkat` method. The chunks are defined by `m_tile`, `k_tile`, and `n_tile`, which represent different dimensions of the matrices involved in the multiplication. | The chunks for both matrices are loaded asynchronously into the **shared storage** (`lhs_load` and `rhs_load`) with the `dma.copy.async` operation. This operation loads a portion of the matrix from **global storage** to **shared storage**, which is a common optimization in large matrix operations to improve data locality.
+L: The `lhs` and `rhs` matrices are tiled using the `chunkat` method. The chunks are defined by `m_tile`, `k_tile`, and `n_tile`, which represent different dimensions of the matrices involved in the multiplication. | The chunks for both matrices are loaded asynchronously into the (`lhs_load` and `rhs_load`) with the `dma.copy.async` operation. This operation loads a portion of the matrix from a source buffer into a staging buffer, which is a common optimization in large matrix operations to improve data locality.
 L: The variables `m_tile`, `k_tile`, and `n_tile` are **bounded variables**. They are defined in the context of `parallel-by` and `with-in` constructs, which define the iteration space for the tiling. | These bounded variables allow the chunks to be computed in parallel, where each thread works on a different slice of the matrix. This parallelization enables efficient computation of matrix multiplications across multiple threads.
 
 === UID:F40-S05
